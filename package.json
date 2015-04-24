@@ -1,0 +1,52 @@
+{
+  "name": "migi",
+  "version": "0.1.0",
+  "description": "A JavaScript library for building user interfaces",
+  "maintainers": [
+    {
+      "name": "army8735",
+      "email": "army8735@qq.com"
+    }
+  ],
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/migijs/migi.git"
+  },
+  "keywords": [
+    "javascript",
+    "user interface"
+  ],
+  "author": "army8735",
+  "license": "MIT",
+  "config": {
+    "blanket": {
+      "pattern": [
+        "migi/build"
+      ]
+    }
+  },
+  "dependencies": {
+    "homunculus": "~0.8.13"
+  },
+  "devDependencies": {
+    "blanket": "^1.1.6",
+    "coveralls": "^2.11.2",
+    "expect.js": "^0.3.1",
+    "gulp": "^3.8.8",
+    "gulp-clean": "^0.3.1",
+    "gulp-jsdc": "^0.2.4",
+    "gulp-util": "^3.0.1",
+    "mocha": "^2.0.1",
+    "mocha-lcov-reporter": "0.0.1",
+    "through2": "^0.6.1",
+    "jsdc": "^0.5.6"
+  },
+  "main": "./index",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "readmeFilename": "README.md"
+}
