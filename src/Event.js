@@ -68,8 +68,7 @@ class Event {
       }
     }
   }
-  mix(...obj) {
-    var self = this;
+  static mix(...obj) {
     obj.forEach(function(o) {
       var event = new Event();
       var fns = ['on', 'once', 'off', 'emit'];
