@@ -1,3 +1,5 @@
+import Event from './Event';
+
 class Component {
 
 }
