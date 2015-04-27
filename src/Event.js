@@ -68,6 +68,18 @@ class Event {
       }
     }
   }
+  mix(...obj) {
+    var self = this;
+    obj.forEach(function(o) {
+      var event = new Event();
+      var fns = ['on', 'once', 'off', 'emit'];
+      fns.forEach(function(fn) {
+        o[fn] = function(...data) {
+          event[fn].apply(event, data);
+        }
+      });
+    });
+  }
 }
 
 export default Event;

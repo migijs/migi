@@ -68,6 +68,18 @@
       }
     }
   }
+  Event.prototype.mix = function(obj) {
+    obj=[].slice.call(arguments, 0);var self = this;
+    obj.forEach(function(o) {
+      var event = new Event();
+      var fns = ['on', 'once', 'off', 'emit'];
+      fns.forEach(function(fn) {
+        o[fn] = function(data) {
+          data=[].slice.call(arguments, 0);event[fn].apply(event, data);
+        }
+      });
+    });
+  }
 
 
 exports.default=Event;
