@@ -17,7 +17,8 @@
   },
   "keywords": [
     "javascript",
-    "user interface"
+    "user interface",
+    "mvvm"
   ],
   "author": "army8735",
   "license": "MIT",
@@ -29,18 +30,18 @@
     }
   },
   "dependencies": {
-    "homunculus": "~0.8.13"
+    "homunculus": "~0.9.0"
   },
   "devDependencies": {
     "blanket": "^1.1.6",
     "coveralls": "^2.11.2",
     "expect.js": "^0.3.1",
-    "gulp": "^3.8.8",
+    "gulp": "^3.8.11",
     "gulp-clean": "^0.3.1",
     "gulp-jsdc": "^0.2.4",
     "gulp-util": "^3.0.1",
-    "mocha": "^2.0.1",
-    "mocha-lcov-reporter": "0.0.1",
+    "mocha": "^2.2.4",
+    "mocha-lcov-reporter": "^0.0.2",
     "through2": "^0.6.1",
     "jsdc": "^0.5.6"
   },
