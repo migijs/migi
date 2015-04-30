@@ -9,17 +9,13 @@ var migi = {
       dom.innerHTML = s;
     }
     else if(type.isString(dom)) {
-      if(dom.charAt(0) == '#') {
-        document.getElementById(dom.slice(1)).innerHTML = s;
-      }
-      else {
-        document.querySelector(dom).innerHTML = s;
-      }
+      document.querySelector(dom).innerHTML = s;
     }
     else {
-      throw new Error('migi.render missing dom!');
+      throw new Error('migi.render missing dom target!');
     }
-    component.emit(Event.ON_DOM);
+    component.emit(Event.DOM);
+    return s;
   },
   createElement: function(name, props, ...chilren) {
     if(type.isString(name)) {
@@ -35,5 +31,9 @@ var migi = {
   eventBus: Event.mix({}),
   Component: Component
 };
+
+if(typeof window !== 'undefined') {
+  window.migi = migi;
+}
 
 export default migi;
