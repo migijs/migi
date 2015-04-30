@@ -81,4 +81,7 @@
   }
 
 
+Event.DOM = 'dom';
+Event.DATA = 'data';
+
 exports.default=Event;

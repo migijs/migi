@@ -81,4 +81,7 @@ class Event {
   }
 }
 
+Event.DOM = 'dom';
+Event.DATA = 'data';
+
 export default Event;
