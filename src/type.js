@@ -10,5 +10,5 @@ export var isArray = Array.isArray || isType("Array");
 export var isFunction = isType("Function");
 export var isUndefined = isType("Undefined");
 export var isDom = function(obj) {
-  return isType("Object")(obj) && obj.nodeType === 1 && typeof obj.nodeName == 'string';
+  return obj instanceof HTMLElement;
 };
