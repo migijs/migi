@@ -11,12 +11,13 @@ define(function(require, exports, module){var Event=function(){var _0=require('.
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    var s = '<' + this.name;
-    Object.keys(this.props).forEach(function(k) {
-      s += ' ' + k + '="' + this.props[k] + '"'
+    var self = this;
+    var s = '<' + self.name;
+    Object.keys(self.props).forEach(function(k) {
+      s += ' ' + k + '="' + self.props[k] + '"'
     });
     s += '>';
-    this.chilren.forEach(function(child) {
+    self.chilren.forEach(function(child) {
       if(child instanceof Component) {
         s += child.render();
       }
@@ -24,7 +25,7 @@ define(function(require, exports, module){var Event=function(){var _0=require('.
         s += child;
       }
     });
-    s +='</' + this.name + '>';
+    s +='</' + self.name + '>';console.log(s)
     return s;
   }
   Component.prototype.onDom = function() {

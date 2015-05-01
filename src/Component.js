@@ -11,12 +11,13 @@ class Component extends Event {
   }
   //需要被子类覆盖
   render() {
-    var s = '<' + this.name;
-    Object.keys(this.props).forEach(function(k) {
-      s += ' ' + k + '="' + this.props[k] + '"'
+    var self = this;
+    var s = '<' + self.name;
+    Object.keys(self.props).forEach(function(k) {
+      s += ' ' + k + '="' + self.props[k] + '"'
     });
     s += '>';
-    this.chilren.forEach(function(child) {
+    self.chilren.forEach(function(child) {
       if(child instanceof Component) {
         s += child.render();
       }
@@ -24,7 +25,7 @@ class Component extends Event {
         s += child;
       }
     });
-    s +='</' + this.name + '>';
+    s +='</' + self.name + '>';console.log(s)
     return s;
   }
   onDom() {
