@@ -1,4 +1,5 @@
 import Event from './Event';
+import type from './type';
 
 class Component extends Event {
   constructor(name, props = {}, ...chilren) {
@@ -12,21 +13,32 @@ class Component extends Event {
   //需要被子类覆盖
   render() {
     var self = this;
-    var s = '<' + self.name;
+    var res = '<' + self.name;
     Object.keys(self.props).forEach(function(k) {
-      s += ' ' + k + '="' + self.props[k] + '"'
+      res += ' ' + k + '="' + self.props[k] + '"'
     });
-    s += '>';
+    res += '>';
     self.chilren.forEach(function(child) {
-      if(child instanceof Component) {
-        s += child.render();
-      }
-      else {
-        s += child;
-      }
+      res += self.renderChild(child);
     });
-    s +='</' + self.name + '>';console.log(s)
-    return s;
+    res +='</' + self.name + '>';
+    return res;
+  }
+  renderChild(child) {
+    var self = this;
+    if(child instanceof Component) {
+      return child.render();
+    }
+    else if(type.isArray(child)) {
+      var res = '';
+      child.forEach(function(item) {
+        res += self.renderChild(item);
+      });
+      return res;
+    }
+    else {
+      return child;
+    }
   }
   onDom() {
     //TODO

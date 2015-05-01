@@ -30,7 +30,7 @@
     }
   },
   "dependencies": {
-    "homunculus": "~0.9.0"
+    "lefty": "~0.1.0"
   },
   "devDependencies": {
     "blanket": "^1.1.6",
