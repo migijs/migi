@@ -50,7 +50,8 @@ if(typeof window !== 'undefined') {
         }
         node.setAttribute("crossorigin", crossorigin);
         script.async = true;
-        script.innerHTML = lefty.parse(code, true).replace(/</g, '&lt;');
+        var res = lefty.parse(code, true);
+        script.innerHTML = res.replace(/</g, '&lt;');
         head.appendChild(script);
       }
     }
