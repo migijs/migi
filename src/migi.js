@@ -30,6 +30,9 @@ var migi = {
       return new Klass(name, props, ...children);
     }
   },
+  findDOMNode: function(obj) {
+
+  },
   eventBus: Event.mix({}),
   Component: Component
 };

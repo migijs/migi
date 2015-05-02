@@ -1,25 +1,39 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
 var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
+var uid=function(){var _2=require('./uid');return _2.hasOwnProperty("uid")?_2.uid:_2.hasOwnProperty("default")?_2.default:_2}();
 
-!function(){var _2=Object.create(Event.prototype);_2.constructor=HtmlComponent;HtmlComponent.prototype=_2}();
+!function(){var _3=Object.create(Event.prototype);_3.constructor=HtmlComponent;HtmlComponent.prototype=_3}();
   function HtmlComponent(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     this.name = name;
     this.props = props;
     this.children = children;
+    this.parent = null;
+    this.id = uid();
 
     this.on(Event.DOM, this.onDom);
     this.on(Event.DATA, this.onData);
-  }
-  HtmlComponent.prototype.setProp = function(k, v) {
-    this.props[k] = v;
   }
   HtmlComponent.prototype.toString = function() {
     var self = this;
     var res = '<' + self.name;
     Object.keys(self.props).forEach(function(k) {
-      res += ' ' + k + '="' + self.props[k] + '"';
+      if(/^on[A-Z]/.test(k)) {
+        self.on(Event.DOM, function() {
+          var dom = document.querySelector(this.name + '[migi-id="' + self.id + '"]');
+          var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+            return Up.toLowerCase();
+          });
+          dom.addEventListener(name, function(event) {
+            self.props[k](event);
+          }, true);
+        });
+      }
+      else {
+        res += ' ' + k + '="' + self.props[k] + '"';
+      }
     });
+    res += ' migi-id="' + self.id + '"';
     res += '>';
     self.children.forEach(function(child) {
       res += self.renderChild(child);
@@ -43,8 +57,12 @@ var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1
       return child;
     }
   }
+
   HtmlComponent.prototype.onDom = function() {
-    //TODO
+    var self = this;
+    self.children.forEach(function(child) {
+      child.emit(Event.DOM);
+    });
   }
   HtmlComponent.prototype.onData = function(k, v) {
     //TODO

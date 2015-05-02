@@ -30,6 +30,9 @@ var migi = {
       return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _8=[],_9,_10=children[Symbol.iterator]();while(!(_9=_10.next()).done)_8.push(_9.value);return _8}())))();
     }
   },
+  findDOMNode: function(obj) {
+
+  },
   eventBus: Event.mix({}),
   Component: Component
 };
