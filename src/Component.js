@@ -15,10 +15,12 @@ class Component extends Event {
     this.id = uid();
 
     this.on(Event.DOM, this.onDom);
+    this.on(Event.DATA, this.onData);
   }
   //需要被子类覆盖
   render() {
-    return new HtmlComponent(this.name);
+    this.element = new HtmlComponent(this.name);
+    return this.element;
   }
   toString() {
     this.htmlComponent = this.render();
@@ -28,6 +30,9 @@ class Component extends Event {
 
   onDom() {
     this.htmlComponent.emit(Event.DOM);
+  }
+  onData(target, k) {
+    this.htmlComponent.emit('data', target, k);
   }
 }
 

@@ -43,7 +43,7 @@
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "^0.0.2",
     "through2": "^0.6.1",
-    "jsdc": "^0.5.11"
+    "jsdc": "^0.5.12"
   },
   "main": "./index",
   "engines": {

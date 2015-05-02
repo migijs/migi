@@ -1,8 +1,9 @@
 define(function(require, exports, module){var lefty=function(){var _0=require('lefty');return _0.hasOwnProperty("lefty")?_0.lefty:_0.hasOwnProperty("default")?_0.default:_0}();
-var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
-var HtmlComponent=function(){var _2=require('./HtmlComponent');return _2.hasOwnProperty("HtmlComponent")?_2.HtmlComponent:_2.hasOwnProperty("default")?_2.default:_2}();
-var Event=function(){var _3=require('./Event');return _3.hasOwnProperty("Event")?_3.Event:_3.hasOwnProperty("default")?_3.default:_3}();
-var type=function(){var _4=require('./type');return _4.hasOwnProperty("type")?_4.type:_4.hasOwnProperty("default")?_4.default:_4}();
+var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("Event")?_1.Event:_1.hasOwnProperty("default")?_1.default:_1}();
+var type=function(){var _2=require('./type');return _2.hasOwnProperty("type")?_2.type:_2.hasOwnProperty("default")?_2.default:_2}();
+var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("Component")?_3.Component:_3.hasOwnProperty("default")?_3.default:_3}();
+var HtmlComponent=function(){var _4=require('./HtmlComponent');return _4.hasOwnProperty("HtmlComponent")?_4.HtmlComponent:_4.hasOwnProperty("default")?_4.default:_4}();
+var Obj=function(){var _5=require('./Obj');return _5.hasOwnProperty("Obj")?_5.Obj:_5.hasOwnProperty("default")?_5.default:_5}();
 
 var migi = {
   render: function(component, dom) {
@@ -21,20 +22,18 @@ var migi = {
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _5=[],_6,_7=children[Symbol.iterator]();while(!(_6=_7.next()).done)_5.push(_6.value);return _5}())))();
+      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _6=[],_7,_8=children[Symbol.iterator]();while(!(_7=_8.next()).done)_6.push(_7.value);return _6}())))();
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _8=[],_9,_10=children[Symbol.iterator]();while(!(_9=_10.next()).done)_8.push(_9.value);return _8}())))();
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _9=[],_10,_11=children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
     }
   },
-  findDOMNode: function(obj) {
-
-  },
   eventBus: Event.mix({}),
-  Component: Component
+  Component: Component,
+  Obj: Obj
 };
 
 if(typeof window !== 'undefined') {!function(){

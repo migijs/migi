@@ -1,8 +1,9 @@
 import lefty from 'lefty';
-import Component from './Component';
-import HtmlComponent from './HtmlComponent';
 import Event from './Event';
 import type from './type';
+import Component from './Component';
+import HtmlComponent from './HtmlComponent';
+import Obj from './Obj';
 
 var migi = {
   render: function(component, dom) {
@@ -30,11 +31,9 @@ var migi = {
       return new Klass(name, props, ...children);
     }
   },
-  findDOMNode: function(obj) {
-
-  },
   eventBus: Event.mix({}),
-  Component: Component
+  Component: Component,
+  Obj: Obj
 };
 
 if(typeof window !== 'undefined') {

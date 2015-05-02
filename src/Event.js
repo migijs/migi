@@ -61,10 +61,6 @@ class Event {
       });
     }
     else {
-      data.unshift({
-        name: id,
-        target: self
-      });
       if(self.__hash.hasOwnProperty(id)) {
         self.__hash[id].forEach(function(item) {
           item.apply(self, data);

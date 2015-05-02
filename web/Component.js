@@ -15,10 +15,12 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
     this.id = uid();
 
     this.on(Event.DOM, this.onDom);
+    this.on(Event.DATA, this.onData);
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    return new HtmlComponent(this.name);
+    this.element = new HtmlComponent(this.name);
+    return this.element;
   }
   Component.prototype.toString = function() {
     this.htmlComponent = this.render();
@@ -28,6 +30,9 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
 
   Component.prototype.onDom = function() {
     this.htmlComponent.emit(Event.DOM);
+  }
+  Component.prototype.onData = function(target, k) {
+    this.htmlComponent.emit('data', target, k);
   }
 Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
 

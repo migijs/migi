@@ -1,6 +1,7 @@
 import Event from './Event';
 import type from './type';
 import uid from './uid';
+import Obj from './Obj';
 
 class HtmlComponent extends Event {
   constructor(name, props = {}, ...children) {
@@ -48,7 +49,7 @@ class HtmlComponent extends Event {
   }
   renderChild(child) {
     var self = this;
-    if(child instanceof HtmlComponent) {
+    if(child instanceof HtmlComponent || child instanceof Obj) {
       return child.toString();
     }
     else if(type.isArray(child)) {
@@ -93,11 +94,31 @@ class HtmlComponent extends Event {
       self.parent.element = self.element;
     }
     self.children.forEach(function(child) {
-      child.emit(Event.DOM);
+      if(!type.isString(child) && child instanceof Event) {
+        child.emit(Event.DOM);
+      }
     });
   }
-  onData(k, v) {
-    //TODO
+  onData(target, k) {
+    var self = this;
+    var change = false;
+    self.children.forEach(function(child) {
+      if(child instanceof Obj && k == child.k) {
+        var now = target[k];
+        if(now != child.v) {
+          change = true;
+          child.v = now;
+        }
+      }
+    });
+    if(change) {
+      var res = '';
+      self.children.forEach(function(child) {
+        res += self.renderChild(child);
+      });
+      this.element.innerHTML = res;
+    }
+    //TODO:嵌套html或子组件时处理
   }
 }
 
