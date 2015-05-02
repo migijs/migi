@@ -2,58 +2,66 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>demo5</title>
+  <title>demo7</title>
   <link href="../style.css" media="all" rel="stylesheet"/>
   <script src="../es6-shim.js"></script>
   <script src="../sea.js"></script>
 </head>
 <body>
 <div id="example"></div>
-<pre><code class="brush:jsx">class NotesList extends migi.Component {
+<pre><code class="brush:jsx">class MyComponent extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.text = 'like';
+  }
+  get txt() {
+    return this.text;
+  }
+  set txt(v) {
+    this.text = v;
+  }
+  handleClick() {
+    this.txt = this.txt == 'like' ? 'unlike' : 'like';
   }
   render() {
-    return &lt;ol>
-      &lt;li>first&lt;/li>
-      {
-        this.children.map(function (child) {
-          return &lt;li>{child}&lt;/li>
-        })
-      }
-    &lt;/ol>;
+    return (
+      &lt;p onClick={this.handleClick}>
+        You {this.txt} this. Click to toggle.
+      &lt;/p>
+    );
   }
 }
 
 migi.render(
-  &lt;NotesList>
-    &lt;span>hello&lt;/span>
-    &lt;span>world&lt;/span>
-  &lt;/NotesList>,
+  &lt;MyComponent />,
   '#example'
 );</code></pre>
 <script type="text/jsx">
-  class NotesList extends migi.Component {
+  class MyComponent extends migi.Component {
 		constructor(...data) {
 			super(...data);
+      this.text = 'like';
 		}
+    get txt() {
+      return this.text;
+    }
+    set txt(v) {
+      this.text = v;
+    }
+    handleClick() {
+      this.txt = this.txt == 'like' ? 'unlike' : 'like';
+    }
 		render() {
-			return <ol>
-        <li>first</li>
-        {
-          this.children.map(function (child) {
-            return <li>{child}</li>
-          })
-        }
-      </ol>;
+			return (
+        <p onClick={this.handleClick}>
+          You {this.txt} this. Click to toggle.
+        </p>
+      );
 		}
 	}
 
 	migi.render(
-    <NotesList>
-      <span>hello</span>
-      <span>world</span>
-    </NotesList>,
+    <MyComponent />,
     '#example'
   );
 </script>

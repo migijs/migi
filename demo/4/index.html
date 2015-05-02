@@ -3,11 +3,25 @@
 <head>
   <meta charset="utf-8"/>
   <title>demo4</title>
+  <link href="../style.css" media="all" rel="stylesheet"/>
   <script src="../es6-shim.js"></script>
   <script src="../sea.js"></script>
 </head>
 <body>
 <div id="example"></div>
+<pre><code class="brush:jsx">class HelloMessage extends migi.Component {
+  constructor(...data) {
+    super(...data);
+  }
+  render() {
+    return &lt;h1 a="1" b="2">Hello {this.props.name}, this is {this.name}&lt;/h1>;
+  }
+}
+
+migi.render(
+  &lt;HelloMessage name="migi"/>,
+  '#example'
+);</code></pre>
 <script type="text/jsx">
   class HelloMessage extends migi.Component {
     constructor(...data) {
@@ -29,10 +43,15 @@
       'homunculus': seajs.resolve('../../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
       'jsdc': seajs.resolve('../../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
       'lefty': seajs.resolve('../../../lefty/index.js', seajs.data.cwd)
-    }
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
   });
   define('fs', {});
-  seajs.use(['../../index.js', '../../../lefty/index.js']);
+  seajs.use(['../jssc', '../../index.js', '../../../lefty/index.js'], function(jssc) {
+    jssc.exec();
+  });
 </script>
 </body>
 </html>
