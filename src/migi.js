@@ -27,7 +27,7 @@ var migi = {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new Klass(name, props);
+      return new Klass(name, props, ...children);
     }
   },
   eventBus: Event.mix({}),

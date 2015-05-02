@@ -2,11 +2,11 @@ import Event from './Event';
 import type from './type';
 
 class HtmlComponent extends Event {
-  constructor(name, props = {}, ...chilren) {
+  constructor(name, props = {}, ...children) {
     super();
     this.name = name;
     this.props = props;
-    this.chilren = chilren;
+    this.children = children;
 
     this.on(Event.DOM, this.onDom);
     this.on(Event.DATA, this.onData);
@@ -21,7 +21,7 @@ class HtmlComponent extends Event {
       res += ' ' + k + '="' + self.props[k] + '"';
     });
     res += '>';
-    self.chilren.forEach(function(child) {
+    self.children.forEach(function(child) {
       res += self.renderChild(child);
     });
     res +='</' + self.name + '>';

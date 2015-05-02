@@ -27,7 +27,7 @@ var migi = {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new Klass(name, props);
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _8=[],_9,_10=children[Symbol.iterator]();while(!(_9=_10.next()).done)_8.push(_9.value);return _8}())))();
     }
   },
   eventBus: Event.mix({}),
