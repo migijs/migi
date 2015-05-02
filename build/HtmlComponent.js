@@ -5,14 +5,19 @@ var uid=function(){var _2=require('./uid');return _2.hasOwnProperty("uid")?_2.ui
 !function(){var _3=Object.create(Event.prototype);_3.constructor=HtmlComponent;HtmlComponent.prototype=_3}();
   function HtmlComponent(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
-    this.name = name;
-    this.props = props;
-    this.children = children;
-    this.parent = null;
-    this.id = uid();
+    var self = this;
+    self.name = name;
+    self.props = props;
+    self.children = children;
+    children.forEach(function(child) {
+      child.parent = self;
+    });
+    self.parent = null;
+    self.id = uid();
+    self.element = null;
 
-    this.on(Event.DOM, this.onDom);
-    this.on(Event.DATA, this.onData);
+    self.on(Event.DOM, this.onDom);
+    self.on(Event.DATA, this.onData);
   }
   HtmlComponent.prototype.toString = function() {
     var self = this;
@@ -25,7 +30,7 @@ var uid=function(){var _2=require('./uid');return _2.hasOwnProperty("uid")?_2.ui
             return Up.toLowerCase();
           });
           dom.addEventListener(name, function(event) {
-            self.props[k](event);
+            self.props[k].call(self.closeset(), event);
           }, true);
         });
       }
@@ -57,9 +62,36 @@ var uid=function(){var _2=require('./uid');return _2.hasOwnProperty("uid")?_2.ui
       return child;
     }
   }
+  HtmlComponent.prototype.closestHtml = function() {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof HtmlComponent) {
+        return parent;
+      }
+      parent = parent.parent;
+    }
+    return document.body;
+  }
+  HtmlComponent.prototype.closeset = function() {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof HtmlComponent == false) {
+        return parent;
+      }
+      parent = parent.parent;
+    }
+  }
 
   HtmlComponent.prototype.onDom = function() {
     var self = this;
+    var parent = self.closestHtml();
+    if(parent != document.body) {
+      parent = parent.element;
+    }
+    self.element = parent.querySelector('[migi-id="' + self.id + '"]');
+    if(self.parent instanceof HtmlComponent == false) {
+      self.parent.element = self.element;
+    }
     self.children.forEach(function(child) {
       child.emit(Event.DOM);
     });

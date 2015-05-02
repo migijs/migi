@@ -10,6 +10,7 @@ class Component extends Event {
     this.props = props;
     this.children = children;
     this.htmlComponent = null;
+    this.element = null;
     this.parent = null;
     this.id = uid();
 

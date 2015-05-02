@@ -10,6 +10,7 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
     this.props = props;
     this.children = children;
     this.htmlComponent = null;
+    this.element = null;
     this.parent = null;
     this.id = uid();
 
