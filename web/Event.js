@@ -61,8 +61,18 @@ define(function(require, exports, module){
       });
     }
     else {
+      data.unshift({
+        name: id,
+        target: self
+      });
       if(self.__hash.hasOwnProperty(id)) {
         self.__hash[id].forEach(function(item) {
+          item.apply(self, data);
+        });
+      }
+      //侦听*的为所有
+      if(self.__hash.hasOwnProperty('*')) {
+        self.__hash['*'].forEach(function(item) {
           item.apply(self, data);
         });
       }
@@ -71,11 +81,10 @@ define(function(require, exports, module){
   Event.mix=function(obj) {
     obj=[].slice.call(arguments, 0);obj.forEach(function(o) {
       var event = new Event();
+      o.__hash = {};
       var fns = ['on', 'once', 'off', 'emit'];
       fns.forEach(function(fn) {
-        o[fn] = function(data) {
-          data=[].slice.call(arguments, 0);event[fn].apply(event, data);
-        }
+        o[fn] = event[fn];
       });
     });
   }

@@ -1,11 +1,12 @@
 define(function(require, exports, module){var lefty=function(){var _0=require('lefty');return _0.hasOwnProperty("lefty")?_0.lefty:_0.hasOwnProperty("default")?_0.default:_0}();
 var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
-var Event=function(){var _2=require('./Event');return _2.hasOwnProperty("Event")?_2.Event:_2.hasOwnProperty("default")?_2.default:_2}();
-var type=function(){var _3=require('./type');return _3.hasOwnProperty("type")?_3.type:_3.hasOwnProperty("default")?_3.default:_3}();
+var HtmlComponent=function(){var _2=require('./HtmlComponent');return _2.hasOwnProperty("HtmlComponent")?_2.HtmlComponent:_2.hasOwnProperty("default")?_2.default:_2}();
+var Event=function(){var _3=require('./Event');return _3.hasOwnProperty("Event")?_3.Event:_3.hasOwnProperty("default")?_3.default:_3}();
+var type=function(){var _4=require('./type');return _4.hasOwnProperty("type")?_4.type:_4.hasOwnProperty("default")?_4.default:_4}();
 
 var migi = {
   render: function(component, dom) {
-    var s = component.render();
+    var s = component.toString();
     if(type.isDom(dom)) {
       dom.innerHTML = s;
     }
@@ -16,17 +17,17 @@ var migi = {
       throw new Error('migi.render missing dom target!');
     }
     component.emit(Event.DOM);
-    return s;
+    return component;
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(Component, [null,name,props].concat(function(){var _4=[],_5,_6=children[Symbol.iterator]();while(!(_5=_6.next()).done)_4.push(_5.value);return _4}())))();
+      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _5=[],_6,_7=children[Symbol.iterator]();while(!(_6=_7.next()).done)_5.push(_6.value);return _5}())))();
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _7=[],_8,_9=children[Symbol.iterator]();while(!(_8=_9.next()).done)_7.push(_8.value);return _7}())))();
+      return new Klass(name, props);
     }
   },
   eventBus: Event.mix({}),

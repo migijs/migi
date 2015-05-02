@@ -61,8 +61,18 @@ class Event {
       });
     }
     else {
+      data.unshift({
+        name: id,
+        target: self
+      });
       if(self.__hash.hasOwnProperty(id)) {
         self.__hash[id].forEach(function(item) {
+          item.apply(self, data);
+        });
+      }
+      //侦听*的为所有
+      if(self.__hash.hasOwnProperty('*')) {
+        self.__hash['*'].forEach(function(item) {
           item.apply(self, data);
         });
       }
@@ -71,11 +81,10 @@ class Event {
   static mix(...obj) {
     obj.forEach(function(o) {
       var event = new Event();
+      o.__hash = {};
       var fns = ['on', 'once', 'off', 'emit'];
       fns.forEach(function(fn) {
-        o[fn] = function(...data) {
-          event[fn].apply(event, data);
-        }
+        o[fn] = event[fn];
       });
     });
   }

@@ -1,11 +1,12 @@
 import lefty from 'lefty';
 import Component from './Component';
+import HtmlComponent from './HtmlComponent';
 import Event from './Event';
 import type from './type';
 
 var migi = {
   render: function(component, dom) {
-    var s = component.render();
+    var s = component.toString();
     if(type.isDom(dom)) {
       dom.innerHTML = s;
     }
@@ -16,17 +17,17 @@ var migi = {
       throw new Error('migi.render missing dom target!');
     }
     component.emit(Event.DOM);
-    return s;
+    return component;
   },
   createElement: function(name, props, ...children) {
     if(type.isString(name)) {
-      return new Component(name, props, ...children);
+      return new HtmlComponent(name, props, ...children);
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new Klass(name, props, ...children);
+      return new Klass(name, props);
     }
   },
   eventBus: Event.mix({}),
