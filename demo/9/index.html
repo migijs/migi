@@ -33,7 +33,7 @@ class MyComponent extends migi.Component {
     super(...data);
     var self = this;
     self.text = 'loading...';
-    self.children[0].on('success', function(data) {
+    self.children.Ajax.on('success', function(data) {
       self.txt = data.name;
     });
   }
