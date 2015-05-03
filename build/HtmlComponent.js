@@ -90,7 +90,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       parent = parent.element;
     }
     self.element = parent.querySelector('[migi-id="' + self.id + '"]');
-    if(self.parent instanceof HtmlComponent == false) {
+    if(self.parent && self.parent instanceof HtmlComponent == false) {
       self.parent.element = self.element;
     }
     self.children.forEach(function(child) {
