@@ -5,14 +5,14 @@
   display:inline-block;
   min-width:400px;
   border-radius:3px;
-  font:14px/1.5 "Î¢ÈíÑÅºÚ";
+  font:14px/1.5 "å¾®è½¯é›…é»‘";
   color:#9CF;
 }
 
 .jssc .col{margin-left:12px;color:#CCC;cursor:default;}
 .jssc .col em{position:relative;font-style:normal;}
 .jssc .col em small{position:absolute;top:-10px;left:0;color:#A0A080;}
-.jssc .col,.jssc ol{font-family:Consolas,momospace,"ËÎÌå","Courier New";font-size:12px;}
+.jssc .col,.jssc ol{font-family:Consolas,momospace,"å®‹ä½“","Courier New";font-size:12px;}
 .jssc li:hover{background:#FF9;}
 .jssc .number{color:#088;}
 .jssc .keyword{color:#33f;}
