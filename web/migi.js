@@ -4,7 +4,8 @@ var type=function(){var _2=require('./type');return _2.hasOwnProperty("type")?_2
 var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("Component")?_3.Component:_3.hasOwnProperty("default")?_3.default:_3}();
 var HtmlComponent=function(){var _4=require('./HtmlComponent');return _4.hasOwnProperty("HtmlComponent")?_4.HtmlComponent:_4.hasOwnProperty("default")?_4.default:_4}();
 var NonVisualComponent=function(){var _5=require('./NonVisualComponent');return _5.hasOwnProperty("NonVisualComponent")?_5.NonVisualComponent:_5.hasOwnProperty("default")?_5.default:_5}();
-var Obj=function(){var _6=require('./Obj');return _6.hasOwnProperty("Obj")?_6.Obj:_6.hasOwnProperty("default")?_6.default:_6}();
+var CacheComponent=function(){var _6=require('./CacheComponent');return _6.hasOwnProperty("CacheComponent")?_6.CacheComponent:_6.hasOwnProperty("default")?_6.default:_6}();
+var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("Obj")?_7.Obj:_7.hasOwnProperty("default")?_7.default:_7}();
 
 var migi = {
   render: function(component, dom) {
@@ -23,19 +24,20 @@ var migi = {
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _7=[],_8,_9=children[Symbol.iterator]();while(!(_8=_9.next()).done)_7.push(_8.value);return _7}())))();
+      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _8=[],_9,_10=children[Symbol.iterator]();while(!(_9=_10.next()).done)_8.push(_9.value);return _8}())))();
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _11=[],_12,_13=children[Symbol.iterator]();while(!(_12=_13.next()).done)_11.push(_12.value);return _11}())))();
     }
   },
   Event: Event,
   eventBus: Event.mix({}),
   Component: Component,
   NonVisualComponent: NonVisualComponent,
+  CacheComponent: CacheComponent,
   HtmlComponent: HtmlComponent,
   Obj: Obj
 };

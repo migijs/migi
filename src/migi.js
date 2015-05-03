@@ -4,6 +4,7 @@ import type from './type';
 import Component from './Component';
 import HtmlComponent from './HtmlComponent';
 import NonVisualComponent from './NonVisualComponent';
+import CacheComponent from './CacheComponent';
 import Obj from './Obj';
 
 var migi = {
@@ -36,6 +37,7 @@ var migi = {
   eventBus: Event.mix({}),
   Component: Component,
   NonVisualComponent: NonVisualComponent,
+  CacheComponent: CacheComponent,
   HtmlComponent: HtmlComponent,
   Obj: Obj
 };
