@@ -3,7 +3,8 @@ var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("Event")
 var type=function(){var _2=require('./type');return _2.hasOwnProperty("type")?_2.type:_2.hasOwnProperty("default")?_2.default:_2}();
 var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("Component")?_3.Component:_3.hasOwnProperty("default")?_3.default:_3}();
 var HtmlComponent=function(){var _4=require('./HtmlComponent');return _4.hasOwnProperty("HtmlComponent")?_4.HtmlComponent:_4.hasOwnProperty("default")?_4.default:_4}();
-var Obj=function(){var _5=require('./Obj');return _5.hasOwnProperty("Obj")?_5.Obj:_5.hasOwnProperty("default")?_5.default:_5}();
+var NonVisualComponent=function(){var _5=require('./NonVisualComponent');return _5.hasOwnProperty("NonVisualComponent")?_5.NonVisualComponent:_5.hasOwnProperty("default")?_5.default:_5}();
+var Obj=function(){var _6=require('./Obj');return _6.hasOwnProperty("Obj")?_6.Obj:_6.hasOwnProperty("default")?_6.default:_6}();
 
 var migi = {
   render: function(component, dom) {
@@ -22,17 +23,20 @@ var migi = {
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _6=[],_7,_8=children[Symbol.iterator]();while(!(_7=_8.next()).done)_6.push(_7.value);return _6}())))();
+      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _7=[],_8,_9=children[Symbol.iterator]();while(!(_8=_9.next()).done)_7.push(_8.value);return _7}())))();
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _9=[],_10,_11=children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
     }
   },
+  Event: Event,
   eventBus: Event.mix({}),
   Component: Component,
+  NonVisualComponent: NonVisualComponent,
+  HtmlComponent: HtmlComponent,
   Obj: Obj
 };
 

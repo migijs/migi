@@ -30,6 +30,11 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
 
   Component.prototype.onDom = function() {
     this.htmlComponent.emit(Event.DOM);
+    this.children.forEach(function(child) {
+      if(child instanceof Component) {
+        child.emit(Event.DOM);
+      }
+    });
   }
   Component.prototype.onData = function(target, k) {
     this.htmlComponent.emit('data', target, k);

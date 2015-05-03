@@ -30,6 +30,11 @@ class Component extends Event {
 
   onDom() {
     this.htmlComponent.emit(Event.DOM);
+    this.children.forEach(function(child) {
+      if(child instanceof Component) {
+        child.emit(Event.DOM);
+      }
+    });
   }
   onData(target, k) {
     this.htmlComponent.emit('data', target, k);
