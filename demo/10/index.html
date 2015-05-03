@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>demo10</title>
+  <link href="../style.css" media="all" rel="stylesheet"/>
+  <script src="../es6-shim.js"></script>
+  <script src="../sea.js"></script>
+  <script src="../jquery-2.1.0.min.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx">class Text extends migi.Component {
+  constructor(...data) {
+    super(...data);
+    var self = this;
+    self.i = 0;
+    self.handler = null;
+    self.on(migi.Event.DOM, self.increase);
+  }
+  get count() {
+    return this.i;
+  }
+  set count(v) {
+    this.i = v;
+  }
+  increase() {
+    var self = this;
+    var c = Math.round(Math.random() * 200) + 1;
+    var t = Math.round(Math.random() * 2000) + 1;
+    var timeout = setTimeout(function() {
+      self.animate(c);
+      self.increase();
+    }, t);
+  }
+  animate(c) {
+    var self = this;
+    if(self.handler) {
+      clearInterval(self.handler);
+    }
+    var target = self.count + c;
+    self.handler = setInterval(function() {
+      var diff = target - self.count;
+      if(diff < 2) {
+        self.count = target;
+        clearInterval(self.handler);
+      }
+      else {
+        self.count += Math.floor(diff / 2);
+      }
+    }, 1);
+  }
+  render() {
+    return &lt;p>count: {this.count}&lt;/p>;
+  }
+}
+
+migi.render(
+  &lt;Text />,
+  '#example'
+);</code></pre>
+<script type="text/jsx">
+  class Text extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self.i = 0;
+      self.handler = null;
+      self.on(migi.Event.DOM, self.increase);
+    }
+    get count() {
+      return this.i;
+    }
+    set count(v) {
+      this.i = v;
+    }
+    increase() {
+      var self = this;
+      var c = Math.round(Math.random() * 200) + 1;
+      var t = Math.round(Math.random() * 2000) + 1;
+      var timeout = setTimeout(function() {
+        self.animate(c);
+        self.increase();
+      }, t);
+    }
+    animate(c) {
+      var self = this;
+      if(self.handler) {
+        clearInterval(self.handler);
+      }
+      var target = self.count + c;
+      self.handler = setInterval(function() {
+        var diff = target - self.count;
+        if(diff < 2) {
+          self.count = target;
+          clearInterval(self.handler);
+        }
+        else {
+          self.count += Math.floor(diff / 2);
+        }
+      }, 1);
+    }
+    render() {
+      return <p>count: {this.count}</p>;
+    }
+  }
+
+	migi.render(
+    <Text />,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../../lefty/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['../jssc', '../../index.js', '../../../lefty/index.js'], function(jssc) {
+    jssc.exec();
+  });
+</script>
+</body>
+</html>

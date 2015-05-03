@@ -58,7 +58,7 @@ if(typeof window !== 'undefined') {!function(){
         node.setAttribute("crossorigin", crossorigin);
         script.async = true;
         var res = lefty.parse(code, true);
-        script.innerHTML = res.replace(/</g, '&lt;');
+        script.innerHTML = res;
         head.appendChild(script);
       }
     }
