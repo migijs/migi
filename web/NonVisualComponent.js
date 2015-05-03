@@ -5,13 +5,13 @@ define(function(require, exports, module){var Component=function(){var _0=requir
     data=[].slice.call(arguments, 0);Component.apply(this,[].concat(function(){var _2=[],_3,_4=data[Symbol.iterator]();while(!(_3=_4.next()).done)_2.push(_3.value);return _2}()));
   }
 
-  //�ǿ���Ϊ��
+  //非可视为空
   NonVisualComponent.prototype.toString = function() {
     return '';
   }
 
-  //û��dom
-  NonVisualComponent.prototype.onDom = function() {}
+  //没有dom
+  NonVisualComponent.prototype.__onDom = function() {}
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
 exports.default=NonVisualComponent;});

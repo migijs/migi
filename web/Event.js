@@ -86,7 +86,7 @@ define(function(require, exports, module){
   }
 
 
-Event.DOM = 'dom';
-Event.DATA = 'data';
+Event.DOM = 'DOM';
+Event.DATA = 'DATA';
 
 exports.default=Event;});

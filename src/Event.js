@@ -86,7 +86,7 @@ class Event {
   }
 }
 
-Event.DOM = 'dom';
-Event.DATA = 'data';
+Event.DOM = 'DOM';
+Event.DATA = 'DATA';
 
 export default Event;

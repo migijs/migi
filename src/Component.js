@@ -6,16 +6,34 @@ import uid from './uid';
 class Component extends Event {
   constructor(name, props = {}, ...children) {
     super();
-    this.name = name;
-    this.props = props;
-    this.children = children;
-    this.htmlComponent = null;
-    this.element = null;
-    this.parent = null;
-    this.id = uid();
+    var self = this;
+    self.name = name;
+    self.props = props;
+    self.children = children;
+    self.childrenMap = {};
+    children.forEach(function(child) {
+      if(child instanceof Component) {
+        if(self.childrenMap.hasOwnProperty(child.name)) {
+          var temp = self.childrenMap[child.name];
+          if(Array.isArray(temp)) {
+            temp.push(child);
+          }
+          else {
+            self.childrenMap[child.name] = [temp, child];
+          }
+        }
+        else {
+          self.childrenMap[child.name] = child;
+        }
+      }
+    });
+    self.htmlComponent = null;
+    self.element = null;
+    self.parent = null;
+    self.id = uid();
 
-    this.on(Event.DOM, this.onDom);
-    this.on(Event.DATA, this.onData);
+    self.on(Event.DOM, self.__onDom);
+    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   render() {
@@ -28,7 +46,7 @@ class Component extends Event {
     return this.htmlComponent.toString();
   }
 
-  onDom() {
+  __onDom() {
     this.htmlComponent.emit(Event.DOM);
     this.children.forEach(function(child) {
       if(child instanceof Component) {
@@ -36,8 +54,15 @@ class Component extends Event {
       }
     });
   }
-  onData(target, k) {
-    this.htmlComponent.emit('data', target, k);
+  __onData(target, k) {
+    if(this.htmlComponent) {
+      this.htmlComponent.emit(Event.DATA, target, k);
+    }
+    this.children.forEach(function(child) {
+      if(child instanceof Component) {
+        child.emit(Event.DATA, target, k);
+      }
+    });
   }
 }
 

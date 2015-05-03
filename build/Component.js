@@ -6,16 +6,34 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
 !function(){var _4=Object.create(Event.prototype);_4.constructor=Component;Component.prototype=_4}();
   function Component(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
-    this.name = name;
-    this.props = props;
-    this.children = children;
-    this.htmlComponent = null;
-    this.element = null;
-    this.parent = null;
-    this.id = uid();
+    var self = this;
+    self.name = name;
+    self.props = props;
+    self.children = children;
+    self.childrenMap = {};
+    children.forEach(function(child) {
+      if(child instanceof Component) {
+        if(self.childrenMap.hasOwnProperty(child.name)) {
+          var temp = self.childrenMap[child.name];
+          if(Array.isArray(temp)) {
+            temp.push(child);
+          }
+          else {
+            self.childrenMap[child.name] = [temp, child];
+          }
+        }
+        else {
+          self.childrenMap[child.name] = child;
+        }
+      }
+    });
+    self.htmlComponent = null;
+    self.element = null;
+    self.parent = null;
+    self.id = uid();
 
-    this.on(Event.DOM, this.onDom);
-    this.on(Event.DATA, this.onData);
+    self.on(Event.DOM, self.__onDom);
+    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
@@ -28,7 +46,7 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
     return this.htmlComponent.toString();
   }
 
-  Component.prototype.onDom = function() {
+  Component.prototype.__onDom = function() {
     this.htmlComponent.emit(Event.DOM);
     this.children.forEach(function(child) {
       if(child instanceof Component) {
@@ -36,8 +54,15 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
       }
     });
   }
-  Component.prototype.onData = function(target, k) {
-    this.htmlComponent.emit('data', target, k);
+  Component.prototype.__onData = function(target, k) {
+    if(this.htmlComponent) {
+      this.htmlComponent.emit(Event.DATA, target, k);
+    }
+    this.children.forEach(function(child) {
+      if(child instanceof Component) {
+        child.emit(Event.DATA, target, k);
+      }
+    });
   }
 Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
 

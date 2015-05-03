@@ -17,8 +17,8 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     self.id = uid();
     self.element = null;
 
-    self.on(Event.DOM, this.onDom);
-    self.on(Event.DATA, this.onData);
+    self.on(Event.DOM, self.__onDom);
+    self.on(Event.DATA, self.__onData);
   }
   HtmlComponent.prototype.toString = function() {
     var self = this;
@@ -93,7 +93,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     }
   }
 
-  HtmlComponent.prototype.onDom = function() {
+  HtmlComponent.prototype.__onDom = function() {
     var self = this;
     var parent = self.closestHtml();
     if(parent != document.body) {
@@ -109,7 +109,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       }
     });
   }
-  HtmlComponent.prototype.onData = function(target, k) {
+  HtmlComponent.prototype.__onData = function(target, k) {
     var self = this;
     var change = false;
     self.children.forEach(function(child) {

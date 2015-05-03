@@ -17,8 +17,8 @@ class HtmlComponent extends Event {
     self.id = uid();
     self.element = null;
 
-    self.on(Event.DOM, this.onDom);
-    self.on(Event.DATA, this.onData);
+    self.on(Event.DOM, self.__onDom);
+    self.on(Event.DATA, self.__onData);
   }
   toString() {
     var self = this;
@@ -93,7 +93,7 @@ class HtmlComponent extends Event {
     }
   }
 
-  onDom() {
+  __onDom() {
     var self = this;
     var parent = self.closestHtml();
     if(parent != document.body) {
@@ -109,7 +109,7 @@ class HtmlComponent extends Event {
       }
     });
   }
-  onData(target, k) {
+  __onData(target, k) {
     var self = this;
     var change = false;
     self.children.forEach(function(child) {

@@ -5,13 +5,13 @@ class NonVisualComponent extends Component {
     super(...data);
   }
 
-  //╥г©ийсн╙©у
+  //И²·Е▐╞Х╖├Д╦╨Г╘╨
   toString() {
     return '';
   }
 
-  //ц╩спdom
-  onDom() {}
+  //Ф╡║Ф°┴dom
+  __onDom() {}
 }
 
 export default NonVisualComponent;
