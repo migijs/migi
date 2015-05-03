@@ -26,17 +26,27 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     Object.keys(self.props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         self.on(Event.DOM, function() {
-          var dom = document.querySelector(this.name + '[migi-id="' + self.id + '"]');
           var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
             return Up.toLowerCase();
           });
-          dom.addEventListener(name, function(event) {
-            self.props[k].call(self.closeset(), event);
+          self.element.addEventListener(name, function(event) {
+            self.props[k].v.call(self.closeset(), event);
           }, true);
         });
       }
       else {
-        res += ' ' + k + '="' + self.props[k] + '"';
+        res += ' ' + k + '="' + self.props[k].toString() + '"';
+        if(k == 'value' && self.name == 'input' && self.props[k] instanceof Obj) {
+          self.on(Event.DOM, function() {
+            function cb() {
+              var key = self.props[k].k.replace(/^this\./, '');
+              self.closeset()[key] = this.value;
+            }
+            self.element.addEventListener('input', cb, true);
+            self.element.addEventListener('paste', cb, true);
+            self.element.addEventListener('cut', cb, true);
+          });
+        }
       }
     });
     res += ' migi-id="' + self.id + '"';
@@ -109,6 +119,9 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
           change = true;
           child.v = now;
         }
+      }
+      else if(child instanceof HtmlComponent) {
+        child.emit(Event.DATA, target, k);
       }
     });
     if(change) {
