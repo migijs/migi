@@ -2,6 +2,7 @@ import Event from './Event';
 import type from './type';
 import HtmlComponent from './HtmlComponent';
 import uid from './uid';
+import clone from './clone';
 
 class Component extends Event {
   constructor(name, props = {}, ...children) {
@@ -37,7 +38,9 @@ class Component extends Event {
   }
   //需要被子类覆盖
   render() {
-    this.element = new HtmlComponent(this.name);
+    var props = clone(this.props);
+    props['migi-name'] = this.name;
+    this.element = new HtmlComponent('div', props, ...this.children);
     return this.element;
   }
   toString() {

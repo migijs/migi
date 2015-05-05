@@ -2,8 +2,9 @@ define(function(require, exports, module){var Event=function(){var _0=require('.
 var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
 var HtmlComponent=function(){var _2=require('./HtmlComponent');return _2.hasOwnProperty("HtmlComponent")?_2.HtmlComponent:_2.hasOwnProperty("default")?_2.default:_2}();
 var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.uid:_3.hasOwnProperty("default")?_3.default:_3}();
+var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")?_4.clone:_4.hasOwnProperty("default")?_4.default:_4}();
 
-!function(){var _4=Object.create(Event.prototype);_4.constructor=Component;Component.prototype=_4}();
+!function(){var _5=Object.create(Event.prototype);_5.constructor=Component;Component.prototype=_5}();
   function Component(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     var self = this;
@@ -37,7 +38,9 @@ var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.ui
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    this.element = new HtmlComponent(this.name);
+    var props = clone(this.props);
+    props['migi-name'] = this.name;
+    this.element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _6=[],_7,_8=this.children[Symbol.iterator]();while(!(_7=_8.next()).done)_6.push(_7.value);return _6}())))();
     return this.element;
   }
   Component.prototype.toString = function() {

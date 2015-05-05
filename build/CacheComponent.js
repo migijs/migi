@@ -3,7 +3,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
 
 !function(){var _2=Object.create(Component.prototype);_2.constructor=CachedComponent;CachedComponent.prototype=_2}();
   function CachedComponent(data) {
-    data=[].slice.call(arguments, 0);Component.call.apply(thisthis, [].concat(function(){var _3=[],_4;while(!(_4=data.next()).done)_3.push(_4.value);return _3}()));
+    data=[].slice.call(arguments, 0);Component.apply(this,[].concat(function(){var _3=[],_4,_5=data[Symbol.iterator]();while(!(_4=_5.next()).done)_3.push(_4.value);return _3}()));
     this.__handler = {};
   }
 
