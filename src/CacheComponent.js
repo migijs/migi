@@ -11,6 +11,11 @@ class CachedComponent extends Component {
     var self = this;
     function cb() {
       self.htmlComponent.emit(Event.DATA, target, k);
+      self.children.forEach(function(child) {
+        if(child instanceof Component) {
+          child.emit(Event.DATA, target, k);
+        }
+      });
     }
     var temp;
     if(!self.__handler.hasOwnProperty(k)) {
@@ -26,11 +31,6 @@ class CachedComponent extends Component {
         temp.timeout = null;
       }, 1);
     }
-    self.children.forEach(function(child) {
-      if(child instanceof Component) {
-        child.emit(Event.DATA, target, k);
-      }
-    });
   }
 }
 
