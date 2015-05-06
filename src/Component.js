@@ -48,6 +48,31 @@ class Component extends Event {
     this.htmlComponent.parent = this;
     return this.htmlComponent.toString();
   }
+  closestHtml(name) {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof Component == false) {
+        if(name && parent.name == name) {
+          return parent;
+        }
+        return parent;
+      }
+      parent = parent.parent;
+    }
+    return document.body;
+  }
+  closeset(name) {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof Component) {
+        if(name && parent.name == name) {
+          return parent;
+        }
+        return parent;
+      }
+      parent = parent.parent;
+    }
+  }
 
   __onDom() {
     this.htmlComponent.emit(Event.DOM);

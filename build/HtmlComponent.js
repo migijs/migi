@@ -73,20 +73,26 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       return child;
     }
   }
-  HtmlComponent.prototype.closestHtml = function() {
+  HtmlComponent.prototype.closestHtml = function(name) {
     var parent = this.parent;
     while(parent) {
       if(parent instanceof HtmlComponent) {
+        if(name && parent.name == name) {
+          return parent;
+        }
         return parent;
       }
       parent = parent.parent;
     }
     return document.body;
   }
-  HtmlComponent.prototype.closeset = function() {
+  HtmlComponent.prototype.closeset = function(name) {
     var parent = this.parent;
     while(parent) {
       if(parent instanceof HtmlComponent == false) {
+        if(name && parent.name == name) {
+          return parent;
+        }
         return parent;
       }
       parent = parent.parent;

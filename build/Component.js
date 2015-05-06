@@ -48,6 +48,31 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
     this.htmlComponent.parent = this;
     return this.htmlComponent.toString();
   }
+  Component.prototype.closestHtml = function(name) {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof Component == false) {
+        if(name && parent.name == name) {
+          return parent;
+        }
+        return parent;
+      }
+      parent = parent.parent;
+    }
+    return document.body;
+  }
+  Component.prototype.closeset = function(name) {
+    var parent = this.parent;
+    while(parent) {
+      if(parent instanceof Component) {
+        if(name && parent.name == name) {
+          return parent;
+        }
+        return parent;
+      }
+      parent = parent.parent;
+    }
+  }
 
   Component.prototype.__onDom = function() {
     this.htmlComponent.emit(Event.DOM);

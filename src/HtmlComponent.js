@@ -73,20 +73,26 @@ class HtmlComponent extends Event {
       return child;
     }
   }
-  closestHtml() {
+  closestHtml(name) {
     var parent = this.parent;
     while(parent) {
       if(parent instanceof HtmlComponent) {
+        if(name && parent.name == name) {
+          return parent;
+        }
         return parent;
       }
       parent = parent.parent;
     }
     return document.body;
   }
-  closeset() {
+  closeset(name) {
     var parent = this.parent;
     while(parent) {
       if(parent instanceof HtmlComponent == false) {
+        if(name && parent.name == name) {
+          return parent;
+        }
         return parent;
       }
       parent = parent.parent;
