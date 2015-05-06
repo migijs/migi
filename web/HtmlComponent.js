@@ -30,7 +30,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
             return Up.toLowerCase();
           });
           self.element.addEventListener(name, function(event) {
-            self.props[k].v.call(self.closeset(), event);
+            self.props[k].call(self.closeset(), event);
           }, true);
         });
       }
@@ -70,7 +70,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       return res;
     }
     else {
-      return child;
+      return child.toString();
     }
   }
   HtmlComponent.prototype.closestHtml = function(name) {
@@ -119,11 +119,25 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     var self = this;
     var change = false;
     self.children.forEach(function(child) {
-      if(child instanceof Obj && k == child.k) {
-        var now = target[k];
-        if(now != child.v) {
-          change = true;
-          child.v = now;
+      if(child instanceof Obj) {
+        if(Array.isArray(child.k)) {
+          var i = child.k.indexOf(k);
+          if(i > -1) {
+            var ov = child.v;
+            var nv = child.cb.call(target);
+            if(ov != nv) {
+              change = true;
+              child.v = nv;
+            }
+          }
+        }
+        else if(k == child.k) {
+          var ov = child.v;
+          var nv = child.cb.call(target);
+          if(ov != nv) {
+            change = true;
+            child.v = nv;
+          }
         }
       }
       else if(child instanceof HtmlComponent) {
