@@ -6,6 +6,7 @@ import HtmlComponent from './HtmlComponent';
 import NonVisualComponent from './NonVisualComponent';
 import CacheComponent from './CacheComponent';
 import Obj from './Obj';
+import Cb from './Cb';
 
 var migi = {
   render: function(component, dom) {
@@ -39,7 +40,8 @@ var migi = {
   NonVisualComponent: NonVisualComponent,
   CacheComponent: CacheComponent,
   HtmlComponent: HtmlComponent,
-  Obj: Obj
+  Obj: Obj,
+  Cb: Cb
 };
 
 if(typeof window !== 'undefined') {

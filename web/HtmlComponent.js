@@ -30,21 +30,25 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
             return Up.toLowerCase();
           });
           self.element.addEventListener(name, function(event) {
-            self.props[k].call(self.closeset(), event);
+            var item = self.props[k];
+            item.cb.call(item.context, event);
           }, true);
         });
       }
       else {
         res += ' ' + k + '="' + self.props[k].toString() + '"';
         if(k == 'value' && self.name == 'input' && self.props[k] instanceof Obj) {
+          var item = self.props[k];
           self.on(Event.DOM, function() {
             function cb() {
-              var key = self.props[k].k.replace(/^this\./, '');
-              self.closeset()[key] = this.value;
+              item.v = this.value;
+              var key = item.k;
+              item.context[key] = this.value;
             }
             self.element.addEventListener('input', cb, true);
             self.element.addEventListener('paste', cb, true);
             self.element.addEventListener('cut', cb, true);
+            self.element.addEventListener('change', cb, true);
           });
         }
       }
@@ -118,6 +122,28 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
   HtmlComponent.prototype.__onData = function(target, k) {
     var self = this;
     var change = false;
+    for(var key in self.props) {
+      var item = self.props[key];
+      if(item instanceof Obj) {
+        if(Array.isArray(item.k)) {
+          var i = item.k.indexOf(k);
+          if(i > -1) {
+            var ov = item.v;
+            var nv = item.cb.call(target);
+            if(ov != nv) {
+              self.element.setAttribute(key, nv);
+            }
+          }
+        }
+        else if(k == item.k) {
+          var ov = item.v;
+          var nv = item.cb.call(target);
+          if(ov != nv) {
+            self.element.setAttribute(key, nv);
+          }
+        }
+      }
+    }
     self.children.forEach(function(child) {
       if(child instanceof Obj) {
         if(Array.isArray(child.k)) {

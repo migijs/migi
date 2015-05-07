@@ -6,6 +6,7 @@ var HtmlComponent=function(){var _4=require('./HtmlComponent');return _4.hasOwnP
 var NonVisualComponent=function(){var _5=require('./NonVisualComponent');return _5.hasOwnProperty("NonVisualComponent")?_5.NonVisualComponent:_5.hasOwnProperty("default")?_5.default:_5}();
 var CacheComponent=function(){var _6=require('./CacheComponent');return _6.hasOwnProperty("CacheComponent")?_6.CacheComponent:_6.hasOwnProperty("default")?_6.default:_6}();
 var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("Obj")?_7.Obj:_7.hasOwnProperty("default")?_7.default:_7}();
+var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("Cb")?_8.Cb:_8.hasOwnProperty("default")?_8.default:_8}();
 
 var migi = {
   render: function(component, dom) {
@@ -24,13 +25,13 @@ var migi = {
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _8=[],_9,_10=children[Symbol.iterator]();while(!(_9=_10.next()).done)_8.push(_9.value);return _8}())))();
+      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _9=[],_10,_11=children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _11=[],_12,_13=children[Symbol.iterator]();while(!(_12=_13.next()).done)_11.push(_12.value);return _11}())))();
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _12=[],_13,_14=children[Symbol.iterator]();while(!(_13=_14.next()).done)_12.push(_13.value);return _12}())))();
     }
   },
   Event: Event,
@@ -39,7 +40,8 @@ var migi = {
   NonVisualComponent: NonVisualComponent,
   CacheComponent: CacheComponent,
   HtmlComponent: HtmlComponent,
-  Obj: Obj
+  Obj: Obj,
+  Cb: Cb
 };
 
 if(typeof window !== 'undefined') {!function(){

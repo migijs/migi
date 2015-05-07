@@ -1,6 +1,7 @@
 define(function(require, exports, module){
   function Obj(k, context, cb) {
     this.k = k;
+    this.context = context;
     this.v = cb.call(context);
     this.cb = cb;
   }
