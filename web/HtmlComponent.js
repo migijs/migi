@@ -48,13 +48,28 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
             self.element.addEventListener('input', cb, true);
             self.element.addEventListener('paste', cb, true);
             self.element.addEventListener('cut', cb, true);
-            self.element.addEventListener('change', cb, true);
           });
         }
       }
     });
     res += ' migi-id="' + self.id + '"';
     res += '>';
+    if(self.name == 'textarea') {
+      self.children.forEach(function(child) {
+        if(child instanceof Obj) {
+          self.on(Event.DOM, function() {
+            function cb(e) {
+              child.v = this.value;
+              var key = child.k;
+              child.context[key] = this.value;
+            }
+            self.element.addEventListener('input', cb, true);
+            self.element.addEventListener('paste', cb, true);
+            self.element.addEventListener('cut', cb, true);
+          });
+        }
+      });
+    }
     self.children.forEach(function(child) {
       res += self.renderChild(child);
     });
@@ -131,7 +146,12 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
             var ov = item.v;
             var nv = item.cb.call(target);
             if(ov != nv) {
-              self.element.setAttribute(key, nv);
+              if(key == 'value') {
+                self.element.value = nv;
+              }
+              else {
+                self.element.setAttribute(key, nv);
+              }
             }
           }
         }
@@ -139,7 +159,12 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
           var ov = item.v;
           var nv = item.cb.call(target);
           if(ov != nv) {
-            self.element.setAttribute(key, nv);
+            if(key == 'value') {
+              self.element.value = nv;
+            }
+            else {
+              self.element.setAttribute(key, nv);
+            }
           }
         }
       }
@@ -175,7 +200,12 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       self.children.forEach(function(child) {
         res += self.renderChild(child);
       });
-      this.element.innerHTML = res;
+      if(self.name == 'textarea') {
+        self.element.value = res;
+      }
+      else {
+        self.element.innerHTML = res;
+      }
     }
     //TODO:嵌套html或子组件时处理
   }
