@@ -1,7 +1,7 @@
 class Obj {
-  constructor(k, v, cb) {
+  constructor(k, context, cb) {
     this.k = k;
-    this.v = v;
+    this.v = cb.call(context);
     this.cb = cb;
   }
   toString() {
