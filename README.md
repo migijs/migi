@@ -1,6 +1,6 @@
-# migi
+# A JavaScript library for building user interfaces
 
-A JavaScript library for building user interfaces
+`migi`取自动漫寄生兽主角小右，意指以JSX语法将html模板寄生在js上。
 
 ## INSTALL
 ```
