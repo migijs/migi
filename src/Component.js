@@ -75,12 +75,22 @@ class Component extends Event {
   }
 
   __onDom() {
-    this.htmlComponent.emit(Event.DOM);
-    this.children.forEach(function(child) {
+    var self = this;
+    self.htmlComponent.emit(Event.DOM);
+    self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
       }
     });
+    //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
+    function stopPropagation(e) {
+      e.stopPropagation();
+    }
+    ['click', 'dblclick', 'focus', 'blur', 'change', 'abort', 'error', 'load', 'mousedown', 'mousemove', 'mouseover',
+      'mouseup', 'mouseout', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload', 'DOMActivate',
+      'DOMFocusIn', 'DOMFocusOut'].forEach(function(name) {
+        self.element.addEventListener(name, stopPropagation);
+      });
   }
   __onData(target, k) {
     if(this.htmlComponent) {
