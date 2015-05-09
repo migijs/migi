@@ -9,6 +9,16 @@
   color:#9CF;
 }
 
+.jssc span{
+  display:inline;
+  position:static;
+  width:auto;
+  height:auto;
+  background:none;
+  border-radius:0;
+  transition:none;
+}
+
 .jssc .col{margin-left:12px;color:#CCC;cursor:default;}
 .jssc .col em{position:relative;font-style:normal;}
 .jssc .col em small{position:absolute;top:-10px;left:0;color:#A0A080;}

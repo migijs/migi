@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>JSX</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  var names = ['Alice', 'Emily', 'Kate'];
+
+  migi.render(
+    <div>
+      {
+        names.map(function (name) {
+          return <div>Hello, {name}!</div>
+        })
+      }
+    </div>,
+    document.getElementById('example')
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../lefty/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../index.js', '../../lefty/index.js'], function(jssc) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+  });
+</script>
+</body>
+</html>
