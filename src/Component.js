@@ -10,24 +10,37 @@ class Component extends Event {
     var self = this;
     self.name = name;
     self.props = props;
+    Object.keys(props).forEach(function(k) {
+      if(/^on[A-Z]/.test(k)) {
+        var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+          return Up.toLowerCase();
+        });
+        var cb = props[k];
+        self.on(name, function(...data) {
+          cb(...data);
+        });
+      }
+    });
+
     self.children = children;
-    self.childrenMap = {};
+    self.childMap = {};
     children.forEach(function(child) {
       if(child instanceof Component) {
-        if(self.childrenMap.hasOwnProperty(child.name)) {
-          var temp = self.childrenMap[child.name];
+        if(self.childMap.hasOwnProperty(child.name)) {
+          var temp = self.childMap[child.name];
           if(Array.isArray(temp)) {
             temp.push(child);
           }
           else {
-            self.childrenMap[child.name] = [temp, child];
+            self.childMap[child.name] = [temp, child];
           }
         }
         else {
-          self.childrenMap[child.name] = child;
+          self.childMap[child.name] = child;
         }
       }
     });
+
     self.htmlComponent = null;
     self.element = null;
     self.parent = null;

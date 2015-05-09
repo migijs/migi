@@ -10,24 +10,37 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
     var self = this;
     self.name = name;
     self.props = props;
+    Object.keys(props).forEach(function(k) {
+      if(/^on[A-Z]/.test(k)) {
+        var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+          return Up.toLowerCase();
+        });
+        var cb = props[k];
+        self.on(name, function(data) {
+          data=[].slice.call(arguments, 0);cb.apply(this,[].concat(function(){var _6=[],_7,_8=data[Symbol.iterator]();while(!(_7=_8.next()).done)_6.push(_7.value);return _6}()));
+        });
+      }
+    });
+
     self.children = children;
-    self.childrenMap = {};
+    self.childMap = {};
     children.forEach(function(child) {
       if(child instanceof Component) {
-        if(self.childrenMap.hasOwnProperty(child.name)) {
-          var temp = self.childrenMap[child.name];
+        if(self.childMap.hasOwnProperty(child.name)) {
+          var temp = self.childMap[child.name];
           if(Array.isArray(temp)) {
             temp.push(child);
           }
           else {
-            self.childrenMap[child.name] = [temp, child];
+            self.childMap[child.name] = [temp, child];
           }
         }
         else {
-          self.childrenMap[child.name] = child;
+          self.childMap[child.name] = child;
         }
       }
     });
+
     self.htmlComponent = null;
     self.element = null;
     self.parent = null;
@@ -40,7 +53,7 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
   Component.prototype.render = function() {
     var props = clone(this.props);
     props['migi-name'] = this.name;
-    this.element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _6=[],_7,_8=this.children[Symbol.iterator]();while(!(_7=_8.next()).done)_6.push(_7.value);return _6}())))();
+    this.element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _9=[],_10,_11=this.children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
     return this.element;
   }
   Component.prototype.toString = function() {
