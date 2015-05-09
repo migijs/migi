@@ -136,7 +136,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
   }
   HtmlComponent.prototype.__onData = function(target, k) {
     var self = this;
-    var change = false;
+    //联动属性值
     for(var key in self.props) {
       var item = self.props[key];
       if(item instanceof Obj) {
@@ -169,45 +169,79 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
         }
       }
     }
-    self.children.forEach(function(child) {
+    //联动html和子节点
+    //利用索引更新，子节点只可能为：文本（包括变量）、组件、html
+    //其中只有文本节点需要自己更新，记录其索引
+    //由于渲染时变量和文本同为一个文本节点，因此start为真实DOM的索引
+    var start = 0;
+    var change = [];
+    self.children.forEach(function(child, i) {
+      //文本节点变量
       if(child instanceof Obj) {
         if(Array.isArray(child.k)) {
-          var i = child.k.indexOf(k);
-          if(i > -1) {
-            var ov = child.v;
-            var nv = child.cb.call(target);
-            if(ov != nv) {
-              change = true;
-              child.v = nv;
+          var j = child.k.indexOf(k);
+          if(j > -1) {
+            var res = self.__updateChild(child, target);
+            if(res) {
+              change.push({
+                start: start,
+                index: i
+              });
             }
           }
         }
         else if(k == child.k) {
-          var ov = child.v;
-          var nv = child.cb.call(target);
-          if(ov != nv) {
-            change = true;
-            child.v = nv;
+          var res = self.__updateChild(child, target);
+          if(res) {
+            change.push({
+              start: start,
+              index: i
+            });
           }
         }
       }
+      //递归通知，增加索引
       else if(child instanceof HtmlComponent) {
         child.emit(Event.DATA, target, k);
+        start++;
       }
+      //else其它情况为普通文本节点忽略
     });
-    if(change) {
-      var res = '';
-      self.children.forEach(function(child) {
-        res += self.renderChild(child);
+    if(change.length && self.element) {
+      change.forEach(function(item) {
+        //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
+        for(var first = item.index; first > 0; first--) {
+          var prev = self.children[first - 1];
+          if(!type.isString(prev) && !prev instanceof Obj) {
+            break;
+          }
+        }
+        for(var last = item.index, len = self.children.length; last < len - 1; last++) {
+          var next = self.children[last + 1];
+          if(!type.isString(next) && !next instanceof Obj) {
+            break;
+          }
+        }
+        var res = '';
+        for(var i = first; i <= last; i++) {
+          res += self.renderChild(self.children[i]);
+        }
+        var textNode = self.element.childNodes[item.start];
+        var now = textNode.textContent;
+        if(res != now) {
+          textNode.textContent = res;
+        }
       });
-      if(self.name == 'textarea') {
-        self.element.value = res;
-      }
-      else {
-        self.element.innerHTML = res;
-      }
     }
-    //TODO:嵌套html或子组件时处理
+  }
+  HtmlComponent.prototype.__updateChild = function(child, target) {
+    var ov = child.v;
+    var nv = child.cb.call(target);
+    if(ov != nv) {
+      child.v = nv;
+      return true;
+    }
+    return false;
   }
 Object.keys(Event).forEach(function(k){HtmlComponent[k]=Event[k]});
 
