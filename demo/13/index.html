@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>demo13</title>
+  <link href="../style.css" media="all" rel="stylesheet"/>
+  <script src="../es6-shim.js"></script>
+  <script src="../sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx">class MyComponent extends migi.Component {
+  constructor(...data) {
+    super(...data);
+    this.arr = [];
+  }
+  get list() {
+    return this.arr;
+  }
+  set list(arr) {
+    this.arr = arr;
+  }
+  click() {
+    var num = Math.round(Math.random() * 100);
+    this.list.push(num);
+    this.list = this.list;
+    this.num++;
+  }
+  render() {
+    return (
+      &lt;div>
+        &lt;p onClick={this.click}>点击添加一个随机数&lt;/p>
+        &lt;div>{this.list}&lt;/div>
+      &lt;/div>
+    );
+  }
+}
+
+migi.render(
+  &lt;MyComponent />,
+  '#example'
+);</code></pre>
+<script type="text/jsx">
+  class MyComponent extends migi.Component {
+		constructor(...data) {
+			super(...data);
+      this.arr = [];
+		}
+    get list() {
+      return this.arr;
+    }
+    set list(arr) {
+      this.arr = arr;
+    }
+    click() {
+      var num = Math.round(Math.random() * 100);
+      this.list.push(num);
+      this.list = this.list;
+    }
+    click2() {
+      this.list.pop();
+      this.list = this.list;
+    }
+		render() {
+			return (
+        <div>
+          <p onClick={this.click}>点击添加一个随机数</p>
+          <p onClick={this.click2}>点击删除一个随机数</p>
+          <div>{this.list}</div>
+        </div>
+      );
+		}
+	}
+
+	migi.render(
+    <MyComponent />,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../../lefty/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['../jssc', '../../index.js', '../../../lefty/index.js'], function(jssc) {
+    jssc.exec();
+  });
+</script>
+</body>
+</html>

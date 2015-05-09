@@ -32,7 +32,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
           self.element.addEventListener(name, function(event) {
             var item = self.props[k];
             item.cb.call(item.context, event);
-          }, true);
+          });
         });
       }
       else {
@@ -45,9 +45,9 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
               var key = item.k;
               item.context[key] = this.value;
             }
-            self.element.addEventListener('input', cb, true);
-            self.element.addEventListener('paste', cb, true);
-            self.element.addEventListener('cut', cb, true);
+            self.element.addEventListener('input', cb);
+            self.element.addEventListener('paste', cb);
+            self.element.addEventListener('cut', cb);
           });
         }
       }
@@ -227,6 +227,11 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
           res += self.renderChild(self.children[i]);
         }
         var textNode = self.element.childNodes[item.start];
+        //当仅有1个变量节点且变量为空时DOM无节点
+        if(!textNode) {
+          textNode = document.createTextNode('');
+          self.element.appendChild(textNode);
+        }
         var now = textNode.textContent;
         if(res != now) {
           textNode.textContent = res;
@@ -236,7 +241,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
   }
   HtmlComponent.prototype.__updateChild = function(child, target) {
     var ov = child.v;
-    var nv = child.cb.call(target);
+    var nv = child.cb.call(target).toString();
     if(ov != nv) {
       child.v = nv;
       return true;
