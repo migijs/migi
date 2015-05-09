@@ -36,7 +36,7 @@
     }]
   });
   define('fs', {});
-  seajs.use(['jssc', '../index.js', '../../lefty/index.js'], function(jssc) {
+  seajs.use(['jssc', '../index', 'lefty'], function(jssc) {
     var code = document.querySelector('pre code');
     var jsx = document.querySelector('script[type="text/jsx"]');
     var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
