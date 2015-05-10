@@ -1,21 +1,21 @@
 import lefty from 'lefty';
 import jaw from 'jaw';
 import Event from './Event';
-import type from './type';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
 import CacheComponent from './CacheComponent';
+import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 
 var migi = {
   render(component, dom) {
     var s = component.toString();
-    if(type.isDom(dom)) {
+    if(util.isDom(dom)) {
       dom.innerHTML = s;
     }
-    else if(type.isString(dom)) {
+    else if(util.isString(dom)) {
       document.querySelector(dom).innerHTML = s;
     }
     else {
@@ -25,7 +25,7 @@ var migi = {
     return component;
   },
   createElement(name, props, ...children) {
-    if(type.isString(name)) {
+    if(util.isString(name)) {
       return new VirtualDom(name, props, ...children);
     }
     else {

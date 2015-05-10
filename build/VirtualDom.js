@@ -1,9 +1,8 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
-var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1.default:_1}();
+var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Obj:_2.hasOwnProperty("default")?_2.default:_2}();
 
-!function(){var _4=Object.create(Event.prototype);_4.constructor=VirtualDom;VirtualDom.prototype=_4}();
+!function(){var _3=Object.create(Event.prototype);_3.constructor=VirtualDom;VirtualDom.prototype=_3}();
   function VirtualDom(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     var self = this;
@@ -81,7 +80,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     if(child instanceof VirtualDom || child instanceof Obj) {
       return child.toString();
     }
-    else if(type.isArray(child)) {
+    else if(util.isArray(child)) {
       var res = '';
       child.forEach(function(item) {
         res += self.renderChild(item);
@@ -93,26 +92,26 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     }
   }
 
-  var _5={};_5.name={};_5.name.get =function() {
+  var _4={};_4.name={};_4.name.get =function() {
     return this.__name;
   }
-  _5.props={};_5.props.get =function() {
+  _4.props={};_4.props.get =function() {
     return this.__props;
   }
-  _5.props.set =function(v) {
+  _4.props.set =function(v) {
     this.__props = v;
     this.emit(Event.DATA, 'props');
   }
-  _5.children={};_5.children.get =function() {
+  _4.children={};_4.children.get =function() {
     return this.__children;
   }
-  _5.element={};_5.element.get =function() {
+  _4.element={};_4.element.get =function() {
     return this.__element;
   }
-  _5.parent={};_5.parent.get =function() {
+  _4.parent={};_4.parent.get =function() {
     return this.__parent;
   }
-  _5.id={};_5.id.get =function() {
+  _4.id={};_4.id.get =function() {
     return this.__id;
   }
 
@@ -120,7 +119,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     var self = this;
     self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
-      if(!type.isString(child) && child instanceof Event) {
+      if(!util.isString(child) && child instanceof Event) {
         child.emit(Event.DOM);
       }
     });
@@ -203,13 +202,13 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
         for(var first = item.index; first > 0; first--) {
           var prev = self.children[first - 1];
-          if(!type.isString(prev) && !prev instanceof Obj) {
+          if(!util.isString(prev) && !prev instanceof Obj) {
             break;
           }
         }
         for(var last = item.index, len = self.children.length; last < len - 1; last++) {
           var next = self.children[last + 1];
-          if(!type.isString(next) && !next instanceof Obj) {
+          if(!util.isString(next) && !next instanceof Obj) {
             break;
           }
         }
@@ -239,6 +238,6 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     }
     return false;
   }
-Object.keys(_5).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_5[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
+Object.keys(_4).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
 
 exports.default=VirtualDom;

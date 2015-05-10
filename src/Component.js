@@ -1,5 +1,4 @@
 import Event from './Event';
-import type from './type';
 import VirtualDom from './VirtualDom';
 import util from './util';
 

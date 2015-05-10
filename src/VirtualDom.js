@@ -1,5 +1,4 @@
 import Event from './Event';
-import type from './type';
 import util from './util';
 import Obj from './Obj';
 
@@ -81,7 +80,7 @@ class VirtualDom extends Event {
     if(child instanceof VirtualDom || child instanceof Obj) {
       return child.toString();
     }
-    else if(type.isArray(child)) {
+    else if(util.isArray(child)) {
       var res = '';
       child.forEach(function(item) {
         res += self.renderChild(item);
@@ -120,7 +119,7 @@ class VirtualDom extends Event {
     var self = this;
     self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
-      if(!type.isString(child) && child instanceof Event) {
+      if(!util.isString(child) && child instanceof Event) {
         child.emit(Event.DOM);
       }
     });
@@ -203,13 +202,13 @@ class VirtualDom extends Event {
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
         for(var first = item.index; first > 0; first--) {
           var prev = self.children[first - 1];
-          if(!type.isString(prev) && !prev instanceof Obj) {
+          if(!util.isString(prev) && !prev instanceof Obj) {
             break;
           }
         }
         for(var last = item.index, len = self.children.length; last < len - 1; last++) {
           var next = self.children[last + 1];
-          if(!type.isString(next) && !next instanceof Obj) {
+          if(!util.isString(next) && !next instanceof Obj) {
             break;
           }
         }
