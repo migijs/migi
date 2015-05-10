@@ -107,13 +107,13 @@ class Component extends Event {
         self.element.addEventListener(name, stopPropagation);
       });
   }
-  __onData(target, k) {
+  __onData(k) {
     if(this.virtualDom) {
-      this.virtualDom.emit(Event.DATA, target, k);
+      this.virtualDom.emit(Event.DATA, k);
     }
     this.children.forEach(function(child) {
       if(child instanceof Component) {
-        child.emit(Event.DATA, target, k);
+        child.emit(Event.DATA, k);
       }
     });
   }

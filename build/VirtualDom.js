@@ -35,7 +35,18 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
         });
       }
       else {
-        res += ' ' + k + '="' + self.props[k].toString() + '"';
+        var v = self.props[k];
+        if(v instanceof Obj) {
+          if(util.isString(v.v)) {
+            res += ' ' + k + '="' + v.toString() + '"';
+          }
+          else if(!!v.v) {
+            res += ' ' + k;
+          }
+        }
+        else {
+          res += ' ' + k + '="' + v.toString() + '"';
+        }
         if(k == 'value' && self.name == 'input' && self.props[k] instanceof Obj) {
           var item = self.props[k];
           self.on(Event.DOM, function() {
@@ -98,10 +109,6 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
   _4.props={};_4.props.get =function() {
     return this.__props;
   }
-  _4.props.set =function(v) {
-    this.__props = v;
-    this.emit(Event.DATA, 'props');
-  }
   _4.children={};_4.children.get =function() {
     return this.__children;
   }
@@ -124,37 +131,25 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
       }
     });
   }
-  VirtualDom.prototype.__onData = function(target, k) {
+  VirtualDom.prototype.__onData = function(k) {
     var self = this;
     //联动属性值
     for(var key in self.props) {
       var item = self.props[key];
       if(item instanceof Obj) {
+        var change = false;
         if(Array.isArray(item.k)) {
-          var i = item.k.indexOf(k);
-          if(i > -1) {
-            var ov = item.v;
-            var nv = item.cb.call(target);
-            if(ov != nv) {
-              if(key == 'value') {
-                self.element.value = nv;
-              }
-              else {
-                self.element.setAttribute(key, nv);
-              }
-            }
-          }
+          change = item.k.indexOf(k) > -1;
         }
         else if(k == item.k) {
+          change = true;
+        }
+        if(change) {
           var ov = item.v;
-          var nv = item.cb.call(target);
+          var nv = item.cb.call(item.context);
           if(ov != nv) {
-            if(key == 'value') {
-              self.element.value = nv;
-            }
-            else {
-              self.element.setAttribute(key, nv);
-            }
+            item.v = nv;
+            self.__updateAttr(key, nv);
           }
         }
       }
@@ -164,41 +159,33 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
     //其中只有文本节点需要自己更新，记录其索引
     //由于渲染时变量和文本同为一个文本节点，因此start为真实DOM的索引
     var start = 0;
-    var change = [];
+    var range = [];
     self.children.forEach(function(child, i) {
       //文本节点变量
       if(child instanceof Obj) {
+        var change = false;
         if(Array.isArray(child.k)) {
-          var j = child.k.indexOf(k);
-          if(j > -1) {
-            var res = self.__updateChild(child, target);
-            if(res) {
-              change.push({
-                start: start,
-                index: i
-              });
-            }
-          }
+          change = child.k.indexOf(k) > -1;
         }
         else if(k == child.k) {
-          var res = self.__updateChild(child, target);
-          if(res) {
-            change.push({
-              start: start,
-              index: i
-            });
-          }
+          change = true;
+        }
+        if(change && self.__updateChild(child)) {
+          range.push({
+            start: start,
+            index: i
+          });
         }
       }
       //递归通知，增加索引
       else if(child instanceof VirtualDom) {
-        child.emit(Event.DATA, target, k);
+        child.emit(Event.DATA, k);
         start++;
       }
       //else其它情况为普通文本节点忽略
     });
-    if(change.length && self.element) {
-      change.forEach(function(item) {
+    if(range.length && self.element) {
+      range.forEach(function(item) {
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
         for(var first = item.index; first > 0; first--) {
           var prev = self.children[first - 1];
@@ -229,14 +216,27 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
       });
     }
   }
-  VirtualDom.prototype.__updateChild = function(child, target) {
+  VirtualDom.prototype.__updateChild = function(child) {
     var ov = child.v;
-    var nv = child.cb.call(target).toString();
-    if(ov != nv) {
+    var nv = child.cb.call(child.context);
+    if(!util.equal(ov, nv)) {
       child.v = nv;
       return true;
     }
     return false;
+  }
+  VirtualDom.prototype.__updateAttr = function(k, v) {
+    switch(k) {
+      case 'value':
+      case 'checked':
+      case 'selected':
+        this.element[k] = v;
+        break;
+      case 'class':
+        this.element.className = v;
+      default:
+        this.element.setAttribute(k, v);
+    }
   }
 Object.keys(_4).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
 
