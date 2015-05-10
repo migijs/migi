@@ -1,11 +1,11 @@
-import Event from './Event';
-import type from './type';
-import util from './util';
-import Obj from './Obj';
+var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
+var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
+var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
+var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
 
-class VirtualDom extends Event {
-  constructor(name, props = {}, ...children) {
-    super();
+!function(){var _4=Object.create(Event.prototype);_4.constructor=VirtualDom;VirtualDom.prototype=_4}();
+  function VirtualDom(name, props, children) {
+    if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     var self = this;
     self.__name = name;
     self.__props = props;
@@ -20,7 +20,7 @@ class VirtualDom extends Event {
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
   }
-  toString() {
+  VirtualDom.prototype.toString = function() {
     var self = this;
     var res = '<' + self.name;
     Object.keys(self.props).forEach(function(k) {
@@ -76,7 +76,7 @@ class VirtualDom extends Event {
     res +='</' + self.name + '>';
     return res;
   }
-  renderChild(child) {
+  VirtualDom.prototype.renderChild = function(child) {
     var self = this;
     if(child instanceof VirtualDom || child instanceof Obj) {
       return child.toString();
@@ -93,30 +93,30 @@ class VirtualDom extends Event {
     }
   }
 
-  get name() {
+  var _5={};_5.name={};_5.name.get =function() {
     return this.__name;
   }
-  get props() {
+  _5.props={};_5.props.get =function() {
     return this.__props;
   }
-  set props(v) {
+  _5.props.set =function(v) {
     this.__props = v;
     this.emit(Event.DATA, 'props');
   }
-  get children() {
+  _5.children={};_5.children.get =function() {
     return this.__children;
   }
-  get element() {
+  _5.element={};_5.element.get =function() {
     return this.__element;
   }
-  get parent() {
+  _5.parent={};_5.parent.get =function() {
     return this.__parent;
   }
-  get id() {
+  _5.id={};_5.id.get =function() {
     return this.__id;
   }
 
-  __onDom() {
+  VirtualDom.prototype.__onDom = function() {
     var self = this;
     self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
@@ -125,7 +125,7 @@ class VirtualDom extends Event {
       }
     });
   }
-  __onData(target, k) {
+  VirtualDom.prototype.__onData = function(target, k) {
     var self = this;
     //联动属性值
     for(var key in self.props) {
@@ -230,7 +230,7 @@ class VirtualDom extends Event {
       });
     }
   }
-  __updateChild(child, target) {
+  VirtualDom.prototype.__updateChild = function(child, target) {
     var ov = child.v;
     var nv = child.cb.call(target).toString();
     if(ov != nv) {
@@ -239,6 +239,6 @@ class VirtualDom extends Event {
     }
     return false;
   }
-}
+Object.keys(_5).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_5[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
 
-export default VirtualDom;
+exports.default=VirtualDom;

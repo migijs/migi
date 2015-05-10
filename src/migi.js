@@ -10,7 +10,7 @@ import Obj from './Obj';
 import Cb from './Cb';
 
 var migi = {
-  render: function(component, dom) {
+  render(component, dom) {
     var s = component.toString();
     if(type.isDom(dom)) {
       dom.innerHTML = s;
@@ -24,7 +24,7 @@ var migi = {
     component.emit(Event.DOM);
     return component;
   },
-  createElement: function(name, props, ...children) {
+  createElement(name, props, ...children) {
     if(type.isString(name)) {
       return new VirtualDom(name, props, ...children);
     }

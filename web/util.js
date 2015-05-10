@@ -8,9 +8,18 @@ define(function(require, exports, module){function clone(obj) {
   return o;
 }
 
-exports.default=function(obj) {
-  if(typeof obj != 'object') {
-    return obj;
+var count = 0;
+
+var util = {
+  clone:function(obj) {
+    if(typeof obj != 'object') {
+      return obj;
+    }
+    return clone(obj);
+  },
+  uid:function() {
+    return count++;
   }
-  return clone(obj);
-};});
+};
+
+exports.default=util;});

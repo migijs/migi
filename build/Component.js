@@ -1,8 +1,7 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
-var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("VirtualDom")?_2.VirtualDom:_2.hasOwnProperty("default")?_2.default:_2}();
-var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.uid:_3.hasOwnProperty("default")?_3.default:_3}();
-var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")?_4.clone:_4.hasOwnProperty("default")?_4.default:_4}();
+var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("Event")?_1.Event:_1.hasOwnProperty("default")?_1.default:_1}();
+var type=function(){var _2=require('./type');return _2.hasOwnProperty("type")?_2.type:_2.hasOwnProperty("default")?_2.default:_2}();
+var VirtualDom=function(){var _3=require('./VirtualDom');return _3.hasOwnProperty("VirtualDom")?_3.VirtualDom:_3.hasOwnProperty("default")?_3.default:_3}();
+var util=function(){var _4=require('./util');return _4.hasOwnProperty("util")?_4.util:_4.hasOwnProperty("default")?_4.default:_4}();
 
 !function(){var _5=Object.create(Event.prototype);_5.constructor=Component;Component.prototype=_5}();
   function Component(name, props, children) {
@@ -44,21 +43,20 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
     self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
-    self.__id = uid();
+    self.__id = util.uid();
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    var props = clone(this.props);
+    var _0=this;var props = util.clone(this.props);
     props['migi-name'] = this.name;
-    this.__element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _9=[],_10,_11=this.children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
-    return this.element;
+    return new (Function.prototype.bind.apply(VirtualDom, [null,'div',props].concat(function(){var _9=[],_10,_11=_0.children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
   }
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();
-    this.virtualDom.parent = this;
+    this.virtualDom.__parent = this;
     return this.virtualDom.toString();
   }
 

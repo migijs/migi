@@ -8,9 +8,18 @@ function clone(obj) {
   return o;
 }
 
-exports.default=function(obj) {
-  if(typeof obj != 'object') {
-    return obj;
+var count = 0;
+
+var util = {
+  clone(obj) {
+    if(typeof obj != 'object') {
+      return obj;
+    }
+    return clone(obj);
+  },
+  uid() {
+    return count++;
   }
-  return clone(obj);
 };
+
+export default util;

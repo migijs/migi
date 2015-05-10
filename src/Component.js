@@ -1,8 +1,7 @@
 import Event from './Event';
 import type from './type';
 import VirtualDom from './VirtualDom';
-import uid from './uid';
-import clone from './clone';
+import util from './util';
 
 class Component extends Event {
   constructor(name, props = {}, ...children) {
@@ -44,21 +43,20 @@ class Component extends Event {
     self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
-    self.__id = uid();
+    self.__id = util.uid();
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   render() {
-    var props = clone(this.props);
+    var props = util.clone(this.props);
     props['migi-name'] = this.name;
-    this.__element = new HtmlComponent('div', props, ...this.children);
-    return this.element;
+    return new VirtualDom('div', props, ...this.children);
   }
   toString() {
     this.__virtualDom = this.render();
-    this.virtualDom.parent = this;
+    this.virtualDom.__parent = this;
     return this.virtualDom.toString();
   }
 

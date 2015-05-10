@@ -10,7 +10,7 @@ var Obj=function(){var _8=require('./Obj');return _8.hasOwnProperty("Obj")?_8.Ob
 var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("Cb")?_9.Cb:_9.hasOwnProperty("default")?_9.default:_9}();
 
 var migi = {
-  render: function(component, dom) {
+  render:function(component, dom) {
     var s = component.toString();
     if(type.isDom(dom)) {
       dom.innerHTML = s;
@@ -24,7 +24,7 @@ var migi = {
     component.emit(Event.DOM);
     return component;
   },
-  createElement: function(name, props, children) {
+  createElement:function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
       return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
     }
