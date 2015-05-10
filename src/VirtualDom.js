@@ -88,8 +88,19 @@ class VirtualDom extends Event {
   }
   renderChild(child) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj) {
+    if(child instanceof VirtualDom) {
       return child.toString();
+    }
+    else if(child instanceof Obj) {
+      var v = child.v;
+      if(util.isArray(v)) {
+        var res = '';
+        v.forEach(function(item) {
+          res += self.renderChild(item);
+        });
+        return res;
+      }
+      return v.toString();
     }
     else if(util.isArray(child)) {
       var res = '';
@@ -100,6 +111,15 @@ class VirtualDom extends Event {
     }
     else {
       return child.toString();
+    }
+  }
+  append(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML = s;
+    }
+    else if(dom) {
+      dom.innerHTML = s;
     }
   }
 
@@ -202,7 +222,7 @@ class VirtualDom extends Event {
         var res = '';
         for(var i = first; i <= last; i++) {
           res += self.renderChild(self.children[i]);
-        }
+        }console.log(res)
         var textNode = self.element.childNodes[item.start];
         //当仅有1个变量节点且变量为空时DOM无节点
         if(!textNode) {

@@ -11,28 +11,19 @@ var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("Cb")?_9.Cb:_9
 
 var migi = {
   render:function(component, dom) {
-    var s = component.toString();
-    if(util.isDom(dom)) {
-      dom.innerHTML = s;
-    }
-    else if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else {
-      throw new Error('migi.render missing dom target!');
-    }
+    component.append(dom);
     component.emit(Event.DOM);
     return component;
   },
   createElement:function(name, props, children) {
     children=[].slice.call(arguments, 2);if(util.isString(name)) {
-      return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
+      return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(Array.from(children))));
     }
     else {
       var Klass = name;
       name = name.toString();
       name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _13=[],_14,_15=children[Symbol.iterator]();while(!(_14=_15.next()).done)_13.push(_14.value);return _13}())))();
+      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(Array.from(children))));
     }
   },
   Event:Event,

@@ -11,16 +11,7 @@ import Cb from './Cb';
 
 var migi = {
   render(component, dom) {
-    var s = component.toString();
-    if(util.isDom(dom)) {
-      dom.innerHTML = s;
-    }
-    else if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else {
-      throw new Error('migi.render missing dom target!');
-    }
+    component.append(dom);
     component.emit(Event.DOM);
     return component;
   },

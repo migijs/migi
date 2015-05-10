@@ -1,7 +1,12 @@
+import VirtualDom from './VirtualDom';
 import util from './util';
 
 class Obj {
   constructor(k, context, cb) {
+    //fix循环依赖
+    if(VirtualDom.hasOwnProperty('default')) {
+      VirtualDom = VirtualDom.default;
+    }
     this._k = k;
     this._context = context;
     this.v = cb.call(context);
@@ -23,7 +28,7 @@ class Obj {
     return this._cb;
   }
   toString() {
-    return this.v.toString();
+    return (this.v || '').toString();
   }
 }
 

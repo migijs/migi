@@ -58,6 +58,15 @@ class Component extends Event {
     this.virtualDom.__parent = this;
     return this.virtualDom.toString();
   }
+  append(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML = s;
+    }
+    else if(dom) {
+      dom.innerHTML = s;
+    }
+  }
 
   get name() {
     return this.__name;

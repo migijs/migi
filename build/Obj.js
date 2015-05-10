@@ -1,30 +1,35 @@
-var util=function(){var _0=require('./util');return _0.hasOwnProperty("util")?_0.util:_0.hasOwnProperty("default")?_0.default:_0}();
+var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0.default:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1.default:_1}();
 
 
   function Obj(k, context, cb) {
+    //fix循环依赖
+    if(VirtualDom.hasOwnProperty('default')) {
+      VirtualDom = VirtualDom.default;
+    }
     this._k = k;
     this._context = context;
     this.v = cb.call(context);
     this._cb = cb;
   }
-  var _1={};_1.k={};_1.k.get =function() {
+  var _2={};_2.k={};_2.k.get =function() {
     return this._k;
   }
-  _1.context={};_1.context.get =function() {
+  _2.context={};_2.context.get =function() {
     return this._context;
   }
-  _1.v={};_1.v.get =function() {
+  _2.v={};_2.v.get =function() {
     return this._v;
   }
-  _1.v.set =function(v) {
+  _2.v.set =function(v) {
     this._v = util.clone(v);
   }
-  _1.cb={};_1.cb.get =function() {
+  _2.cb={};_2.cb.get =function() {
     return this._cb;
   }
   Obj.prototype.toString = function() {
-    return this.v.toString();
+    return (this.v || '').toString();
   }
-Object.keys(_1).forEach(function(k){Object.defineProperty(Obj.prototype,k,_1[k])});
+Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 
 exports.default=Obj;

@@ -88,8 +88,19 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
   }
   VirtualDom.prototype.renderChild = function(child) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj) {
+    if(child instanceof VirtualDom) {
       return child.toString();
+    }
+    else if(child instanceof Obj) {
+      var v = child.v;
+      if(util.isArray(v)) {
+        var res = '';
+        v.forEach(function(item) {
+          res += self.renderChild(item);
+        });
+        return res;
+      }
+      return v.toString();
     }
     else if(util.isArray(child)) {
       var res = '';
@@ -100,6 +111,15 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
     }
     else {
       return child.toString();
+    }
+  }
+  VirtualDom.prototype.append = function(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML = s;
+    }
+    else if(dom) {
+      dom.innerHTML = s;
     }
   }
 
@@ -202,7 +222,7 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
         var res = '';
         for(var i = first; i <= last; i++) {
           res += self.renderChild(self.children[i]);
-        }
+        }console.log(res)
         var textNode = self.element.childNodes[item.start];
         //当仅有1个变量节点且变量为空时DOM无节点
         if(!textNode) {

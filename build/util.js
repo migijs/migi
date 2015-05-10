@@ -1,8 +1,19 @@
+var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0.default:_0}();
+
 function clone(obj) {
+  //fixѭ������
+  if(VirtualDom.hasOwnProperty('default')) {
+    VirtualDom = VirtualDom.default;
+  }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      o[i] = typeof obj[i] === 'object' ? clone(obj[i]) : obj[i];
+      if(obj[i] instanceof VirtualDom) {
+        o[i] = obj[i].toString();
+      }
+      else {
+        o[i] = typeof obj[i] === 'object' ? clone(obj[i]) : obj[i];
+      }
     }
   }
   return o;
@@ -20,6 +31,10 @@ function isOrigin(o) {
   return util.isBoolean(o) || util.isNull(o) || util.isNumber(o) || util.isUndefined(o) || util.isString(o);
 }
 function equal(a, b) {
+  //fixѭ������
+  if(VirtualDom.hasOwnProperty('default')) {
+    VirtualDom = VirtualDom.default;
+  }
   if(a === b) {
     return true;
   }
@@ -42,6 +57,12 @@ function equal(a, b) {
   }
   if(util.isDate(a)) {
     if(!util.isDate(b)) {
+      return false;
+    }
+    return a.toString() === b.toString();
+  }
+  if(a instanceof VirtualDom) {
+    if(!b instanceof VirtualDom) {
       return false;
     }
     return a.toString() === b.toString();
@@ -83,9 +104,6 @@ var util = {
   isNull: isType("Null"),
   isBoolean: isType("Boolean"),
   isDate: isType("Date"),
-  isDom: function(obj) {
-    return obj instanceof HTMLElement;
-  },
   equal:equal
 };
 
