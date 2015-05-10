@@ -35,14 +35,14 @@ var migi = {
       return new Klass(name, props, ...children);
     }
   },
-  Event: Event,
+  Event,
   eventBus: Event.mix({}),
-  Component: Component,
-  NonVisualComponent: NonVisualComponent,
-  CacheComponent: CacheComponent,
-  VirtualDom: VirtualDom,
-  Obj: Obj,
-  Cb: Cb,
+  Component,
+  NonVisualComponent,
+  CacheComponent,
+  VirtualDom,
+  Obj,
+  Cb,
   es5: true,
   css: true
 };

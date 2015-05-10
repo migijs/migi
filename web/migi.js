@@ -35,14 +35,14 @@ var migi = {
       return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(function(){var _13=[],_14,_15=children[Symbol.iterator]();while(!(_14=_15.next()).done)_13.push(_14.value);return _13}())))();
     }
   },
-  Event: Event,
+  Event:Event,
   eventBus: Event.mix({}),
-  Component: Component,
-  NonVisualComponent: NonVisualComponent,
-  CacheComponent: CacheComponent,
-  VirtualDom: VirtualDom,
-  Obj: Obj,
-  Cb: Cb,
+  Component:Component,
+  NonVisualComponent:NonVisualComponent,
+  CacheComponent:CacheComponent,
+  VirtualDom:VirtualDom,
+  Obj:Obj,
+  Cb:Cb,
   es5: true,
   css: true
 };
