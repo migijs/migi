@@ -3,7 +3,7 @@ import jaw from 'jaw';
 import Event from './Event';
 import type from './type';
 import Component from './Component';
-import HtmlComponent from './HtmlComponent';
+import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
 import CacheComponent from './CacheComponent';
 import Obj from './Obj';
@@ -26,7 +26,7 @@ var migi = {
   },
   createElement: function(name, props, ...children) {
     if(type.isString(name)) {
-      return new HtmlComponent(name, props, ...children);
+      return new VirtualDom(name, props, ...children);
     }
     else {
       var Klass = name;
@@ -40,7 +40,7 @@ var migi = {
   Component: Component,
   NonVisualComponent: NonVisualComponent,
   CacheComponent: CacheComponent,
-  HtmlComponent: HtmlComponent,
+  VirtualDom: VirtualDom,
   Obj: Obj,
   Cb: Cb,
   es5: true,

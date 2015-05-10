@@ -1,6 +1,6 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
 var type=function(){var _1=require('./type');return _1.hasOwnProperty("type")?_1.type:_1.hasOwnProperty("default")?_1.default:_1}();
-var HtmlComponent=function(){var _2=require('./HtmlComponent');return _2.hasOwnProperty("HtmlComponent")?_2.HtmlComponent:_2.hasOwnProperty("default")?_2.default:_2}();
+var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("VirtualDom")?_2.VirtualDom:_2.hasOwnProperty("default")?_2.default:_2}();
 var uid=function(){var _3=require('./uid');return _3.hasOwnProperty("uid")?_3.uid:_3.hasOwnProperty("default")?_3.default:_3}();
 var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")?_4.clone:_4.hasOwnProperty("default")?_4.default:_4}();
 
@@ -41,7 +41,7 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
       }
     });
 
-    self.__htmlComponent = null;
+    self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
     self.__id = uid();
@@ -57,9 +57,9 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
     return this.element;
   }
   Component.prototype.toString = function() {
-    this.__htmlComponent = this.render();
-    this.htmlComponent.parent = this;
-    return this.htmlComponent.toString();
+    this.__virtualDom = this.render();
+    this.virtualDom.parent = this;
+    return this.virtualDom.toString();
   }
 
   var _12={};_12.name={};_12.name.get =function() {
@@ -78,8 +78,8 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
   _12.childMap={};_12.childMap.get =function() {
     return this.__childMap;
   }
-  _12.htmlComponent={};_12.htmlComponent.get =function() {
-    return this.__htmlComponent;
+  _12.virtualDom={};_12.virtualDom.get =function() {
+    return this.__virtualDom;
   }
   _12.element={};_12.element.get =function() {
     return this.__element;
@@ -93,8 +93,8 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
 
   Component.prototype.__onDom = function() {
     var self = this;
-    self.htmlComponent.emit(Event.DOM);
-    self.__element = self.htmlComponent.element;
+    self.virtualDom.emit(Event.DOM);
+    self.__element = self.virtualDom.element;
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
@@ -111,8 +111,8 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
       });
   }
   Component.prototype.__onData = function(target, k) {
-    if(this.htmlComponent) {
-      this.htmlComponent.emit(Event.DATA, target, k);
+    if(this.virtualDom) {
+      this.virtualDom.emit(Event.DATA, target, k);
     }
     this.children.forEach(function(child) {
       if(child instanceof Component) {

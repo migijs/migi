@@ -3,7 +3,7 @@ var jaw=function(){var _1=require('jaw');return _1.hasOwnProperty("jaw")?_1.jaw:
 var Event=function(){var _2=require('./Event');return _2.hasOwnProperty("Event")?_2.Event:_2.hasOwnProperty("default")?_2.default:_2}();
 var type=function(){var _3=require('./type');return _3.hasOwnProperty("type")?_3.type:_3.hasOwnProperty("default")?_3.default:_3}();
 var Component=function(){var _4=require('./Component');return _4.hasOwnProperty("Component")?_4.Component:_4.hasOwnProperty("default")?_4.default:_4}();
-var HtmlComponent=function(){var _5=require('./HtmlComponent');return _5.hasOwnProperty("HtmlComponent")?_5.HtmlComponent:_5.hasOwnProperty("default")?_5.default:_5}();
+var VirtualDom=function(){var _5=require('./VirtualDom');return _5.hasOwnProperty("VirtualDom")?_5.VirtualDom:_5.hasOwnProperty("default")?_5.default:_5}();
 var NonVisualComponent=function(){var _6=require('./NonVisualComponent');return _6.hasOwnProperty("NonVisualComponent")?_6.NonVisualComponent:_6.hasOwnProperty("default")?_6.default:_6}();
 var CacheComponent=function(){var _7=require('./CacheComponent');return _7.hasOwnProperty("CacheComponent")?_7.CacheComponent:_7.hasOwnProperty("default")?_7.default:_7}();
 var Obj=function(){var _8=require('./Obj');return _8.hasOwnProperty("Obj")?_8.Obj:_8.hasOwnProperty("default")?_8.default:_8}();
@@ -26,7 +26,7 @@ var migi = {
   },
   createElement: function(name, props, children) {
     children=[].slice.call(arguments, 2);if(type.isString(name)) {
-      return new (Function.prototype.bind.apply(HtmlComponent, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
+      return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(function(){var _10=[],_11,_12=children[Symbol.iterator]();while(!(_11=_12.next()).done)_10.push(_11.value);return _10}())))();
     }
     else {
       var Klass = name;
@@ -40,7 +40,7 @@ var migi = {
   Component: Component,
   NonVisualComponent: NonVisualComponent,
   CacheComponent: CacheComponent,
-  HtmlComponent: HtmlComponent,
+  VirtualDom: VirtualDom,
   Obj: Obj,
   Cb: Cb,
   es5: true,

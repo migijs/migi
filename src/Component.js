@@ -1,6 +1,6 @@
 import Event from './Event';
 import type from './type';
-import HtmlComponent from './HtmlComponent';
+import VirtualDom from './VirtualDom';
 import uid from './uid';
 import clone from './clone';
 
@@ -41,7 +41,7 @@ class Component extends Event {
       }
     });
 
-    self.__htmlComponent = null;
+    self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
     self.__id = uid();
@@ -57,9 +57,9 @@ class Component extends Event {
     return this.element;
   }
   toString() {
-    this.__htmlComponent = this.render();
-    this.htmlComponent.parent = this;
-    return this.htmlComponent.toString();
+    this.__virtualDom = this.render();
+    this.virtualDom.parent = this;
+    return this.virtualDom.toString();
   }
 
   get name() {
@@ -78,8 +78,8 @@ class Component extends Event {
   get childMap() {
     return this.__childMap;
   }
-  get htmlComponent() {
-    return this.__htmlComponent;
+  get virtualDom() {
+    return this.__virtualDom;
   }
   get element() {
     return this.__element;
@@ -93,8 +93,8 @@ class Component extends Event {
 
   __onDom() {
     var self = this;
-    self.htmlComponent.emit(Event.DOM);
-    self.__element = self.htmlComponent.element;
+    self.virtualDom.emit(Event.DOM);
+    self.__element = self.virtualDom.element;
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
@@ -111,8 +111,8 @@ class Component extends Event {
       });
   }
   __onData(target, k) {
-    if(this.htmlComponent) {
-      this.htmlComponent.emit(Event.DATA, target, k);
+    if(this.virtualDom) {
+      this.virtualDom.emit(Event.DATA, target, k);
     }
     this.children.forEach(function(child) {
       if(child instanceof Component) {
