@@ -7,15 +7,15 @@ class HtmlComponent extends Event {
   constructor(name, props = {}, ...children) {
     super();
     var self = this;
-    self.name = name;
-    self.props = props;
-    self.children = children;
+    self.__name = name;
+    self.__props = props;
+    self.__children = children;
     children.forEach(function(child) {
       child.parent = self;
     });
-    self.parent = null;
-    self.id = uid();
-    self.element = null;
+    self.__parent = null;
+    self.__id = uid();
+    self.__element = null;
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -92,42 +92,33 @@ class HtmlComponent extends Event {
       return child.toString();
     }
   }
-  closestHtml(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof HtmlComponent) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
-    return document.body;
+
+  get name() {
+    return this.__name;
   }
-  closeset(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof HtmlComponent == false) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
+  get props() {
+    return this.__props;
+  }
+  set props(v) {
+    this.__props = v;
+    this.emit(Event.DATA, 'props');
+  }
+  get children() {
+    return this.__children;
+  }
+  get element() {
+    return this.__element;
+  }
+  get parent() {
+    return this.__parent;
+  }
+  get id() {
+    return this.__id;
   }
 
   __onDom() {
     var self = this;
-    var parent = self.closestHtml();
-    if(parent != document.body) {
-      parent = parent.element;
-    }
-    self.element = parent.querySelector('[migi-id="' + self.id + '"]');
-    if(self.parent && self.parent instanceof HtmlComponent == false) {
-      self.parent.element = self.element;
-    }
+    self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
       if(!type.isString(child) && child instanceof Event) {
         child.emit(Event.DOM);

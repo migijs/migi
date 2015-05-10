@@ -7,15 +7,15 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
   function HtmlComponent(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     var self = this;
-    self.name = name;
-    self.props = props;
-    self.children = children;
+    self.__name = name;
+    self.__props = props;
+    self.__children = children;
     children.forEach(function(child) {
       child.parent = self;
     });
-    self.parent = null;
-    self.id = uid();
-    self.element = null;
+    self.__parent = null;
+    self.__id = uid();
+    self.__element = null;
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -92,42 +92,33 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
       return child.toString();
     }
   }
-  HtmlComponent.prototype.closestHtml = function(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof HtmlComponent) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
-    return document.body;
+
+  var _5={};_5.name={};_5.name.get =function() {
+    return this.__name;
   }
-  HtmlComponent.prototype.closeset = function(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof HtmlComponent == false) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
+  _5.props={};_5.props.get =function() {
+    return this.__props;
+  }
+  _5.props.set =function(v) {
+    this.__props = v;
+    this.emit(Event.DATA, 'props');
+  }
+  _5.children={};_5.children.get =function() {
+    return this.__children;
+  }
+  _5.element={};_5.element.get =function() {
+    return this.__element;
+  }
+  _5.parent={};_5.parent.get =function() {
+    return this.__parent;
+  }
+  _5.id={};_5.id.get =function() {
+    return this.__id;
   }
 
   HtmlComponent.prototype.__onDom = function() {
     var self = this;
-    var parent = self.closestHtml();
-    if(parent != document.body) {
-      parent = parent.element;
-    }
-    self.element = parent.querySelector('[migi-id="' + self.id + '"]');
-    if(self.parent && self.parent instanceof HtmlComponent == false) {
-      self.parent.element = self.element;
-    }
+    self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
       if(!type.isString(child) && child instanceof Event) {
         child.emit(Event.DOM);
@@ -248,6 +239,6 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
     }
     return false;
   }
-Object.keys(Event).forEach(function(k){HtmlComponent[k]=Event[k]});
+Object.keys(_5).forEach(function(k){Object.defineProperty(HtmlComponent.prototype,k,_5[k])});Object.keys(Event).forEach(function(k){HtmlComponent[k]=Event[k]});
 
 exports.default=HtmlComponent;});

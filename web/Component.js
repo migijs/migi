@@ -8,8 +8,8 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
   function Component(name, props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
     var self = this;
-    self.name = name;
-    self.props = props;
+    self.__name = name;
+    self.__props = props;
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
@@ -22,8 +22,8 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
       }
     });
 
-    self.children = children;
-    self.childMap = {};
+    self.__children = children;
+    self.__childMap = {};
     children.forEach(function(child) {
       if(child instanceof Component) {
         if(self.childMap.hasOwnProperty(child.name)) {
@@ -41,10 +41,10 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
       }
     });
 
-    self.htmlComponent = null;
-    self.element = null;
-    self.parent = null;
-    self.id = uid();
+    self.__htmlComponent = null;
+    self.__element = null;
+    self.__parent = null;
+    self.__id = uid();
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -53,43 +53,48 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
   Component.prototype.render = function() {
     var props = clone(this.props);
     props['migi-name'] = this.name;
-    this.element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _9=[],_10,_11=this.children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
+    this.__element = new (Function.prototype.bind.apply(HtmlComponent, [null,'div',props].concat(function(){var _9=[],_10,_11=this.children[Symbol.iterator]();while(!(_10=_11.next()).done)_9.push(_10.value);return _9}())))();
     return this.element;
   }
   Component.prototype.toString = function() {
-    this.htmlComponent = this.render();
+    this.__htmlComponent = this.render();
     this.htmlComponent.parent = this;
     return this.htmlComponent.toString();
   }
-  Component.prototype.closestHtml = function(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof Component == false) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
-    return document.body;
+
+  var _12={};_12.name={};_12.name.get =function() {
+    return this.__name;
   }
-  Component.prototype.closeset = function(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof Component) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
+  _12.props={};_12.props.get =function() {
+    return this.__props;
+  }
+  _12.props.set =function(v) {
+    this.__props = v;
+    this.emit(Event.DATA, 'props');
+  }
+  _12.children={};_12.children.get =function() {
+    return this.__children;
+  }
+  _12.childMap={};_12.childMap.get =function() {
+    return this.__childMap;
+  }
+  _12.htmlComponent={};_12.htmlComponent.get =function() {
+    return this.__htmlComponent;
+  }
+  _12.element={};_12.element.get =function() {
+    return this.__element;
+  }
+  _12.parent={};_12.parent.get =function() {
+    return this.__parent;
+  }
+  _12.id={};_12.id.get =function() {
+    return this.__id;
   }
 
   Component.prototype.__onDom = function() {
     var self = this;
     self.htmlComponent.emit(Event.DOM);
+    self.__element = self.htmlComponent.element;
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
@@ -115,6 +120,6 @@ var clone=function(){var _4=require('./clone');return _4.hasOwnProperty("clone")
       }
     });
   }
-Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
+Object.keys(_12).forEach(function(k){Object.defineProperty(Component.prototype,k,_12[k])});Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
 
 exports.default=Component;});

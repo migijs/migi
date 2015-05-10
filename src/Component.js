@@ -8,8 +8,8 @@ class Component extends Event {
   constructor(name, props = {}, ...children) {
     super();
     var self = this;
-    self.name = name;
-    self.props = props;
+    self.__name = name;
+    self.__props = props;
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
@@ -22,8 +22,8 @@ class Component extends Event {
       }
     });
 
-    self.children = children;
-    self.childMap = {};
+    self.__children = children;
+    self.__childMap = {};
     children.forEach(function(child) {
       if(child instanceof Component) {
         if(self.childMap.hasOwnProperty(child.name)) {
@@ -41,10 +41,10 @@ class Component extends Event {
       }
     });
 
-    self.htmlComponent = null;
-    self.element = null;
-    self.parent = null;
-    self.id = uid();
+    self.__htmlComponent = null;
+    self.__element = null;
+    self.__parent = null;
+    self.__id = uid();
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -53,43 +53,48 @@ class Component extends Event {
   render() {
     var props = clone(this.props);
     props['migi-name'] = this.name;
-    this.element = new HtmlComponent('div', props, ...this.children);
+    this.__element = new HtmlComponent('div', props, ...this.children);
     return this.element;
   }
   toString() {
-    this.htmlComponent = this.render();
+    this.__htmlComponent = this.render();
     this.htmlComponent.parent = this;
     return this.htmlComponent.toString();
   }
-  closestHtml(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof Component == false) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
-    return document.body;
+
+  get name() {
+    return this.__name;
   }
-  closeset(name) {
-    var parent = this.parent;
-    while(parent) {
-      if(parent instanceof Component) {
-        if(name && parent.name == name) {
-          return parent;
-        }
-        return parent;
-      }
-      parent = parent.parent;
-    }
+  get props() {
+    return this.__props;
+  }
+  set props(v) {
+    this.__props = v;
+    this.emit(Event.DATA, 'props');
+  }
+  get children() {
+    return this.__children;
+  }
+  get childMap() {
+    return this.__childMap;
+  }
+  get htmlComponent() {
+    return this.__htmlComponent;
+  }
+  get element() {
+    return this.__element;
+  }
+  get parent() {
+    return this.__parent;
+  }
+  get id() {
+    return this.__id;
   }
 
   __onDom() {
     var self = this;
     self.htmlComponent.emit(Event.DOM);
+    self.__element = self.htmlComponent.element;
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
