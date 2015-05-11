@@ -50,7 +50,6 @@ class Component extends Event {
   //需要被子类覆盖
   render() {
     var props = util.clone(this.props);
-    props['migi-name'] = this.name;
     return new VirtualDom('div', props, ...this.children);
   }
   toString() {
@@ -101,6 +100,7 @@ class Component extends Event {
     var self = this;
     self.virtualDom.emit(Event.DOM);
     self.__element = self.virtualDom.element;
+    self.__element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);

@@ -50,7 +50,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   //需要被子类覆盖
   Component.prototype.render = function() {
     var props = util.clone(this.props);
-    props['migi-name'] = this.name;
     return new (Function.prototype.bind.apply(VirtualDom, [null,'div',props].concat(Array.from(this.children))));
   }
   Component.prototype.toString = function() {
@@ -101,6 +100,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     var self = this;
     self.virtualDom.emit(Event.DOM);
     self.__element = self.virtualDom.element;
+    self.__element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
