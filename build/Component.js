@@ -72,10 +72,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   _4.props={};_4.props.get =function() {
     return this.__props;
   }
-  _4.props.set =function(v) {
-    this.__props = v;
-    this.emit(Event.DATA, 'props');
-  }
   _4.children={};_4.children.get =function() {
     return this.__children;
   }

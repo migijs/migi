@@ -72,10 +72,6 @@ class Component extends Event {
   get props() {
     return this.__props;
   }
-  set props(v) {
-    this.__props = v;
-    this.emit(Event.DATA, 'props');
-  }
   get children() {
     return this.__children;
   }

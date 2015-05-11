@@ -1,10 +1,15 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1.default:_1}();
-var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Obj:_2.hasOwnProperty("default")?_2.default:_2}();
+var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
+var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
+var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
 
-!function(){var _3=Object.create(Event.prototype);_3.constructor=VirtualDom;VirtualDom.prototype=_3}();
+!function(){var _4=Object.create(Event.prototype);_4.constructor=VirtualDom;VirtualDom.prototype=_4}();
   function VirtualDom(name, props, children) {
-    if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
+    //fix循环依赖
+    if(props===void 0)props={};children=[].slice.call(arguments, 2);if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
+    Event.call(this);
     var self = this;
     self.__name = name;
     self.__props = props;
@@ -22,44 +27,20 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
   VirtualDom.prototype.toString = function() {
     var self = this;
     var res = '<' + self.name;
-    Object.keys(self.props).forEach(function(k) {
-      if(/^on[A-Z]/.test(k)) {
+    Object.keys(self.props).forEach(function(prop) {
+      if(/^on[A-Z]/.test(prop)) {
         self.on(Event.DOM, function() {
-          var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+          var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
             return Up.toLowerCase();
           });
           self.element.addEventListener(name, function(event) {
-            var item = self.props[k];
+            var item = self.props[prop];
             item.cb.call(item.context, event);
           });
         });
       }
       else {
-        var v = self.props[k];
-        if(v instanceof Obj) {
-          if(util.isString(v.v)) {
-            res += ' ' + k + '="' + v.toString() + '"';
-          }
-          else if(!!v.v) {
-            res += ' ' + k;
-          }
-        }
-        else {
-          res += ' ' + k + '="' + v.toString() + '"';
-        }
-        if(k == 'value' && self.name == 'input' && self.props[k] instanceof Obj) {
-          var item = self.props[k];
-          self.on(Event.DOM, function() {
-            function cb() {
-              item.v = this.value;
-              var key = item.k;
-              item.context[key] = this.value;
-            }
-            self.element.addEventListener('input', cb);
-            self.element.addEventListener('paste', cb);
-            self.element.addEventListener('cut', cb);
-          });
-        }
+        res += self.renderProp(prop);
       }
     });
     res += ' migi-id="' + self.id + '"';
@@ -85,6 +66,34 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
     });
     res +='</' + self.name + '>';
     return res;
+  }
+  VirtualDom.prototype.renderProp = function(prop) {
+    var self = this;
+    var v = self.props[prop];
+    if(prop == 'value' && self.name == 'input' && self.props[prop] instanceof Obj) {
+      var item = self.props[prop];
+      self.on(Event.DOM, function() {
+        function cb() {
+          item.v = this.value;
+          var key = item.k;
+          item.context[key] = this.value;
+        }
+        self.element.addEventListener('input', cb);
+        self.element.addEventListener('paste', cb);
+        self.element.addEventListener('cut', cb);
+      });
+    }
+    if(v instanceof Obj) {
+      if(util.isString(v.v)) {
+        return ' ' + prop + '="' + v.toString() + '"';
+      }
+      else if(!!v.v) {
+        return ' ' + prop;
+      }
+    }
+    else {
+      return ' ' + prop + '="' + v.toString() + '"';
+    }
   }
   VirtualDom.prototype.renderChild = function(child) {
     var self = this;
@@ -123,22 +132,22 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
     }
   }
 
-  var _4={};_4.name={};_4.name.get =function() {
+  var _5={};_5.name={};_5.name.get =function() {
     return this.__name;
   }
-  _4.props={};_4.props.get =function() {
+  _5.props={};_5.props.get =function() {
     return this.__props;
   }
-  _4.children={};_4.children.get =function() {
+  _5.children={};_5.children.get =function() {
     return this.__children;
   }
-  _4.element={};_4.element.get =function() {
+  _5.element={};_5.element.get =function() {
     return this.__element;
   }
-  _4.parent={};_4.parent.get =function() {
+  _5.parent={};_5.parent.get =function() {
     return this.__parent;
   }
-  _4.id={};_4.id.get =function() {
+  _5.id={};_5.id.get =function() {
     return this.__id;
   }
 
@@ -146,7 +155,7 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
     var self = this;
     self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
-      if(!util.isString(child) && child instanceof Event) {
+      if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
       }
     });
@@ -258,6 +267,6 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("Obj")?_2.Ob
         this.element.setAttribute(k, v);
     }
   }
-Object.keys(_4).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
+Object.keys(_5).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_5[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
 
 exports.default=VirtualDom;

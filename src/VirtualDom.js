@@ -1,9 +1,14 @@
 import Event from './Event';
+import Component from './Component';
 import util from './util';
 import Obj from './Obj';
 
 class VirtualDom extends Event {
   constructor(name, props = {}, ...children) {
+    //fix循环依赖
+    if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
     super();
     var self = this;
     self.__name = name;
@@ -22,44 +27,20 @@ class VirtualDom extends Event {
   toString() {
     var self = this;
     var res = '<' + self.name;
-    Object.keys(self.props).forEach(function(k) {
-      if(/^on[A-Z]/.test(k)) {
+    Object.keys(self.props).forEach(function(prop) {
+      if(/^on[A-Z]/.test(prop)) {
         self.on(Event.DOM, function() {
-          var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+          var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
             return Up.toLowerCase();
           });
           self.element.addEventListener(name, function(event) {
-            var item = self.props[k];
+            var item = self.props[prop];
             item.cb.call(item.context, event);
           });
         });
       }
       else {
-        var v = self.props[k];
-        if(v instanceof Obj) {
-          if(util.isString(v.v)) {
-            res += ' ' + k + '="' + v.toString() + '"';
-          }
-          else if(!!v.v) {
-            res += ' ' + k;
-          }
-        }
-        else {
-          res += ' ' + k + '="' + v.toString() + '"';
-        }
-        if(k == 'value' && self.name == 'input' && self.props[k] instanceof Obj) {
-          var item = self.props[k];
-          self.on(Event.DOM, function() {
-            function cb() {
-              item.v = this.value;
-              var key = item.k;
-              item.context[key] = this.value;
-            }
-            self.element.addEventListener('input', cb);
-            self.element.addEventListener('paste', cb);
-            self.element.addEventListener('cut', cb);
-          });
-        }
+        res += self.renderProp(prop);
       }
     });
     res += ' migi-id="' + self.id + '"';
@@ -85,6 +66,34 @@ class VirtualDom extends Event {
     });
     res +='</' + self.name + '>';
     return res;
+  }
+  renderProp(prop) {
+    var self = this;
+    var v = self.props[prop];
+    if(prop == 'value' && self.name == 'input' && self.props[prop] instanceof Obj) {
+      var item = self.props[prop];
+      self.on(Event.DOM, function() {
+        function cb() {
+          item.v = this.value;
+          var key = item.k;
+          item.context[key] = this.value;
+        }
+        self.element.addEventListener('input', cb);
+        self.element.addEventListener('paste', cb);
+        self.element.addEventListener('cut', cb);
+      });
+    }
+    if(v instanceof Obj) {
+      if(util.isString(v.v)) {
+        return ' ' + prop + '="' + v.toString() + '"';
+      }
+      else if(!!v.v) {
+        return ' ' + prop;
+      }
+    }
+    else {
+      return ' ' + prop + '="' + v.toString() + '"';
+    }
   }
   renderChild(child) {
     var self = this;
@@ -146,7 +155,7 @@ class VirtualDom extends Event {
     var self = this;
     self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
     self.children.forEach(function(child) {
-      if(!util.isString(child) && child instanceof Event) {
+      if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
       }
     });
