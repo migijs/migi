@@ -9,9 +9,6 @@ var Component=function(){var _0=require('./Component');return _0.hasOwnProperty(
   NonVisualComponent.prototype.toString = function() {
     return '';
   }
-
-  //没有dom
-  NonVisualComponent.prototype.__onDom = function() {}
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
 exports.default=NonVisualComponent;

@@ -10,7 +10,7 @@ class CachedComponent extends Component {
   __onData(target, k) {
     var self = this;
     function cb() {
-      self.htmlComponent.emit(Event.DATA, target, k);
+      self.virtualDom.emit(Event.DATA, target, k);
       self.children.forEach(function(child) {
         if(child instanceof Component) {
           child.emit(Event.DATA, target, k);
