@@ -49,8 +49,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    var props = util.clone(this.props);
-    return new (Function.prototype.bind.apply(VirtualDom, [null,'div',props].concat(Array.from(this.children))));
+    return new (Function.prototype.bind.apply(VirtualDom, [null,'div',this.props].concat(Array.from(this.children))));
   }
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();

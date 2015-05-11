@@ -49,8 +49,7 @@ class Component extends Event {
   }
   //需要被子类覆盖
   render() {
-    var props = util.clone(this.props);
-    return new VirtualDom('div', props, ...this.children);
+    return new VirtualDom('div', this.props, ...this.children);
   }
   toString() {
     this.__virtualDom = this.render();
