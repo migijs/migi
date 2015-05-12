@@ -49,7 +49,17 @@ function getType(v) {
     return this._cb;
   }
   Obj.prototype.toString = function() {
-    return (this.v || '').toString();
+    var self = this;
+    if(Array.isArray(self.v)) {
+      var res = '';
+      self.v.forEach(function(item) {
+        res += item instanceof VirtualDom ? item.toString() : util.escape(item.toString());
+      });
+      return res;
+    }
+    var s = util.isUndefined(this.v) ? '' : this.v;
+    //jsx中的js变量如为文本则需html转义作为innerHTML
+    return this.type == Obj.TEXT ? util.escape(s.toString()) : s.toString();
   }
 Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 

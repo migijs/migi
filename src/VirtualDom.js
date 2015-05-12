@@ -97,20 +97,8 @@ class VirtualDom extends Event {
   }
   __renderChild(child) {
     var self = this;
-    if(child instanceof VirtualDom) {
+    if(child instanceof VirtualDom || child instanceof Obj) {
       return child.toString();
-    }
-    else if(child instanceof Obj) {
-      var v = child.v;
-      if(util.isArray(v)) {
-        var res = '';
-        v.forEach(function(item) {
-          res += self.__renderChild(item);
-        });
-        return res;
-      }
-      //jsx中的js变量如为文本则需html转义作为innerHTML
-      return child.type == Obj.TEXT ? util.escape(child.toString()) : child.toString();
     }
     else if(util.isArray(child)) {
       var res = '';
