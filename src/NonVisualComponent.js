@@ -9,6 +9,9 @@ class NonVisualComponent extends Component {
   toString() {
     return '';
   }
+
+  //没有dom
+  __onDom() {}
 }
 
 export default NonVisualComponent;

@@ -9,6 +9,9 @@ define(function(require, exports, module){var Component=function(){var _0=requir
   NonVisualComponent.prototype.toString = function() {
     return '';
   }
+
+  //没有dom
+  NonVisualComponent.prototype.__onDom = function() {}
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
 exports.default=NonVisualComponent;});

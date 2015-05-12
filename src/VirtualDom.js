@@ -97,7 +97,7 @@ class VirtualDom extends Event {
   }
   __renderChild(child) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj) {
+    if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
       return child.toString();
     }
     else if(util.isArray(child)) {

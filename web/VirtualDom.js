@@ -97,7 +97,7 @@ var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Ob
   }
   VirtualDom.prototype.__renderChild = function(child) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj) {
+    if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
       return child.toString();
     }
     else if(util.isArray(child)) {

@@ -19,6 +19,18 @@ function getType(v) {
     return Obj.TEXT;
   }
 }
+function joinArray(arr) {
+  var res = '';
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      res += joinArray(item);
+    }
+    else {
+      res += item instanceof VirtualDom ? item.toString() : util.escape(item.toString());
+    }
+  });
+  return res;
+}
 
 class Obj {
   constructor(k, context, cb) {
@@ -51,11 +63,7 @@ class Obj {
   toString() {
     var self = this;
     if(Array.isArray(self.v)) {
-      var res = '';
-      self.v.forEach(function(item) {
-        res += item instanceof VirtualDom ? item.toString() : util.escape(item.toString());
-      });
-      return res;
+      return joinArray(self.v);
     }
     var s = util.isUndefined(this.v) ? '' : this.v;
     //jsx中的js变量如为文本则需html转义作为innerHTML
