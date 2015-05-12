@@ -40,7 +40,7 @@ class VirtualDom extends Event {
         });
       }
       else {
-        res += self.renderProp(prop);
+        res += self.__renderProp(prop);
       }
     });
     res += ' migi-id="' + self.id + '"';
@@ -62,12 +62,12 @@ class VirtualDom extends Event {
       });
     }
     self.children.forEach(function(child) {
-      res += self.renderChild(child);
+      res += self.__renderChild(child);
     });
     res +='</' + self.name + '>';
     return res;
   }
-  renderProp(prop) {
+  __renderProp(prop) {
     var self = this;
     var v = self.props[prop];
     if(prop == 'value' && self.name == 'input' && self.props[prop] instanceof Obj) {
@@ -95,7 +95,7 @@ class VirtualDom extends Event {
       return ' ' + prop + '="' + v.toString() + '"';
     }
   }
-  renderChild(child) {
+  __renderChild(child) {
     var self = this;
     if(child instanceof VirtualDom) {
       return child.toString();
@@ -105,23 +105,33 @@ class VirtualDom extends Event {
       if(util.isArray(v)) {
         var res = '';
         v.forEach(function(item) {
-          res += self.renderChild(item);
+          res += self.__renderChild(item);
         });
         return res;
       }
-      return v.toString();
+      //jsx中的js变量如为文本则需html转义作为innerHTML
+      return child.type == Obj.TEXT ? util.escape(child.toString()) : child.toString();
     }
     else if(util.isArray(child)) {
       var res = '';
       child.forEach(function(item) {
-        res += self.renderChild(item);
+        res += self.__renderChild(item);
       });
       return res;
     }
     else {
-      return child.toString();
+      return util.escape(child.toString());
     }
   }
+  __reRend() {
+    var self = this;
+    var res = '';
+    self.children.forEach(function(child) {
+      res += self.__renderChild(child);
+    });
+    self.element.innerHTML = res;
+  }
+
   append(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
@@ -211,7 +221,7 @@ class VirtualDom extends Event {
         child.emit(Event.DATA, k);
         start++;
       }
-      //else其它情况为普通文本节点忽略
+      //else其它情况为普通静态文本节点忽略
     });
     if(range.length && self.element) {
       range.forEach(function(item) {
@@ -230,8 +240,8 @@ class VirtualDom extends Event {
         }
         var res = '';
         for(var i = first; i <= last; i++) {
-          res += self.renderChild(self.children[i]);
-        }console.log(res)
+          res += self.__renderChild(self.children[i]);
+        }
         var textNode = self.element.childNodes[item.start];
         //当仅有1个变量节点且变量为空时DOM无节点
         if(!textNode) {
