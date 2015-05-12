@@ -2,6 +2,7 @@ import Event from './Event';
 import Component from './Component';
 import util from './util';
 import Obj from './Obj';
+import single from './single';
 
 class VirtualDom extends Event {
   constructor(name, props = {}, ...children) {
@@ -95,23 +96,15 @@ class VirtualDom extends Event {
       return ' ' + prop + '="' + v.toString() + '"';
     }
   }
-  __renderChild(child) {
-    var self = this;
+  __renderChild(child, noEscape) {
     if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
-      return child.toString();
-    }
-    else if(util.isArray(child)) {
-      var res = '';
-      child.forEach(function(item) {
-        res += self.__renderChild(item);
-      });
-      return res;
+      return child.toString(noEscape);
     }
     else {
-      return util.escape(child.toString());
+      return noEscape ? child.toString() : util.escape(child.toString());
     }
   }
-  __reRend() {
+  __reRender() {
     var self = this;
     var res = '';
     self.children.forEach(function(child) {
@@ -181,27 +174,41 @@ class VirtualDom extends Event {
         }
       }
     }
-    //联动html和子节点
-    //利用索引更新，子节点只可能为：文本（包括变量）、组件、html
-    //其中只有文本节点需要自己更新，记录其索引
-    //由于渲染时变量和文本同为一个文本节点，因此start为真实DOM的索引
+    //利用索引更新，子节点只可能为：文本（包括变量）、组件、VirtualDom
+    //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
+    //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引
     var start = 0;
     var range = [];
-    self.children.forEach(function(child, i) {
-      //文本节点变量
+    for(var index = 0, len = self.children.length; index < len; index++) {
+      var child = self.children[index];
+      //节点变量，可能为文本，也可能为VirtualDom，以及混合的数组
       if(child instanceof Obj) {
         var change = false;
+        var ot = child.type;
+        if(ot == Obj.VIRTUALDOM) {
+          start++;
+        }
+        else if(index > 0
+          && (self.children[index - 1] instanceof VirtualDom
+          || self.children[index - 1] instanceof Obj
+          && self.children[index - 1].type == Obj.VIRTUALDOM)) {
+          start++;
+        }
         if(Array.isArray(child.k)) {
           change = child.k.indexOf(k) > -1;
         }
         else if(k == child.k) {
           change = true;
         }
+        //当可能发生变化时进行比对
         if(change && self.__updateChild(child)) {
-          range.push({
-            start: start,
-            index: i
-          });
+          //类型一旦发生变化，直接父层重绘
+          if(ot != child.type || child.type == Obj.VIRTUALDOM) {
+            self.__reRender();
+            return;
+          }
+          //记录真实索引和child索引
+          range.push({ start, index });
         }
       }
       //递归通知，增加索引
@@ -210,31 +217,37 @@ class VirtualDom extends Event {
         start++;
       }
       //else其它情况为普通静态文本节点忽略
-    });
+    }
     if(range.length && self.element) {
+      self.__merge(range);
       range.forEach(function(item) {
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
         for(var first = item.index; first > 0; first--) {
           var prev = self.children[first - 1];
-          if(!util.isString(prev) && !prev instanceof Obj) {
+          if(!util.isString(prev)
+            && (!prev instanceof Obj
+              || prev.type != Obj.TEXT)) {
             break;
           }
         }
         for(var last = item.index, len = self.children.length; last < len - 1; last++) {
           var next = self.children[last + 1];
-          if(!util.isString(next) && !next instanceof Obj) {
+          if(!util.isString(next)
+            && (!next instanceof Obj
+              || next.type != Obj.TEXT)) {
             break;
           }
         }
         var res = '';
         for(var i = first; i <= last; i++) {
-          res += self.__renderChild(self.children[i]);
+          res += self.__renderChild(self.children[i], true);
         }
         var textNode = self.element.childNodes[item.start];
         //当仅有1个变量节点且变量为空时DOM无节点
         if(!textNode) {
           textNode = document.createTextNode('');
           self.element.appendChild(textNode);
+          //TODO:可能不是第一个
         }
         var now = textNode.textContent;
         if(res != now) {
@@ -263,6 +276,17 @@ class VirtualDom extends Event {
         this.element.className = v;
       default:
         this.element.setAttribute(k, v);
+    }
+  }
+  __merge(range) {
+    //合并相邻更新的文本节点
+    for(var i = 0, len = range.length; i < len; i++) {
+      var now = range[i];
+      var next = range[i + 1];
+      if(next && now.start == next.start && now.index == next.index - 1) {
+        range.splice(i, 1);
+        i--;
+      }
     }
   }
 }

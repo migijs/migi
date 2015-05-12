@@ -22,7 +22,7 @@ var uid = 0;
 
 function isType(type) {
   return function(obj) {
-    return {}.toString.call(obj) == "[object " + type + "]";
+    return {}.toString.call(obj) == '[object ' + type + ']';
   }
 }
 
@@ -88,15 +88,15 @@ var util = {
   uid() {
     return uid++;
   },
-  isObject: isType("Object"),
-  isString: isType("String"),
-  isArray: Array.isArray || isType("Array"),
-  isFunction: isType("Function"),
-  isUndefined: isType("Undefined"),
-  isNumber: isType("Number"),
-  isNull: isType("Null"),
-  isBoolean: isType("Boolean"),
-  isDate: isType("Date"),
+  isObject: isType('Object'),
+  isString: isType('String'),
+  isArray: Array.isArray || isType('Array'),
+  isFunction: isType('Function'),
+  isUndefined: isType('Undefined'),
+  isNumber: isType('Number'),
+  isNull: isType('Null'),
+  isBoolean: isType('Boolean'),
+  isDate: isType('Date'),
   equal(a, b) {
     //fix循环依赖
     if(VirtualDom.hasOwnProperty('default')) {
@@ -105,8 +105,15 @@ var util = {
     return equal(a, b);
   },
   escape: function(s) {
-    //TODO:escape html
-    return s.replace(/</g, '&lt;');
+    var xmlchar = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      ' ': '&nbsp;'
+    };
+    return s.replace(/[<>&]/g, function($1){
+      return xmlchar[$1];
+    });
   }
 };
 

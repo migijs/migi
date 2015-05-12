@@ -19,14 +19,14 @@ function getType(v) {
     return Obj.TEXT;
   }
 }
-function joinArray(arr) {
+function joinArray(arr, unEscape) {
   var res = '';
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
     else {
-      res += item instanceof VirtualDom ? item.toString() : util.escape(item.toString());
+      res += item instanceof VirtualDom || unEscape ? item.toString() : util.escape(item.toString());
     }
   });
   return res;
@@ -40,9 +40,9 @@ function joinArray(arr) {
     }
     this._k = k;
     this._context = context;
+    this.type = null;
     this.v = cb.call(context);
     this._cb = cb;
-    this.type = null;
   }
   var _2={};_2.k={};_2.k.get =function() {
     return this._k;
@@ -60,14 +60,14 @@ function joinArray(arr) {
   _2.cb={};_2.cb.get =function() {
     return this._cb;
   }
-  Obj.prototype.toString = function() {
+  Obj.prototype.toString = function(unEscape) {
     var self = this;
     if(Array.isArray(self.v)) {
-      return joinArray(self.v);
+      return joinArray(self.v, unEscape);
     }
-    var s = util.isUndefined(this.v) ? '' : this.v;
+    var s = util.isUndefined(self.v) ? '' : self.v;
     //jsx中的js变量如为文本则需html转义作为innerHTML
-    return this.type == Obj.TEXT ? util.escape(s.toString()) : s.toString();
+    return self.type == Obj.TEXT && !unEscape ? util.escape(s.toString()) : s.toString();
   }
 Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 

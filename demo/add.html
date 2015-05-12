@@ -37,6 +37,13 @@
           <p onClick={this.click}>点击添加一个随机数</p>
           <p onClick={this.click2}>点击删除一个随机数</p>
           <div>{this.list}</div>
+          <ol>
+            {
+              this.list.map(function(item) {
+                return <li>item</li>;
+              })
+            }
+          </ol>
         </div>
       );
     }
