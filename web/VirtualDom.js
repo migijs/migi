@@ -4,11 +4,34 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
 var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
 var single=function(){var _4=require('./single');return _4.hasOwnProperty("single")?_4.single:_4.hasOwnProperty("default")?_4.default:_4}();
 
+var SELF_CLOSE = {
+  'img': true,
+  'meta': true,
+  'link': true,
+  'br': true,
+  'basefont': true,
+  'base': true,
+  'col': true,
+  'embed': true,
+  'frame': true,
+  'hr': true,
+  'input': true,
+  'keygen': true,
+  'area': true,
+  'param': true,
+  'source': true,
+  'track': true
+};
+
 !function(){var _5=Object.create(Event.prototype);_5.constructor=VirtualDom;VirtualDom.prototype=_5}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};children=[].slice.call(arguments, 2);if(Component.hasOwnProperty('default')) {
       Component = Component.default;
+    }
+    //自闭和标签不能有children
+    if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
+      throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
     Event.call(this);
     var self = this;
@@ -21,6 +44,7 @@ var single=function(){var _4=require('./single');return _4.hasOwnProperty("singl
     self.__parent = null;
     self.__id = util.uid();
     self.__element = null;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -45,6 +69,10 @@ var single=function(){var _4=require('./single');return _4.hasOwnProperty("singl
       }
     });
     res += ' migi-id="' + self.id + '"';
+    //自闭和标签特殊处理
+    if(self.__selfClose) {
+      return res + '/>';
+    }
     res += '>';
     if(self.name == 'textarea') {
       self.children.forEach(function(child) {

@@ -4,11 +4,34 @@ import util from './util';
 import Obj from './Obj';
 import single from './single';
 
+const SELF_CLOSE = {
+  'img': true,
+  'meta': true,
+  'link': true,
+  'br': true,
+  'basefont': true,
+  'base': true,
+  'col': true,
+  'embed': true,
+  'frame': true,
+  'hr': true,
+  'input': true,
+  'keygen': true,
+  'area': true,
+  'param': true,
+  'source': true,
+  'track': true
+};
+
 class VirtualDom extends Event {
   constructor(name, props = {}, ...children) {
     //fix循环依赖
     if(Component.hasOwnProperty('default')) {
       Component = Component.default;
+    }
+    //自闭和标签不能有children
+    if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
+      throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
     super();
     var self = this;
@@ -21,6 +44,7 @@ class VirtualDom extends Event {
     self.__parent = null;
     self.__id = util.uid();
     self.__element = null;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
 
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
@@ -45,6 +69,10 @@ class VirtualDom extends Event {
       }
     });
     res += ' migi-id="' + self.id + '"';
+    //自闭和标签特殊处理
+    if(self.__selfClose) {
+      return res + '/>';
+    }
     res += '>';
     if(self.name == 'textarea') {
       self.children.forEach(function(child) {
