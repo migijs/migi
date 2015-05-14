@@ -140,7 +140,7 @@ class VirtualDom extends Event {
     });
     self.element.innerHTML = res;
     //重新触发DOM
-    __childrenDom();
+    self.__childrenDom();
   }
 
   append(dom) {
@@ -234,8 +234,8 @@ class VirtualDom extends Event {
         }
         //当可能发生变化时进行比对
         if(change && self.__updateChild(child)) {
-          //类型一旦发生变化，直接父层重绘
-          if(ot != child.type || child.type == Obj.VIRTUALDOM) {
+          //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+          if(ot != child.type || child.type != Obj.TEXT) {
             self.__reRender();
             return;
           }
