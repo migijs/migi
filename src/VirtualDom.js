@@ -139,6 +139,8 @@ class VirtualDom extends Event {
       res += self.__renderChild(child);
     });
     self.element.innerHTML = res;
+    //重新触发DOM
+    __childrenDom();
   }
 
   append(dom) {
@@ -171,9 +173,11 @@ class VirtualDom extends Event {
   }
 
   __onDom() {
-    var self = this;
-    self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
-    self.children.forEach(function(child) {
+    this.__element = document.body.querySelector('[migi-id="' + this.id + '"]');
+    this.__childrenDom();
+  }
+  __childrenDom() {
+    this.children.forEach(function(child) {
       if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
       }

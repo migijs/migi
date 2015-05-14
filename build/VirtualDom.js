@@ -139,6 +139,8 @@ var SELF_CLOSE = {
       res += self.__renderChild(child);
     });
     self.element.innerHTML = res;
+    //重新触发DOM
+    __childrenDom();
   }
 
   VirtualDom.prototype.append = function(dom) {
@@ -171,9 +173,11 @@ var SELF_CLOSE = {
   }
 
   VirtualDom.prototype.__onDom = function() {
-    var self = this;
-    self.__element = document.body.querySelector('[migi-id="' + self.id + '"]');
-    self.children.forEach(function(child) {
+    this.__element = document.body.querySelector('[migi-id="' + this.id + '"]');
+    this.__childrenDom();
+  }
+  VirtualDom.prototype.__childrenDom = function() {
+    this.children.forEach(function(child) {
       if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
       }
