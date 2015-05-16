@@ -294,7 +294,7 @@ var SELF_CLOSE = {
         }
       }
       //递归通知，增加索引
-      else if(child instanceof VirtualDom ||  child instanceof Component) {
+      else if(child instanceof VirtualDom) {
         child.emit(Event.DATA, k);
         start++;
         //静态文本节点

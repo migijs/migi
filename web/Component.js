@@ -8,6 +8,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     var self = this;
     self.__name = name;
     self.__props = props;
+    self.__style = null;
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
@@ -56,7 +57,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     this.virtualDom.__parent = this;
     return this.virtualDom.toString();
   }
-  Component.prototype.append = function(dom) {
+  Component.prototype.inTo = function(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
       document.querySelector(dom).innerHTML = s;
@@ -103,7 +104,9 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     });
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
-      e.stopPropagation();
+      if(e.target != self.element) {
+        e.stopPropagation();
+      }
     }
     ['click', 'dblclick', 'focus', 'blur', 'change', 'abort', 'error', 'load', 'mousedown', 'mousemove', 'mouseover',
       'mouseup', 'mouseout', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload', 'DOMActivate',
@@ -115,11 +118,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);
     }
-    this.children.forEach(function(child) {
-      if(child instanceof Component) {
-        child.emit(Event.DATA, k);
-      }
-    });
   }
 Object.keys(_4).forEach(function(k){Object.defineProperty(Component.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
 

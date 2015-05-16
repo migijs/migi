@@ -11,7 +11,7 @@ import Cb from './Cb';
 
 var migi = {
   render(component, dom) {
-    component.append(dom);
+    component.inTo(dom);
     component.emit(Event.DOM);
     return component;
   },
@@ -36,7 +36,7 @@ var migi = {
   Cb
 };
 
-if(typeof window !== 'undefined') {
+if(!util.isUndefined(window)) {
   window.migi = migi;
 }
 

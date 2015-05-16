@@ -2,13 +2,13 @@ define(function(require, exports, module){var Component=function(){var _0=requir
 var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
 
 function clone(obj) {
-  if(obj instanceof VirtualDom || obj instanceof VirtualDom) {
+  if(obj instanceof Component || obj instanceof VirtualDom) {
     return obj;
   }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      if(obj[i] instanceof VirtualDom) {
+      if(obj[i] instanceof Component || obj[i] instanceof VirtualDom) {
         o[i] = obj[i];
       }
       else if(util.isDate(obj[i])) {

@@ -11,7 +11,7 @@ var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("Cb")?_9.Cb:_9
 
 var migi = {
   render:function(component, dom) {
-    component.append(dom);
+    component.inTo(dom);
     component.emit(Event.DOM);
     return component;
   },
@@ -36,7 +36,7 @@ var migi = {
   Cb:Cb
 };
 
-if(typeof window !== 'undefined') {
+if(!util.isUndefined(window)) {
   window.migi = migi;
 }
 

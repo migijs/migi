@@ -2,13 +2,13 @@ import Component from './Component';
 import VirtualDom from './VirtualDom';
 
 function clone(obj) {
-  if(obj instanceof VirtualDom || obj instanceof VirtualDom) {
+  if(obj instanceof Component || obj instanceof VirtualDom) {
     return obj;
   }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      if(obj[i] instanceof VirtualDom) {
+      if(obj[i] instanceof Component || obj[i] instanceof VirtualDom) {
         o[i] = obj[i];
       }
       else if(util.isDate(obj[i])) {

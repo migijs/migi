@@ -8,6 +8,7 @@ class Component extends Event {
     var self = this;
     self.__name = name;
     self.__props = props;
+    self.__style = null;
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
@@ -56,7 +57,7 @@ class Component extends Event {
     this.virtualDom.__parent = this;
     return this.virtualDom.toString();
   }
-  append(dom) {
+  inTo(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
       document.querySelector(dom).innerHTML = s;
@@ -103,7 +104,9 @@ class Component extends Event {
     });
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
-      e.stopPropagation();
+      if(e.target != self.element) {
+        e.stopPropagation();
+      }
     }
     ['click', 'dblclick', 'focus', 'blur', 'change', 'abort', 'error', 'load', 'mousedown', 'mousemove', 'mouseover',
       'mouseup', 'mouseout', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload', 'DOMActivate',
@@ -115,11 +118,6 @@ class Component extends Event {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);
     }
-    this.children.forEach(function(child) {
-      if(child instanceof Component) {
-        child.emit(Event.DATA, k);
-      }
-    });
   }
 }
 
