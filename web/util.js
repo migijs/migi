@@ -1,6 +1,10 @@
-define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0.default:_0}();
+define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0.default:_0}();
+var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
 
 function clone(obj) {
+  if(obj instanceof VirtualDom || obj instanceof VirtualDom) {
+    return obj;
+  }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
@@ -77,6 +81,9 @@ function equal(a, b) {
 var util = {
   clone:function(obj) {
     //fix循环依赖
+    if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
     if(VirtualDom.hasOwnProperty('default')) {
       VirtualDom = VirtualDom.default;
     }
@@ -99,6 +106,9 @@ var util = {
   isDate: isType('Date'),
   equal:function(a, b) {
     //fix循环依赖
+    if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
     if(VirtualDom.hasOwnProperty('default')) {
       VirtualDom = VirtualDom.default;
     }

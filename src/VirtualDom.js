@@ -2,7 +2,7 @@ import Event from './Event';
 import Component from './Component';
 import util from './util';
 import Obj from './Obj';
-import single from './single';
+import Cb from './Cb';
 
 const SELF_CLOSE = {
   'img': true,
@@ -29,7 +29,7 @@ class VirtualDom extends Event {
     if(Component.hasOwnProperty('default')) {
       Component = Component.default;
     }
-    //自闭和标签不能有children
+    //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
@@ -60,7 +60,12 @@ class VirtualDom extends Event {
           });
           self.element.addEventListener(name, function(event) {
             var item = self.props[prop];
-            item.cb.call(item.context, event);
+            if(item instanceof Cb) {
+              item.cb.call(item.context, event);
+            }
+            else {
+              item(event);
+            }
           });
         });
       }
@@ -69,7 +74,7 @@ class VirtualDom extends Event {
       }
     });
     res += ' migi-id="' + self.id + '"';
-    //自闭和标签特殊处理
+    //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
     }
@@ -83,9 +88,9 @@ class VirtualDom extends Event {
               var key = child.k;
               child.context[key] = this.value;
             }
-            self.element.addEventListener('input', cb, true);
-            self.element.addEventListener('paste', cb, true);
-            self.element.addEventListener('cut', cb, true);
+            self.element.addEventListener('input', cb);
+            self.element.addEventListener('paste', cb);
+            self.element.addEventListener('cut', cb);
           });
         }
       });
@@ -124,12 +129,20 @@ class VirtualDom extends Event {
       return ' ' + prop + '="' + v.toString() + '"';
     }
   }
-  __renderChild(child, noEscape) {
+  __renderChild(child, unEscape) {
+    var self = this;
     if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
-      return child.toString(noEscape);
+      return child.toString(unEscape);
+    }
+    else if(Array.isArray(child)) {
+      var res = '';
+      child.forEach(function(item) {
+        res += self.__renderChild(item, unEscape);
+      });
+      return res;
     }
     else {
-      return noEscape ? child.toString() : util.escape(child.toString());
+      return unEscape ? child.toString() : util.escape(child.toString());
     }
   }
   __reRender() {
@@ -206,26 +219,63 @@ class VirtualDom extends Event {
         }
       }
     }
-    //利用索引更新，子节点只可能为：文本（包括变量）、组件、VirtualDom
+    //利用索引更新，子节点可能为文本、Component、VirtualDom，以及混合的数组
     //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
     //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引
+    //当文本节点时start不更新
+    //混合类型时取Obj的count，且需判断混合类型的first和last类型，及为文本时是否为空
     var start = 0;
     var range = [];
-    for(var index = 0, len = self.children.length; index < len; index++) {
+    //第一个特殊处理
+    var first = self.children[0];
+    if(first instanceof Obj) {
+      switch(first.type) {
+        case Obj.VIRTUALDOM:
+        case Obj.COMPONENT:
+          start = first.count;
+          break;
+      }
+      var change = false;
+      if(Array.isArray(first.k)) {
+        change = first.k.indexOf(k) > -1;
+      }
+      else if(k == first.k) {
+        change = true;
+      }
+      //当可能发生变化时进行比对
+      var ot = first.type;
+      if(change && self.__updateChild(first)) {
+        //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+        if(ot != first.type || first.type != Obj.TEXT) {
+          self.__reRender();
+          return;
+        }
+        //记录真实索引和child索引
+        range.push({ start, index: 0 });
+      }
+    }
+    else if(first instanceof VirtualDom || first instanceof Component) {
+      first.emit(Event.DATA, k);
+      start++;
+    }
+    for(var index = 1, len = self.children.length; index < len; index++) {
       var child = self.children[index];
-      //节点变量，可能为文本，也可能为VirtualDom，以及混合的数组
+      var prev = self.children[index - 1];
       if(child instanceof Obj) {
-        var change = false;
         var ot = child.type;
-        if(ot == Obj.VIRTUALDOM) {
+        //当Component和VirtualDom则++，且前面是非空文本节点时再++，因为有2个节点
+        if(ot == Obj.VIRTUALDOM || ot == Obj.COMPONENT) {
           start++;
+          //静态文本节点
+          if(!prev instanceof VirtualDom && !prev instanceof Component) {
+            start++;
+          }
+          //动态文本节点
+          else if(prev instanceof Obj && prev.type == Obj.TEXT) {
+            start++;
+          }
         }
-        else if(index > 0
-          && (self.children[index - 1] instanceof VirtualDom
-          || self.children[index - 1] instanceof Obj
-          && self.children[index - 1].type == Obj.VIRTUALDOM)) {
-          start++;
-        }
+        var change = false;
         if(Array.isArray(child.k)) {
           change = child.k.indexOf(k) > -1;
         }
@@ -244,15 +294,24 @@ class VirtualDom extends Event {
         }
       }
       //递归通知，增加索引
-      else if(child instanceof VirtualDom) {
+      else if(child instanceof VirtualDom ||  child instanceof Component) {
         child.emit(Event.DATA, k);
         start++;
+        //静态文本节点
+        if(!prev instanceof VirtualDom && !prev instanceof Component) {
+          start++;
+        }
+        //动态文本节点
+        else if(prev instanceof Obj && prev.type == Obj.TEXT) {
+          start++;
+        }
       }
       //else其它情况为普通静态文本节点忽略
     }
     if(range.length && self.element) {
+      //相邻的TEXT节点合并更新
       self.__merge(range);
-      range.forEach(function(item) {
+      range.forEach(function(item, index) {
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
         for(var first = item.index; first > 0; first--) {
           var prev = self.children[first - 1];
@@ -272,14 +331,13 @@ class VirtualDom extends Event {
         }
         var res = '';
         for(var i = first; i <= last; i++) {
-          res += self.__renderChild(self.children[i], true);
+          res += self.__renderChild(self.children[i]);
         }
         var textNode = self.element.childNodes[item.start];
         //当仅有1个变量节点且变量为空时DOM无节点
         if(!textNode) {
           textNode = document.createTextNode('');
           self.element.appendChild(textNode);
-          //TODO:可能不是第一个
         }
         var now = textNode.textContent;
         if(res != now) {
@@ -315,7 +373,7 @@ class VirtualDom extends Event {
     for(var i = 0, len = range.length; i < len; i++) {
       var now = range[i];
       var next = range[i + 1];
-      if(next && now.start == next.start && now.index == next.index - 1) {
+      if(next && now.start == next.start) {
         range.splice(i, 1);
         i--;
       }

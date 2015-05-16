@@ -1,6 +1,10 @@
+import Component from './Component';
 import VirtualDom from './VirtualDom';
 
 function clone(obj) {
+  if(obj instanceof VirtualDom || obj instanceof VirtualDom) {
+    return obj;
+  }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
@@ -77,6 +81,9 @@ function equal(a, b) {
 var util = {
   clone(obj) {
     //fix循环依赖
+    if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
     if(VirtualDom.hasOwnProperty('default')) {
       VirtualDom = VirtualDom.default;
     }
@@ -99,6 +106,9 @@ var util = {
   isDate: isType('Date'),
   equal(a, b) {
     //fix循环依赖
+    if(Component.hasOwnProperty('default')) {
+      Component = Component.default;
+    }
     if(VirtualDom.hasOwnProperty('default')) {
       VirtualDom = VirtualDom.default;
     }

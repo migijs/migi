@@ -15,8 +15,8 @@ var migi = {
     component.emit(Event.DOM);
     return component;
   },
-  createElement:function(name, props, children) {
-    children=[].slice.call(arguments, 2);if(util.isString(name)) {
+  createElement:function(name, props, children) {children=[].slice.call(arguments, 2);console.l
+    if(util.isString(name)) {
       return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(Array.from(children))));
     }
     else {
