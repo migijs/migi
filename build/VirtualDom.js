@@ -158,7 +158,7 @@ var SELF_CLOSE = {
     self.__childrenDom();
   }
 
-  VirtualDom.prototype.append = function(dom) {
+  VirtualDom.prototype.inTo = function(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
       document.querySelector(dom).innerHTML = s;

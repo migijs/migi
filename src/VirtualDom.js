@@ -158,7 +158,7 @@ class VirtualDom extends Event {
     self.__childrenDom();
   }
 
-  append(dom) {
+  inTo(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
       document.querySelector(dom).innerHTML = s;
