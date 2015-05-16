@@ -15,8 +15,8 @@ var migi = {
     component.emit(Event.DOM);
     return component;
   },
-  createElement:function(name, props, children) {children=[].slice.call(arguments, 2);console.l
-    if(util.isString(name)) {
+  createElement:function(name, props, children) {
+    children=[].slice.call(arguments, 2);if(util.isString(name)) {
       return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(Array.from(children))));
     }
     else {
@@ -33,56 +33,11 @@ var migi = {
   CacheComponent:CacheComponent,
   VirtualDom:VirtualDom,
   Obj:Obj,
-  Cb:Cb,
-  es5: true,
-  css: true
+  Cb:Cb
 };
 
-if(typeof window !== 'undefined') {!function(){
+if(typeof window !== 'undefined') {
   window.migi = migi;
-  function cb() {
-    setTimeout(function() {
-      var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-      var css = '';
-      if(migi.css) {
-        var style = document.querySelectorAll('style');
-        for (var i = 0, len = style.length; i < len; i++) {
-          var node = style[i];
-          var code = node.textContent || node.innerText || node.firstChild && node.firstChild.nodeValue || '';
-          css += code;
-        }
-      }
-      var jsx = document.querySelectorAll('script');
-      for(var i = 0, len = jsx.length; i < len; i++) {
-        var node = jsx[i];
-        if(node.getAttribute('type') == 'text/jsx') {
-          var code = node.textContent || node.innerText || node.firstChild && node.firstChild.nodeValue || '';
-          var charset = node.getAttribute('charset');
-          var crossorigin = node.getAttribute('crossorigin');
-          var script = document.createElement('script');
-          if(charset) {
-            script.charset = charset;
-          }
-          if(crossorigin) {
-            node.setAttribute("crossorigin", crossorigin);
-          }
-          script.async = true;
-          if(migi.css) {
-            code = jaw.parse(code, css);
-          }
-          var res = lefty.parse(code, migi.es5);
-          script.innerHTML = res;
-          head.appendChild(script);
-        }
-      }
-    }, 1);
-  }
-  if(document.readyState == 'complete' || document.readyState == 'interactive') {
-    cb();
-  }
-  else {
-    document.addEventListener('DOMContentLoaded', cb);
-  }}();
 }
 
 exports.default=migi;});

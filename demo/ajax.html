@@ -62,7 +62,7 @@
     alias: {
       'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
       'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
-      'lefty': seajs.resolve('../../lefty/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../lefty/init.js', seajs.data.cwd),
       'jaw': seajs.resolve('../../jaw/index.js', seajs.data.cwd)
     },
     map: [function(url) {
@@ -70,7 +70,7 @@
     }]
   });
   define('fs', {});
-  seajs.use(['jssc', '../index', 'lefty'], function(jssc) {
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
     var code = document.querySelector('pre code');
     var jsx = document.querySelector('script[type="text/jsx"]');
     var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
@@ -78,6 +78,8 @@
     var text = document.createTextNode(source);
     code.appendChild(text);
     jssc.exec();
+    lefty.init();
+    migi.init();
   });
 </script>
 </body>
