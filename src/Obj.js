@@ -112,12 +112,11 @@ class Obj {
     return this.__empty;
   }
   toString() {
-    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v.toString();
+    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
     if(this.type == Obj.TEXT) {
-      //防止空字符串不占位
-      return s || ' ';
+      return (s || '').toString();
     }
-    return s;
+    return s.toString();
   }
 }
 

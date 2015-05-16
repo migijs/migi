@@ -96,7 +96,7 @@ class Component extends Event {
     var self = this;
     self.virtualDom.emit(Event.DOM);
     self.__element = self.virtualDom.element;
-    self.__element.setAttribute('migi-name', this.name);
+    self.element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);

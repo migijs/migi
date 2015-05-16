@@ -112,12 +112,11 @@ function joinArray(arr, unEscape) {
     return this.__empty;
   }
   Obj.prototype.toString = function() {
-    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v.toString();
+    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
     if(this.type == Obj.TEXT) {
-      //防止空字符串不占位
-      return s || ' ';
+      return (s || '').toString();
     }
-    return s;
+    return s.toString();
   }
 Object.keys(_3).forEach(function(k){Object.defineProperty(Obj.prototype,k,_3[k])});
 

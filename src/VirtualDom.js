@@ -142,6 +142,8 @@ class VirtualDom extends Event {
       return res;
     }
     else {
+      //TODO: 空变量
+      //TODO: encode/decode
       return unEscape ? child.toString() : util.escape(child.toString());
     }
   }
@@ -190,9 +192,50 @@ class VirtualDom extends Event {
     this.__childrenDom();
   }
   __childrenDom() {
-    this.children.forEach(function(child) {
+    var self = this;
+    self.children.forEach(function(child, index) {
       if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
+      }
+      //初始化时插入动态空文本的占位节点，更新时方便索引
+      else if(child instanceof Obj && child.type == Obj.TEXT && child.empty) {
+        //前如有文本节点，后如有非空文本节点，无需插入
+        //TODO: 空变量
+        if(index) {
+          var prev = self.children[index - 1];
+          if(!(prev instanceof VirtualDom) && !(prev instanceof Component)) {
+            if(prev instanceof Obj) {
+              if(prev.type == Obj.TEXT) {
+                return;
+              }
+            }
+            else if(prev) {
+              return;
+            }
+          }
+        }
+        var next = self.children[index + 1];
+        if(next) {
+          if(!(next instanceof VirtualDom) && !(next instanceof Component)) {
+            if(next instanceof Obj) {
+              if(next.type == Obj.TEXT && !next.empty) {
+                return;
+              }
+            }
+            else if(next) {
+              return;
+            }
+          }
+        }
+        var blank = document.createTextNode('');
+        //可能仅一个空文本节点，或最后一个空文本节点
+        if(!self.element.childNodes.length || index >= self.element.length) {
+          self.element.appendChild(blank);
+        }
+        //插入
+        else {
+          self.element.insertBefore(blank, self.element.childNodes[index]);
+        }
       }
     });
   }
@@ -334,11 +377,6 @@ class VirtualDom extends Event {
           res += self.__renderChild(self.children[i]);
         }
         var textNode = self.element.childNodes[item.start];
-        //当仅有1个变量节点且变量为空时DOM无节点
-        if(!textNode) {
-          textNode = document.createTextNode('');
-          self.element.appendChild(textNode);
-        }
         var now = textNode.textContent;
         if(res != now) {
           textNode.textContent = res;

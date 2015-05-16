@@ -96,7 +96,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     var self = this;
     self.virtualDom.emit(Event.DOM);
     self.__element = self.virtualDom.element;
-    self.__element.setAttribute('migi-name', this.name);
+    self.element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {
         child.emit(Event.DOM);
