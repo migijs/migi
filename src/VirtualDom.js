@@ -3,6 +3,8 @@ import Component from './Component';
 import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
+import match from './match';
+import sort from './sort';
 
 const SELF_CLOSE = {
   'img': true,
@@ -37,6 +39,11 @@ class VirtualDom extends Event {
     var self = this;
     self.__name = name;
     self.__props = props;
+    self.__cache = {};
+    self.__names = [];
+    self.__classes = null;
+    self.__style = null;
+    self.__inline = null;
     self.__children = children;
     children.forEach(function(child) {
       child.__parent = self;
@@ -91,9 +98,25 @@ class VirtualDom extends Event {
         });
       }
       else {
-        res += self.__renderProp(prop);
+        var s = self.__renderProp(prop);
+        //使用jaw导入样式时不输出class属性
+        if(prop != 'class' || !self.__style) {
+          res += s;
+        }
       }
     });
+    //使用jaw内联css需解析
+    if(self.__style) {
+      var s = self.__match();
+      if(s) {
+        if(res.indexOf(' style="') > 1) {
+          res = res.replace(/ style="[^"]*"/, ' style="' + s + '"');
+        }
+        else {
+          res = res + ' style="' + s + '"';
+        }
+      }
+    }
     res += ' migi-id="' + self.id + '"';
     //自闭合标签特殊处理
     if(self.__selfClose) {
@@ -140,14 +163,25 @@ class VirtualDom extends Event {
     }
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
-        return ' ' + prop + '="' + v.toString() + '"';
+        var s = v.toString();
+        if(self.__style) {
+          self.__cache[prop] = s;
+        }
+        return ' ' + prop + '="' + s + '"';
       }
       else if(!!v.v) {
+        if(self.__style) {
+          self.__cache[prop] = s;
+        }
         return ' ' + prop;
       }
     }
     else {
-      return ' ' + prop + '="' + v.toString() + '"';
+      var s = v.toString();
+      if(self.__style) {
+        self.__cache[prop] = s;
+      }
+      return ' ' + prop + '="' + s + '"';
     }
   }
   __renderChild(child, unEscape) {
@@ -206,6 +240,25 @@ class VirtualDom extends Event {
   }
   get id() {
     return this.__id;
+  }
+  get names() {
+    return this.__names;
+  }
+  set style(v) {
+    var self = this;
+    self.__style = v;
+    if(self.parent instanceof VirtualDom) {
+      self.__names = self.parent.names.slice(0);
+    }
+    else {
+      self.__names = [];
+    }
+    self.__names.push(self.name);
+    self.children.forEach(function(child) {
+      if(child instanceof VirtualDom) {
+        child.style = v;
+      }
+    });
   }
 
   __onDom() {
@@ -428,11 +481,26 @@ class VirtualDom extends Event {
       case 'checked':
       case 'selected':
         this.element[k] = v;
+        if(this.__style) {
+          this.__cache[k] = v;
+        }
         break;
       case 'class':
-        this.element.className = v;
+        //使用了jaw内联解析css后不再设置类名
+        if(this.__style) {
+          this.__cache[k] = v;
+          this.__updateStyle();
+        }
+        else {
+          this.element.className = v;
+        }
+        break;
       default:
         this.element.setAttribute(k, v);
+        if(this.__style) {
+          this.__cache[k] = v;
+        }
+        break;
     }
   }
   __merge(range) {
@@ -445,6 +513,41 @@ class VirtualDom extends Event {
         i--;
       }
     }
+  }
+  __match() {
+    this.__inline = this.__cache.style || '';
+    if(this.parent instanceof VirtualDom) {
+      this.__classes = this.parent.__classes.slice(0);
+    }
+    else {
+      this.__classes = [];
+    }
+    var klass = (this.__cache.class || '').trim();
+    if(klass) {
+      klass = klass.split(/\s+/);
+      sort(klass, function(a, b) {
+        return a < b;
+      });
+      this.__classes.push('.' + klass.join('.'));
+    }
+    else {
+      this.__classes.push('');
+    }
+    //TODO: 属性、id、伪类
+    var matches = match(this.__names, this.__classes, this.__style);
+    //本身的inline最高优先级追加到末尾
+    return matches + this.__inline;
+  }
+  __updateStyle() {
+    var s = this.__match();
+    if(this.element.getAttribute('style') != s) {
+      this.element.setAttribute('style', s);
+    }
+    this.children.forEach(function(child) {
+      if(child instanceof VirtualDom) {
+        child.__updateStyle();
+      }
+    });
   }
 }
 

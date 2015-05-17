@@ -3,6 +3,8 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
 var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
 var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
 var Cb=function(){var _4=require('./Cb');return _4.hasOwnProperty("Cb")?_4.Cb:_4.hasOwnProperty("default")?_4.default:_4}();
+var match=function(){var _5=require('./match');return _5.hasOwnProperty("match")?_5.match:_5.hasOwnProperty("default")?_5.default:_5}();
+var sort=function(){var _6=require('./sort');return _6.hasOwnProperty("sort")?_6.sort:_6.hasOwnProperty("default")?_6.default:_6}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -23,7 +25,7 @@ var SELF_CLOSE = {
   'track': true
 };
 
-!function(){var _5=Object.create(Event.prototype);_5.constructor=VirtualDom;VirtualDom.prototype=_5}();
+!function(){var _7=Object.create(Event.prototype);_7.constructor=VirtualDom;VirtualDom.prototype=_7}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};children=[].slice.call(arguments, 2);if(Component.hasOwnProperty('default')) {
@@ -37,6 +39,11 @@ var SELF_CLOSE = {
     var self = this;
     self.__name = name;
     self.__props = props;
+    self.__cache = {};
+    self.__names = [];
+    self.__classes = null;
+    self.__style = null;
+    self.__inline = null;
     self.__children = children;
     children.forEach(function(child) {
       child.__parent = self;
@@ -91,9 +98,25 @@ var SELF_CLOSE = {
         });
       }
       else {
-        res += self.__renderProp(prop);
+        var s = self.__renderProp(prop);
+        //使用jaw导入样式时不输出class属性
+        if(prop != 'class' || !self.__style) {
+          res += s;
+        }
       }
     });
+    //使用jaw内联css需解析
+    if(self.__style) {
+      var s = self.__match();
+      if(s) {
+        if(res.indexOf(' style="') > 1) {
+          res = res.replace(/ style="[^"]*"/, ' style="' + s + '"');
+        }
+        else {
+          res = res + ' style="' + s + '"';
+        }
+      }
+    }
     res += ' migi-id="' + self.id + '"';
     //自闭合标签特殊处理
     if(self.__selfClose) {
@@ -140,14 +163,25 @@ var SELF_CLOSE = {
     }
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
-        return ' ' + prop + '="' + v.toString() + '"';
+        var s = v.toString();
+        if(self.__style) {
+          self.__cache[prop] = s;
+        }
+        return ' ' + prop + '="' + s + '"';
       }
       else if(!!v.v) {
+        if(self.__style) {
+          self.__cache[prop] = s;
+        }
         return ' ' + prop;
       }
     }
     else {
-      return ' ' + prop + '="' + v.toString() + '"';
+      var s = v.toString();
+      if(self.__style) {
+        self.__cache[prop] = s;
+      }
+      return ' ' + prop + '="' + s + '"';
     }
   }
   VirtualDom.prototype.__renderChild = function(child, unEscape) {
@@ -189,23 +223,42 @@ var SELF_CLOSE = {
     }
   }
 
-  var _6={};_6.name={};_6.name.get =function() {
+  var _8={};_8.name={};_8.name.get =function() {
     return this.__name;
   }
-  _6.props={};_6.props.get =function() {
+  _8.props={};_8.props.get =function() {
     return this.__props;
   }
-  _6.children={};_6.children.get =function() {
+  _8.children={};_8.children.get =function() {
     return this.__children;
   }
-  _6.element={};_6.element.get =function() {
+  _8.element={};_8.element.get =function() {
     return this.__element;
   }
-  _6.parent={};_6.parent.get =function() {
+  _8.parent={};_8.parent.get =function() {
     return this.__parent;
   }
-  _6.id={};_6.id.get =function() {
+  _8.id={};_8.id.get =function() {
     return this.__id;
+  }
+  _8.names={};_8.names.get =function() {
+    return this.__names;
+  }
+  _8.style={};_8.style.set =function(v) {
+    var self = this;
+    self.__style = v;
+    if(self.parent instanceof VirtualDom) {
+      self.__names = self.parent.names.slice(0);
+    }
+    else {
+      self.__names = [];
+    }
+    self.__names.push(self.name);
+    self.children.forEach(function(child) {
+      if(child instanceof VirtualDom) {
+        child.style = v;
+      }
+    });
   }
 
   VirtualDom.prototype.__onDom = function() {
@@ -428,11 +481,26 @@ var SELF_CLOSE = {
       case 'checked':
       case 'selected':
         this.element[k] = v;
+        if(this.__style) {
+          this.__cache[k] = v;
+        }
         break;
       case 'class':
-        this.element.className = v;
+        //使用了jaw内联解析css后不再设置类名
+        if(this.__style) {
+          this.__cache[k] = v;
+          this.__updateStyle();
+        }
+        else {
+          this.element.className = v;
+        }
+        break;
       default:
         this.element.setAttribute(k, v);
+        if(this.__style) {
+          this.__cache[k] = v;
+        }
+        break;
     }
   }
   VirtualDom.prototype.__merge = function(range) {
@@ -446,6 +514,41 @@ var SELF_CLOSE = {
       }
     }
   }
-Object.keys(_6).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_6[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
+  VirtualDom.prototype.__match = function() {
+    this.__inline = this.__cache.style || '';
+    if(this.parent instanceof VirtualDom) {
+      this.__classes = this.parent.__classes.slice(0);
+    }
+    else {
+      this.__classes = [];
+    }
+    var klass = (this.__cache.class || '').trim();
+    if(klass) {
+      klass = klass.split(/\s+/);
+      sort(klass, function(a, b) {
+        return a < b;
+      });
+      this.__classes.push('.' + klass.join('.'));
+    }
+    else {
+      this.__classes.push('');
+    }
+    //TODO: 属性、id、伪类
+    var matches = match(this.__names, this.__classes, this.__style);
+    //本身的inline最高优先级追加到末尾
+    return matches + this.__inline;
+  }
+  VirtualDom.prototype.__updateStyle = function() {
+    var s = this.__match();
+    if(this.element.getAttribute('style') != s) {
+      this.element.setAttribute('style', s);
+    }
+    this.children.forEach(function(child) {
+      if(child instanceof VirtualDom) {
+        child.__updateStyle();
+      }
+    });
+  }
+Object.keys(_8).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_8[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
 
 exports.default=VirtualDom;});

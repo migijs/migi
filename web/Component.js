@@ -37,6 +37,9 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();
     this.virtualDom.__parent = this;
+    if(this.__style) {
+      this.virtualDom.style = this.__style;
+    }
     return this.virtualDom.toString();
   }
   Component.prototype.inTo = function(dom) {
@@ -95,6 +98,9 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   }
   _4.id={};_4.id.get =function() {
     return this.__id;
+  }
+  _4.style={};_4.style.set =function(v) {
+    this.__style = v;
   }
 
   Component.prototype.__onDom = function() {

@@ -37,6 +37,9 @@ class Component extends Event {
   toString() {
     this.__virtualDom = this.render();
     this.virtualDom.__parent = this;
+    if(this.__style) {
+      this.virtualDom.style = this.__style;
+    }
     return this.virtualDom.toString();
   }
   inTo(dom) {
@@ -95,6 +98,9 @@ class Component extends Event {
   }
   get id() {
     return this.__id;
+  }
+  set style(v) {
+    this.__style = v;
   }
 
   __onDom() {

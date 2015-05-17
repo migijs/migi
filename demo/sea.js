@@ -1194,3 +1194,4 @@
   }
 
 })(this);
+var require = seajs.require;
