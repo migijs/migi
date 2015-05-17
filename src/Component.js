@@ -22,24 +22,6 @@ class Component extends Event {
     });
 
     self.__children = children;
-    self.__childMap = {};
-    children.forEach(function(child) {
-      if(child instanceof Component) {
-        if(self.childMap.hasOwnProperty(child.name)) {
-          var temp = self.childMap[child.name];
-          if(Array.isArray(temp)) {
-            temp.push(child);
-          }
-          else {
-            self.childMap[child.name] = [temp, child];
-          }
-        }
-        else {
-          self.childMap[child.name] = child;
-        }
-      }
-    });
-
     self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
@@ -66,6 +48,32 @@ class Component extends Event {
       dom.innerHTML = s;
     }
   }
+  find(name) {
+    return this.findAll(name)[0];
+  }
+  findAll(name) {
+    var res = [];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
+      if(child instanceof Component || child instanceof VirtualDom) {
+        if(child instanceof Component) {
+          if(child.name == name) {
+            res.push(child);
+          }
+        }
+        else if(child instanceof VirtualDom) {
+          if(child.name == name) {
+            res.push(child);
+            res = res.concat(child.findAll(name));
+          }
+        }
+      }
+    }
+    if(this.virtualDom) {
+      res = res.concat(this.virtualDom.findAll(name));
+    }
+    return res;
+  }
 
   get name() {
     return this.__name;
@@ -75,9 +83,6 @@ class Component extends Event {
   }
   get children() {
     return this.__children;
-  }
-  get childMap() {
-    return this.__childMap;
   }
   get virtualDom() {
     return this.__virtualDom;

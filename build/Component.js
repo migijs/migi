@@ -22,24 +22,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     });
 
     self.__children = children;
-    self.__childMap = {};
-    children.forEach(function(child) {
-      if(child instanceof Component) {
-        if(self.childMap.hasOwnProperty(child.name)) {
-          var temp = self.childMap[child.name];
-          if(Array.isArray(temp)) {
-            temp.push(child);
-          }
-          else {
-            self.childMap[child.name] = [temp, child];
-          }
-        }
-        else {
-          self.childMap[child.name] = child;
-        }
-      }
-    });
-
     self.__virtualDom = null;
     self.__element = null;
     self.__parent = null;
@@ -66,6 +48,32 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
       dom.innerHTML = s;
     }
   }
+  Component.prototype.find = function(name) {
+    return this.findAll(name)[0];
+  }
+  Component.prototype.findAll = function(name) {
+    var res = [];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
+      if(child instanceof Component || child instanceof VirtualDom) {
+        if(child instanceof Component) {
+          if(child.name == name) {
+            res.push(child);
+          }
+        }
+        else if(child instanceof VirtualDom) {
+          if(child.name == name) {
+            res.push(child);
+            res = res.concat(child.findAll(name));
+          }
+        }
+      }
+    }
+    if(this.virtualDom) {
+      res = res.concat(this.virtualDom.findAll(name));
+    }
+    return res;
+  }
 
   var _4={};_4.name={};_4.name.get =function() {
     return this.__name;
@@ -75,9 +83,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   }
   _4.children={};_4.children.get =function() {
     return this.__children;
-  }
-  _4.childMap={};_4.childMap.get =function() {
-    return this.__childMap;
   }
   _4.virtualDom={};_4.virtualDom.get =function() {
     return this.__virtualDom;

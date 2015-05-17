@@ -49,6 +49,27 @@ class VirtualDom extends Event {
     self.on(Event.DOM, self.__onDom);
     self.on(Event.DATA, self.__onData);
   }
+  find(name) {
+    return this.findAll(name)[0];
+  }
+  findAll(name) {
+    var res = [];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
+      if(child instanceof Component) {
+        if(child.name == name) {
+          res.push(child);
+        }
+      }
+      else if(child instanceof VirtualDom) {
+        if(child.name == name) {
+          res.push(child);
+          res = res.concat(child.findAll(name));
+        }
+      }
+    }
+    return res;
+  }
   toString() {
     var self = this;
     var res = '<' + self.name;

@@ -34,16 +34,16 @@
     constructor(...data) {
       super(...data);
       var self = this;
-      self.text = 'loading...';
-      self.childMap.Ajax.on('success', function(data) {
+      self._text = 'loading...';
+      self.find('Ajax').on('success', function(data) {
         self.txt = data.name;
       });
     }
     get txt() {
-      return this.text;
+      return this._text;
     }
     set txt(v) {
-      this.text = v;
+      this._text = v;
     }
     render() {
       return <p>Hi, I am {this.txt}</p>;
