@@ -35,6 +35,7 @@
       this.list = this.list;
     }
     render() {
+      var blank = '';
       return (
         <div>
           <p onClick={this.add}>点击添加一个随机数</p>
@@ -45,6 +46,9 @@
             <li title="静态+变量">start {this.list}</li>
             <li title="变量+静态">{this.list} end</li>
             <li title="变量+静态+变量">{this.list} middle {this.list}</li>
+            <li title="空+变量">{blank} {this.list}</li>
+            <li title="变量+空">{this.list} {blank}</li>
+            <li title="变量+空+变量">{this.list} {blank} {this.list}</li>
             <li title="DOM+变量"><span>dom</span>{this.list}</li>
             <li title="变量+DOM">{this.list}<span>dom</span></li>
             <li title="变量+DOM+变量">{this.list}<span>dom</span>{this.list}</li>

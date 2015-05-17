@@ -2,10 +2,10 @@ import Component from './Component';
 import VirtualDom from './VirtualDom';
 import util from './util';
 
-function getType(v, list) {
+function getList(v, list) {
   if(Array.isArray(v)) {
     v.forEach(function(item) {
-      var res = getType(item, []);
+      var res = getList(item, []);
       if(Array.isArray(res)) {
         list = list.concat(res);
       }
@@ -60,7 +60,7 @@ class Obj {
   }
   set v(v) {
     var self = this;
-    var list = getType(v, []);
+    var list = getList(v, []);
     //数组只有1项时，为其对应类型；
     //多项时判断2种数量，全部为一种也是对应类型；否则报错
     //count计数为VirtualDom/Component节点数
@@ -80,7 +80,7 @@ class Obj {
         iT++;
         //只有TEXT类型需要关心empty，因为空字符串初始化时若处于2个DOM之间，则不占文本节点对象，需新建
         //以后无论如何变更，只要变成非空字符串，都不是empty，因为TextNode已经存在，变为空也无所谓
-        if(item) {
+        if(!!item.toString()) {
           self.__empty = false;
         }
       }
@@ -113,9 +113,6 @@ class Obj {
   }
   toString() {
     var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
-    if(this.type == Obj.TEXT) {
-      return (s || '').toString();
-    }
     return s.toString();
   }
 }

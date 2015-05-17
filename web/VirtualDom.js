@@ -214,38 +214,46 @@ var SELF_CLOSE = {
   }
   VirtualDom.prototype.__childrenDom = function() {
     var self = this;
+    var length = self.children.length;
     self.children.forEach(function(child, index) {
       if(child instanceof VirtualDom || child instanceof Component) {
         child.emit(Event.DOM);
       }
-      //初始化时插入动态空文本的占位节点，更新时方便索引
-      else if(child instanceof Obj && child.type == Obj.TEXT && child.empty) {
-        //前如有文本节点，后如有非空文本节点，无需插入
-        //TODO: 空变量
+      //初始化时插入空文本的占位节点，更新时方便索引，包括动态文本和静态文本
+      else if(child instanceof Obj && child.type == Obj.TEXT && child.empty || !child.toString()) {
+        //前后如有非空文本节点，无需插入
         if(index) {
-          var prev = self.children[index - 1];
-          if(!(prev instanceof VirtualDom) && !(prev instanceof Component)) {
-            if(prev instanceof Obj) {
-              if(prev.type == Obj.TEXT) {
+          for(var i = index - 1; i >=0; i--) {
+            var prev = self.children[i];
+            if(!(prev instanceof VirtualDom) && !(prev instanceof Component)) {
+              if(prev instanceof Obj) {
+                if(prev.type == Obj.TEXT && !prev.empty) {
+                  return;
+                }
+              }
+              else if(!!prev.toString()) {
                 return;
               }
             }
-            else if(prev) {
-              return;
+            else {
+              break;
             }
           }
         }
-        var next = self.children[index + 1];
-        if(next) {
+        for(var i = index + 1; i < length; i++) {
+          var next = self.children[i];
           if(!(next instanceof VirtualDom) && !(next instanceof Component)) {
             if(next instanceof Obj) {
               if(next.type == Obj.TEXT && !next.empty) {
                 return;
               }
             }
-            else if(next) {
+            else if(!!next.toString()) {
               return;
             }
+          }
+          else {
+            break;
           }
         }
         var blank = document.createTextNode('');

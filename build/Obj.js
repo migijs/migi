@@ -2,10 +2,10 @@ var Component=function(){var _0=require('./Component');return _0.hasOwnProperty(
 var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
 var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
 
-function getType(v, list) {
+function getList(v, list) {
   if(Array.isArray(v)) {
     v.forEach(function(item) {
-      var res = getType(item, []);
+      var res = getList(item, []);
       if(Array.isArray(res)) {
         list = list.concat(res);
       }
@@ -60,7 +60,7 @@ function joinArray(arr, unEscape) {
   }
   _3.v.set =function(v) {
     var self = this;
-    var list = getType(v, []);
+    var list = getList(v, []);
     //数组只有1项时，为其对应类型；
     //多项时判断2种数量，全部为一种也是对应类型；否则报错
     //count计数为VirtualDom/Component节点数
@@ -80,7 +80,7 @@ function joinArray(arr, unEscape) {
         iT++;
         //只有TEXT类型需要关心empty，因为空字符串初始化时若处于2个DOM之间，则不占文本节点对象，需新建
         //以后无论如何变更，只要变成非空字符串，都不是empty，因为TextNode已经存在，变为空也无所谓
-        if(item) {
+        if(!!item.toString()) {
           self.__empty = false;
         }
       }
@@ -113,9 +113,6 @@ function joinArray(arr, unEscape) {
   }
   Obj.prototype.toString = function() {
     var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
-    if(this.type == Obj.TEXT) {
-      return (s || '').toString();
-    }
     return s.toString();
   }
 Object.keys(_3).forEach(function(k){Object.defineProperty(Obj.prototype,k,_3[k])});
