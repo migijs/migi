@@ -210,7 +210,7 @@ class VirtualDom extends Event {
     });
     self.element.innerHTML = res;
     //重新触发DOM
-    self.__childrenDom();
+    self.__onDom();
   }
 
   inTo(dom) {
@@ -233,6 +233,7 @@ class VirtualDom extends Event {
     return this.__children;
   }
   get element() {
+    this.__element = this.__element || document.body.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
   }
   get parent() {
@@ -262,10 +263,6 @@ class VirtualDom extends Event {
   }
 
   __onDom() {
-    this.__element = document.body.querySelector('[migi-id="' + this.id + '"]');
-    this.__childrenDom();
-  }
-  __childrenDom() {
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {

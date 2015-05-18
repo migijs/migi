@@ -210,7 +210,7 @@ var SELF_CLOSE = {
     });
     self.element.innerHTML = res;
     //重新触发DOM
-    self.__childrenDom();
+    self.__onDom();
   }
 
   VirtualDom.prototype.inTo = function(dom) {
@@ -233,6 +233,7 @@ var SELF_CLOSE = {
     return this.__children;
   }
   _8.element={};_8.element.get =function() {
+    this.__element = this.__element || document.body.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
   }
   _8.parent={};_8.parent.get =function() {
@@ -262,10 +263,6 @@ var SELF_CLOSE = {
   }
 
   VirtualDom.prototype.__onDom = function() {
-    this.__element = document.body.querySelector('[migi-id="' + this.id + '"]');
-    this.__childrenDom();
-  }
-  VirtualDom.prototype.__childrenDom = function() {
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {
