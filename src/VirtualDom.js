@@ -233,7 +233,7 @@ class VirtualDom extends Event {
     return this.__children;
   }
   get element() {
-    this.__element = this.__element || document.body.querySelector('[migi-id="' + this.id + '"]');
+    this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
   }
   get parent() {

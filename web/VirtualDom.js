@@ -233,7 +233,7 @@ var SELF_CLOSE = {
     return this.__children;
   }
   _8.element={};_8.element.get =function() {
-    this.__element = this.__element || document.body.querySelector('[migi-id="' + this.id + '"]');
+    this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
   }
   _8.parent={};_8.parent.get =function() {
