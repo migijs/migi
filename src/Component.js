@@ -3,9 +3,11 @@ import VirtualDom from './VirtualDom';
 import util from './util';
 
 class Component extends Event {
-  constructor(name, props = {}, ...children) {
+  constructor(props = {}, ...children) {
     super();
     var self = this;
+    var name = arguments.callee.caller.toString();
+    name = /^function\s+([\w$]+)/.exec(name)[1];
     self.__name = name;
     self.__props = props;
     self.__style = null;

@@ -19,10 +19,7 @@ var migi = {
       return new VirtualDom(name, props, ...children);
     }
     else {
-      var Klass = name;
-      name = name.toString();
-      name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new Klass(name, props, ...children);
+      return new name(props, ...children);
     }
   },
   Event,

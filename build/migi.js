@@ -19,10 +19,7 @@ var migi = {
       return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(Array.from(children))));
     }
     else {
-      var Klass = name;
-      name = name.toString();
-      name = /^function\s+([\w$]+)/.exec(name)[1];
-      return new (Function.prototype.bind.apply(Klass, [null,name,props].concat(Array.from(children))));
+      return new (Function.prototype.bind.apply(name, [null,props].concat(Array.from(children))));
     }
   },
   Event:Event,

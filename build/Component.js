@@ -3,9 +3,11 @@ var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnPropert
 var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
 
 !function(){var _3=Object.create(Event.prototype);_3.constructor=Component;Component.prototype=_3}();
-  function Component(name, props, children) {
-    if(props===void 0)props={};children=[].slice.call(arguments, 2);Event.call(this);
+  function Component(props, children) {
+    if(props===void 0)props={};children=[].slice.call(arguments, 1);Event.call(this);
     var self = this;
+    var name = arguments.callee.caller.toString();
+    name = /^function\s+([\w$]+)/.exec(name)[1];
     self.__name = name;
     self.__props = props;
     self.__style = null;
