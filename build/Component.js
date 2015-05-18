@@ -6,7 +6,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
   function Component(props, children) {
     if(props===void 0)props={};children=[].slice.call(arguments, 1);Event.call(this);
     var self = this;
-    var name = arguments.callee.caller.toString();
+    var name = self.constructor.toString();
     name = /^function\s+([\w$]+)/.exec(name)[1];
     self.__name = name;
     self.__props = props;

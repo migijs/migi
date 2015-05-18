@@ -6,7 +6,7 @@ class Component extends Event {
   constructor(props = {}, ...children) {
     super();
     var self = this;
-    var name = arguments.callee.caller.toString();
+    var name = self.constructor.toString();
     name = /^function\s+([\w$]+)/.exec(name)[1];
     self.__name = name;
     self.__props = props;
