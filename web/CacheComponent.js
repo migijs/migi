@@ -4,6 +4,9 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
 !function(){var _2=Object.create(Component.prototype);_2.constructor=CachedComponent;CachedComponent.prototype=_2}();
   function CachedComponent(data) {
     data=[].slice.call(arguments, 0);Component.apply(this,[].concat(Array.from(data)));
+    var name = arguments.callee.caller.toString();
+    name = /^function\s+([\w$]+)/.exec(name)[1];
+    this.__name = name;
     this.__handler = {};
   }
 
