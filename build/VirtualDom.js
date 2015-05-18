@@ -221,6 +221,7 @@ var SELF_CLOSE = {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
   }
 
   var _8={};_8.name={};_8.name.get =function() {

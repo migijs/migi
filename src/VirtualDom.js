@@ -221,6 +221,7 @@ class VirtualDom extends Event {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
   }
 
   get name() {
