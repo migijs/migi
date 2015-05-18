@@ -44,7 +44,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     }
     return this.virtualDom.toString();
   }
-  //TODO: append，replace等方式
   Component.prototype.inTo = function(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
@@ -53,6 +52,36 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
+  }
+  Component.prototype.appendTo = function(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML += s;
+    }
+    else if(dom) {
+      dom.innerHTML += s;
+    }
+    this.emit(Event.DOM);
+  }
+  Component.prototype.insertBefore = function(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.insertBefore(div.firstChild, dom);
+    this.emit(Event.DOM);
+  }
+  Component.prototype.replace = function(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);
   }
   Component.prototype.find = function(name) {

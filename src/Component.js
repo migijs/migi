@@ -44,7 +44,6 @@ class Component extends Event {
     }
     return this.virtualDom.toString();
   }
-  //TODO: append，replace等方式
   inTo(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
@@ -53,6 +52,36 @@ class Component extends Event {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
+  }
+  appendTo(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML += s;
+    }
+    else if(dom) {
+      dom.innerHTML += s;
+    }
+    this.emit(Event.DOM);
+  }
+  insertBefore(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.insertBefore(div.firstChild, dom);
+    this.emit(Event.DOM);
+  }
+  replace(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);
   }
   find(name) {

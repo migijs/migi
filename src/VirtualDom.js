@@ -57,6 +57,7 @@ class VirtualDom extends Event {
     self.on(Event.DATA, self.__onData);
   }
   find(name) {
+    //TODO: 优化
     return this.findAll(name)[0];
   }
   findAll(name) {
@@ -221,6 +222,36 @@ class VirtualDom extends Event {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
+  }
+  appendTo(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML += s;
+    }
+    else if(dom) {
+      dom.innerHTML += s;
+    }
+    this.emit(Event.DOM);
+  }
+  insertBefore(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.insertBefore(div.firstChild, dom);
+    this.emit(Event.DOM);
+  }
+  replace(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);
   }
 

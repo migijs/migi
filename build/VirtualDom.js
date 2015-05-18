@@ -57,6 +57,7 @@ var SELF_CLOSE = {
     self.on(Event.DATA, self.__onData);
   }
   VirtualDom.prototype.find = function(name) {
+    //TODO: 优化
     return this.findAll(name)[0];
   }
   VirtualDom.prototype.findAll = function(name) {
@@ -221,6 +222,36 @@ var SELF_CLOSE = {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
+  }
+  VirtualDom.prototype.appendTo = function(dom) {
+    var s = this.toString();
+    if(util.isString(dom)) {
+      document.querySelector(dom).innerHTML += s;
+    }
+    else if(dom) {
+      dom.innerHTML += s;
+    }
+    this.emit(Event.DOM);
+  }
+  VirtualDom.prototype.insertBefore = function(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.insertBefore(div.firstChild, dom);
+    this.emit(Event.DOM);
+  }
+  VirtualDom.prototype.replace = function(dom) {
+    var s = this.toString();
+    var div = document.createElement('div');
+    div.innerHTML = s;
+    if(util.isString(dom)) {
+      dom = document.querySelector(dom);
+    }
+    dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);
   }
 
