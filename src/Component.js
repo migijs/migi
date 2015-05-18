@@ -42,6 +42,7 @@ class Component extends Event {
     }
     return this.virtualDom.toString();
   }
+  //TODO: append，replace等方式
   inTo(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
@@ -50,8 +51,10 @@ class Component extends Event {
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
   }
   find(name) {
+    //TODO: 优化
     return this.findAll(name)[0];
   }
   findAll(name) {

@@ -42,6 +42,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     }
     return this.virtualDom.toString();
   }
+  //TODO: append，replace等方式
   Component.prototype.inTo = function(dom) {
     var s = this.toString();
     if(util.isString(dom)) {
@@ -50,8 +51,10 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     else if(dom) {
       dom.innerHTML = s;
     }
+    this.emit(Event.DOM);
   }
   Component.prototype.find = function(name) {
+    //TODO: 优化
     return this.findAll(name)[0];
   }
   Component.prototype.findAll = function(name) {
