@@ -1,4 +1,5 @@
 import Event from './Event';
+import Element from './Element';
 import Component from './Component';
 import util from './util';
 import Obj from './Obj';
@@ -25,7 +26,7 @@ const SELF_CLOSE = {
   'track': true
 };
 
-class VirtualDom extends Event {
+class VirtualDom extends Element {
   constructor(name, props = {}, ...children) {
     //fix循环依赖
     if(Component.hasOwnProperty('default')) {
@@ -35,50 +36,19 @@ class VirtualDom extends Event {
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
-    super();
+    super(name, props, ...children);
     var self = this;
-    self.__name = name;
-    self.__props = props;
     self.__cache = {};
     self.__names = [];
     self.__classes = null;
     self.__ids = null;
-    self.__style = null;
     self.__inline = null;
-    self.__children = children;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
       child.__parent = self;
     });
-    self.__parent = null;
-    self.__id = util.uid();
-    self.__element = null;
-    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+  }
 
-    self.on(Event.DOM, self.__onDom);
-    self.on(Event.DATA, self.__onData);
-  }
-  find(name) {
-    //TODO: 优化
-    return this.findAll(name)[0];
-  }
-  findAll(name) {
-    var res = [];
-    for(var i = 0, len = this.children.length; i < len; i++) {
-      var child = this.children[i];
-      if(child instanceof Component) {
-        if(child.name == name) {
-          res.push(child);
-        }
-      }
-      else if(child instanceof VirtualDom) {
-        if(child.name == name) {
-          res.push(child);
-          res = res.concat(child.findAll(name));
-        }
-      }
-    }
-    return res;
-  }
   toString() {
     var self = this;
     var res = '<' + self.name;
@@ -188,7 +158,7 @@ class VirtualDom extends Event {
   }
   __renderChild(child, unEscape) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
+    if(child instanceof Element || child instanceof Obj) {
       return child.toString(unEscape);
     }
     else if(Array.isArray(child)) {
@@ -215,65 +185,9 @@ class VirtualDom extends Event {
     self.__onDom();
   }
 
-  inTo(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else if(dom) {
-      dom.innerHTML = s;
-    }
-    this.emit(Event.DOM);
-  }
-  appendTo(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML += s;
-    }
-    else if(dom) {
-      dom.innerHTML += s;
-    }
-    this.emit(Event.DOM);
-  }
-  insertBefore(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.insertBefore(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
-  replace(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.replaceChild(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
-
-  get name() {
-    return this.__name;
-  }
-  get props() {
-    return this.__props;
-  }
-  get children() {
-    return this.__children;
-  }
   get element() {
     this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
-  }
-  get parent() {
-    return this.__parent;
-  }
-  get id() {
-    return this.__id;
   }
   get names() {
     return this.__names;
@@ -299,7 +213,7 @@ class VirtualDom extends Event {
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {
-      if(child instanceof VirtualDom || child instanceof Component) {
+      if(child instanceof Element) {
         child.emit(Event.DOM);
       }
       //初始化时插入空文本的占位节点，更新时方便索引，包括动态文本和静态文本
@@ -308,7 +222,7 @@ class VirtualDom extends Event {
         if(index) {
           for(var i = index - 1; i >=0; i--) {
             var prev = self.children[i];
-            if(!(prev instanceof VirtualDom) && !(prev instanceof Component)) {
+            if(!(prev instanceof Element)) {
               if(prev instanceof Obj) {
                 if(prev.type == Obj.TEXT && !prev.empty) {
                   return;
@@ -325,7 +239,7 @@ class VirtualDom extends Event {
         }
         for(var i = index + 1; i < length; i++) {
           var next = self.children[i];
-          if(!(next instanceof VirtualDom) && !(next instanceof Component)) {
+          if(!(next instanceof Element)) {
             if(next instanceof Obj) {
               if(next.type == Obj.TEXT && !next.empty) {
                 return;
@@ -409,7 +323,7 @@ class VirtualDom extends Event {
         range.push({ start, index: 0 });
       }
     }
-    else if(first instanceof VirtualDom || first instanceof Component) {
+    else if(first instanceof Element) {
       first.emit(Event.DATA, k);
       start++;
     }
@@ -422,7 +336,7 @@ class VirtualDom extends Event {
         if(ot == Obj.VIRTUALDOM || ot == Obj.COMPONENT) {
           start++;
           //静态文本节点
-          if(!prev instanceof VirtualDom && !prev instanceof Component) {
+          if(!(prev instanceof Element)) {
             start++;
           }
           //动态文本节点
@@ -453,7 +367,7 @@ class VirtualDom extends Event {
         child.emit(Event.DATA, k);
         start++;
         //静态文本节点
-        if(!prev instanceof VirtualDom && !prev instanceof Component) {
+        if(!(prev instanceof Element)) {
           start++;
         }
         //动态文本节点

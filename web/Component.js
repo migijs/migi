@@ -1,16 +1,18 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1.default:_1}();
+var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("VirtualDom")?_2.VirtualDom:_2.hasOwnProperty("default")?_2.default:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3.default:_3}();
 
-!function(){var _3=Object.create(Event.prototype);_3.constructor=Component;Component.prototype=_3}();
+!function(){var _4=Object.create(Element.prototype);_4.constructor=Component;Component.prototype=_4}();
   function Component(props, children) {
-    if(props===void 0)props={};children=[].slice.call(arguments, 1);Event.call(this);
+    if(props===void 0)props={};children=[].slice.call(arguments, 1);Element.call(this);
     var self = this;
     var name = self.constructor.toString();
     name = /^function\s+([\w$]+)/.exec(name)[1];
-    self.__name = name;
-    self.__props = props;
-    self.__style = null;
+    Element.apply(this,[name,props].concat(Array.from(children)));
+
+    self.__virtualDom = null;
+
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
         var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
@@ -22,15 +24,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
         });
       }
     });
-
-    self.__children = children;
-    self.__virtualDom = null;
-    self.__element = null;
-    self.__parent = null;
-    self.__id = util.uid();
-
-    self.on(Event.DOM, self.__onDom);
-    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
@@ -44,46 +37,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     }
     return this.virtualDom.toString();
   }
-  Component.prototype.inTo = function(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else if(dom) {
-      dom.innerHTML = s;
-    }
-    this.emit(Event.DOM);
-  }
-  Component.prototype.appendTo = function(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML += s;
-    }
-    else if(dom) {
-      dom.innerHTML += s;
-    }
-    this.emit(Event.DOM);
-  }
-  Component.prototype.insertBefore = function(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.insertBefore(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
-  Component.prototype.replace = function(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.replaceChild(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
   Component.prototype.find = function(name) {
     //TODO: 优化
     return this.findAll(name)[0];
@@ -92,13 +45,13 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     var res = [];
     for(var i = 0, len = this.children.length; i < len; i++) {
       var child = this.children[i];
-      if(child instanceof Component || child instanceof VirtualDom) {
+      if(child instanceof Element) {
         if(child instanceof Component) {
           if(child.name == name) {
             res.push(child);
           }
         }
-        else if(child instanceof VirtualDom) {
+        else {
           if(child.name == name) {
             res.push(child);
             res = res.concat(child.findAll(name));
@@ -112,28 +65,13 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
     return res;
   }
 
-  var _4={};_4.name={};_4.name.get =function() {
-    return this.__name;
-  }
-  _4.props={};_4.props.get =function() {
-    return this.__props;
-  }
-  _4.children={};_4.children.get =function() {
-    return this.__children;
-  }
-  _4.virtualDom={};_4.virtualDom.get =function() {
+  var _5={};_5.virtualDom={};_5.virtualDom.get =function() {
     return this.__virtualDom;
   }
-  _4.element={};_4.element.get =function() {
+  _5.element={};_5.element.get =function() {
     return this.__element;
   }
-  _4.parent={};_4.parent.get =function() {
-    return this.__parent;
-  }
-  _4.id={};_4.id.get =function() {
-    return this.__id;
-  }
-  _4.style={};_4.style.set =function(v) {
+  _5.style={};_5.style.set =function(v) {
     this.__style = v;
   }
 
@@ -164,6 +102,6 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2
       this.virtualDom.emit(Event.DATA, k);
     }
   }
-Object.keys(_4).forEach(function(k){Object.defineProperty(Component.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Component[k]=Event[k]});
+Object.keys(_5).forEach(function(k){Object.defineProperty(Component.prototype,k,_5[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
 exports.default=Component;});

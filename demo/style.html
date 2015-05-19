@@ -94,6 +94,7 @@
     }]
   });
   define('fs', {});
+  seajs.use('jaw');
   seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
     var code = document.querySelector('pre code');
     var jsx = document.querySelector('script[type="text/jsx"]');

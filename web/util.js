@@ -1,14 +1,13 @@
-define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0.default:_0}();
-var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
 
 function clone(obj) {
-  if(obj instanceof Component || obj instanceof VirtualDom) {
+  if(obj instanceof Element) {
     return obj;
   }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      if(obj[i] instanceof Component || obj[i] instanceof VirtualDom) {
+      if(obj[i] instanceof Element) {
         o[i] = obj[i];
       }
       else if(util.isDate(obj[i])) {
@@ -21,8 +20,6 @@ function clone(obj) {
   }
   return o;
 }
-
-var uid = 0;
 
 function isType(type) {
   return function(obj) {
@@ -81,19 +78,13 @@ function equal(a, b) {
 var util = {
   clone:function(obj) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+    if(Element.hasOwnProperty('default')) {
+      Element = Element.default;
     }
     if(typeof obj != 'object') {
       return obj;
     }
     return clone(obj);
-  },
-  uid:function() {
-    return uid++;
   },
   isObject: isType('Object'),
   isString: isType('String'),
@@ -106,11 +97,8 @@ var util = {
   isDate: isType('Date'),
   equal:function(a, b) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+    if(Element.hasOwnProperty('default')) {
+      Element = Element.default;
     }
     return equal(a, b);
   },

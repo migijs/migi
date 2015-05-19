@@ -70,6 +70,8 @@
   //示例：外部导入使用
   var swt = new Switch();
   swt.inTo('#example');
+  var swt2 = new Switch({ state: true });
+  swt2.after('#example');
 </script>
 <script>
   seajs.config({

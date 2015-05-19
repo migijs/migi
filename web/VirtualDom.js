@@ -1,10 +1,11 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
-var Obj=function(){var _3=require('./Obj');return _3.hasOwnProperty("Obj")?_3.Obj:_3.hasOwnProperty("default")?_3.default:_3}();
-var Cb=function(){var _4=require('./Cb');return _4.hasOwnProperty("Cb")?_4.Cb:_4.hasOwnProperty("default")?_4.default:_4}();
-var match=function(){var _5=require('./match');return _5.hasOwnProperty("match")?_5.match:_5.hasOwnProperty("default")?_5.default:_5}();
-var sort=function(){var _6=require('./sort');return _6.hasOwnProperty("sort")?_6.sort:_6.hasOwnProperty("default")?_6.default:_6}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1.default:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2.default:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3.default:_3}();
+var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4.default:_4}();
+var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5.default:_5}();
+var match=function(){var _6=require('./match');return _6.hasOwnProperty("match")?_6.match:_6.hasOwnProperty("default")?_6.default:_6}();
+var sort=function(){var _7=require('./sort');return _7.hasOwnProperty("sort")?_7.sort:_7.hasOwnProperty("default")?_7.default:_7}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -25,7 +26,7 @@ var SELF_CLOSE = {
   'track': true
 };
 
-!function(){var _7=Object.create(Event.prototype);_7.constructor=VirtualDom;VirtualDom.prototype=_7}();
+!function(){var _8=Object.create(Element.prototype);_8.constructor=VirtualDom;VirtualDom.prototype=_8}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};children=[].slice.call(arguments, 2);if(Component.hasOwnProperty('default')) {
@@ -35,50 +36,19 @@ var SELF_CLOSE = {
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
-    Event.call(this);
+    Element.apply(this,[name,props].concat(Array.from(children)));
     var self = this;
-    self.__name = name;
-    self.__props = props;
     self.__cache = {};
     self.__names = [];
     self.__classes = null;
     self.__ids = null;
-    self.__style = null;
     self.__inline = null;
-    self.__children = children;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
       child.__parent = self;
     });
-    self.__parent = null;
-    self.__id = util.uid();
-    self.__element = null;
-    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+  }
 
-    self.on(Event.DOM, self.__onDom);
-    self.on(Event.DATA, self.__onData);
-  }
-  VirtualDom.prototype.find = function(name) {
-    //TODO: 优化
-    return this.findAll(name)[0];
-  }
-  VirtualDom.prototype.findAll = function(name) {
-    var res = [];
-    for(var i = 0, len = this.children.length; i < len; i++) {
-      var child = this.children[i];
-      if(child instanceof Component) {
-        if(child.name == name) {
-          res.push(child);
-        }
-      }
-      else if(child instanceof VirtualDom) {
-        if(child.name == name) {
-          res.push(child);
-          res = res.concat(child.findAll(name));
-        }
-      }
-    }
-    return res;
-  }
   VirtualDom.prototype.toString = function() {
     var self = this;
     var res = '<' + self.name;
@@ -188,7 +158,7 @@ var SELF_CLOSE = {
   }
   VirtualDom.prototype.__renderChild = function(child, unEscape) {
     var self = this;
-    if(child instanceof VirtualDom || child instanceof Obj || child instanceof Component) {
+    if(child instanceof Element || child instanceof Obj) {
       return child.toString(unEscape);
     }
     else if(Array.isArray(child)) {
@@ -215,70 +185,14 @@ var SELF_CLOSE = {
     self.__onDom();
   }
 
-  VirtualDom.prototype.inTo = function(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else if(dom) {
-      dom.innerHTML = s;
-    }
-    this.emit(Event.DOM);
-  }
-  VirtualDom.prototype.appendTo = function(dom) {
-    var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML += s;
-    }
-    else if(dom) {
-      dom.innerHTML += s;
-    }
-    this.emit(Event.DOM);
-  }
-  VirtualDom.prototype.insertBefore = function(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.insertBefore(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
-  VirtualDom.prototype.replace = function(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.replaceChild(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
-
-  var _8={};_8.name={};_8.name.get =function() {
-    return this.__name;
-  }
-  _8.props={};_8.props.get =function() {
-    return this.__props;
-  }
-  _8.children={};_8.children.get =function() {
-    return this.__children;
-  }
-  _8.element={};_8.element.get =function() {
+  var _9={};_9.element={};_9.element.get =function() {
     this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
     return this.__element;
   }
-  _8.parent={};_8.parent.get =function() {
-    return this.__parent;
-  }
-  _8.id={};_8.id.get =function() {
-    return this.__id;
-  }
-  _8.names={};_8.names.get =function() {
+  _9.names={};_9.names.get =function() {
     return this.__names;
   }
-  _8.style={};_8.style.set =function(v) {
+  _9.style={};_9.style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.parent instanceof VirtualDom) {
@@ -299,7 +213,7 @@ var SELF_CLOSE = {
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {
-      if(child instanceof VirtualDom || child instanceof Component) {
+      if(child instanceof Element) {
         child.emit(Event.DOM);
       }
       //初始化时插入空文本的占位节点，更新时方便索引，包括动态文本和静态文本
@@ -308,7 +222,7 @@ var SELF_CLOSE = {
         if(index) {
           for(var i = index - 1; i >=0; i--) {
             var prev = self.children[i];
-            if(!(prev instanceof VirtualDom) && !(prev instanceof Component)) {
+            if(!(prev instanceof Element)) {
               if(prev instanceof Obj) {
                 if(prev.type == Obj.TEXT && !prev.empty) {
                   return;
@@ -325,7 +239,7 @@ var SELF_CLOSE = {
         }
         for(var i = index + 1; i < length; i++) {
           var next = self.children[i];
-          if(!(next instanceof VirtualDom) && !(next instanceof Component)) {
+          if(!(next instanceof Element)) {
             if(next instanceof Obj) {
               if(next.type == Obj.TEXT && !next.empty) {
                 return;
@@ -409,7 +323,7 @@ var SELF_CLOSE = {
         range.push({ start:start, index: 0 });
       }
     }
-    else if(first instanceof VirtualDom || first instanceof Component) {
+    else if(first instanceof Element) {
       first.emit(Event.DATA, k);
       start++;
     }
@@ -422,7 +336,7 @@ var SELF_CLOSE = {
         if(ot == Obj.VIRTUALDOM || ot == Obj.COMPONENT) {
           start++;
           //静态文本节点
-          if(!prev instanceof VirtualDom && !prev instanceof Component) {
+          if(!(prev instanceof Element)) {
             start++;
           }
           //动态文本节点
@@ -453,7 +367,7 @@ var SELF_CLOSE = {
         child.emit(Event.DATA, k);
         start++;
         //静态文本节点
-        if(!prev instanceof VirtualDom && !prev instanceof Component) {
+        if(!(prev instanceof Element)) {
           start++;
         }
         //动态文本节点
@@ -594,6 +508,6 @@ var SELF_CLOSE = {
       }
     });
   }
-Object.keys(_8).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_8[k])});Object.keys(Event).forEach(function(k){VirtualDom[k]=Event[k]});
+Object.keys(_9).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_9[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 exports.default=VirtualDom;});

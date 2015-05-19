@@ -1,14 +1,13 @@
-import Component from './Component';
-import VirtualDom from './VirtualDom';
+import Element from './Element';
 
 function clone(obj) {
-  if(obj instanceof Component || obj instanceof VirtualDom) {
+  if(obj instanceof Element) {
     return obj;
   }
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      if(obj[i] instanceof Component || obj[i] instanceof VirtualDom) {
+      if(obj[i] instanceof Element) {
         o[i] = obj[i];
       }
       else if(util.isDate(obj[i])) {
@@ -21,8 +20,6 @@ function clone(obj) {
   }
   return o;
 }
-
-var uid = 0;
 
 function isType(type) {
   return function(obj) {
@@ -81,19 +78,13 @@ function equal(a, b) {
 var util = {
   clone(obj) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+    if(Element.hasOwnProperty('default')) {
+      Element = Element.default;
     }
     if(typeof obj != 'object') {
       return obj;
     }
     return clone(obj);
-  },
-  uid() {
-    return uid++;
   },
   isObject: isType('Object'),
   isString: isType('String'),
@@ -106,11 +97,8 @@ var util = {
   isDate: isType('Date'),
   equal(a, b) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+    if(Element.hasOwnProperty('default')) {
+      Element = Element.default;
     }
     return equal(a, b);
   },
