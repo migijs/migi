@@ -1,13 +1,11 @@
-define(function(require, exports, module){var lefty=function(){var _0=require('lefty');return _0.hasOwnProperty("lefty")?_0.lefty:_0.hasOwnProperty("default")?_0.default:_0}();
-var jaw=function(){var _1=require('jaw');return _1.hasOwnProperty("jaw")?_1.jaw:_1.hasOwnProperty("default")?_1.default:_1}();
-var Event=function(){var _2=require('./Event');return _2.hasOwnProperty("Event")?_2.Event:_2.hasOwnProperty("default")?_2.default:_2}();
-var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("Component")?_3.Component:_3.hasOwnProperty("default")?_3.default:_3}();
-var VirtualDom=function(){var _4=require('./VirtualDom');return _4.hasOwnProperty("VirtualDom")?_4.VirtualDom:_4.hasOwnProperty("default")?_4.default:_4}();
-var NonVisualComponent=function(){var _5=require('./NonVisualComponent');return _5.hasOwnProperty("NonVisualComponent")?_5.NonVisualComponent:_5.hasOwnProperty("default")?_5.default:_5}();
-var CacheComponent=function(){var _6=require('./CacheComponent');return _6.hasOwnProperty("CacheComponent")?_6.CacheComponent:_6.hasOwnProperty("default")?_6.default:_6}();
-var util=function(){var _7=require('./util');return _7.hasOwnProperty("util")?_7.util:_7.hasOwnProperty("default")?_7.default:_7}();
-var Obj=function(){var _8=require('./Obj');return _8.hasOwnProperty("Obj")?_8.Obj:_8.hasOwnProperty("default")?_8.default:_8}();
-var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("Cb")?_9.Cb:_9.hasOwnProperty("default")?_9.default:_9}();
+define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
+var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
+var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("VirtualDom")?_2.VirtualDom:_2.hasOwnProperty("default")?_2.default:_2}();
+var NonVisualComponent=function(){var _3=require('./NonVisualComponent');return _3.hasOwnProperty("NonVisualComponent")?_3.NonVisualComponent:_3.hasOwnProperty("default")?_3.default:_3}();
+var CacheComponent=function(){var _4=require('./CacheComponent');return _4.hasOwnProperty("CacheComponent")?_4.CacheComponent:_4.hasOwnProperty("default")?_4.default:_4}();
+var util=function(){var _5=require('./util');return _5.hasOwnProperty("util")?_5.util:_5.hasOwnProperty("default")?_5.default:_5}();
+var Obj=function(){var _6=require('./Obj');return _6.hasOwnProperty("Obj")?_6.Obj:_6.hasOwnProperty("default")?_6.default:_6}();
+var Cb=function(){var _7=require('./Cb');return _7.hasOwnProperty("Cb")?_7.Cb:_7.hasOwnProperty("default")?_7.default:_7}();
 
 var migi = {
   render:function(component, dom) {

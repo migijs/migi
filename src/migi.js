@@ -1,5 +1,3 @@
-import lefty from 'lefty';
-import jaw from 'jaw';
 import Event from './Event';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
