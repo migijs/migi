@@ -30,7 +30,11 @@
       ]
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "es6-shim": "*",
+    "lefty": "~0.1.0",
+    "jaw": "~0.1.0"
+  },
   "devDependencies": {
     "blanket": "^1.1.6",
     "coveralls": "^2.11.2",

@@ -58,7 +58,6 @@ function matchSel(i, names, classes, ids, style, res) {
       }
     }
   }
-  //TODO: 优先级结合
 }
 
 exports.default=match;
