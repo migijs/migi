@@ -1,7 +1,7 @@
 {
   "name": "migi",
   "version": "0.1.0",
-  "description": "A JavaScript library for building user interfaces",
+  "description": "A JavaScript MVVM library by JSX",
   "maintainers": [
     {
       "name": "army8735",
