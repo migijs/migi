@@ -1,4 +1,4 @@
-# A JavaScript MVVM library by JSX
+# A JavaScript MVVM library on JSX
 
 `migi`取自动漫寄生兽主角小右，意指以jsx语法将html模板寄生在js上。
 
