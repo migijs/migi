@@ -42,6 +42,7 @@ var SELF_CLOSE = {
     self.__cache = {};
     self.__names = [];
     self.__classes = null;
+    self.__ids = null;
     self.__style = null;
     self.__inline = null;
     self.__children = children;
@@ -524,6 +525,12 @@ var SELF_CLOSE = {
           this.element.className = v;
         }
         break;
+      case 'id':
+        //使用了jaw内联解析css后不再设置id
+        if(this.__style) {
+          this.__cache[k] = v;
+          this.__updateStyle();
+        }
       default:
         this.element.setAttribute(k, v);
         if(this.__style) {
@@ -547,9 +554,11 @@ var SELF_CLOSE = {
     this.__inline = this.__cache.style || '';
     if(this.parent instanceof VirtualDom) {
       this.__classes = this.parent.__classes.slice(0);
+      this.__ids = this.parent.__ids.slice(0);
     }
     else {
       this.__classes = [];
+      this.__ids = [];
     }
     var klass = (this.__cache.class || '').trim();
     if(klass) {
@@ -562,8 +571,15 @@ var SELF_CLOSE = {
     else {
       this.__classes.push('');
     }
-    //TODO: 属性、id、伪类
-    var matches = match(this.__names, this.__classes, this.__style);
+    var id = (this.__cache.id || '').trim();
+    if(id) {
+      this.__ids.push(id);
+    }
+    else {
+      this.__ids.push('');
+    }
+    //TODO: 属性、伪类
+    var matches = match(this.__names, this.__classes, this.__ids, this.__style);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
   }
