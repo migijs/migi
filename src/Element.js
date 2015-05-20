@@ -3,6 +3,13 @@ import util from './util';
 
 var uid = 0;
 
+function getDom(dom) {
+  if(util.isString(dom)) {
+    return document.querySelector(dom);
+  }
+  return dom;
+}
+
 class Element extends Event {
   constructor(name, props = {}, ...children) {
     super();
@@ -41,21 +48,32 @@ class Element extends Event {
 
   inTo(dom) {
     var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML = s;
-    }
-    else if(dom) {
-      dom.innerHTML = s;
-    }
+    getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
   appendTo(dom) {
     var s = this.toString();
-    if(util.isString(dom)) {
-      document.querySelector(dom).innerHTML += s;
+    dom = getDom(dom);
+    if(dom.lastChild) {
+      var div = document.createElement('div');
+      div.innerHTML = s;
+      dom.appendChild(div.firstChild);
     }
-    else if(dom) {
-      dom.innerHTML += s;
+    else {
+      dom.innerHTML = s;
+    }
+    this.emit(Event.DOM);
+  }
+  prependTo(dom) {
+    var s = this.toString();
+    dom = getDom(dom);
+    if(dom.firstChild) {
+      var div = document.createElement('div');
+      div.innerHTML = s;
+      dom.insertBefore(div.firstChild, dom.firstChild);
+    }
+    else {
+      dom.innerHTML = s;
     }
     this.emit(Event.DOM);
   }
@@ -63,9 +81,7 @@ class Element extends Event {
     var s = this.toString();
     var div = document.createElement('div');
     div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
+    dom = getDom(dom);
     dom.parentNode.insertBefore(div.firstChild, dom);
     this.emit(Event.DOM);
   }
@@ -73,9 +89,7 @@ class Element extends Event {
     var s = this.toString();
     var div = document.createElement('div');
     div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
+    dom = getDom(dom);
     var next = dom.nextSibling;
     if(next) {
       dom.parentNode.insertBefore(div.firstChild, next);
@@ -85,23 +99,11 @@ class Element extends Event {
     }
     this.emit(Event.DOM);
   }
-  insertBefore(dom) {
-    var s = this.toString();
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
-    dom.parentNode.insertBefore(div.firstChild, dom);
-    this.emit(Event.DOM);
-  }
   replace(dom) {
     var s = this.toString();
     var div = document.createElement('div');
     div.innerHTML = s;
-    if(util.isString(dom)) {
-      dom = document.querySelector(dom);
-    }
+    dom = getDom(dom);
     dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);
   }
