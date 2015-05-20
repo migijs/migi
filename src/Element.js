@@ -9,6 +9,9 @@ function getDom(dom) {
   }
   return dom;
 }
+function tempNode() {
+  return document.createElement('div');
+}
 
 class Element extends Event {
   constructor(name, props = {}, ...children) {
@@ -55,7 +58,7 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
-      var div = document.createElement('div');
+      var div = tempNode();
       div.innerHTML = s;
       dom.appendChild(div.firstChild);
     }
@@ -68,7 +71,7 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
-      var div = document.createElement('div');
+      var div = tempNode();
       div.innerHTML = s;
       dom.insertBefore(div.firstChild, dom.firstChild);
     }
@@ -79,7 +82,7 @@ class Element extends Event {
   }
   before(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.insertBefore(div.firstChild, dom);
@@ -87,7 +90,7 @@ class Element extends Event {
   }
   after(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     var next = dom.nextSibling;
@@ -101,7 +104,7 @@ class Element extends Event {
   }
   replace(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.replaceChild(div.firstChild, dom);

@@ -9,6 +9,9 @@ function getDom(dom) {
   }
   return dom;
 }
+function tempNode() {
+  return document.createElement('div');
+}
 
 !function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
   function Element(name, props, children) {
@@ -55,7 +58,7 @@ function getDom(dom) {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
-      var div = document.createElement('div');
+      var div = tempNode();
       div.innerHTML = s;
       dom.appendChild(div.firstChild);
     }
@@ -68,7 +71,7 @@ function getDom(dom) {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
-      var div = document.createElement('div');
+      var div = tempNode();
       div.innerHTML = s;
       dom.insertBefore(div.firstChild, dom.firstChild);
     }
@@ -79,7 +82,7 @@ function getDom(dom) {
   }
   Element.prototype.before = function(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.insertBefore(div.firstChild, dom);
@@ -87,7 +90,7 @@ function getDom(dom) {
   }
   Element.prototype.after = function(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     var next = dom.nextSibling;
@@ -101,7 +104,7 @@ function getDom(dom) {
   }
   Element.prototype.replace = function(dom) {
     var s = this.toString();
-    var div = document.createElement('div');
+    var div = tempNode();
     div.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.replaceChild(div.firstChild, dom);
