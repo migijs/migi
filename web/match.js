@@ -9,10 +9,10 @@ function match(names, classes, ids, style) {
   var s = '';
   res.forEach(function(item) {
     sort(item._v, function(a, b) {
-      return a.i > b.i;
+      return a[0] > b[0];
     });
     item._v.forEach(function(style) {
-      s += style.v + ';';
+      s += style[1] + ';';
     });
   });
   return s;
