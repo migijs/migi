@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>显式声明绑定</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class Person extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      this._first = 'army';
+      this._last = '';
+    }
+    get name(first, last) {
+      if(!this.first && !this.last) {
+        return '(no name)';
+      }
+      return (this._first || '(no first)') + (this._last || '(no last)');
+    }
+    get first() {
+      return this._first;
+    }
+    set first(v) {
+      this._first = v;
+    }
+    get last() {
+      return this._last;
+    }
+    set last(v) {
+      this._last = v;
+    }
+    render() {
+      return (
+        <div>
+          <p>My name is: {this.name}</p>
+          <label>first: <input value={this.first} placeholder="first"/></label>
+          <label>last: <input value={this.last} placeholder="last"/></label>
+        </div>
+      );
+    }
+  }
+
+  migi.render(
+    <Person />,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../../jaw/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
