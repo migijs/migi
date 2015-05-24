@@ -1,4 +1,4 @@
-define(function(require, exports, module){var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("sort")?_0.sort:_0.hasOwnProperty("default")?_0.default:_0}();
+define(function(require, exports, module){var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("sort")?_0.sort:_0.hasOwnProperty("default")?_0["default"]:_0}();
 
 function match(names, classes, ids, style) {
   var res = [];
@@ -60,4 +60,4 @@ function matchSel(i, names, classes, ids, style, res) {
   }
 }
 
-exports.default=match;});
+exports["default"]=match;});

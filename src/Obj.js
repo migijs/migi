@@ -36,10 +36,10 @@ class Obj {
   constructor(k, context, cb) {
     //fix循环依赖
     if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
+      Component = Component['default'];
     }
     if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+      VirtualDom = VirtualDom['default'];
     }
     this.__k = k;
     this.__context = context;

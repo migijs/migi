@@ -1,4 +1,4 @@
-define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
 
 function clone(obj) {
   if(obj instanceof Element) {
@@ -79,7 +79,7 @@ var util = {
   clone:function(obj) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
-      Element = Element.default;
+      Element = Element['default'];
     }
     if(typeof obj != 'object') {
       return obj;
@@ -98,7 +98,7 @@ var util = {
   equal:function(a, b) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
-      Element = Element.default;
+      Element = Element['default'];
     }
     return equal(a, b);
   },
@@ -115,4 +115,4 @@ var util = {
   }
 };
 
-exports.default=util;});
+exports["default"]=util;});

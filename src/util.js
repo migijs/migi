@@ -79,7 +79,7 @@ var util = {
   clone(obj) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
-      Element = Element.default;
+      Element = Element['default'];
     }
     if(typeof obj != 'object') {
       return obj;
@@ -98,7 +98,7 @@ var util = {
   equal(a, b) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
-      Element = Element.default;
+      Element = Element['default'];
     }
     return equal(a, b);
   },

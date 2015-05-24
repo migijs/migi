@@ -1,6 +1,6 @@
-define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0.default:_0}();
-var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1.default:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2.default:_2}();
+define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1["default"]:_1}();
+var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2["default"]:_2}();
 
 function getList(v, list) {
   if(Array.isArray(v)) {
@@ -36,10 +36,10 @@ function joinArray(arr, unEscape) {
   function Obj(k, context, cb) {
     //fix循环依赖
     if(Component.hasOwnProperty('default')) {
-      Component = Component.default;
+      Component = Component['default'];
     }
     if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom.default;
+      VirtualDom = VirtualDom['default'];
     }
     this.__k = k;
     this.__context = context;
@@ -123,4 +123,4 @@ Obj.TEXT = 'TEXT';
 Obj.VIRTUALDOM = 'VIRTUALDOM';
 Obj.COMPONENT = 'COMPONENT';
 
-exports.default=Obj;});
+exports["default"]=Obj;});

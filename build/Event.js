@@ -89,4 +89,4 @@
 Event.DOM = 'DOM';
 Event.DATA = 'DATA';
 
-exports.default=Event;
+exports["default"]=Event;

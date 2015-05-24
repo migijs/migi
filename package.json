@@ -31,6 +31,7 @@
     }
   },
   "dependencies": {
+    "es5-shim": "*",
     "es6-shim": "*",
     "lefty": "~0.1.0",
     "jaw": "~0.1.0"
@@ -45,7 +46,7 @@
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "^0.0.2",
     "through2": "^0.6.1",
-    "jsdc": "^0.6.2"
+    "jsdc": "^0.6.3"
   },
   "main": "./index",
   "engines": {

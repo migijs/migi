@@ -1,4 +1,4 @@
-define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0.default:_0}();
+define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0["default"]:_0}();
 
 !function(){var _1=Object.create(Component.prototype);_1.constructor=NonVisualComponent;NonVisualComponent.prototype=_1}();
   function NonVisualComponent(data) {
@@ -14,4 +14,4 @@ define(function(require, exports, module){var Component=function(){var _0=requir
   NonVisualComponent.prototype.__onDom = function() {}
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
-exports.default=NonVisualComponent;});
+exports["default"]=NonVisualComponent;});

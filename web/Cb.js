@@ -11,4 +11,4 @@ define(function(require, exports, module){
   }
 Object.keys(_0).forEach(function(k){Object.defineProperty(Cb.prototype,k,_0[k])});
 
-exports.default=Cb;});
+exports["default"]=Cb;});
