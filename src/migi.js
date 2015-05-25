@@ -9,7 +9,9 @@ import Cb from './Cb';
 
 var migi = {
   render(component, dom) {
-    component.inTo(dom);
+    if(dom) {
+      component.inTo(dom);
+    }
     return component;
   },
   createElement(name, props, ...children) {

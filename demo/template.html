@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>作为普通模板</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<div id="example2"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class HelloMessage extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    render() {
+      return <p>This is a template.</p>;
+    }
+  }
+
+  document.querySelector('#example').innerHTML = new HelloMessage();
+  document.querySelector('#example2').innerHTML = migi.render('<p>This is a template too.</p>');
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../../jaw/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
