@@ -86,7 +86,7 @@
   }
 
 
-Event.DOM = 'DOM';
-Event.DATA = 'DATA';
+Event.DOM = '__0';
+Event.DATA = '__1';
 
-exports["default"]=Event;
+exports.default=Event;
