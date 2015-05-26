@@ -210,6 +210,7 @@ var SELF_CLOSE = {
   }
 
   VirtualDom.prototype.__onDom = function() {
+    Element.prototype.__onDom.call(this);
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {

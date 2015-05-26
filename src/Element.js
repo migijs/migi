@@ -24,13 +24,16 @@ class Element extends Event {
     this.__element = null;
     this.__parent = null;
     this.__style = null;
+    this.__dom = false;
 
     this.on(Event.DOM, this.__onDom);
     this.on(Event.DATA, this.__onData);
   }
 
+  __onDom() {
+    this.__dom = true;
+  }
   //@abstract
-  //__onDom() {}
   //__onData() {}
 
   get name() {
@@ -47,6 +50,9 @@ class Element extends Event {
   }
   get id() {
     return this.__id;
+  }
+  get dom() {
+    return this.__dom;
   }
 
   inTo(dom) {

@@ -210,6 +210,7 @@ class VirtualDom extends Element {
   }
 
   __onDom() {
+    super.__onDom();
     var self = this;
     var length = self.children.length;
     self.children.forEach(function(child, index) {

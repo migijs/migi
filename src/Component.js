@@ -76,6 +76,7 @@ class Component extends Element {
   }
 
   __onDom() {
+    super.__onDom();
     var self = this;
     self.virtualDom.emit(Event.DOM);
     self.__element = self.virtualDom.element;
