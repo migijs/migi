@@ -299,8 +299,7 @@ class VirtualDom extends Element {
     var first = self.children[0];
     if(first instanceof Obj) {
       switch(first.type) {
-        case Obj.VIRTUALDOM:
-        case Obj.COMPONENT:
+        case Obj.ELEMENT:
           start = first.count;
           break;
       }
@@ -333,7 +332,7 @@ class VirtualDom extends Element {
       if(child instanceof Obj) {
         var ot = child.type;
         //当Component和VirtualDom则++，且前面是非空文本节点时再++，因为有2个节点
-        if(ot == Obj.VIRTUALDOM || ot == Obj.COMPONENT) {
+        if(ot == Obj.ELEMENT) {
           start++;
           //静态文本节点
           if(!(prev instanceof Element)) {

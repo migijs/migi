@@ -1,6 +1,5 @@
-define(function(require, exports, module){var Component=function(){var _0=require('./Component');return _0.hasOwnProperty("Component")?_0.Component:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1["default"]:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2["default"]:_2}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1.default:_1}();
 
 function getList(v, list) {
   if(Array.isArray(v)) {
@@ -26,7 +25,7 @@ function joinArray(arr, unEscape) {
       res += joinArray(item);
     }
     else {
-      res += item instanceof VirtualDom || item instanceof Component || unEscape ? item.toString() : util.escape(item.toString());
+      res += item instanceof Element || unEscape ? item.toString() : util.escape(item.toString());
     }
   });
   return res;
@@ -35,11 +34,8 @@ function joinArray(arr, unEscape) {
 
   function Obj(k, context, cb) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component['default'];
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom['default'];
+    if(Element.hasOwnProperty('default')) {
+      Element = Element['default'];
     }
     this.__k = k;
     this.__context = context;
@@ -49,16 +45,16 @@ function joinArray(arr, unEscape) {
     this.__cb = cb;
     this.v = cb.call(context);
   }
-  var _3={};_3.k={};_3.k.get =function() {
+  var _2={};_2.k={};_2.k.get =function() {
     return this.__k;
   }
-  _3.context={};_3.context.get =function() {
+  _2.context={};_2.context.get =function() {
     return this.__context;
   }
-  _3.v={};_3.v.get =function() {
+  _2.v={};_2.v.get =function() {
     return this.__v;
   }
-  _3.v.set =function(v) {
+  _2.v.set =function(v) {
     var self = this;
     var list = getList(v, []);
     //数组只有1项时，为其对应类型；
@@ -66,14 +62,9 @@ function joinArray(arr, unEscape) {
     //count计数为VirtualDom/Component节点数
     var iV = 0;
     var iT = 0;
-    var iC = 0;
     list.forEach(function(item) {
-      if(item instanceof VirtualDom) {
+      if(item instanceof Element) {
         iV++;
-        self.__count++;
-      }
-      else if(item instanceof Component) {
-        iC++;
         self.__count++;
       }
       else {
@@ -89,38 +80,35 @@ function joinArray(arr, unEscape) {
       self.type = Obj.TEXT;
     }
     else if(iV == list.length) {
-      self.type = Obj.VIRTUALDOM;
+      self.type = Obj.ELEMENT;
     }
     else if(iT == list.length) {
       self.type = Obj.TEXT;
-    }
-    else if(iC == list.length) {
-      self.type = Obj.COMPONENT;
     }
     else {
       throw new Error('migi.Obj can not has complex value: ' + self.k);
     }
     self.__v = util.clone(v);
   }
-  _3.cb={};_3.cb.get =function() {
+  _2.cb={};_2.cb.get =function() {
     return this.__cb;
   }
-  _3.count={};_3.count.get =function() {
+  _2.count={};_2.count.get =function() {
     return this.__count;
   }
-  _3.empty={};_3.empty.get =function() {
+  _2.empty={};_2.empty.get =function() {
     return this.__empty;
   }
   Obj.prototype.toString = function() {
     var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
     return s.toString();
   }
-Object.keys(_3).forEach(function(k){Object.defineProperty(Obj.prototype,k,_3[k])});
+Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型
 //当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，通知parent重绘
+//全部VirtualDom和Component统一为Element
 Obj.TEXT = 'TEXT';
-Obj.VIRTUALDOM = 'VIRTUALDOM';
-Obj.COMPONENT = 'COMPONENT';
+Obj.ELEMENT = 'ELEMENT';
 
-exports["default"]=Obj;});
+exports.default=Obj;});

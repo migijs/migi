@@ -9,6 +9,9 @@ class CachedComponent extends Component {
 
   __onData(target, k) {
     var self = this;
+    if(self.__handler.hasOwnProperty(k)) {
+      return;
+    }
     function cb() {
       self.virtualDom.emit(Event.DATA, target, k);
       self.children.forEach(function(child) {
@@ -17,20 +20,11 @@ class CachedComponent extends Component {
         }
       });
     }
-    var temp;
-    if(!self.__handler.hasOwnProperty(k)) {
-      temp = self.__handler[k] = { cb: cb, timeout: null };
-    }
-    temp = temp || self.__handler[k];
-    if(temp.timeout) {
-      temp.cb = cb;
-    }
-    else {
-      temp.timeout = setTimeout(function() {
-        temp.cb();
-        temp.timeout = null;
-      }, 1);
-    }
+    self.__handler[k] = cb;
+    setTimeout(function() {
+      cb();
+      delete self.__handler[k];
+    }, 1);
   }
 }
 

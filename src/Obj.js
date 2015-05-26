@@ -1,5 +1,4 @@
-import Component from './Component';
-import VirtualDom from './VirtualDom';
+import Element from './Element';
 import util from './util';
 
 function getList(v, list) {
@@ -26,7 +25,7 @@ function joinArray(arr, unEscape) {
       res += joinArray(item);
     }
     else {
-      res += item instanceof VirtualDom || item instanceof Component || unEscape ? item.toString() : util.escape(item.toString());
+      res += item instanceof Element || unEscape ? item.toString() : util.escape(item.toString());
     }
   });
   return res;
@@ -35,11 +34,8 @@ function joinArray(arr, unEscape) {
 class Obj {
   constructor(k, context, cb) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component['default'];
-    }
-    if(VirtualDom.hasOwnProperty('default')) {
-      VirtualDom = VirtualDom['default'];
+    if(Element.hasOwnProperty('default')) {
+      Element = Element['default'];
     }
     this.__k = k;
     this.__context = context;
@@ -66,14 +62,9 @@ class Obj {
     //count计数为VirtualDom/Component节点数
     var iV = 0;
     var iT = 0;
-    var iC = 0;
     list.forEach(function(item) {
-      if(item instanceof VirtualDom) {
+      if(item instanceof Element) {
         iV++;
-        self.__count++;
-      }
-      else if(item instanceof Component) {
-        iC++;
         self.__count++;
       }
       else {
@@ -89,13 +80,10 @@ class Obj {
       self.type = Obj.TEXT;
     }
     else if(iV == list.length) {
-      self.type = Obj.VIRTUALDOM;
+      self.type = Obj.ELEMENT;
     }
     else if(iT == list.length) {
       self.type = Obj.TEXT;
-    }
-    else if(iC == list.length) {
-      self.type = Obj.COMPONENT;
     }
     else {
       throw new Error('migi.Obj can not has complex value: ' + self.k);
@@ -119,8 +107,8 @@ class Obj {
 
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型
 //当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，通知parent重绘
+//全部VirtualDom和Component统一为Element
 Obj.TEXT = 'TEXT';
-Obj.VIRTUALDOM = 'VIRTUALDOM';
-Obj.COMPONENT = 'COMPONENT';
+Obj.ELEMENT = 'ELEMENT';
 
 export default Obj;

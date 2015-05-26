@@ -1,4 +1,5 @@
 import Event from './Event';
+import Element from './Element';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
@@ -24,6 +25,7 @@ var migi = {
   },
   Event,
   eventBus: Event.mix({}),
+  Element,
   Component,
   NonVisualComponent,
   CacheComponent,

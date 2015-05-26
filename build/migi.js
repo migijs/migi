@@ -1,11 +1,12 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("Component")?_1.Component:_1.hasOwnProperty("default")?_1.default:_1}();
-var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("VirtualDom")?_2.VirtualDom:_2.hasOwnProperty("default")?_2.default:_2}();
-var NonVisualComponent=function(){var _3=require('./NonVisualComponent');return _3.hasOwnProperty("NonVisualComponent")?_3.NonVisualComponent:_3.hasOwnProperty("default")?_3.default:_3}();
-var CacheComponent=function(){var _4=require('./CacheComponent');return _4.hasOwnProperty("CacheComponent")?_4.CacheComponent:_4.hasOwnProperty("default")?_4.default:_4}();
-var util=function(){var _5=require('./util');return _5.hasOwnProperty("util")?_5.util:_5.hasOwnProperty("default")?_5.default:_5}();
-var Obj=function(){var _6=require('./Obj');return _6.hasOwnProperty("Obj")?_6.Obj:_6.hasOwnProperty("default")?_6.default:_6}();
-var Cb=function(){var _7=require('./Cb');return _7.hasOwnProperty("Cb")?_7.Cb:_7.hasOwnProperty("default")?_7.default:_7}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1.default:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2.default:_2}();
+var VirtualDom=function(){var _3=require('./VirtualDom');return _3.hasOwnProperty("VirtualDom")?_3.VirtualDom:_3.hasOwnProperty("default")?_3.default:_3}();
+var NonVisualComponent=function(){var _4=require('./NonVisualComponent');return _4.hasOwnProperty("NonVisualComponent")?_4.NonVisualComponent:_4.hasOwnProperty("default")?_4.default:_4}();
+var CacheComponent=function(){var _5=require('./CacheComponent');return _5.hasOwnProperty("CacheComponent")?_5.CacheComponent:_5.hasOwnProperty("default")?_5.default:_5}();
+var util=function(){var _6=require('./util');return _6.hasOwnProperty("util")?_6.util:_6.hasOwnProperty("default")?_6.default:_6}();
+var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("Obj")?_7.Obj:_7.hasOwnProperty("default")?_7.default:_7}();
+var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("Cb")?_8.Cb:_8.hasOwnProperty("default")?_8.default:_8}();
 
 var migi = {
   render:function(component, dom) {
@@ -24,6 +25,7 @@ var migi = {
   },
   Event:Event,
   eventBus: Event.mix({}),
+  Element:Element,
   Component:Component,
   NonVisualComponent:NonVisualComponent,
   CacheComponent:CacheComponent,
