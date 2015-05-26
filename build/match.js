@@ -1,6 +1,6 @@
-var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("sort")?_0.sort:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("sort")?_0.sort:_0.hasOwnProperty("default")?_0.default:_0}();
 
-function match(names, classes, ids, style) {
+function match(names, classes, ids, style, virtualDom) {
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style, res);
   sort(res, function(a, b) {
@@ -46,8 +46,8 @@ function matchSel(i, names, classes, ids, style, res) {
     if(style.hasOwnProperty(k)) {
       var item = style[k];
       if(i) {
-        //_d记录着深度，当i索引>深度或者深度不存在（说明没有后续）跳出
-        if(item._d && i > item._d || !item._d) {
+        //_d记录着深度，当i索引>深度跳出
+        if(item._d && i > item._d) {
           return;
         }
         matchSel(i - 1, names, classes, ids, item, res);
@@ -58,6 +58,10 @@ function matchSel(i, names, classes, ids, style, res) {
       }
     }
   }
+  //当前有样式值
+  if(style.hasOwnProperty('_v')) {
+    res.push(style);
+  }
 }
 
-exports["default"]=match;
+exports.default=match;

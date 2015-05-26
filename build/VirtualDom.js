@@ -492,7 +492,7 @@ var SELF_CLOSE = {
       this.__ids.push('');
     }
     //TODO: 属性、伪类
-    var matches = match(this.__names, this.__classes, this.__ids, this.__style);
+    var matches = match(this.__names, this.__classes, this.__ids, this.__style, this);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
   }
