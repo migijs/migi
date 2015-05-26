@@ -70,11 +70,7 @@ var SELF_CLOSE = {
         });
       }
       else {
-        var s = self.__renderProp(prop);
-        //使用jaw导入样式时不输出class属性
-        if(prop != 'class' || !self.__style) {
-          res += s;
-        }
+        res += self.__renderProp(prop);
       }
     });
     //使用jaw内联css需解析
@@ -425,30 +421,17 @@ var SELF_CLOSE = {
       case 'checked':
       case 'selected':
         this.element[k] = v;
-        if(this.__style) {
-          this.__cache[k] = v;
-        }
-        break;
-      case 'class':
-        //使用了jaw内联解析css后不再设置类名
+        //使用了jaw内联解析css
         if(this.__style) {
           this.__cache[k] = v;
           this.__updateStyle();
         }
-        else {
-          this.element.className = v;
-        }
         break;
-      case 'id':
-        //使用了jaw内联解析css后不再设置id
-        if(this.__style) {
-          this.__cache[k] = v;
-          this.__updateStyle();
-        }
       default:
         this.element.setAttribute(k, v);
         if(this.__style) {
           this.__cache[k] = v;
+          this.__updateStyle();
         }
         break;
     }
