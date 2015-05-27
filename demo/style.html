@@ -6,40 +6,41 @@
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
-  <style type="text/jsx">
-    span{
-      position:relative;
-      display:inline-block;
-      width:40px;
-      height:20px;
-      background:#6AF;
-      border-radius:10px;
-      transition:background-color 0.3s;
-    }
-    span i{
-      position:absolute;
-      display:block;
-      left:2px;
-      top:2px;
-      width:16px;
-      height:16px;
-      background:#FFF;
-      border-radius:25px;
-      box-shadow:2px 2px 4px rgba(0, 0, 0, 0.1);
-      cursor:pointer;
-      transition:left 0.3s;
-    }
-    .off{
-      background-color:#CCC;
-    }
-    .off i{
-      left:20px;
-    }
-  </style>
 </head>
 <body>
 <div id="example"></div>
+<pre><code class="brush:css"></code></pre>
 <pre><code class="brush:jsx"></code></pre>
+<style type="text/jsx">
+  span{
+    position:relative;
+    display:inline-block;
+    width:40px;
+    height:20px;
+    background:#6AF;
+    border-radius:10px;
+    transition:background-color 0.3s;
+  }
+  span i{
+    position:absolute;
+    display:block;
+    left:2px;
+    top:2px;
+    width:16px;
+    height:16px;
+    background:#FFF;
+    border-radius:25px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.1);
+    cursor:pointer;
+    transition:left 0.3s;
+  }
+  .off{
+    background-color:#CCC;
+  }
+  .off i{
+    left:20px;
+  }
+</style>
 <script type="text/jsx">
   import jaw from 'jaw';
   var style = document.querySelector('style[type="text/jsx"]').textContent;
@@ -96,12 +97,18 @@
   define('fs', {});
   seajs.use('jaw');
   seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
-    var code = document.querySelector('pre code');
+    var code = document.querySelector('pre code[class="brush:jsx"]');
     var jsx = document.querySelector('script[type="text/jsx"]');
     var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
     source = source.trim().replace(/\n[ ]{2}/g, '\n');
     var text = document.createTextNode(source);
     code.appendChild(text);
+    var code2 = document.querySelector('pre code[class="brush:css"]');
+    var css = document.querySelector('style[type="text/jsx"]');
+    var source2 = css.textContent || css.innerText || css.firstChild && css.firstChild.nodeValue || '';
+    source2 = source2.trim().replace(/\n[ ]{2}/g, '\n');
+    var text2 = document.createTextNode(source2);
+    code2.appendChild(text2);
     jssc.exec();
     lefty.init();
     migi.init();
