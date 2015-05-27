@@ -20,7 +20,7 @@ class Element extends Event {
     this.__props = props;
     this.__children = children;
 
-    this.__id = uid++;
+    this.__uid = uid++;
     this.__element = null;
     this.__parent = null;
     this.__style = null;
@@ -48,8 +48,8 @@ class Element extends Event {
   get parent() {
     return this.__parent;
   }
-  get id() {
-    return this.__id;
+  get uid() {
+    return this.__uid;
   }
   get dom() {
     return this.__dom;

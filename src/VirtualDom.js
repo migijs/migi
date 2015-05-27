@@ -85,7 +85,7 @@ class VirtualDom extends Element {
         }
       }
     }
-    res += ' migi-id="' + self.id + '"';
+    res += ' migi-uid="' + self.uid + '"';
     //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
@@ -182,7 +182,7 @@ class VirtualDom extends Element {
   }
 
   get element() {
-    this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
+    this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
     return this.__element;
   }
   get names() {

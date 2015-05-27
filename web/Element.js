@@ -20,7 +20,7 @@ function tempNode() {
     this.__props = props;
     this.__children = children;
 
-    this.__id = uid++;
+    this.__uid = uid++;
     this.__element = null;
     this.__parent = null;
     this.__style = null;
@@ -48,8 +48,8 @@ function tempNode() {
   _3.parent={};_3.parent.get =function() {
     return this.__parent;
   }
-  _3.id={};_3.id.get =function() {
-    return this.__id;
+  _3.uid={};_3.uid.get =function() {
+    return this.__uid;
   }
   _3.dom={};_3.dom.get =function() {
     return this.__dom;

@@ -85,7 +85,7 @@ var SELF_CLOSE = {
         }
       }
     }
-    res += ' migi-id="' + self.id + '"';
+    res += ' migi-uid="' + self.uid + '"';
     //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
@@ -182,7 +182,7 @@ var SELF_CLOSE = {
   }
 
   var _9={};_9.element={};_9.element.get =function() {
-    this.__element = this.__element || document.querySelector('[migi-id="' + this.id + '"]');
+    this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
     return this.__element;
   }
   _9.names={};_9.names.get =function() {
