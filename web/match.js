@@ -94,6 +94,10 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
                     virtualDom.__active = false;
                       virtualDom.__updateStyle();
                   }, true);
+                  window.addEventListener('blur', function(e) {
+                    virtualDom.__active = false;
+                    virtualDom.__updateStyle();
+                  });
                 });
                 break;
             }
