@@ -18,6 +18,8 @@
   a:hover span{font-style:normal}
   a:active{background:#CF9}
   a:active span{border-top:1px dashed #666}
+  a:first-child{font-size:24px}
+  a:last-child{text-shadow:0 0 5px rgb(0,0,0)}
 </style>
 <script type="text/jsx">
   import jaw from 'jaw';
@@ -31,7 +33,11 @@
     render() {
       return (
         <p>
-          <a href="#"><span>link</span></a>
+          <a href="#"><span>link1</span></a>
+          <br/>
+          <a href="#"><span>link2</span></a>
+          <br/>
+          <a href="#"><span>link3</span></a>
         </p>
       );
     }

@@ -125,6 +125,46 @@ var SELF_CLOSE = {
     res +='</' + self.name + '>';
     return res;
   }
+
+  VirtualDom.prototype.isFirst = function() {
+    //本身就是Component的唯一节点
+    if(this.parent instanceof Component) {
+      return true;
+    }
+    var children = this.parent.children;
+    for(var i = 0, len = children.length; i < len; i++) {
+      var child = children[i];
+      if(child == this) {
+        return true;
+      }
+      else if(child instanceof VirtualDom) {
+        return false;
+      }
+      else if(child instanceof Obj && child.type == Obj.ELEMENT) {
+        return false;
+      }
+    }
+  }
+  VirtualDom.prototype.isLast = function() {
+    //本身就是Component的唯一节点
+    if(this.parent instanceof Component) {
+      return true;
+    }
+    var children = this.parent.children;
+    for(var i = children.length - 1; i >= 0; i--) {
+      var child = children[i];
+      if(child == this) {
+        return true;
+      }
+      else if(child instanceof VirtualDom) {
+        return false;
+      }
+      else if(child instanceof Obj && child.type == Obj.ELEMENT) {
+        return false;
+      }
+    }
+  }
+
   VirtualDom.prototype.__renderProp = function(prop) {
     var self = this;
     var v = self.props[prop];

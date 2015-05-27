@@ -110,16 +110,32 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
           for(var j = 0, len = pseudos.length; j < len; j++) {
             switch(pseudos[j]) {
               case 'hover':
-                if(virtualDom.__hover == false) {
+                if(!virtualDom.__hover) {
                   isMatch = false;
                   break outer;
                 }
                 break;
               case 'active':
-                if(virtualDom.__active == false) {
+                if(!virtualDom.__active) {
                   isMatch = false;
                   break outer;
                 }
+                break;
+              case 'first-child':
+                if(!virtualDom.isFirst()) {
+                  isMatch = false;
+                  break outer;
+                }
+                break;
+              case 'last-child':
+                if(!virtualDom.isLast()) {
+                  isMatch = false;
+                  break outer;
+                }
+                break;
+              //TODO:其它伪类
+              default:
+                isMatch = false;
                 break;
             }
           }
