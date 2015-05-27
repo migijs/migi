@@ -89,10 +89,11 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
                     virtualDom.__active = true;
                     virtualDom.__updateStyle();
                   });
-                  virtualDom.element.addEventListener('mouseup', function(e) {
+                  //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
+                  document.body.addEventListener('mouseup', function(e) {
                     virtualDom.__active = false;
-                    virtualDom.__updateStyle();
-                  });
+                      virtualDom.__updateStyle();
+                  }, true);
                 });
                 break;
             }
