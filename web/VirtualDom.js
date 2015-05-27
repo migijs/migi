@@ -70,7 +70,17 @@ var SELF_CLOSE = {
         });
       }
       else {
-        res += self.__renderProp(prop);
+        var s = self.__renderProp(prop);
+        //使用jaw导入样式时不输出class属性
+        if(self.__style) {
+          switch(prop) {
+            case 'class':
+            case 'id':
+              s = ' ' + 'migi-' + s.slice(1);
+              break;
+          }
+        }
+        res += s;
       }
     });
     //使用jaw内联css需解析
@@ -427,6 +437,14 @@ var SELF_CLOSE = {
           this.__updateStyle();
         }
         break;
+      case 'id':
+      case 'class':
+        if(this.__style) {
+          this.element.setAttribute('migi-' + k, v);
+          this.__cache[k] = v;
+          this.__updateStyle();
+          break;
+        }
       default:
         this.element.setAttribute(k, v);
         if(this.__style) {
