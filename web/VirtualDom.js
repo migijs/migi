@@ -44,6 +44,8 @@ var SELF_CLOSE = {
     self.__ids = null;
     self.__inline = null;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+    self.__hover = false;
+    self.__active = false;
     children.forEach(function(child) {
       child.__parent = self;
     });
@@ -85,7 +87,7 @@ var SELF_CLOSE = {
     });
     //使用jaw内联css需解析
     if(self.__style) {
-      var s = self.__match();
+      var s = self.__match(true);
       if(s) {
         if(res.indexOf(' style="') > 1) {
           res = res.replace(/ style="[^"]*"/, ' style="' + s + '"');
@@ -465,7 +467,7 @@ var SELF_CLOSE = {
       }
     }
   }
-  VirtualDom.prototype.__match = function() {
+  VirtualDom.prototype.__match = function(first) {
     this.__inline = this.__cache.style || '';
     if(this.parent instanceof VirtualDom) {
       this.__classes = this.parent.__classes.slice(0);
@@ -494,7 +496,7 @@ var SELF_CLOSE = {
       this.__ids.push('');
     }
     //TODO: 属性、伪类
-    var matches = match(this.__names, this.__classes, this.__ids, this.__style, this);
+    var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
   }
