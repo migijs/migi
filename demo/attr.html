@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>属性</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:css"></code></pre>
+<pre><code class="brush:jsx"></code></pre>
+<style type="text/jsx">
+  a{color:#F00}
+  a[title]{text-decoration:none}
+  a[title="b"]{text-shadow:0 0 5px rgb(0,0,0)}
+  a[title^="bc"]{font-size:24px}
+  a[title$="bc"]{font-size:36px}
+  a[title~="bc"]{padding-left:20px}
+  a[title*="bc"]{border-right:1px solid #000}
+  a[title|="bc"]{border-left:1px solid #09F}
+</style>
+<script type="text/jsx">
+  import jaw from 'jaw';
+  var style = document.querySelector('style[type="text/jsx"]').textContent;
+
+  class Link extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      this.style = jaw.parse(style);
+    }
+    render() {
+      return (
+        <p>
+          <a href="#"><span>link1</span></a>
+          <br/>
+          <a href="#" title="a"><span>link2</span></a>
+          <br/>
+          <a href="#" title="b"><span>link3</span></a>
+          <br/>
+          <a href="#" title="bcd"><span>link4</span></a>
+          <br/>
+          <a href="#" title="abc"><span>link5</span></a>
+          <br/>
+          <a href="#" title="a bc"><span>link6</span></a>
+          <br/>
+          <a href="#" title="bc-a"><span>link7</span></a>
+        </p>
+      );
+    }
+  }
+
+  migi.render(
+    <Link />,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../../lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../../jaw/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use('jaw');
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code[class="brush:jsx"]');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    var code2 = document.querySelector('pre code[class="brush:css"]');
+    var css = document.querySelector('style[type="text/jsx"]');
+    var source2 = css.textContent || css.innerText || css.firstChild && css.firstChild.nodeValue || '';
+    source2 = source2.trim().replace(/\n[ ]{2}/g, '\n');
+    var text2 = document.createTextNode(source2);
+    code2.appendChild(text2);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
