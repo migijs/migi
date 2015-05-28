@@ -3,28 +3,92 @@
 <head>
   <title>migi</title>
   <meta charset="UTF-8"/>
+  <style>
+    ol span{
+      font-size:12px;
+      line-height:18px;
+      text-shadow:0 0 3px rgba(255,255,0, 0.3)
+    }
+  </style>
 </head>
 <body>
 <ol>
-  <li><a href="hello.html" title="hello">Hello World!</a></li>
-  <li><a href="jsx.html" title="jsx">JSX</a></li>
-  <li><a href="array.html" title="array">展开数组</a></li>
-  <li><a href="component.html" title="component">自定义组件</a></li>
-  <li><a href="template.html" title="template">作为普通模板</a></li>
-  <li><a href="children.html" title="children">children属性</a></li>
-  <li><a href="dom.html" title="dom">侦听操作DOM</a></li>
-  <li><a href="one.html" title="one">get/set单向数据绑定</a></li>
-  <li><a href="two.html" title="two">get/set双向数据绑定</a></li>
-  <li><a href="explicit.html" title="explicit">显式声明绑定</a></li>
-  <li><a href="ajax.html" title="ajax">Ajax非可视组件</a></li>
-  <li><a href="texta.html" title="texta">文字动画</a></li>
-  <li><a href="cache.html" title="cache">继承缓存组件</a></li>
-  <li><a href="expr.html" title="expr">任意js表达式数据都被侦听</a></li>
-  <li><a href="add.html" title="add">添加删除元素</a></li>
-  <li><a href="switch.html" title="switch">切换按钮</a></li>
-  <li><a href="style.html" title="style">css组件</a></li>
-  <li><a href="pseudo.html" title="pseudo">伪类</a></li>
-  <li><a href="exclusive.html" title="exclusive">不排他</a></li>
+  <li>
+    <a href="hello.html" title="hello">Hello World!</a>
+    <span>基本的render方法接收2个参数：模板和渲染对象</span>
+  </li>
+  <li>
+    <a href="jsx.html" title="jsx">JSX</a>
+    <span>jsx语法允许html和js混写，这是facebook发明的规范</span>
+  </li>
+  <li>
+    <a href="array.html" title="array">展开数组</a>
+    <span>当jsx变量遇到数组时，会自动遍历每项，这是个递归的过程</span>
+  </li>
+  <li>
+    <a href="component.html" title="component">自定义组件</a>
+    <span>当jsx中的html的tagName为一个继承自migi.Component的类时，将生产一个组件类的实例，并调用其render()方法渲染。它的props属性为第1个参数，来自于attribute</span>
+  </li>
+  <li>
+    <a href="template.html" title="template">作为普通模板</a>
+    <span>一个自定义组件或jsx的模板对象，因为覆写了toString()方法，所以可以作为一个String类型被使用</span>
+  </li>
+  <li>
+    <a href="children.html" title="children">children属性</a>
+    <span>自定义组件拥有children属性，是个数组，指向实际运行时其html的孩子节点</span>
+  </li>
+  <li>
+    <a href="dom.html" title="dom">侦听操作DOM</a>
+    <span>当渲染完毕时，自定义组件拥有element对象指向其根节点DOM，即render()方法的根节点</span>
+  </li>
+  <li>
+    <a href="one.html" title="one">get/set单向数据绑定</a>
+    <span>自定义组件类中声明了get/set方法的变量，在render()中渲染将产生数据绑定，一旦发生改变，会联动</span>
+  </li>
+  <li>
+    <a href="two.html" title="two">get/set双向数据绑定</a>
+    <span>同上，只是view层发生改变时model层同步</span>
+  </li>
+  <li>
+    <a href="explicit.html" title="explicit">显式声明绑定</a>
+    <span>可能有get没set或者mv和m层数据分开的原因，可为get方法的形参追加变量名，显示声明绑定哪个变量</span>
+  </li>
+  <li>
+    <a href="ajax.html" title="ajax">Ajax非可视组件</a>
+    <span>当一个自定义组件无需DOM时，可继承NonVisualComponent，它render()返回空字符串</span>
+  </li>
+  <li>
+    <a href="texta.html" title="texta">文字动画</a>
+    <span>展示了如何用数据绑定来实现动画的效果</span>
+  </li>
+  <li>
+    <a href="cache.html" title="cache">继承缓存组件</a>
+    <span>绑定数据频繁操作时会引发大量重绘，此时继承CacheComponent是个很好的选择，它将缓存结果只渲染1次</span>
+  </li>
+  <li>
+    <a href="expr.html" title="expr">任意js表达式数据都被侦听</a>
+    <span>jsx中的js表达式包含的绑定变量可能不止1个</span>
+  </li>
+  <li>
+    <a href="add.html" title="add">添加删除元素</a>
+    <span>演示了各种情况，更新DOM和文本节点。get/set的对象是个引用时需重新自己赋值一下</span>
+  </li>
+  <li>
+    <a href="switch.html" title="switch">切换按钮</a>
+    <span>一个Switch的示例</span>
+  </li>
+  <li>
+    <a href="style.html" title="style">css组件</a>
+    <span>将Switch用到的css用jaw解析进来形成单一静态资源文件</span>
+  </li>
+  <li>
+    <a href="pseudo.html" title="pseudo">伪类</a>
+    <span>也支持css2的伪类</span>
+  </li>
+  <li>
+    <a href="exclusive.html" title="exclusive">不排他</a>
+    <span>自定义组件示例对象可以单独使用，作为一个普通js对象</span>
+  </li>
 </ol>
 <p><a href="https://github.com/migijs/migi" target="_blank" title="github">github source</a></p>
 </body>
