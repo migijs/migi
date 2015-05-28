@@ -1,6 +1,6 @@
-define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0.default:_0}();
-var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("Event")?_1.Event:_1.hasOwnProperty("default")?_1.default:_1}();
-var sort=function(){var _2=require('./sort');return _2.hasOwnProperty("sort")?_2.sort:_2.hasOwnProperty("default")?_2.default:_2}();
+define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("Event")?_1.Event:_1.hasOwnProperty("default")?_1["default"]:_1}();
+var sort=function(){var _2=require('./sort');return _2.hasOwnProperty("sort")?_2.sort:_2.hasOwnProperty("default")?_2["default"]:_2}();
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
@@ -155,6 +155,65 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
           }
         });
       }
+      //有:[属性时，检查是否满足伪类情况，全部满足后追加样式
+      if(item.hasOwnProperty('_[')) {
+        var item2 = item['_['];
+        item2.forEach(function(attrItem) {
+          var attrs = attrItem[0];
+          var isMatch = true;
+          outer:
+          for(var j = 0, len = attrs.length; j < len; j++) {
+            var attr = attrs[j];
+            //[attr]形式，只要有属性即可
+            if(attr.length == 1) {
+              if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
+                isMatch = false;
+                break;
+              }
+            }
+            //[attr=xxx]形式，需比较值
+            else {
+              var p = virtualDom.__cache[attr[0]];
+              if(p === undefined) {
+                isMatch = false;
+                break outer;
+              }
+              var v = attr[2].replace(/^(['"'])(.*)\1/, '$2');
+              switch(attr[1]) {
+                case '=':
+                  isMatch = p == v;
+                  break;
+                case '^=':console.log(p, v, p.indexOf(v))
+                  isMatch = p.indexOf(v) == 0;
+                  break;
+                case '$=':
+                  isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
+                  break;
+                case '~=':
+                  var reg = new RegExp('\\b' + v + '\\b');
+                  isMatch = reg.test(p);
+                  break;
+                case '*=':
+                  isMatch = p.indexOf(v) > -1;
+                  break;
+                case '|=':
+                  isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
+                  break;
+                default:
+                  isMatch = false;
+                  break outer;
+              }
+              if(!isMatch) {
+                break outer;
+              }
+            }
+          }
+          item = attrItem[1];
+          if(isMatch && item.hasOwnProperty('_v')) {
+            res.push(item);
+          }
+        });
+      }
     }
   }
   //当前有样式值
@@ -163,4 +222,4 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
   }
 }
 
-exports.default=match;});
+exports["default"]=match;});
