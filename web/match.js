@@ -178,12 +178,12 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
                 isMatch = false;
                 break outer;
               }
-              var v = attr[2].replace(/^(['"'])(.*)\1/, '$2');
+              var v = attr[2];
               switch(attr[1]) {
                 case '=':
                   isMatch = p == v;
                   break;
-                case '^=':console.log(p, v, p.indexOf(v))
+                case '^=':
                   isMatch = p.indexOf(v) == 0;
                   break;
                 case '$=':
