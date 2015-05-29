@@ -69,6 +69,12 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
     }
     return res;
   }
+  Component.prototype.find = function(name) {
+    return this.findAll(name, true);
+  }
+  Component.prototype.findAll = function(name, first) {
+    return this.virtualDom.findAll(name, first);
+  }
 
   var _5={};_5.virtualDom={};_5.virtualDom.get =function() {
     return this.__virtualDom;

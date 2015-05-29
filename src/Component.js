@@ -69,6 +69,12 @@ class Component extends Element {
     }
     return res;
   }
+  find(name) {
+    return this.findAll(name, true);
+  }
+  findAll(name, first) {
+    return this.virtualDom.findAll(name, first);
+  }
 
   get virtualDom() {
     return this.__virtualDom;
