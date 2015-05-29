@@ -57,6 +57,7 @@ class VirtualDom extends Element {
     Object.keys(self.props).forEach(function(prop) {
       if(/^on[A-Z]/.test(prop)) {
         self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
           var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
             return Up.toLowerCase();
           });
@@ -73,7 +74,7 @@ class VirtualDom extends Element {
       }
       else {
         var s = self.__renderProp(prop);
-        //使用jaw导入样式时不输出class属性
+        //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
         if(self.__style) {
           switch(prop) {
             case 'class':
@@ -98,15 +99,67 @@ class VirtualDom extends Element {
       }
     }
     res += ' migi-uid="' + self.uid + '"';
+    //input和select这种:input要侦听数据绑定
+    if(self.name == 'input') {
+      if(self.props.hasOwnProperty('value')) {
+        var item = self.props.value;
+        self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
+          function cb() {
+            item.v = this.value;
+            var key = item.k;
+            item.context[key] = this.value;
+          }
+          switch(self.__cache.type) {
+            //一些无需联动
+            case 'button':
+            case 'hidden':
+            case 'image':
+            case 'file':
+            case 'reset':
+            case 'submit':
+              break;
+            //只需侦听change
+            case 'checkbox':
+            case 'radio':
+            case 'range':
+              self.element.addEventListener('change', cb);
+              break;
+            //其它无需change，但input等
+            default:
+              self.element.addEventListener('input', cb);
+              self.element.addEventListener('paste', cb);
+              self.element.addEventListener('cut', cb);
+              break;
+          }
+        });
+      }
+    }
+    else if(self.name == 'select') {
+      if(self.props.hasOwnProperty('value')){
+        var item = self.props.value;
+        self.on(Event.DOM, function(){
+          self.off(Event.DOM, arguments.callee);
+          function cb() {
+            item.v = this.value;
+            var key = item.k;
+            item.context[key] = this.value;
+          }
+          self.element.addEventListener('change', cb);
+        });
+      }
+    }
     //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
     }
     res += '>';
+    //textarea的value在标签的childNodes里
     if(self.name == 'textarea') {
       self.children.forEach(function(child) {
         if(child instanceof Obj) {
           self.on(Event.DOM, function() {
+            self.on(Event.DOM, arguments.callee);
             function cb(e) {
               child.v = this.value;
               var key = child.k;
@@ -119,6 +172,7 @@ class VirtualDom extends Element {
         }
       });
     }
+    //渲染children
     self.children.forEach(function(child) {
       res += self.__renderChild(child);
     });
@@ -168,19 +222,6 @@ class VirtualDom extends Element {
   __renderProp(prop) {
     var self = this;
     var v = self.props[prop];
-    if(prop == 'value' && self.name == 'input' && self.props[prop] instanceof Obj) {
-      var item = self.props[prop];
-      self.on(Event.DOM, function() {
-        function cb() {
-          item.v = this.value;
-          var key = item.k;
-          item.context[key] = this.value;
-        }
-        self.element.addEventListener('input', cb);
-        self.element.addEventListener('paste', cb);
-        self.element.addEventListener('cut', cb);
-      });
-    }
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
         var s = v.toString();

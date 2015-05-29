@@ -1,11 +1,11 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1.default:_1}();
-var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2.default:_2}();
-var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3.default:_3}();
-var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4.default:_4}();
-var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5.default:_5}();
-var match=function(){var _6=require('./match');return _6.hasOwnProperty("match")?_6.match:_6.hasOwnProperty("default")?_6.default:_6}();
-var sort=function(){var _7=require('./sort');return _7.hasOwnProperty("sort")?_7.sort:_7.hasOwnProperty("default")?_7.default:_7}();
+var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1["default"]:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2["default"]:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3["default"]:_3}();
+var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4["default"]:_4}();
+var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5["default"]:_5}();
+var match=function(){var _6=require('./match');return _6.hasOwnProperty("match")?_6.match:_6.hasOwnProperty("default")?_6["default"]:_6}();
+var sort=function(){var _7=require('./sort');return _7.hasOwnProperty("sort")?_7.sort:_7.hasOwnProperty("default")?_7["default"]:_7}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -57,6 +57,7 @@ var SELF_CLOSE = {
     Object.keys(self.props).forEach(function(prop) {
       if(/^on[A-Z]/.test(prop)) {
         self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
           var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
             return Up.toLowerCase();
           });
@@ -73,7 +74,7 @@ var SELF_CLOSE = {
       }
       else {
         var s = self.__renderProp(prop);
-        //使用jaw导入样式时不输出class属性
+        //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
         if(self.__style) {
           switch(prop) {
             case 'class':
@@ -98,15 +99,67 @@ var SELF_CLOSE = {
       }
     }
     res += ' migi-uid="' + self.uid + '"';
+    //input和select这种:input要侦听数据绑定
+    if(self.name == 'input') {
+      if(self.props.hasOwnProperty('value')) {
+        var item = self.props.value;
+        self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
+          function cb() {
+            item.v = this.value;
+            var key = item.k;
+            item.context[key] = this.value;
+          }
+          switch(self.__cache.type) {
+            //一些无需联动
+            case 'button':
+            case 'hidden':
+            case 'image':
+            case 'file':
+            case 'reset':
+            case 'submit':
+              break;
+            //只需侦听change
+            case 'checkbox':
+            case 'radio':
+            case 'range':
+              self.element.addEventListener('change', cb);
+              break;
+            //其它无需change，但input等
+            default:
+              self.element.addEventListener('input', cb);
+              self.element.addEventListener('paste', cb);
+              self.element.addEventListener('cut', cb);
+              break;
+          }
+        });
+      }
+    }
+    else if(self.name == 'select') {
+      if(self.props.hasOwnProperty('value')){
+        var item = self.props.value;
+        self.on(Event.DOM, function(){
+          self.off(Event.DOM, arguments.callee);
+          function cb() {
+            item.v = this.value;
+            var key = item.k;
+            item.context[key] = this.value;
+          }
+          self.element.addEventListener('change', cb);
+        });
+      }
+    }
     //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
     }
     res += '>';
+    //textarea的value在标签的childNodes里
     if(self.name == 'textarea') {
       self.children.forEach(function(child) {
         if(child instanceof Obj) {
           self.on(Event.DOM, function() {
+            self.on(Event.DOM, arguments.callee);
             function cb(e) {
               child.v = this.value;
               var key = child.k;
@@ -119,6 +172,7 @@ var SELF_CLOSE = {
         }
       });
     }
+    //渲染children
     self.children.forEach(function(child) {
       res += self.__renderChild(child);
     });
@@ -168,19 +222,6 @@ var SELF_CLOSE = {
   VirtualDom.prototype.__renderProp = function(prop) {
     var self = this;
     var v = self.props[prop];
-    if(prop == 'value' && self.name == 'input' && self.props[prop] instanceof Obj) {
-      var item = self.props[prop];
-      self.on(Event.DOM, function() {
-        function cb() {
-          item.v = this.value;
-          var key = item.k;
-          item.context[key] = this.value;
-        }
-        self.element.addEventListener('input', cb);
-        self.element.addEventListener('paste', cb);
-        self.element.addEventListener('cut', cb);
-      });
-    }
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
         var s = v.toString();
@@ -553,4 +594,4 @@ var SELF_CLOSE = {
   }
 Object.keys(_9).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_9[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
-exports.default=VirtualDom;
+exports["default"]=VirtualDom;
