@@ -19,13 +19,13 @@
 <script>
   seajs.config({
     alias: {
-      'homunculus': seajs.resolve('../../lefty/node_modules/homunculus/index.js', seajs.data.cwd),
-      'jsdc': seajs.resolve('../../lefty/node_modules/jsdc/index.js', seajs.data.cwd),
-      'lefty': seajs.resolve('../../lefty/init.js', seajs.data.cwd),
-      'jaw': seajs.resolve('../../jaw/index.js', seajs.data.cwd)
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
     },
     map: [function(url) {
-      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
     }]
   });
   define('fs', {});

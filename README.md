@@ -9,5 +9,18 @@ npm install migi
 
 [![logo](https://raw.githubusercontent.com/migijs/migi/master/logo.jpg)](https://github.com/migijs/migi)
 
+## 文档
+https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
+
+## API
+暂无
+
+## Demo
+* demo目录下是一个web端的实时转换例子，本地浏览需要npm install安装依赖
+* 依赖的语法解析器来自于homunculus：https://github.com/army8735/homunculus
+* 依赖的jsx翻译工具来自于lefty：https://github.com/migijs/lefty
+* 依赖的css注入工具来自于jaw：https://github.com/migijs/jaw
+* 在线地址：http://army8735.me/migijs/migi/demo/
+
 # License
 [MIT License]
