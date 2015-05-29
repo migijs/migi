@@ -274,6 +274,39 @@ var SELF_CLOSE = {
     self.__onDom();
   }
 
+  VirtualDom.prototype.find = function(name) {
+    return this.findAll(name, true)[0];
+  }
+  VirtualDom.prototype.findAll = function(name, first) {
+    var res = [];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
+      if(child instanceof Element) {
+        if(child instanceof Component) {
+          if(child.name == name) {
+            res.push(child);
+            if(first) {
+              break;
+            }
+          }
+        }
+        else {
+          if(child.name == name) {
+            res.push(child);
+            if(first) {
+              break;
+            }
+          }
+          res = res.concat(child.findAll(name));
+          if(first && res.length) {
+            break;
+          }
+        }
+      }
+    }
+    return res;
+  }
+
   var _9={};_9.element={};_9.element.get =function() {
     this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
     return this.__element;

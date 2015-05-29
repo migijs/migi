@@ -35,7 +35,7 @@
       super(...data);
       var self = this;
       self._text = 'loading...';
-      self.find('Ajax').on('success', function(data) {
+      self.findChild('Ajax').on('success', function(data) {
         self.txt = data.name;
       });
     }

@@ -37,11 +37,10 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
     }
     return this.virtualDom.toString();
   }
-  Component.prototype.find = function(name) {
-    //TODO: 优化
-    return this.findAll(name)[0];
+  Component.prototype.findChild = function(name) {
+    return this.findChildren(name, true)[0];
   }
-  Component.prototype.findAll = function(name) {
+  Component.prototype.findChildren = function(name, first) {
     var res = [];
     for(var i = 0, len = this.children.length; i < len; i++) {
       var child = this.children[i];
@@ -49,18 +48,24 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
         if(child instanceof Component) {
           if(child.name == name) {
             res.push(child);
+            if(first) {
+              break;
+            }
           }
         }
         else {
           if(child.name == name) {
             res.push(child);
-            res = res.concat(child.findAll(name));
+            if(first) {
+              break;
+            }
+          }
+          res = res.concat(child.findAll(name));
+          if(first && res.length) {
+            break;
           }
         }
       }
-    }
-    if(this.virtualDom) {
-      res = res.concat(this.virtualDom.findAll(name));
     }
     return res;
   }

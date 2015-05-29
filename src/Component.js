@@ -37,11 +37,10 @@ class Component extends Element {
     }
     return this.virtualDom.toString();
   }
-  find(name) {
-    //TODO: 优化
-    return this.findAll(name)[0];
+  findChild(name) {
+    return this.findChildren(name, true)[0];
   }
-  findAll(name) {
+  findChildren(name, first) {
     var res = [];
     for(var i = 0, len = this.children.length; i < len; i++) {
       var child = this.children[i];
@@ -49,18 +48,24 @@ class Component extends Element {
         if(child instanceof Component) {
           if(child.name == name) {
             res.push(child);
+            if(first) {
+              break;
+            }
           }
         }
         else {
           if(child.name == name) {
             res.push(child);
-            res = res.concat(child.findAll(name));
+            if(first) {
+              break;
+            }
+          }
+          res = res.concat(child.findAll(name));
+          if(first && res.length) {
+            break;
           }
         }
       }
-    }
-    if(this.virtualDom) {
-      res = res.concat(this.virtualDom.findAll(name));
     }
     return res;
   }
