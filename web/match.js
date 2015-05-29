@@ -66,7 +66,6 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
         res.push(item);
       }
       //首次进入处理:伪类
-      //TODO: 不止hover
       if(first && item.hasOwnProperty('_:')) {
         item['_:'].forEach(function(pseudoItem) {
           pseudoItem[0].forEach(function(pseudo) {

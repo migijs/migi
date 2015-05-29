@@ -609,7 +609,7 @@ class VirtualDom extends Element {
     else {
       this.__ids.push('');
     }
-    //TODO: 属性、伪类
+    //TODO: css3伪类
     var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
