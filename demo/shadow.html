@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>转义编码</title>
+  <title>shadow作用域隔离</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
@@ -11,17 +11,27 @@
 <div id="example"></div>
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
+  class Shadow extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    click() {
+      alert('inner');
+    }
+    render() {
+      return <p><span onClick={ this.click }>text</span></p>;
+    }
+  }
+
   migi.render(
-    <div>
-      <span>{ '>' }</span>
-      <span>{ ' ' }</span>
-      <span>{ '<' }</span>
-      <span>{ '    ' }</span>
-      <span>{ '&' }</span>
-      <span>{ '"' }</span>
-    </div>,
-    document.getElementById('example')
+    <Shadow/>,
+    '#example'
   );
+
+  document.body.addEventListener('click', function() {
+    //点文字不会被执行，点空白处会，但其不属于span所有没有inner弹出
+    alert('outer');
+  });
 </script>
 <script>
   seajs.config({
