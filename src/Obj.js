@@ -18,14 +18,14 @@ function getList(v, list) {
   }
   return list;
 }
-function joinArray(arr, unEscape) {
+function joinArray(arr) {
   var res = '';
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
     else {
-      res += item instanceof Element || unEscape ? item.toString() : util.escape(item.toString());
+      res += item.toString();
     }
   });
   return res;

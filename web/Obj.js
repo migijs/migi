@@ -1,5 +1,5 @@
-define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1["default"]:_1}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1.default:_1}();
 
 function getList(v, list) {
   if(Array.isArray(v)) {
@@ -18,14 +18,14 @@ function getList(v, list) {
   }
   return list;
 }
-function joinArray(arr, unEscape) {
+function joinArray(arr) {
   var res = '';
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
     else {
-      res += item instanceof Element || unEscape ? item.toString() : util.escape(item.toString());
+      res += item.toString();
     }
   });
   return res;
@@ -111,4 +111,4 @@ Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])
 Obj.TEXT = 'TEXT';
 Obj.ELEMENT = 'ELEMENT';
 
-exports["default"]=Obj;});
+exports.default=Obj;});

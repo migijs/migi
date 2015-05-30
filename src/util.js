@@ -102,16 +102,19 @@ var util = {
     }
     return equal(a, b);
   },
-  escape: function(s) {
+  encodeHtml: function(s) {
     var xmlchar = {
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
       ' ': '&nbsp;'
     };
-    return s.replace(/[<>&]/g, function($1){
+    return s.replace(/\s+/g, ' ').replace(/[<>&]/g, function($1){
       return xmlchar[$1];
     });
+  },
+  encodeText: function(s) {
+    return s.replace(/\s+/g, ' ');
   }
 };
 

@@ -245,22 +245,24 @@ var SELF_CLOSE = {
       return ' ' + prop + '="' + s + '"';
     }
   }
-  VirtualDom.prototype.__renderChild = function(child, unEscape) {
+  VirtualDom.prototype.__renderChild = function(child) {
     var self = this;
-    if(child instanceof Element || child instanceof Obj) {
-      return child.toString(unEscape);
+    if(child instanceof Element) {
+      return child.toString();
+    }
+    else if(child instanceof Obj) {
+      var s = child.toString();
+      return child.type == Obj.TEXT ? util.encodeHtml(s) : s;
     }
     else if(Array.isArray(child)) {
       var res = '';
       child.forEach(function(item) {
-        res += self.__renderChild(item, unEscape);
+        res += self.__renderChild(item);
       });
       return res;
     }
     else {
-      //TODO: 空变量
-      //TODO: encode/decode
-      return unEscape ? child.toString() : util.escape(child.toString());
+      return util.encodeHtml(child.toString());
     }
   }
   VirtualDom.prototype.__reRender = function() {
@@ -340,7 +342,7 @@ var SELF_CLOSE = {
     return this.element.textContent;
   }
   _9.text.set =function(v) {
-    this.element.textContent = v;
+    this.element.textContent = util.encodeText(v);
   }
 
   VirtualDom.prototype.__onDom = function() {
@@ -539,7 +541,7 @@ var SELF_CLOSE = {
         var textNode = self.element.childNodes[item.start];
         var now = textNode.textContent;
         if(res != now) {
-          textNode.textContent = res;
+          textNode.textContent = util.encodeText(res);
         }
       });
     }

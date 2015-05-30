@@ -1,4 +1,4 @@
-var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
 
 function clone(obj) {
   if(obj instanceof Element) {
@@ -102,17 +102,20 @@ var util = {
     }
     return equal(a, b);
   },
-  escape: function(s) {
+  encodeHtml: function(s) {
     var xmlchar = {
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
       ' ': '&nbsp;'
     };
-    return s.replace(/[<>&]/g, function($1){
+    return s.replace(/\s+/g, ' ').replace(/[<>&]/g, function($1){
       return xmlchar[$1];
     });
+  },
+  encodeText: function(s) {
+    return s.replace(/\s+/g, ' ');
   }
 };
 
-exports["default"]=util;
+exports.default=util;
