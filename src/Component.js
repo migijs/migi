@@ -70,7 +70,7 @@ class Component extends Element {
     return res;
   }
   find(name) {
-    return this.findAll(name, true);
+    return this.findAll(name, true)[0];
   }
   findAll(name, first) {
     return this.virtualDom.findAll(name, first);

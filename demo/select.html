@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>下拉菜单</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+  <script src="jquery-2.1.0.min.js"></script>
+  <style>
+    .select{
+      position:relative;
+      margin:0;
+      display:inline-block;
+      border:1px solid #CCC;
+      border-radius:3px;
+      background:linear-gradient(top, #FCFCFC, #F3F3F3);
+      background:-webkit-linear-gradient(top, #FCFCFC, #F3F3F3);
+      background:-moz-linear-gradient(top, #FCFCFC, #F3F3F3);
+      font-size:14px;
+      height:20px;
+      line-height:20px;
+      z-index:9999;
+      cursor:default;
+    }
+    strong{
+      display:block;
+      padding:0 20px 0 5px;
+      font-weight:400;
+    }
+    b{
+      position:absolute;
+      top:8px;
+      right:5px;
+      border:5px solid transparent;
+      border-top-color:#333;
+    }
+    .c{
+      position:absolute;
+      top:100%;
+      left:-1px;
+      right:-1px;
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:none;
+      border:1px solid #CCC;
+      background:#FFF;
+      overflow:hidden;
+    }
+    .c li{
+      padding:0 20px 0 5px;
+      word-break:keep-all;
+      white-space:nowrap;
+    }
+    .c li:hover{
+      background:#39F;
+      color:#FFF;
+    }
+    .show{
+      display:block;
+    }
+    .place{
+      height:0;
+      overflow:hidden;
+      visibility:hidden;
+    }
+    .place div{
+      padding:0 20px 0 5px;
+    }
+  </style>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class Ajax extends migi.NonVisualComponent {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self.on(migi.Event.DOM, function() {
+        setTimeout(function() {
+          self.request();
+        }, 1000);
+      });
+    }
+    request() {
+      var self = this;
+      var url = self.props.url;
+      $.getJSON(url, function(data) {
+        self.emit('success', data);
+      });
+    }
+  }
+</script>
+<script type="text/jsx" jssc="true">
+  class Select extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self._list = [];
+      self._value = '';
+      self._show = false;
+      self.on(migi.Event.DOM, function() {
+        self.findChild('Ajax').on('success', function(data) {
+          self.list = data;
+        });
+        document.body.addEventListener('click', function(e) {
+          if(e.target != self.element) {
+            self.show = false;
+          }
+        });
+      });
+    }
+    get list() {
+      return this._list;
+    }
+    set list(v) {
+      this._list = v;
+      if(v.length) {
+        this.value = v[0].name;
+      }
+      else {
+        this.value = '';
+      }
+    }
+    get show() {
+      return this._show;
+    }
+    set show(v) {
+      this._show = v;
+    }
+    set value(v) {
+      this._value = v;
+    }
+    get value(list) {
+      return this._value;
+    }
+    handleClick(e) {
+      this.show = !this.show;
+      if(e.target.tagName == 'LI') {
+        this.find('strong').html = this.value = e.target.innerHTML;
+      }
+    }
+    render() {
+      return (
+        <div class="select" onClick={ this.handleClick }>
+          <input type="hidden" value={ this.value }/>
+          <div class="place">
+            {
+              this.list.map(function(item) {
+                return <div>{ item.name }</div>;
+              })
+            }
+          </div>
+          <strong>{ this.list.length ? this.list[0].name : '&nbsp;' }</strong>
+          <b></b>
+          <ul class={ this.show ? 'c show' : 'c' }>
+          {
+            this.list.map(function(item) {
+              return <li>{ item.name }</li>;
+            })
+          }
+          </ul>
+        </div>
+      );
+    }
+  }
+
+  migi.render(
+    <ol>
+      <li>
+        <Select>
+          <Ajax url="./city.json"/>
+        </Select>
+      </li>
+    </ol>,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"][jssc="true"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
