@@ -337,10 +337,10 @@ var SELF_CLOSE = {
     this.element.innerHTML = v;
   }
   _9.text={};_9.text.get =function() {
-    return this.element.innerText;
+    return this.element.textContent;
   }
   _9.text.set =function(v) {
-    this.element.innerText = v;
+    this.element.textContent = v;
   }
 
   VirtualDom.prototype.__onDom = function() {

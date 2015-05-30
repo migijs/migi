@@ -337,10 +337,10 @@ class VirtualDom extends Element {
     this.element.innerHTML = v;
   }
   get text() {
-    return this.element.innerText;
+    return this.element.textContent;
   }
   set text(v) {
-    this.element.innerText = v;
+    this.element.textContent = v;
   }
 
   __onDom() {
