@@ -26,6 +26,8 @@ const SELF_CLOSE = {
   'track': true
 };
 
+const TEMP_NODE = document.createElement('div');
+
 class VirtualDom extends Element {
   constructor(name, props = {}, ...children) {
     //fix循环依赖
@@ -228,7 +230,7 @@ class VirtualDom extends Element {
         if(self.__style) {
           self.__cache[prop] = s;
         }
-        return ' ' + prop + '="' + s + '"';
+        return ' ' + prop + '="' + util.encodeHtml(s) + '"';
       }
       else if(!!v.v) {
         if(self.__style) {
@@ -242,7 +244,7 @@ class VirtualDom extends Element {
       if(self.__style) {
         self.__cache[prop] = s;
       }
-      return ' ' + prop + '="' + s + '"';
+      return ' ' + prop + '="' + util.encodeHtml(s) + '"';
     }
   }
   __renderChild(child) {
@@ -541,7 +543,15 @@ class VirtualDom extends Element {
         var textNode = self.element.childNodes[item.start];
         var now = textNode.textContent;
         if(res != now) {
-          textNode.textContent = res;
+          //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
+          //但当为innerHTML空时，没有孩子节点，所以特殊判断
+          if(res) {
+            TEMP_NODE.innerHTML = util.encodeHtml(res);
+            self.element.replaceChild(TEMP_NODE.firstChild, textNode);
+          }
+          else {
+            textNode.textContent = '';
+          }
         }
       });
     }

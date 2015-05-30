@@ -106,7 +106,10 @@ var util = {
     var xmlchar = {
       '&': '&amp;',
       '<': '&lt;',
-      '>': '&gt;'
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      ' ': '&nbsp;'
     };
     return s.replace(/[<>&]/g, function($1){
       return xmlchar[$1];

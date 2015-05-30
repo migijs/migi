@@ -103,7 +103,7 @@
       self._show = false;
       self.on(migi.Event.DOM, function() {
         self.findChild('Ajax').on('success', function(data) {
-//          self.list = data;
+          self.list = data;
         });
         document.body.addEventListener('click', function(e) {
           if(e.target != self.element) {
