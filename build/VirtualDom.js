@@ -558,28 +558,31 @@ var SELF_CLOSE = {
       case 'value':
       case 'checked':
       case 'selected':
+      case 'selectedIndex':
+      case 'readOnly':
+      case 'multiple':
+      case 'defaultValue':
+      case 'autofocus':
+      case 'async':
+      case 'tagName':
+      case 'nodeName':
+      case 'nodeType':
         this.element[k] = v;
-        //使用了jaw内联解析css
-        if(this.__style) {
-          this.__cache[k] = v;
-          this.__updateStyle();
-        }
         break;
       case 'id':
       case 'class':
         if(this.__style) {
           this.element.setAttribute('migi-' + k, v);
-          this.__cache[k] = v;
-          this.__updateStyle();
           break;
         }
       default:
         this.element.setAttribute(k, v);
-        if(this.__style) {
-          this.__cache[k] = v;
-          this.__updateStyle();
-        }
         break;
+    }
+    //使用了jaw内联解析css
+    if(this.__style) {
+      this.__cache[k] = v;
+      this.__updateStyle();
     }
   }
   VirtualDom.prototype.__merge = function(range) {
