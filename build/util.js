@@ -111,7 +111,7 @@ var util = {
       "'": '&#39;',
       ' ': '&nbsp;'
     };
-    return s.replace(/[<>&]/g, function($1){
+    return s.replace(/[<>&'" ]/g, function($1){
       return xmlchar[$1];
     });
   }
