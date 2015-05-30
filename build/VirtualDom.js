@@ -342,7 +342,7 @@ var SELF_CLOSE = {
     return this.element.textContent;
   }
   _9.text.set =function(v) {
-    this.element.textContent = util.encodeText(v);
+    this.element.textContent = v;
   }
 
   VirtualDom.prototype.__onDom = function() {
@@ -541,7 +541,7 @@ var SELF_CLOSE = {
         var textNode = self.element.childNodes[item.start];
         var now = textNode.textContent;
         if(res != now) {
-          textNode.textContent = util.encodeText(res);
+          textNode.textContent = res;
         }
       });
     }

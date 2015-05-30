@@ -342,7 +342,7 @@ class VirtualDom extends Element {
     return this.element.textContent;
   }
   set text(v) {
-    this.element.textContent = util.encodeText(v);
+    this.element.textContent = v;
   }
 
   __onDom() {
@@ -541,7 +541,7 @@ class VirtualDom extends Element {
         var textNode = self.element.childNodes[item.start];
         var now = textNode.textContent;
         if(res != now) {
-          textNode.textContent = util.encodeText(res);
+          textNode.textContent = res;
         }
       });
     }
