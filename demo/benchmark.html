@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="DBMON NOT REACT" />
+  <link href="http://leeluolee.github.io/js-repaint-perfs/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="http://leeluolee.github.io/js-repaint-perfs/styles.css" rel="stylesheet" type="text/css" />
+  <title>dbmon (migi)</title>
+</head>
+<body>
+<script type="text/jsx">
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self._list = [];
+      self.on(migi.Event.DOM, function() {
+        self.list = ENV.generateData().toArray();
+        Monitoring.renderRate.ping();
+        setTimeout(arguments.callee, ENV.timeout);
+      });
+    }
+    get list() {
+      return this._list;
+    }
+    set list(v) {
+      this._list = v;
+    }
+    render() {
+      return (
+        <div>
+          <table class="table table-striped latest-data">
+            <tbody>
+              {
+                this.list.map(function(database) {
+                  return (
+                    <tr>
+                      <td class="dbname">
+                        {database.dbname}
+                      </td>
+                      <td class="query-count">
+                        <span class={database.lastSample.countClassName}>
+                          {database.lastSample.queries.length}
+                        </span>
+                      </td>
+                      {
+                        database.lastSample.topFiveQueries.map(function(query, index) {
+                          return (
+                            <td class={ "Query " + query.elapsedClassName}>
+                              {query.formatElapsed}
+                              <div class="popover left">
+                                <div class="popover-content">{query.query}</div>
+                                <div class="arrow"/>
+                              </div>
+                            </td>
+                          );
+                        })
+                      }
+                    </tr>
+                  );
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+  }
+
+  migi.render(
+    <Component/>,
+    '#dbmon'
+  );
+</script>
+  <div id="dbmon"></div>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/jquery-2.1.0.min.js"></script>
+  <script src="http://leeluolee.github.io/js-repaint-perfs/ENV.js"></script>
+  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/memory-stats.js"></script>
+  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/monitor.js"></script>
+  <script>
+    seajs.config({
+      alias: {
+        'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+        'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+        'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+        'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
+      },
+      map: [function(url) {
+        return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+      }]
+    });
+    define('fs', {});
+    seajs.use(['../init', 'lefty'], function(migi, lefty) {
+      lefty.init();
+      migi.init();
+    });
+  </script>
+</body>
+</html>
