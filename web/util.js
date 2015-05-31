@@ -1,4 +1,4 @@
-define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0.default:_0}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
 
 function clone(obj) {
   if(obj instanceof Element) {
@@ -117,4 +117,4 @@ var util = {
   }
 };
 
-exports.default=util;});
+exports["default"]=util;});

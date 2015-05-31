@@ -229,6 +229,13 @@ class VirtualDom extends Element {
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
         var s = v.toString();
+        if(prop == 'dangerouslySetInnerHTML') {
+          self.on(Event.DOM, function() {
+            self.off(Event.DOM, arguments.callee);
+            self.element.innerHTML = s;
+          });
+          return '';
+        }
         if(self.__style) {
           self.__cache[prop] = s;
         }
@@ -243,6 +250,13 @@ class VirtualDom extends Element {
     }
     else {
       var s = v.toString();
+      if(prop == 'dangerouslySetInnerHTML') {
+        self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
+          self.element.innerHTML = s;
+        });
+        return '';
+      }
       if(self.__style) {
         self.__cache[prop] = s;
       }
@@ -445,7 +459,7 @@ class VirtualDom extends Element {
       //当可能发生变化时进行比对
       var ot = first.type;
       if(change && self.__updateChild(first)) {
-        //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+        //类型一旦发生变化，或者变化前后类型为ELEMENT，直接父层重绘
         if(ot != first.type || first.type != Obj.TEXT) {
           self.__reRender();
           return;
@@ -485,6 +499,7 @@ class VirtualDom extends Element {
         //当可能发生变化时进行比对
         if(change && self.__updateChild(child)) {
           //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+          //TODO:性能优化
           if(ot != child.type || child.type != Obj.TEXT) {
             self.__reRender();
             return;
@@ -559,6 +574,10 @@ class VirtualDom extends Element {
     return false;
   }
   __updateAttr(k, v) {
+    if(k == 'dangerouslySetInnerHTML') {
+      this.element.innerHTML = v;
+      return;
+    }
     switch(k) {
       case 'value':
       case 'checked':

@@ -11,6 +11,7 @@
 <div id="example"></div>
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
+  var html = '<strong>使用html</strong>';
   migi.render(
     <div>
       <span>{ '>' }</span>
@@ -19,6 +20,8 @@
       <span>{ '    ' }</span>
       <span>{ '&' }</span>
       <span>{ '"' }</span>
+      <p dangerouslySetInnerHTML={ html }></p>
+      <p dangerouslySetInnerHTML="<strong>再次使用html</strong>"></p>
     </div>,
     document.getElementById('example')
   );

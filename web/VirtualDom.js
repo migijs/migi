@@ -1,11 +1,11 @@
-define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0.default:_0}();
-var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1.default:_1}();
-var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2.default:_2}();
-var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3.default:_3}();
-var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4.default:_4}();
-var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5.default:_5}();
-var match=function(){var _6=require('./match');return _6.hasOwnProperty("match")?_6.match:_6.hasOwnProperty("default")?_6.default:_6}();
-var sort=function(){var _7=require('./sort');return _7.hasOwnProperty("sort")?_7.sort:_7.hasOwnProperty("default")?_7.default:_7}();
+define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1["default"]:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2["default"]:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3["default"]:_3}();
+var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4["default"]:_4}();
+var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5["default"]:_5}();
+var match=function(){var _6=require('./match');return _6.hasOwnProperty("match")?_6.match:_6.hasOwnProperty("default")?_6["default"]:_6}();
+var sort=function(){var _7=require('./sort');return _7.hasOwnProperty("sort")?_7.sort:_7.hasOwnProperty("default")?_7["default"]:_7}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -229,6 +229,13 @@ var TEMP_NODE = document.createElement('div');
     if(v instanceof Obj) {
       if(util.isString(v.v)) {
         var s = v.toString();
+        if(prop == 'dangerouslySetInnerHTML') {
+          self.on(Event.DOM, function() {
+            self.off(Event.DOM, arguments.callee);
+            self.element.innerHTML = s;
+          });
+          return '';
+        }
         if(self.__style) {
           self.__cache[prop] = s;
         }
@@ -243,6 +250,13 @@ var TEMP_NODE = document.createElement('div');
     }
     else {
       var s = v.toString();
+      if(prop == 'dangerouslySetInnerHTML') {
+        self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
+          self.element.innerHTML = s;
+        });
+        return '';
+      }
       if(self.__style) {
         self.__cache[prop] = s;
       }
@@ -445,7 +459,7 @@ var TEMP_NODE = document.createElement('div');
       //当可能发生变化时进行比对
       var ot = first.type;
       if(change && self.__updateChild(first)) {
-        //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+        //类型一旦发生变化，或者变化前后类型为ELEMENT，直接父层重绘
         if(ot != first.type || first.type != Obj.TEXT) {
           self.__reRender();
           return;
@@ -485,6 +499,7 @@ var TEMP_NODE = document.createElement('div');
         //当可能发生变化时进行比对
         if(change && self.__updateChild(child)) {
           //类型一旦发生变化，或者变化前后类型为VIRTUAlDOM或COMPLEX，直接父层重绘
+          //TODO:性能优化
           if(ot != child.type || child.type != Obj.TEXT) {
             self.__reRender();
             return;
@@ -559,6 +574,10 @@ var TEMP_NODE = document.createElement('div');
     return false;
   }
   VirtualDom.prototype.__updateAttr = function(k, v) {
+    if(k == 'dangerouslySetInnerHTML') {
+      this.element.innerHTML = v;
+      return;
+    }
     switch(k) {
       case 'value':
       case 'checked':
@@ -647,4 +666,4 @@ var TEMP_NODE = document.createElement('div');
   }
 Object.keys(_9).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_9[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
-exports.default=VirtualDom;});
+exports["default"]=VirtualDom;});
