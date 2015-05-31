@@ -334,18 +334,6 @@ class VirtualDom extends Element {
       }
     });
   }
-  get html() {
-    return this.element.innerHTML;
-  }
-  set html(v) {
-    this.element.innerHTML = v;
-  }
-  get text() {
-    return this.element.textContent;
-  }
-  set text(v) {
-    this.element.textContent = v;
-  }
 
   __onDom() {
     super.__onDom();

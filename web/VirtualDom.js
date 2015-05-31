@@ -334,18 +334,6 @@ var TEMP_NODE = document.createElement('div');
       }
     });
   }
-  _9.html={};_9.html.get =function() {
-    return this.element.innerHTML;
-  }
-  _9.html.set =function(v) {
-    this.element.innerHTML = v;
-  }
-  _9.text={};_9.text.get =function() {
-    return this.element.textContent;
-  }
-  _9.text.set =function(v) {
-    this.element.textContent = v;
-  }
 
   VirtualDom.prototype.__onDom = function() {
     Element.prototype.__onDom.call(this);

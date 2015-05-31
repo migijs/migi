@@ -54,6 +54,24 @@ class Element extends Event {
   get dom() {
     return this.__dom;
   }
+  get html() {
+    return this.element.innerHTML;
+  }
+  set html(v) {
+    this.element.innerHTML = v;
+  }
+  get text() {
+    return this.element.textContent;
+  }
+  set text(v) {
+    if(v) {
+      TEMP_NODE.innerHTML = v;
+      this.element.replaceChild(TEMP_NODE.firstChild, this.element.firstChild);
+    }
+    else {
+      this.element.textContent = v;
+    }
+  }
 
   inTo(dom) {
     var s = this.toString();

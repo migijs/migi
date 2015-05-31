@@ -6,6 +6,16 @@
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
+  <style>
+    .p{
+      padding:20px;
+      background:#FFCCCC;
+    }
+    .p span{
+      display:block;
+      background:#FFF;
+    }
+  </style>
 </head>
 <body>
 <div id="example"></div>
@@ -18,8 +28,11 @@
     click() {
       alert('inner');
     }
+    click2() {
+      alert('p');
+    }
     render() {
-      return <p><span onClick={ this.click }>text</span></p>;
+      return <p class="p" onClick={ this.click2 }><span onClick={ this.click }>text</span></p>;
     }
   }
 
@@ -29,7 +42,7 @@
   );
 
   document.body.addEventListener('click', function() {
-    //点文字不会被执行，点空白处会，但其不属于span所有没有inner弹出
+    //点文字不会被执行，点红色空白会，但其不属于span所有没有inner弹出
     alert('outer');
   });
 </script>
