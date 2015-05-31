@@ -57,6 +57,10 @@
       background:#39F;
       color:#FFF;
     }
+    .cur{
+      background:#39F;
+      color:#FFF;
+    }
     .show{
       display:block;
     }
@@ -105,7 +109,7 @@
         self.findChild('Ajax').on('success', function(data) {
           self.list = data;
         });
-        document.body.addEventListener('click', function(e) {
+        window.addEventListener('click', function(e) {
           if(e.target != self.element) {
             self.show = false;
           }
@@ -129,6 +133,16 @@
     }
     set show(v) {
       this._show = v;
+      if(v) {
+        var cur = this.element.querySelector('.cur');
+        if(cur) {
+          cur.className = '';
+        }
+        cur = this.element.querySelector('li[title="' + this.value + '"]');
+        if(cur) {
+          cur.className = 'cur';
+        }
+      }
     }
     set value(v) {
       this._value = v;
@@ -142,7 +156,17 @@
         this.find('strong').html = this.value = e.target.innerHTML;
       }
     }
+    handlerOver(e) {
+      if(e.target.tagName == 'LI' && e.target.className != 'cur') {
+        var cur = this.element.querySelector('.cur');
+        if(cur) {
+          cur.className = '';
+        }
+        e.target.className = 'cur';
+      }
+    }
     render() {
+      var self = this;
       return (
         <div class="select" onClick={ this.handleClick }>
           <input type="hidden" value={ this.value }/>
@@ -155,10 +179,10 @@
           </div>
           <strong>{ this.value || ' ' }</strong>
           <b></b>
-          <ul class={ this.show ? 'c show' : 'c' }>
+          <ul class={ this.show ? 'c show' : 'c' } onMouseOver={ this.handlerOver }>
           {
             this.list.map(function(item) {
-              return <li>{ item.name }</li>;
+              return <li title={ item.name }>{ item.name }</li>;
             })
           }
           </ul>
