@@ -3,14 +3,13 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1
 
 var uid = 0;
 
+var TEMP_NODE = document.createElement('div');
+
 function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
   }
   return dom;
-}
-function tempNode() {
-  return document.createElement('div');
 }
 
 !function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
@@ -82,9 +81,8 @@ function tempNode() {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
-      var div = tempNode();
-      div.innerHTML = s;
-      dom.appendChild(div.firstChild);
+      TEMP_NODE.innerHTML = s;
+      dom.appendChild(TEMP_NODE.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -95,9 +93,8 @@ function tempNode() {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
-      var div = tempNode();
-      div.innerHTML = s;
-      dom.insertBefore(div.firstChild, dom.firstChild);
+      TEMP_NODE.innerHTML = s;
+      dom.insertBefore(TEMP_NODE.firstChild, dom.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -106,30 +103,27 @@ function tempNode() {
   }
   Element.prototype.before = function(dom) {
     var s = this.toString();
-    var div = tempNode();
-    div.innerHTML = s;
+    TEMP_NODE.innerHTML = s;
     dom = getDom(dom);
-    dom.parentNode.insertBefore(div.firstChild, dom);
+    dom.parentNode.insertBefore(TEMP_NODE.firstChild, dom);
     this.emit(Event.DOM);
   }
   Element.prototype.after = function(dom) {
     var s = this.toString();
-    var div = tempNode();
-    div.innerHTML = s;
+    TEMP_NODE.innerHTML = s;
     dom = getDom(dom);
     var next = dom.nextSibling;
     if(next) {
-      dom.parentNode.insertBefore(div.firstChild, next);
+      dom.parentNode.insertBefore(TEMP_NODE.firstChild, next);
     }
     else {
-      dom.parentNode.appendChild(div.firstChild);
+      dom.parentNode.appendChild(TEMP_NODE.firstChild);
     }
     this.emit(Event.DOM);
   }
   Element.prototype.replace = function(dom) {
     var s = this.toString();
-    var div = tempNode();
-    div.innerHTML = s;
+    TEMP_NODE.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);

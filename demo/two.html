@@ -14,13 +14,13 @@
   class Input extends migi.Component {
     constructor(...data) {
       super(...data);
-      this.text = 'Hello!';
+      this._txt = 'Hello!';
     }
     get txt() {
-      return this.text;
+      return this._txt;
     }
     set txt(v) {
-      this.text = v;
+      this._txt = v;
     }
     render() {
       return (
