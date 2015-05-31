@@ -108,7 +108,7 @@ class Obj {
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型
 //当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，通知parent重绘
 //全部VirtualDom和Component统一为Element
-Obj.TEXT = 'TEXT';
-Obj.ELEMENT = 'ELEMENT';
+Obj.TEXT = '__0';
+Obj.ELEMENT = '__1';
 
 export default Obj;

@@ -42,6 +42,7 @@
 .jssc .namespace{color:#f00;}
 .jssc .depth,.jssc .elem{color:#fc0;}
 .jssc .java .keyword{color:#909;}
+.jssc .color{color:#f99;}
 .jssc .text{color:#600;}
 
 .jssc{position:relative;}
