@@ -63,13 +63,7 @@ class Element extends Event {
     return this.element.textContent;
   }
   set text(v) {
-    if(v) {
-      TEMP_NODE.innerHTML = v;
-      this.element.replaceChild(TEMP_NODE.firstChild, this.element.firstChild);
-    }
-    else {
-      this.element.textContent = v;
-    }
+    this.element.innerHTML = util.encodeHtml(v);
   }
 
   inTo(dom) {
