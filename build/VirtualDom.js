@@ -546,7 +546,7 @@ var TEMP_NODE = document.createElement('div');
           //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
           //但当为innerHTML空时，没有孩子节点，所以特殊判断
           if(res) {
-            TEMP_NODE.innerHTML = util.encodeHtml(res);
+            TEMP_NODE.innerHTML = res;
             self.element.replaceChild(TEMP_NODE.firstChild, textNode);
           }
           else {
