@@ -102,7 +102,7 @@ var util = {
     }
     return equal(a, b);
   },
-  encodeHtml: function(s) {
+  encodeHtml: function(s, prop) {
     var xmlchar = {
       '&': '&amp;',
       '<': '&lt;',
@@ -111,7 +111,7 @@ var util = {
       "'": '&#39;',
       ' ': '&nbsp;'
     };
-    return s.replace(/[<>&'" ]/g, function($1){
+    return s.replace(prop ? /[<>&'"]/g : /[<>&'" ]/g, function($1){
       return xmlchar[$1];
     });
   }

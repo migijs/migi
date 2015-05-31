@@ -49,7 +49,9 @@ var TEMP_NODE = document.createElement('div');
     self.__hover = false;
     self.__active = false;
     children.forEach(function(child) {
-      child.__parent = self;
+      if(child !== void 0) {
+        child.__parent = self;
+      }
     });
   }
 
@@ -230,7 +232,7 @@ var TEMP_NODE = document.createElement('div');
         if(self.__style) {
           self.__cache[prop] = s;
         }
-        return ' ' + prop + '="' + util.encodeHtml(s) + '"';
+        return ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
       }
       else if(!!v.v) {
         if(self.__style) {
@@ -244,7 +246,7 @@ var TEMP_NODE = document.createElement('div');
       if(self.__style) {
         self.__cache[prop] = s;
       }
-      return ' ' + prop + '="' + util.encodeHtml(s) + '"';
+      return ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
   }
   VirtualDom.prototype.__renderChild = function(child) {
@@ -262,6 +264,9 @@ var TEMP_NODE = document.createElement('div');
         res += self.__renderChild(item);
       });
       return res;
+    }
+    else if(child === void 0) {
+      return '';
     }
     else {
       return util.encodeHtml(child.toString());

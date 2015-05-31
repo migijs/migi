@@ -63,13 +63,7 @@ function getDom(dom) {
     return this.element.textContent;
   }
   _3.text.set =function(v) {
-    if(v) {
-      TEMP_NODE.innerHTML = v;
-      this.element.replaceChild(TEMP_NODE.firstChild, this.element.firstChild);
-    }
-    else {
-      this.element.textContent = v;
-    }
+    this.element.innerHTML = util.encodeHtml(v);
   }
 
   Element.prototype.inTo = function(dom) {
