@@ -29,7 +29,7 @@ const SELF_CLOSE = {
 const TEMP_NODE = document.createElement('div');
 
 class VirtualDom extends Element {
-  constructor(name, props = {}, ...children) {
+  constructor(name, props = {}, children = []) {
     //fix循环依赖
     if(Component.hasOwnProperty('default')) {
       Component = Component['default'];
@@ -38,7 +38,7 @@ class VirtualDom extends Element {
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
-    super(name, props, ...children);
+    super(name, props, children);
     var self = this;
     self.__cache = {};
     self.__names = [];
@@ -291,7 +291,7 @@ class VirtualDom extends Element {
     var res = '';
     self.children.forEach(function(child) {
       res += self.__renderChild(child);
-    });
+    });return;
     self.element.innerHTML = res;
     //重新触发DOM
     self.__onDom();

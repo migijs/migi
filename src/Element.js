@@ -3,8 +3,6 @@ import util from './util';
 
 var uid = 0;
 
-const TEMP_NODE = document.createElement('div');
-
 function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
@@ -13,7 +11,7 @@ function getDom(dom) {
 }
 
 class Element extends Event {
-  constructor(name, props = {}, ...children) {
+  constructor(name, props, children) {
     super();
     this.__name = name;
     this.__props = props;
@@ -75,8 +73,8 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
-      TEMP_NODE.innerHTML = s;
-      dom.appendChild(TEMP_NODE.firstChild);
+      util.NODE.innerHTML = s;
+      dom.appendChild(util.NODE.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -87,8 +85,8 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
-      TEMP_NODE.innerHTML = s;
-      dom.insertBefore(TEMP_NODE.firstChild, dom.firstChild);
+      util.NODE.innerHTML = s;
+      dom.insertBefore(util.NODE.firstChild, dom.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -97,27 +95,27 @@ class Element extends Event {
   }
   before(dom) {
     var s = this.toString();
-    TEMP_NODE.innerHTML = s;
+    util.NODE.innerHTML = s;
     dom = getDom(dom);
-    dom.parentNode.insertBefore(TEMP_NODE.firstChild, dom);
+    dom.parentNode.insertBefore(util.NODE.firstChild, dom);
     this.emit(Event.DOM);
   }
   after(dom) {
     var s = this.toString();
-    TEMP_NODE.innerHTML = s;
+    util.NODE.innerHTML = s;
     dom = getDom(dom);
     var next = dom.nextSibling;
     if(next) {
-      dom.parentNode.insertBefore(TEMP_NODE.firstChild, next);
+      dom.parentNode.insertBefore(util.NODE.firstChild, next);
     }
     else {
-      dom.parentNode.appendChild(TEMP_NODE.firstChild);
+      dom.parentNode.appendChild(util.NODE.firstChild);
     }
     this.emit(Event.DOM);
   }
   replace(dom) {
     var s = this.toString();
-    TEMP_NODE.innerHTML = s;
+    util.NODE.innerHTML = s;
     dom = getDom(dom);
     dom.parentNode.replaceChild(div.firstChild, dom);
     this.emit(Event.DOM);

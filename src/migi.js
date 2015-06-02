@@ -15,12 +15,12 @@ var migi = {
     }
     return component;
   },
-  createElement(name, props, ...children) {
+  createElement(name, props, children) {
     if(util.isString(name)) {
-      return new VirtualDom(name, props, ...children);
+      return new VirtualDom(name, props, children);
     }
     else {
-      return new name(props, ...children);
+      return new name(props, children);
     }
   },
   Event,

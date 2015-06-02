@@ -75,6 +75,9 @@ function equal(a, b) {
   }
 }
 
+const NODE = document.createElement('div');
+const LIE = !+'\v1';
+
 var util = {
   clone(obj) {
     //fix循环依赖
@@ -114,7 +117,20 @@ var util = {
     return s.replace(prop ? /[<>&'"]/g : /[<>&'" ]/g, function($1){
       return xmlchar[$1];
     });
-  }
+  },
+  NODE: NODE,
+  div: function() {
+    return document.createElement('div');
+  },
+  lie: LIE,
+  version: function() {
+    if(!LIE) {
+      return;
+    }
+    var v = 5;
+    while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
+    return v;
+  }()
 };
 
 export default util;

@@ -5,11 +5,10 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
 
 !function(){var _4=Object.create(Element.prototype);_4.constructor=Component;Component.prototype=_4}();
   function Component(props, children) {
-    if(props===void 0)props={};children=[].slice.call(arguments, 1);Element.call(this);
-    var self = this;
+    if(props===void 0)props={};if(children===void 0)children=[];var self = this;
     var name = self.constructor.toString();
     name = /^function\s+([\w$]+)/.exec(name)[1];
-    Element.apply(this,[name,props].concat(Array.from(children)));
+    Element.call(this,name, props, children);
 
     self.__virtualDom = null;
 
@@ -27,7 +26,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
   }
   //需要被子类覆盖
   Component.prototype.render = function() {
-    return new (Function.prototype.bind.apply(VirtualDom, [null,'div',this.props].concat(Array.from(this.children))));
+    return new VirtualDom('div', this.props, this.children);
   }
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();

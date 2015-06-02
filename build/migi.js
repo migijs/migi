@@ -16,11 +16,11 @@ var migi = {
     return component;
   },
   createElement:function(name, props, children) {
-    children=[].slice.call(arguments, 2);if(util.isString(name)) {
-      return new (Function.prototype.bind.apply(VirtualDom, [null,name,props].concat(Array.from(children))));
+    if(util.isString(name)) {
+      return new VirtualDom(name, props, children);
     }
     else {
-      return new (Function.prototype.bind.apply(name, [null,props].concat(Array.from(children))));
+      return new name(props, children);
     }
   },
   Event:Event,

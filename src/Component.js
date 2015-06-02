@@ -4,12 +4,11 @@ import VirtualDom from './VirtualDom';
 import util from './util';
 
 class Component extends Element {
-  constructor(props = {}, ...children) {
-    super();
+  constructor(props = {}, children = []) {
     var self = this;
     var name = self.constructor.toString();
     name = /^function\s+([\w$]+)/.exec(name)[1];
-    super(name, props, ...children);
+    super(name, props, children);
 
     self.__virtualDom = null;
 
@@ -27,7 +26,7 @@ class Component extends Element {
   }
   //需要被子类覆盖
   render() {
-    return new VirtualDom('div', this.props, ...this.children);
+    return new VirtualDom('div', this.props, this.children);
   }
   toString() {
     this.__virtualDom = this.render();

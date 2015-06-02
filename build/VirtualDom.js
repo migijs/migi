@@ -31,14 +31,14 @@ var TEMP_NODE = document.createElement('div');
 !function(){var _8=Object.create(Element.prototype);_8.constructor=VirtualDom;VirtualDom.prototype=_8}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
-    if(props===void 0)props={};children=[].slice.call(arguments, 2);if(Component.hasOwnProperty('default')) {
+    if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
       Component = Component['default'];
     }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
-    Element.apply(this,[name,props].concat(Array.from(children)));
+    Element.call(this,name, props, children);
     var self = this;
     self.__cache = {};
     self.__names = [];
@@ -291,7 +291,7 @@ var TEMP_NODE = document.createElement('div');
     var res = '';
     self.children.forEach(function(child) {
       res += self.__renderChild(child);
-    });
+    });return;
     self.element.innerHTML = res;
     //重新触发DOM
     self.__onDom();

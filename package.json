@@ -46,11 +46,19 @@
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "^0.0.2",
     "through2": "^0.6.1",
-    "jsdc": "^0.6.3"
+    "jsdc": "^0.6.4",
+    "spm": "~3.6.0"
   },
   "main": "./index",
   "engines": {
     "node": ">= 0.10.0"
+  },
+  "spm": {
+    "main": "./index.js",
+    "output": [
+      "./init.js"
+    ],
+    "buildArgs": "--standalone"
   },
   "readmeFilename": "README.md"
 }
