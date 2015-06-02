@@ -291,7 +291,7 @@ var TEMP_NODE = document.createElement('div');
     var res = '';
     self.children.forEach(function(child) {
       res += self.__renderChild(child);
-    });return;
+    });
     self.element.innerHTML = res;
     //重新触发DOM
     self.__onDom();
