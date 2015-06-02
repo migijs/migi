@@ -58,7 +58,7 @@ function getDom(dom) {
     this.element.innerHTML = v;
   }
   _3.text={};_3.text.get =function() {
-    return this.element.textContent;
+    return util.lie ? this.element.innerText : this.element.textContent;
   }
   _3.text.set =function(v) {
     this.element.innerHTML = util.encodeHtml(v);

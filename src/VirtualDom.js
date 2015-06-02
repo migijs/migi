@@ -549,13 +549,16 @@ class VirtualDom extends Element {
           res += self.__renderChild(self.children[i]);
         }
         var textNode = self.element.childNodes[item.start];
-        var now = textNode.textContent;
+        var now = util.lie ? textNode.innerText : textNode.textContent;
         if(res != now) {
           //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
           //但当为innerHTML空时，没有孩子节点，所以特殊判断
           if(res) {
             TEMP_NODE.innerHTML = res;
             self.element.replaceChild(TEMP_NODE.firstChild, textNode);
+          }
+          else if(util.lie) {
+            textNode.innerText = '';
           }
           else {
             textNode.textContent = '';

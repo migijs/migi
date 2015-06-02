@@ -58,7 +58,7 @@ class Element extends Event {
     this.element.innerHTML = v;
   }
   get text() {
-    return this.element.textContent;
+    return util.lie ? this.element.innerText : this.element.textContent;
   }
   set text(v) {
     this.element.innerHTML = util.encodeHtml(v);
