@@ -71,7 +71,7 @@ class Obj {
         iT++;
         //只有TEXT类型需要关心empty，因为空字符串初始化时若处于2个DOM之间，则不占文本节点对象，需新建
         //以后无论如何变更，只要变成非空字符串，都不是empty，因为TextNode已经存在，变为空也无所谓
-        if(!!item.toString()) {
+        if(item !== void 0 && !!item.toString()) {
           self.__empty = false;
         }
       }
@@ -101,7 +101,8 @@ class Obj {
   }
   toString() {
     var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
-    return s.toString();
+    //防止undefined的变量
+    return s === void 0 ? '' : s.toString();
   }
 }
 

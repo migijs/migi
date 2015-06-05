@@ -75,7 +75,42 @@ function equal(a, b) {
   }
 }
 
+//TODO: 性能优化
+function join(arr) {
+  var res = [];
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      res = res.concat(join(item));
+    }
+    else {
+      res.push(item);
+    }
+  });
+  return res;
+}
+
+function getFirst(arr) {
+  var res = arr[0];
+  if(Array.isArray(res)) {
+    return getFirst(res);
+  }
+  return res;
+}
+
+function getLast(arr) {
+  var res = arr[arr.length - 1];
+  if(Array.isArray(res)) {
+    return getLast(res);
+  }
+  return res;
+}
+
 var NODE = document.createElement('div');
+var TABLE = document.createElement('table');
+var TBODY = document.createElement('tbody');
+var TR = document.createElement('tr');
+var UL = document.createElement('ul');
+var DL = document.createElement('dl');
 var LIE = !+'\v1';
 
 var util = {
@@ -105,7 +140,7 @@ var util = {
     }
     return equal(a, b);
   },
-  encodeHtml: function(s, prop) {
+  encodeHtml:function(s, prop) {
     var xmlchar = {
       '&': '&amp;',
       '<': '&lt;',
@@ -119,7 +154,27 @@ var util = {
     });
   },
   NODE: NODE,
-  div: function() {
+  TABLE: TABLE,
+  TR: TR,
+  getParent:function(name) {
+    switch(name.toLowerCase()) {
+      case 'td':
+        return TR;
+      case 'tr':
+        return TBODY;
+      case 'tbody':
+      case 'thead':
+        return TABLE;
+      case 'li':
+        return UL;
+      case 'dt':
+      case 'dd':
+        return DL;
+      default:
+        return NODE;
+    }
+  },
+  div:function() {
     return document.createElement('div');
   },
   lie: LIE,
@@ -130,7 +185,10 @@ var util = {
     var v = 5;
     while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
     return v;
-  }()
+  }(),
+  join:join,
+  getFirst:getFirst,
+  getLast:getLast
 };
 
 exports["default"]=util;

@@ -17,6 +17,7 @@ function getDom(dom) {
     this.__props = props;
     this.__children = children;
 
+    //TODO: 大数处理
     this.__uid = uid++;
     this.__element = null;
     this.__parent = null;

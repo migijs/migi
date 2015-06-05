@@ -25,9 +25,11 @@ class Component extends Element {
     });
   }
   //需要被子类覆盖
+  //@abstract
   render() {
     return new VirtualDom('div', this.props, this.children);
   }
+  //@override
   toString() {
     this.__virtualDom = this.render();
     this.virtualDom.__parent = this;
@@ -85,6 +87,7 @@ class Component extends Element {
     this.__style = v;
   }
 
+  //@override
   __onDom() {
     super.__onDom();
     var self = this;
@@ -108,6 +111,7 @@ class Component extends Element {
         self.element.addEventListener(name, stopPropagation);
       });
   }
+  //@override
   __onData(k) {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);

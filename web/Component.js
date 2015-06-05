@@ -25,9 +25,11 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
     });
   }
   //需要被子类覆盖
+  //@abstract
   Component.prototype.render = function() {
     return new VirtualDom('div', this.props, this.children);
   }
+  //@override
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();
     this.virtualDom.__parent = this;
@@ -85,6 +87,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
     this.__style = v;
   }
 
+  //@override
   Component.prototype.__onDom = function() {
     Element.prototype.__onDom.call(this);
     var self = this;
@@ -108,6 +111,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3
         self.element.addEventListener(name, stopPropagation);
       });
   }
+  //@override
   Component.prototype.__onData = function(k) {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);

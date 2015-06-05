@@ -83,9 +83,7 @@
       super(...data);
       var self = this;
       self.on(migi.Event.DOM, function() {
-        setTimeout(function() {
-          self.request();
-        }, 1000);
+        self.request();
       });
     }
     request() {
