@@ -70,13 +70,15 @@ function joinArray(arr) {
   }
   _4.v.set =function(v) {
     var self = this;
+    self.__count = 0;
+    self.__empty = true;
+
     var list = getList(v, []);
     //数组只有1项时，为其对应类型；
     //多项时判断2种数量，全部为一种也是对应类型；否则报错
     //count计数为VirtualDom/Component节点数
     var iV = 0;
     var iT = 0;
-    self.__count = 0;
     list.forEach(function(item) {
       if(item instanceof Element) {
         iV++;
@@ -123,7 +125,7 @@ function joinArray(arr) {
 Object.keys(_4).forEach(function(k){Object.defineProperty(Obj.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Obj[k]=Event[k]});
 
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型
-//当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，通知parent重绘
+//当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，DomDiff重绘
 //全部VirtualDom和Component统一为Element
 Obj.TEXT = '__0';
 Obj.ELEMENT = '__1';
