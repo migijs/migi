@@ -362,7 +362,6 @@ var NEXT_MAYBE_TEXT_TOO = 1;
   VirtualDom.prototype.__onDom = function() {
     Element.prototype.__onDom.call(this);
     var self = this;
-    //self.off(Event.DOM, self.__onDom)
     var length = self.element.childNodes.length;
     var start = 0;
     var prev;
@@ -401,6 +400,12 @@ var NEXT_MAYBE_TEXT_TOO = 1;
         }
       }
       prev = child;
+    }
+    //Obj类型时需判断是否TEXT
+    else if(child instanceof Obj && child.type != Obj.TEXT) {
+      start += child.count;
+      var v = child.v;
+      prev = Array.isArray(v) ? util.getLast(v) : v;
     }
     else if(VirtualDom.isText(child)) {
       if(VirtualDom.isEmptyText(child)) {
@@ -469,9 +474,8 @@ var NEXT_MAYBE_TEXT_TOO = 1;
     //Obj类型的判断type和count，及为文本时是否为空
     var start = 0;
     var range = [];
-    var len = self.children.length;
     var prev;
-    for(var index = 0; index < len; index++) {
+    for(var index = 0, len = self.children.length; index < len; index++) {
       var child = self.children[index];
       //prev和start都传入，在child为数组的情况下自动计算返回
       var temp = self.__checkObj(k, child, prev, index, range, start, len);
@@ -640,6 +644,8 @@ var NEXT_MAYBE_TEXT_TOO = 1;
               }
             }
           }
+          //别忘了触发新vd的DOM事件
+          child.emit(Event.DOM);
         }
         //老类型是ELEMENT
         else {
@@ -653,6 +659,8 @@ var NEXT_MAYBE_TEXT_TOO = 1;
                 start++;
               }
             }
+            //别忘了触发新vd的DOM事件
+            child.emit(Event.DOM);
           }
           //新类型是TEXT
           else {
