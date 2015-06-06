@@ -178,9 +178,6 @@ var util = {
         return NODE;
     }
   },
-  div:function() {
-    return document.createElement('div');
-  },
   lie: LIE,
   version: function() {
     if(!LIE) {

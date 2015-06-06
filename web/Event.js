@@ -62,13 +62,12 @@ define(function(require, exports, module){
     }
     else {
       if(self.__hash.hasOwnProperty(id)) {
-        self.__hash[id].forEach(function(item) {
-          item.apply(self, data);
-        });
-      }
-      //侦听*的为所有
-      if(self.__hash.hasOwnProperty('*')) {
-        self.__hash['*'].forEach(function(item) {
+        var list = self.__hash[id].slice();
+        //侦听*的为所有
+        if(self.__hash.hasOwnProperty('*')) {
+          list = list.concat(self.__hash['*']);
+        }
+        list.forEach(function(item) {
           item.apply(self, data);
         });
       }

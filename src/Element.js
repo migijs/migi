@@ -29,7 +29,10 @@ class Element extends Event {
   }
 
   __onDom() {
-    this.__dom = true;
+    var self = this;
+    self.__dom = true;
+    //触发后就移除
+    self.off(Event.DOM, self.__onDom);
   }
   //@abstract
   //__onData() {}
