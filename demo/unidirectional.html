@@ -14,13 +14,13 @@
   class MyComponent extends migi.Component {
     constructor(...data) {
       super(...data);
-      this.text = 'like';
+      this._txt = 'like';
     }
     get txt() {
-      return this.text;
+      return this._txt;
     }
     set txt(v) {
-      this.text = v;
+      this._txt = v;
     }
     handleClick() {
       this.txt = this.txt == 'like' ? 'unlike' : 'like';
