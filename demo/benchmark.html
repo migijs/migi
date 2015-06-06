@@ -2,21 +2,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="description" content="DBMON NOT REACT" />
-  <link href="http://leeluolee.github.io/js-repaint-perfs/lib/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link href="http://leeluolee.github.io/js-repaint-perfs/styles.css" rel="stylesheet" type="text/css" />
+  <link href="bootstrap.min.css" rel="stylesheet" type="text/css" />
   <title>dbmon (migi)</title>
+  <style>
+    .Query {
+      position: relative;
+    }
+
+    .Query:hover .popover {
+      left: -100%;
+      width: 100%;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-<script type="text/jsx">
+<script type="text/jsx">var i = 0;
   class Component extends migi.Component {
     constructor(...data) {
       super(...data);
       var self = this;
       self._list = [];
       self.on(migi.Event.DOM, function() {
-        self.list = ENV.generateData().toArray();
+        var v = ENV.generateData().toArray();
+        self.list = [v[0]];
         Monitoring.renderRate.ping();
-        setTimeout(arguments.callee, ENV.timeout);
+        if(i++ < 1) {
+          setTimeout(arguments.callee, ENV.timeout);
+        }
       });
     }
     get list() {
@@ -74,10 +87,10 @@
   <div id="dbmon"></div>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
-  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/jquery-2.1.0.min.js"></script>
-  <script src="http://leeluolee.github.io/js-repaint-perfs/ENV.js"></script>
-  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/memory-stats.js"></script>
-  <script src="http://leeluolee.github.io/js-repaint-perfs/lib/monitor.js"></script>
+  <script src="jquery-2.1.0.min.js"></script>
+  <script src="ENV.js"></script>
+  <script src="memory-stats.js"></script>
+  <script src="monitor.js"></script>
   <script>
     seajs.config({
       alias: {

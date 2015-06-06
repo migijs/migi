@@ -17,42 +17,82 @@
   class MyComponent extends migi.Component {
     constructor(...data) {
       super(...data);
-      this._list = [];
+      this._list1 = [];
+      this._list2 = [0,1,2];
+      this._list3 = [];
+      this._list4 = [<strong>a</strong>,<strong>b</strong>,<strong>c</strong>];
     }
-    get list() {
-      return this._list;
+    get list1() {
+      return this._list1;
     }
-    set list(_list) {
-      this._list = _list;
+    set list1(v) {
+      this._list1 = v;
     }
-    add() {
+    get list2() {
+      return this._list2;
+    }
+    set list2(v) {
+      this._list2 = v;
+    }
+    get list3() {
+      return this._list3;
+    }
+    set list3(v) {
+      this._list3 = v;
+    }
+    get list4() {
+      return this._list4;
+    }
+    set list4(v) {
+      this._list4 = v;
+    }
+    change() {
       var num = Math.floor(Math.random() * 10);
-      this.list.push(num);
-      this.list = this.list;
-    }
-    del() {
-      this.list.pop();
-      this.list = this.list;
+
+      this.list1.push(num);
+      this.list1 = this.list1;
+
+      this.list2.pop();
+      this.list2 = this.list2;
+
+      this.list3.push(<strong>{num}</strong>);
+      this.list3 = this.list3;
+
+      this.list4.pop();
+      this.list4 = this.list4;
     }
     render() {
-      var blank = '';
       return (
         <div>
-          <p onClick={this.add}>点击添加一个随机数</p>
-          <p onClick={this.del}>点击删除一个随机数</p>
-          <ul>
-            <li title="1个文本变量">{this.list}</li>
-            <li title="2个文本变量">{this.list} {this.list}</li>
-            <li title="静态+变量">start {this.list}</li>
-            <li title="变量+静态">{this.list} end</li>
-            <li title="变量+静态+变量">{this.list} middle {this.list}</li>
-            <li title="空+变量">{blank} {this.list}</li>
-            <li title="变量+空">{this.list} {blank}</li>
-            <li title="变量+空+变量">{this.list} {blank} {this.list}</li>
-            <li title="DOM+变量"><span>dom</span>{this.list}</li>
-            <li title="变量+DOM">{this.list}<span>dom</span></li>
-            <li title="变量+DOM+变量">{this.list}<span>dom</span>{this.list}</li>
-          </ul>
+          <p onClick={this.change}>点击随机变化</p>
+          <p>
+            {
+              this.list1.map(function(item, i) {
+                return <span title={i}>{item}</span>;
+              })
+            }
+          </p>
+          <p>
+            {
+              this.list2.map(function(item, i) {
+                return <span title={i}>{item}</span>;
+              })
+            }
+          </p>
+          <p>
+            {
+              this.list3.map(function(item, i) {
+                return <span title={i}>{item}</span>;
+              })
+            }
+          </p>
+          <p>
+            {
+              this.list4.map(function(item, i) {
+                return <span title={i}>{item}</span>;
+              })
+            }
+          </p>
         </div>
       );
     }

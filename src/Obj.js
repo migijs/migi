@@ -1,3 +1,4 @@
+import Event from './Event';
 import Element from './Element';
 import util from './util';
 
@@ -31,19 +32,32 @@ function joinArray(arr) {
   return res;
 }
 
-class Obj {
+class Obj extends Event {
   constructor(k, context, cb) {
+    super();
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
     }
-    this.__k = k;
-    this.__context = context;
-    this.__empty = true;
-    this.type = null;
-    this.__count = 0;
-    this.__cb = cb;
-    this.v = cb.call(context);
+
+    var self = this;
+    self.__k = k;
+    self.__context = context;
+    self.__empty = true;
+    self.type = null;
+    self.__count = 0;
+    self.__cb = cb;
+    self.v = cb.call(context);
+
+    self.on(Event.DOM, function() {
+      self.off(Event.DOM, arguments.callee);
+      var list = getList(self.v, []);
+      list.forEach(function(item) {
+        if(item instanceof Element) {
+          item.emit(Event.DOM);
+        }
+      });
+    });
   }
   get k() {
     return this.__k;
@@ -62,6 +76,7 @@ class Obj {
     //count计数为VirtualDom/Component节点数
     var iV = 0;
     var iT = 0;
+    self.__count = 0;
     list.forEach(function(item) {
       if(item instanceof Element) {
         iV++;
@@ -88,6 +103,7 @@ class Obj {
     else {
       throw new Error('migi.Obj can not has complex value: ' + self.k);
     }
+    //TODO: 可能不需要clone
     self.__v = util.clone(v);
   }
   get cb() {

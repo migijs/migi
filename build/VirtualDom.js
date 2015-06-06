@@ -29,6 +29,9 @@ var SELF_CLOSE = {
 
 var TEMP_NODE = document.createElement('div');
 
+var NEXT_MAYBE_TEXT = 0;
+var NEXT_MAYBE_TEXT_TOO = 1;
+
 !function(){var _9=Object.create(Element.prototype);_9.constructor=VirtualDom;VirtualDom.prototype=_9}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
@@ -296,102 +299,60 @@ var TEMP_NODE = document.createElement('div');
     }
     return util.encodeHtml(child.toString());
   }
-  //obj为新值，index是老children索引，start对应真实DOM索引
-  VirtualDom.prototype.__reRender = function(old, news, start, length) {
+  //start对应真实DOM索引
+  VirtualDom.prototype.__reRender = function(olds, news, start) {
     var self = this;
-    var temp;
-    var isArray = Array.isArray(old);
-    var len = isArray ? old.length : 0;
-    var count = 0;
-    var source = isArray ? old[0] : old;
-    //新的是数组
-    if(Array.isArray(news)) {
-      //需要处理老vd的类型和数量，设为-1防止news为空情况
-      var index = -1;
-      news.forEach(function(item, i) {
-        index = i;
-        if(item instanceof VirtualDom) {
-          //老的是数组
-          if(isArray) {
-            if(source === void 0) {
-              temp = util.getParent(item.name);
-              temp.innerHTML = item.toString();
-              if(start >= length) {
-                self.element.appendChild(temp.firstChild);
-              }
-              else {
-                self.element.replaceChild(temp.firstChild, self.element.childNodes[start]);
-              }
-            }
-            else {
-              if(source instanceof VirtualDom) {
-                self.__updateChild(source, item);
-              }
-              else if(source instanceof Component) {
-                //TODO
-              }
-              else {
-                var dom = util.getParent(item.name);
-                dom.innerHTML = item.toString();
-                self.element.replaceChild(dom.firstChild, self.element.childNodes[start]);
-              }
-            }
-            source = old[++count];
-          }
-          else {
-            //TODO
-          }
-          start++;
-          item.emit(Event.DOM);
-        }
-        else if(item instanceof Component) {
-          //TODO
-        }
-        else {
-          //TODO
-        }
-      });
-      if(isArray) {
-        //可能老的长度>新的，需删除后面的部分
-        for(var i = index + 1; i < len; i++) {
-          self.element.removeChild(self.element.childNodes[start--]);
-          //TODO: 可能不是DOM而是合并的text节点或数组
-        }
-      }
+    //转成数组方便对比
+    if(!Array.isArray(olds)) {
+      olds = [olds];
     }
-    //新的不是数组
-    else {
-      if(news instanceof VirtualDom) {
-        //TODO
+    if(!Array.isArray(news)) {
+      news = [news];
+    }
+    for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
+      var ovd = olds[i];
+      var nvd = news[i];
+      //同类型节点更新之
+      if(ovd.name == nvd.name) {
+        self.__updateChild(ovd, nvd);
       }
-      else if(news instanceof Component) {
-        //TODO
+      //否则重绘插入
+      else {
+        var s = child.toString();
+        var name = /^<([\w-])/.exec(s)[1];
+        var node = util.getParent(name);
+        node.innerHTML = s;
+        self.element.replaceChild(node.firstChild, self.element.childNodes[start]);
+      }
+      start++;
+      //TODO: 当是Component的时候
+    }
+    //老的多余的删除
+    for(var j = i, len = olds.length; j < len; j++) {
+      self.element.removeChild(self.element.childNodes[start]);
+    }
+    //新的多余的插入
+    if(i <= news.length - 1) {
+      var insert = self.element.childNodes[start];
+      if(insert) {
+        for(var j = news.length - 1; j >= i; j--) {
+          var s = news[j].toString();
+          var name = /^<([\w-])/.exec(s)[1];
+          var node = util.getParent(name);
+          node.innerHTML = s;
+          self.element.insertBefore(node.firstChild, insert);
+        }
       }
       else {
-        //老的是数组
-        if(isArray) {
-          //TODO
-        }
-        else {
-          if(old instanceof VirtualDom) {
-            //TODO
-          }
-          else if(news instanceof Component) {
-            //TODO
-          }
-          else {
-            console.log(11)
-          }
+        for(var j = i, l = news.length; j < l; j++) {
+          var s = news[j].toString();
+          var name = /^<([\w-])/.exec(s)[1];
+          var node = util.getParent(name);
+          node.innerHTML = s;
+          self.element.appendChild(node.firstChild);
         }
       }
     }
-    return start;
-    //self.children.forEach(function(child) {
-    //  res += self.__renderChild(child);
-    //});
-    //self.element.innerHTML = res;
-    //重新触发DOM
-    //self.__onDom();
   }
 
   VirtualDom.prototype.find = function(name) {
@@ -581,7 +542,7 @@ var TEMP_NODE = document.createElement('div');
         var textNode = virtualDom.element.childNodes[item.start];
         var now = util.lie ? textNode.innerText : textNode.textContent;
         if(res != now) {
-          //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
+          //textContent自动转义，保留空白，但显示时仍是合并多个空白，故用临时节点的innerHTML再replace代替
           //但当为innerHTML空时，没有孩子节点，所以特殊判断
           if(res) {
             TEMP_NODE.innerHTML = res;
@@ -735,13 +696,12 @@ var TEMP_NODE = document.createElement('div');
     //Obj类型的判断type和count，及为文本时是否为空
     var start = 0;
     var range = [];
-    var length = self.element.childNodes.length;
     var len = self.children.length;
     var prev;
     for(var index = 0; index < len; index++) {
       var child = self.children[index];
       //prev和start都传入，在child为数组的情况下自动计算返回
-      var temp = self.__checkChild(k, child, prev, index, range, start, len, length);
+      var temp = self.__checkChild(k, child, prev, index, range, start, len);
       start = temp.start;
       prev = temp.prev;
     }
@@ -827,22 +787,17 @@ var TEMP_NODE = document.createElement('div');
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  VirtualDom.prototype.__checkChild = function(k, child, prev, index, range, start, len, length, force) {
+  VirtualDom.prototype.__checkChild = function(k, child, prev, index, range, start, len, force) {
     var self = this;
+    //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
+    //文本节点本身不会增加索引，因为可能有相邻的
     if(child instanceof Obj) {
-      var ot = child.type;
-      var st = start;
-      //当Component和VirtualDom则++，且前面是非空文本节点时再++，因为有2个节点
-      //文本节点本身不会增加索引，因为可能有相邻的
-      if(ot == Obj.ELEMENT) {
-        start++;
-        //可能本身就是第一个
-        if(index || force) {
-          if(self.__isText(prev)) {
-            start++;
-          }
-        }
-      }
+      //TODO: NEXT_MAYBE_TEXT上次循环的特殊处理
+      var old = child.v;
+      var oldCount = child.count;
+      var oldStart = start;
+      var oldType = child.type;
+      //可能Obj的关联是个列表
       var change = false;
       if(Array.isArray(child.k)) {
         change = child.k.indexOf(k) > -1;
@@ -850,23 +805,144 @@ var TEMP_NODE = document.createElement('div');
       else if(k == child.k) {
         change = true;
       }
-      var old = child.v;
-      //当可能发生变化时进行比对
+      //当可能发生变化时才进行比对
       if(change && self.__needUpdate(child)) {
-        //类型一旦发生变化，或者变化前后类型为ELEMENT，直接父层重绘
-        //TODO: 可能由DOM变为字符串
-        if(ot != child.type || child.type != Obj.TEXT) {
-          self.__reRender(old, child.v, st, length);
+        //老类型是TEXT
+        if(oldType == Obj.TEXT) {
+          //新类型也是TEXT，进行range更新文本
+          if(child.type == Obj.TEXT) {
+            range.push({ start:start, index:index });
+          }
+          //新类型是ELEMENT
+          else {
+            var prevText = false;
+            var nextText = false;
+            //前面如有文本，设置range更新
+            if(index || force) {
+              if(self.__isText(prev)) {
+                prevText = true;
+                range.push({ start:start, index: index - 1 });
+                //更新索引，前面有文本节点自增
+                start++;
+              }
+            }
+            //更新索引
+            start += child.count;
+            //后面如有文本，设置range更新
+            if(index < len - 1) {
+              var next = self.children[index + 1];
+              //next需判断数组，prev被展开处理所以无需考虑
+              if(Array.isArray(next)) {
+                next = util.getFirst(next);
+              }
+              if(self.__isText(next)) {
+                nextText = true;
+                //注意坑，后面可能是个TEXT的Obj，但可能接下来的循环发生类型改变
+                //因此设置type，下一个循环会对range进行检查，改变需要特殊处理
+                range.push({ start: start, index: index + 1, type: NEXT_MAYBE_TEXT });
+              }
+            }
+            //如果只有自己，需删除掉这个节点，插入在当前的索引位置即可
+            if(!prevText && !nextText) {
+              self.element.removeChild(self.element.childNodes[oldStart]);
+            }
+            //如果前面有文本，插入需放到下一个
+            else if(prevText) {
+              oldStart++;
+            }
+            //本身渲染后插入
+            var s = child.toString();
+            var name = /^<([\w-])/.exec(s)[1];
+            var node = util.getParent(name);
+            node.innerHTML = s;
+            var insert = self.element.childNodes[oldStart];
+            if(insert) {
+              for(var i = node.childNodes.length - 1; i >= 0; i--) {
+                self.element.insertBefore(node.childNodes[i], insert);
+              }
+            }
+            else {
+              for(var i = 0, l = node.childNodes.length; i < l; i++) {
+                self.element.appendChild(node.childNodes[i]);
+              }
+            }
+            //别忘了Obj的新DOM触发事件
+            child.emit(Event.DOM);
+          }
         }
-        //记录真实索引和child索引
+        //老类型是ELEMENT
         else {
-          range.push({ start:start, index:index });
+          //新类型是ELEMENT
+          if(child.type == Obj.ELEMENT) {
+            self.__reRender(old, child.v, start);
+            start += child.count;
+            //别忘了前面的文本节点索引
+            if(index || force) {
+              if(self.__isText(prev)) {
+                start++;
+              }
+            }
+          }
+          //新类型是TEXT
+          else {
+            //删除老的DOM节点
+            for(var i = 0; i < oldCount; i++) {
+              self.element.removeChild(self.element.childNodes[start]);
+            }
+            var single = true;
+            //前面如有文本，设置range更新
+            if(index || force) {
+              if(self.__isText(prev)) {
+                single = false;
+                range.push({ start:start, index: index - 1 });
+              }
+            }
+            //后面如有文本，设置range更新
+            if(index < len - 1) {
+              var next = self.children[index + 1];
+              if(Array.isArray(next)) {
+                next = util.getFirst(next);
+              }
+              if(self.__isText(next)) {
+                single = false;
+                //同样后面可能Obj变成非TEXT类型，记录type
+                range.push({ start:start, index: index + 1, type: NEXT_MAYBE_TEXT_TOO });
+              }
+            }
+            //如果只有自己，本身渲染后插入
+            if(single) {
+              var node = util.NODE;
+              node.innerHTML = child.toString();
+              //可能toString()为空字符串，不会生成firstChild
+              if(!node.firstChild) {
+                var textNode = document.createTextNode('');
+                node.appendChild(textNode);
+              }
+              var insert = self.element.childNodes[start];
+              if(insert) {
+                self.element.insertBefore(node.firstChild, insert);
+              }
+              else {
+                self.element.appendChild(node.firstChild);
+              }
+            }
+          }
+        }
+      }
+      //未发生改变只更新索引
+      else if(oldType == Obj.ELEMENT) {
+        start += child.count;
+        //别忘了前面的文本节点索引
+        if(index || force) {
+          if(self.__isText(prev)) {
+            start++;
+          }
         }
       }
       prev = child;
     }
     //递归通知，增加索引
-    else if(child instanceof VirtualDom) {
+    else if(child instanceof Element) {
       child.emit(Event.DATA, k);
       start++;
       if(index || force) {
@@ -880,12 +956,15 @@ var TEMP_NODE = document.createElement('div');
       var temp;
       util.join(child).forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        temp = self.__checkChild(k, item, prev, index, range, start, len, length, i || index);
+        temp = self.__checkChild(k, item, prev, index, range, start, len, i || index);
         start = temp.start;
         prev = temp.prev;
       });
     }
     //else其它情况为文本节点或者undefined忽略
+    else {
+      prev = child;
+    }
     return { start:start, prev:prev };
   }
   VirtualDom.prototype.__isText = function(item) {

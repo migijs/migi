@@ -111,6 +111,7 @@ const TBODY = document.createElement('tbody');
 const TR = document.createElement('tr');
 const UL = document.createElement('ul');
 const DL = document.createElement('dl');
+const SELECT = document.createElement('select');
 const LIE = !+'\v1';
 
 var util = {
@@ -157,6 +158,7 @@ var util = {
   TABLE: TABLE,
   TR: TR,
   getParent(name) {
+    //TODO: insertAdjacentHTML
     switch(name.toLowerCase()) {
       case 'td':
         return TR;
@@ -170,6 +172,8 @@ var util = {
       case 'dt':
       case 'dd':
         return DL;
+      case 'option':
+        return SELECT;
       default:
         return NODE;
     }
