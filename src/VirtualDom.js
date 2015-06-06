@@ -396,28 +396,28 @@ class VirtualDom extends Element {
       start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及逻辑
       if(index || force) {
-        if(self.__isText(prev)) {
+        if(VirtualDom.isText(prev)) {
           start++;
         }
       }
       prev = child;
     }
-    else if(self.__isText(child)) {
-      if(self.__isEmptyText(child)) {
+    else if(VirtualDom.isText(child)) {
+      if(VirtualDom.isEmptyText(child)) {
         //前方如有兄弟文本节点，无需插入
         if(index || force) {
           var prev = self.children[index - 1];
-          if(self.__isText(prev)) {
+          if(VirtualDom.isText(prev)) {
             return;
           }
         }
         //后方如有非空兄弟文本节点，无需插入；同时设置索引，提高循环性能
         for(var i = index + 1; i < len; i++) {
           var next = self.children[i];
-          if(self.__isText(next)) {
+          if(VirtualDom.isText(next)) {
             index++;
             prev = next;
-            if(!self.__isEmptyText(next)) {
+            if(!VirtualDom.isEmptyText(next)) {
               return { start, index, prev };
             }
           }
@@ -494,7 +494,7 @@ class VirtualDom extends Element {
             prevArr = util.join(prev);
             for(var i = prevArr.length - 1; i >= 0; i--) {
               prev = prevArr[i];
-              if(!self.__isText(prev)) {
+              if(!VirtualDom.isText(prev)) {
                 prevArr = prevArr.slice(i + 1);
                 break outer;
               }
@@ -503,7 +503,7 @@ class VirtualDom extends Element {
           //非数组将其置空，方便后面判断
           else {
             prevArr = null;
-            if(!self.__isText(prev)) {
+            if(!VirtualDom.isText(prev)) {
               break;
             }
           }
@@ -514,7 +514,7 @@ class VirtualDom extends Element {
             nextArr = util.join(next);
             for(var i = 0, l = nextArr.length; i < l; i++) {
               next = nextArr[i];
-              if(!self.__isText(next)) {
+              if(!VirtualDom.isText(next)) {
                 nextArr = nextArr.slice(0, i);
                 break;
               }
@@ -522,7 +522,7 @@ class VirtualDom extends Element {
           }
           else {
             nextArr = null;
-            if(!self.__isText(next)) {
+            if(!VirtualDom.isText(next)) {
               break;
             }
           }
@@ -592,7 +592,7 @@ class VirtualDom extends Element {
             var nextText = false;
             //前面如有文本，设置range更新
             if(index || force) {
-              if(self.__isText(prev)) {
+              if(VirtualDom.isText(prev)) {
                 prevText = true;
                 range.push({ start, index: index - 1 });
                 //更新索引，前面有文本节点自增
@@ -608,7 +608,7 @@ class VirtualDom extends Element {
               if(Array.isArray(next)) {
                 next = util.getFirst(next);
               }
-              if(self.__isText(next)) {
+              if(VirtualDom.isText(next)) {
                 nextText = true;
                 //注意坑，后面可能是个TEXT的Obj，但可能接下来的循环发生类型改变
                 //因此设置type，下一个循环会对range进行检查，改变需要特殊处理
@@ -649,7 +649,7 @@ class VirtualDom extends Element {
             start += child.count;
             //别忘了前面的文本节点索引
             if(index || force) {
-              if(self.__isText(prev)) {
+              if(VirtualDom.isText(prev)) {
                 start++;
               }
             }
@@ -663,7 +663,7 @@ class VirtualDom extends Element {
             var single = true;
             //前面如有文本，设置range更新
             if(index || force) {
-              if(self.__isText(prev)) {
+              if(VirtualDom.isText(prev)) {
                 single = false;
                 range.push({ start, index: index - 1 });
               }
@@ -674,7 +674,7 @@ class VirtualDom extends Element {
               if(Array.isArray(next)) {
                 next = util.getFirst(next);
               }
-              if(self.__isText(next)) {
+              if(VirtualDom.isText(next)) {
                 single = false;
                 //同样后面可能Obj变成非TEXT类型，记录type
                 range.push({ start, index: index + 1, type: NEXT_MAYBE_TEXT_TOO });
@@ -705,7 +705,7 @@ class VirtualDom extends Element {
         start += child.count;
         //别忘了前面的文本节点索引
         if(index || force) {
-          if(self.__isText(prev)) {
+          if(VirtualDom.isText(prev)) {
             start++;
           }
         }
@@ -717,7 +717,7 @@ class VirtualDom extends Element {
       child.emit(Event.DATA, k);
       start++;
       if(index || force) {
-        if(self.__isText(prev)) {
+        if(VirtualDom.isText(prev)) {
           start++;
         }
       }
@@ -737,18 +737,6 @@ class VirtualDom extends Element {
       prev = child;
     }
     return { start, prev };
-  }
-  __isText(item) {
-    //动态文本节点
-    if(item instanceof Obj) {
-      if(item.type == Obj.TEXT) {
-        return true;
-      }
-    }
-    //静态文本节点，包括空、undefined、null
-    else if(!(item instanceof Element)) {
-      return true;
-    }
   }
   //start对应真实DOM索引
   __updateChild(olds, news, start) {
@@ -810,14 +798,6 @@ class VirtualDom extends Element {
         }
       }
     }
-  }
-  //默认已是text类型
-  __isEmptyText(item) {
-    //动态文本节点
-    if(item instanceof Obj) {
-      return item.empty;
-    }
-    return item === void 0 || !item.toString();
   }
   __needUpdate(child) {
     var ov = child.v;
@@ -917,6 +897,26 @@ class VirtualDom extends Element {
         child.__updateStyle();
       }
     });
+  }
+
+  static isText(item) {
+    //动态文本节点
+    if(item instanceof Obj) {
+      if(item.type == Obj.TEXT) {
+        return true;
+      }
+    }
+    //静态文本节点，包括空、undefined、null
+    else if(!(item instanceof Element)) {
+      return true;
+    }
+  }
+  static isEmptyText(item) {
+    //动态文本节点
+    if(item instanceof Obj) {
+      return item.empty;
+    }
+    return item === void 0 || !item.toString();
   }
 }
 
