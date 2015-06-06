@@ -21,6 +21,7 @@
       this._list2 = [0,1,2];
       this._list3 = [];
       this._list4 = [<strong>a</strong>,<strong>b</strong>,<strong>c</strong>];
+      this._list5 = [];
     }
     get list1() {
       return this._list1;
@@ -46,20 +47,29 @@
     set list4(v) {
       this._list4 = v;
     }
+    get list5() {
+      return this._list5;
+    }
+    set list5(v) {
+      this._list5 = v;
+    }
     change() {
       var num = Math.floor(Math.random() * 10);
 
-      this.list1.push(num);
-      this.list1 = this.list1;
+//      this.list1.push(num);
+//      this.list1 = this.list1;
+//
+//      this.list2.pop();
+//      this.list2 = this.list2;
 
-      this.list2.pop();
-      this.list2 = this.list2;
+//      this.list3.push(<strong>{num}</strong>);
+//      this.list3 = this.list3;
 
-      this.list3.push(<strong>{num}</strong>);
-      this.list3 = this.list3;
+//      this.list4.pop();
+//      this.list4 = this.list4;
 
-      this.list4.pop();
-      this.list4 = this.list4;
+      this.list5.push(num);
+      this.list5 = this.list5;
     }
     render() {
       return (
@@ -90,6 +100,13 @@
             {
               this.list4.map(function(item, i) {
                 return <span title={i}>{item}</span>;
+              })
+            }
+          </p>
+          <p>
+            {
+              this.list5.map(function(item, i) {
+                return <span title={i}><strong>{item}</strong></span>;
               })
             }
           </p>

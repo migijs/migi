@@ -7,6 +7,7 @@ import Cb from './Cb';
 import merge from './merge';
 import match from './match';
 import sort from './sort';
+import domDiff from './domDiff';
 
 const SELF_CLOSE = {
   'img': true,
@@ -299,61 +300,6 @@ class VirtualDom extends Element {
     }
     return util.encodeHtml(child.toString());
   }
-  //start对应真实DOM索引
-  __reRender(olds, news, start) {
-    var self = this;
-    //转成数组方便对比
-    if(!Array.isArray(olds)) {
-      olds = [olds];
-    }
-    if(!Array.isArray(news)) {
-      news = [news];
-    }
-    for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
-      var ovd = olds[i];
-      var nvd = news[i];
-      //同类型节点更新之
-      if(ovd.name == nvd.name) {
-        self.__updateChild(ovd, nvd);
-      }
-      //否则重绘插入
-      else {
-        var s = child.toString();
-        var name = /^<([\w-])/.exec(s)[1];
-        var node = util.getParent(name);
-        node.innerHTML = s;
-        self.element.replaceChild(node.firstChild, self.element.childNodes[start]);
-      }
-      start++;
-      //TODO: 当是Component的时候
-    }
-    //老的多余的删除
-    for(var j = i, len = olds.length; j < len; j++) {
-      self.element.removeChild(self.element.childNodes[start]);
-    }
-    //新的多余的插入
-    if(i <= news.length - 1) {
-      var insert = self.element.childNodes[start];
-      if(insert) {
-        for(var j = news.length - 1; j >= i; j--) {
-          var s = news[j].toString();
-          var name = /^<([\w-])/.exec(s)[1];
-          var node = util.getParent(name);
-          node.innerHTML = s;
-          self.element.insertBefore(node.firstChild, insert);
-        }
-      }
-      else {
-        for(var j = i, l = news.length; j < l; j++) {
-          var s = news[j].toString();
-          var name = /^<([\w-])/.exec(s)[1];
-          var node = util.getParent(name);
-          node.innerHTML = s;
-          self.element.appendChild(node.firstChild);
-        }
-      }
-    }
-  }
 
   find(name) {
     return this.findAll(name, true)[0];
@@ -387,184 +333,10 @@ class VirtualDom extends Element {
     }
     return res;
   }
-  //DomDiff之后发生变更，更新的新VirtualDom
-  __updateChild(old, virtualDom) {
-    //特殊的uid，以及将真实DOM引用赋给新vd
-    var elem = old.element;
-    elem.setAttribute('migi-uid', virtualDom.uid);
-    virtualDom.element = elem;
-    //删除老参数，添加新参数
-    var ok = Object.keys(old.props);
-    var nk = Object.keys(virtualDom.props);
-    //记录对比过的prop
-    var hash = {};
-    ok.forEach(function(prop) {
-      //TODO: 侦听引用对比
-      if(/^on[A-Z]/.test(prop)) {
-        //TODO: removeEventListener参数
-        var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
-          return Up.toLowerCase();
-        });
-        elem.removeEventListener(name);
-      }
-      else {
-        hash[prop] = true;
-        //对比老属性，相同无需更新
-        var v = old.props[prop];
-        var n = virtualDom.props[prop];
-        if(v !== n) {
-          old.__updateAttr(prop, n);
-        }
-      }
-    });
-    //添加新vd的属性
-    nk.forEach(function(prop) {
-      //TODO: onXxx
-      if(!hash.hasOwnProperty(prop)) {
-        virtualDom.__updateAttr(prop, virtualDom.props[prop]);
-      }
-    });
-    //渲染children
-    var start = 0;
-    var range = [];
-    //遍历孩子，长度取新老vd最大值
-    for(var i = 0, length = Math.max(old.children.length, virtualDom.children.length); i < length; i++) {
-      var oc = old.children[i];
-      var nc = virtualDom.children[i];
-      var isArray = Array.isArray(oc);
-      var len = isArray ? old.length : 0;
-      var count = 0;
-      var source = isArray ? oc[0] : oc;
-      if(Array.isArray(nc)) {
-        var index = -1;
-        nc.forEach(function(item, i) {
-          index = i;
-          if(item instanceof VirtualDom) {
-            //老的是数组
-            if(isArray) {
-              if(source === void 0) {
-                //
-              }
-              else {
-                if(source instanceof VirtualDom) {
-                  item.__updateChild(source, item);
-                }
-                else if(source instanceof Component) {
-                  //TODO
-                }
-                else {
-                  var dom = util.getParent(item.name);
-                  dom.innerHTML = item.toString();
-                  item.element.replaceChild(dom.firstChild, nc.element.childNodes[start]);
-                }
-              }
-              source = oc[++count];
-            }
-            else {
-              //TODO
-            }
-            start++;
-            item.emit(Event.DOM);
-          }
-        });
-        //可能老的长度>新的，需删除后面的部分
-        if(isArray) {
-          for(var i = index + 1; i < len; i++) {
-            self.element.removeChild(self.element.childNodes[start--]);
-            //TODO: 可能不是DOM而是合并的text节点或数组
-          }
-        }
-      }
-      else {
-        //可能新的没有
-        if(nc === void 0) {
-          if(isArray) {
-            //TODO
-          }
-          else {
-            //TODO
-          }
-        }
-        else {
-          if(isArray) {
-            //TODO
-          }
-          else {
-            if(nc instanceof VirtualDom) {
-              if(source instanceof VirtualDom) {
-                if(nc.name == source.name) {
-                  nc.__updateChild(source, nc);
-                }
-                else {
-                  //TODO
-                }
-                start++;
-              }
-              else if(source instanceof Component) {
-                //TODO
-              }
-              else {
-                //TODO
-              }
-            }
-            else if(nc instanceof Component) {
-              //TODO
-            }
-            else {
-              range.push({ start, index: 0 });
-            }
-          }
-        }
-      }
-    }
-    //相邻的TEXT节点合并更新
-    merge(range);
-    if(range.length && elem) {
-      var self = this;
-      range.forEach(function(item) {
-        //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
-        for(var first = item.index; first > 0; first--) {
-          var prev = virtualDom.children[first - 1];
-          if(!util.isString(prev)) {
-            break;
-          }
-        }
-        for(var last = item.index, len = old.children.length; last < len - 1; last++) {
-          var next = virtualDom.children[last + 1];
-          if(!util.isString(next)) {
-            break;
-          }
-        }
-        var res = '';
-        for(var i = first; i <= last; i++) {
-          res += virtualDom.__renderChild(virtualDom.children[i]);
-        }
-        var textNode = virtualDom.element.childNodes[item.start];
-        var now = util.lie ? textNode.innerText : textNode.textContent;
-        if(res != now) {
-          //textContent自动转义，保留空白，但显示时仍是合并多个空白，故用临时节点的innerHTML再replace代替
-          //但当为innerHTML空时，没有孩子节点，所以特殊判断
-          if(res) {
-            TEMP_NODE.innerHTML = res;
-            elem.replaceChild(TEMP_NODE.firstChild, textNode);
-          }
-          else if(util.lie) {
-            textNode.innerText = '';
-          }
-          else {
-            textNode.textContent = '';
-          }
-        }
-      });
-    }
-  }
 
   get element() {
     this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
     return this.__element;
-  }
-  set element(v) {
-    this.__element = v;
   }
   get names() {
     return this.__names;
@@ -590,6 +362,7 @@ class VirtualDom extends Element {
   __onDom() {
     super.__onDom();
     var self = this;
+    //self.off(Event.DOM, self.__onDom)
     var length = self.element.childNodes.length;
     var start = 0;
     var prev;
@@ -701,7 +474,7 @@ class VirtualDom extends Element {
     for(var index = 0; index < len; index++) {
       var child = self.children[index];
       //prev和start都传入，在child为数组的情况下自动计算返回
-      var temp = self.__checkChild(k, child, prev, index, range, start, len);
+      var temp = self.__checkObj(k, child, prev, index, range, start, len);
       start = temp.start;
       prev = temp.prev;
     }
@@ -787,7 +560,7 @@ class VirtualDom extends Element {
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __checkChild(k, child, prev, index, range, start, len, force) {
+  __checkObj(k, child, prev, index, range, start, len, force) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -852,7 +625,7 @@ class VirtualDom extends Element {
             }
             //本身渲染后插入
             var s = child.toString();
-            var name = /^<([\w-])/.exec(s)[1];
+            var name = /^<([\w-]+)/.exec(s)[1];
             var node = util.getParent(name);
             node.innerHTML = s;
             var insert = self.element.childNodes[oldStart];
@@ -862,19 +635,17 @@ class VirtualDom extends Element {
               }
             }
             else {
-              for(var i = 0, l = node.childNodes.length; i < l; i++) {
-                self.element.appendChild(node.childNodes[i]);
+              while(node.childNodes[0]) {
+                self.element.appendChild(node.childNodes[0]);
               }
             }
-            //别忘了Obj的新DOM触发事件
-            child.emit(Event.DOM);
           }
         }
         //老类型是ELEMENT
         else {
           //新类型是ELEMENT
           if(child.type == Obj.ELEMENT) {
-            self.__reRender(old, child.v, start);
+            self.__updateChild(old, child.v, start);
             start += child.count;
             //别忘了前面的文本节点索引
             if(index || force) {
@@ -954,9 +725,9 @@ class VirtualDom extends Element {
     }
     else if(Array.isArray(child)) {
       var temp;
-      util.join(child).forEach(function(item, i) {
+      child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        temp = self.__checkChild(k, item, prev, index, range, start, len, i || index);
+        temp = self.__checkObj(k, item, prev, index, range, start, len, i || index);
         start = temp.start;
         prev = temp.prev;
       });
@@ -977,6 +748,67 @@ class VirtualDom extends Element {
     //静态文本节点，包括空、undefined、null
     else if(!(item instanceof Element)) {
       return true;
+    }
+  }
+  //start对应真实DOM索引
+  __updateChild(olds, news, start) {
+    var self = this;
+    //转成数组方便对比
+    if(!Array.isArray(olds)) {
+      olds = [olds];
+    }
+    else {
+      olds = util.join(olds);
+    }
+    if(!Array.isArray(news)) {
+      news = [news];
+    }
+    else {
+      news = util.join(news);
+    }
+    for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
+      var ovd = olds[i];
+      var nvd = news[i];
+      //同类型节点更新之
+      if(ovd.name == nvd.name) {
+        domDiff(ovd, nvd);
+      }
+      //否则重绘插入
+      else {
+        var s = child.toString();
+        var name = /^<([\w-])/.exec(s)[1];
+        var node = util.getParent(name);
+        node.innerHTML = s;
+        self.element.replaceChild(node.firstChild, self.element.childNodes[start]);
+      }
+      start++;
+      //TODO: 当是Component的时候
+    }
+    //老的多余的删除
+    for(var j = i, len = olds.length; j < len; j++) {
+      self.element.removeChild(self.element.childNodes[start]);
+    }
+    //新的多余的插入
+    if(i <= news.length - 1) {
+      var insert = self.element.childNodes[start];
+      if(insert) {
+        for(var j = news.length - 1; j >= i; j--) {
+          var s = news[j].toString();
+          var name = /^<([\w-])/.exec(s)[1];
+          var node = util.getParent(name);
+          node.innerHTML = s;
+          self.element.insertBefore(node.firstChild, insert);
+        }
+      }
+      else {
+        for(var j = i, l = news.length; j < l; j++) {
+          var s = news[j].toString();
+          var name = /^<([\w-])/.exec(s)[1];
+          var node = util.getParent(name);
+          node.innerHTML = s;
+          self.element.appendChild(node.firstChild);
+        }
+      }
     }
   }
   //默认已是text类型
