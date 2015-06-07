@@ -1,8 +1,8 @@
-define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("VirtualDom")?_1.VirtualDom:_1.hasOwnProperty("default")?_1["default"]:_1}();
-var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2["default"]:_2}();
-var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3["default"]:_3}();
-var range=function(){var _4=require('./range');return _4.hasOwnProperty("range")?_4.range:_4.hasOwnProperty("default")?_4["default"]:_4}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var range=function(){var _4=require('./range');return _4.hasOwnProperty("default")?_4["default"]:_4}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;

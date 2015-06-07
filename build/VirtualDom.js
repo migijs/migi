@@ -1,13 +1,13 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1["default"]:_1}();
-var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("Component")?_2.Component:_2.hasOwnProperty("default")?_2["default"]:_2}();
-var util=function(){var _3=require('./util');return _3.hasOwnProperty("util")?_3.util:_3.hasOwnProperty("default")?_3["default"]:_3}();
-var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("Obj")?_4.Obj:_4.hasOwnProperty("default")?_4["default"]:_4}();
-var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("Cb")?_5.Cb:_5.hasOwnProperty("default")?_5["default"]:_5}();
-var range=function(){var _6=require('./range');return _6.hasOwnProperty("range")?_6.range:_6.hasOwnProperty("default")?_6["default"]:_6}();
-var match=function(){var _7=require('./match');return _7.hasOwnProperty("match")?_7.match:_7.hasOwnProperty("default")?_7["default"]:_7}();
-var sort=function(){var _8=require('./sort');return _8.hasOwnProperty("sort")?_8.sort:_8.hasOwnProperty("default")?_8["default"]:_8}();
-var domDiff=function(){var _9=require('./domDiff');return _9.hasOwnProperty("domDiff")?_9.domDiff:_9.hasOwnProperty("default")?_9["default"]:_9}();
+var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var range=function(){var _6=require('./range');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var match=function(){var _7=require('./match');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var sort=function(){var _8=require('./sort');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var domDiff=function(){var _9=require('./domDiff');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 
 var SELF_CLOSE = {
   'img': true,

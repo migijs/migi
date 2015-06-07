@@ -1,5 +1,5 @@
-define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("VirtualDom")?_0.VirtualDom:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1["default"]:_1}();
+define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
 exports.merge=merge;function merge(ranges) {
   //合并相邻更新的文本节点

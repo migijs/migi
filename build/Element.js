@@ -1,5 +1,5 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1["default"]:_1}();
+var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
 var uid = 0;
 
