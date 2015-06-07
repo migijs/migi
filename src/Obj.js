@@ -92,7 +92,6 @@ class Obj {
     else {
       throw new Error('migi.Obj can not has complex value: ' + self.k);
     }
-    //TODO: 可能不需要clone
     self.__v = util.clone(v);
   }
   get cb() {

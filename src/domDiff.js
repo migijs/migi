@@ -221,8 +221,7 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
 
 function diff(ovd, nvd) {
   //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
-  //后续用到对象池缓存时，引用可能相同，但uid会不同
-  if(ovd === nvd && ovd.uid === nvd.uid) {
+  if(ovd === nvd) {
     return;
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
