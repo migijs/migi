@@ -1,6 +1,5 @@
-define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("Event")?_0.Event:_0.hasOwnProperty("default")?_0["default"]:_0}();
-var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("Element")?_1.Element:_1.hasOwnProperty("default")?_1["default"]:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("util")?_2.util:_2.hasOwnProperty("default")?_2["default"]:_2}();
+define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("Element")?_0.Element:_0.hasOwnProperty("default")?_0["default"]:_0}();
+var util=function(){var _1=require('./util');return _1.hasOwnProperty("util")?_1.util:_1.hasOwnProperty("default")?_1["default"]:_1}();
 
 function getList(v, list) {
   if(Array.isArray(v)) {
@@ -32,43 +31,31 @@ function joinArray(arr) {
   return res;
 }
 
-!function(){var _3=Object.create(Event.prototype);_3.constructor=Obj;Obj.prototype=_3}();
+
   function Obj(k, context, cb) {
-    Event.call(this);
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
     }
 
-    var self = this;
-    self.__k = k;
-    self.__context = context;
-    self.__empty = true;
-    self.type = null;
-    self.__count = 0;
-    self.__cb = cb;
-    self.v = cb.call(context);
-
-    self.on(Event.DOM, function() {
-      self.off(Event.DOM, arguments.callee);
-      var list = getList(self.v, []);
-      list.forEach(function(item) {
-        if(item instanceof Element) {
-          item.emit(Event.DOM);
-        }
-      });
-    });
+    this.__k = k;
+    this.__context = context;
+    this.__empty = true;
+    this.type = null;
+    this.__count = 0;
+    this.__cb = cb;
+    this.v = cb.call(context);
   }
-  var _4={};_4.k={};_4.k.get =function() {
+  var _2={};_2.k={};_2.k.get =function() {
     return this.__k;
   }
-  _4.context={};_4.context.get =function() {
+  _2.context={};_2.context.get =function() {
     return this.__context;
   }
-  _4.v={};_4.v.get =function() {
+  _2.v={};_2.v.get =function() {
     return this.__v;
   }
-  _4.v.set =function(v) {
+  _2.v.set =function(v) {
     var self = this;
     self.__count = 0;
     self.__empty = true;
@@ -108,13 +95,13 @@ function joinArray(arr) {
     //TODO: 可能不需要clone
     self.__v = util.clone(v);
   }
-  _4.cb={};_4.cb.get =function() {
+  _2.cb={};_2.cb.get =function() {
     return this.__cb;
   }
-  _4.count={};_4.count.get =function() {
+  _2.count={};_2.count.get =function() {
     return this.__count;
   }
-  _4.empty={};_4.empty.get =function() {
+  _2.empty={};_2.empty.get =function() {
     return this.__empty;
   }
   Obj.prototype.toString = function() {
@@ -122,7 +109,7 @@ function joinArray(arr) {
     //防止undefined的变量
     return s === void 0 ? '' : s.toString();
   }
-Object.keys(_4).forEach(function(k){Object.defineProperty(Obj.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Obj[k]=Event[k]});
+Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型
 //当Obj作为VirtualDom的child变更时，如果发生类型改变或非TEXT类型改变，DomDiff重绘

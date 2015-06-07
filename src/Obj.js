@@ -1,4 +1,3 @@
-import Event from './Event';
 import Element from './Element';
 import util from './util';
 
@@ -32,32 +31,20 @@ function joinArray(arr) {
   return res;
 }
 
-class Obj extends Event {
+class Obj {
   constructor(k, context, cb) {
-    super();
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
     }
 
-    var self = this;
-    self.__k = k;
-    self.__context = context;
-    self.__empty = true;
-    self.type = null;
-    self.__count = 0;
-    self.__cb = cb;
-    self.v = cb.call(context);
-
-    self.on(Event.DOM, function() {
-      self.off(Event.DOM, arguments.callee);
-      var list = getList(self.v, []);
-      list.forEach(function(item) {
-        if(item instanceof Element) {
-          item.emit(Event.DOM);
-        }
-      });
-    });
+    this.__k = k;
+    this.__context = context;
+    this.__empty = true;
+    this.type = null;
+    this.__count = 0;
+    this.__cb = cb;
+    this.v = cb.call(context);
   }
   get k() {
     return this.__k;

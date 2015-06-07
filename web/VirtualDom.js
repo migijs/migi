@@ -644,8 +644,7 @@ var NEXT_MAYBE_TEXT_TOO = 1;
               }
             }
           }
-          //别忘了触发新vd的DOM事件
-          child.emit(Event.DOM);
+          //TODO: 别忘了触发新vd的DOM事件
         }
         //老类型是ELEMENT
         else {
@@ -659,8 +658,7 @@ var NEXT_MAYBE_TEXT_TOO = 1;
                 start++;
               }
             }
-            //别忘了触发新vd的DOM事件
-            child.emit(Event.DOM);
+            //TODO: 别忘了触发新vd的DOM事件
           }
           //新类型是TEXT
           else {
