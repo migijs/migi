@@ -7,6 +7,7 @@ import CacheComponent from './CacheComponent';
 import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
+import cachePool from './cachePool';
 
 var migi = {
   render(component, dom) {

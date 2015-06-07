@@ -7,6 +7,7 @@ var CacheComponent=function(){var _5=require('./CacheComponent');return _5.hasOw
 var util=function(){var _6=require('./util');return _6.hasOwnProperty("default")?_6["default"]:_6}();
 var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var cachePool=function(){var _9=require('./cachePool');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 
 var migi = {
   render:function(component, dom) {
