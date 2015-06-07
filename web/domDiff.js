@@ -36,7 +36,7 @@ function insertAt(elem, index, vd, isText) {
   }
 }
 
-function diffChild(elem, olds, news, index, ranges, start, changeList) {
+function diffChild(elem, olds, news, index, ranges, option) {
   for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
     var ovd = olds[i];
     var nvd = news[i];
@@ -50,12 +50,12 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
         }
         //否则重绘替换
         else {
-          replaceWith(elem, start, nvd);
+          replaceWith(elem, option.start, nvd);
           //别忘了触发DOM事件
           nvd.emit(Event.DOM);
         }
-        start++;
-        changeList.push(DOM_TO_DOM);
+        option.start++;
+        option.state = DOM_TO_DOM;
       }
       //新vd是text
       else {
@@ -64,22 +64,22 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
           switch(changeList[changeList.length - 1]) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
-              elem.removeChild(elem.childNodes[start + 1]);
-              ranges.push({ start:start, index:index, i:i });
+              elem.removeChild(elem.childNodes[option.start + 1]);
+              ranges.push({ start: option.start, index:index, i:i });
               break;
             case TEXT_TO_DOM:
-              replaceWith(elem, start++, nvd, true);
+              replaceWith(elem, option.start++, nvd, true);
               break;
             case DOM_TO_DOM:
-              replaceWith(elem, start, nvd, true);
+              replaceWith(elem, option.start, nvd, true);
               break;
           }
         }
         //本身就是第1个，直接替换
         else {
-          replaceWith(elem, start, nvd, true);
+          replaceWith(elem, option.start, nvd, true);
         }
-        changeList.push(DOM_TO_TEXT);
+        option.state = DOM_TO_TEXT;
       }
     }
     //老vd是text
@@ -91,36 +91,36 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
           switch(changeList[changeList.length - 1]) {
             case DOM_TO_TEXT:
             case DOM_TO_DOM:
-              replaceWith(elem, start++, nvd);
+              replaceWith(elem, option.start++, nvd);
               break;
             case TEXT_TO_DOM:
-              insertAt(elem, start++, nvd);
+              insertAt(elem, option.start++, nvd);
               break;
             case TEXT_TO_TEXT:
-              insertAt(elem, ++start, nvd);
+              insertAt(elem, ++option.start, nvd);
               break;
           }
         }
         //本身就是第1个，直接替换
         else {
-          replaceWith(elem, start++, nvd);
+          replaceWith(elem, option.start++, nvd);
           //别忘了触发DOM事件
           nvd.emit(Event.DOM);
         }
-        changeList.push(TEXT_TO_DOM);
+        option.state = TEXT_TO_DOM;
       }
       //新vd是text，进行文本对比更新
       //注意用弱类型，字符串和数字弱相等即可；undefined和空字符串也相等
       else {
-        changeList.push(TEXT_TO_TEXT);
+        option.state = TEXT_TO_TEXT;
         if(index || i) {
           switch(changeList[changeList.length - 1]) {
             case DOM_TO_TEXT:
-              ranges.push({ start:start, index:index, i:i });
-              elem.removeChild(elem.childNodes[start + 1]);
+              ranges.push({ start: option.start, index:index, i:i });
+              elem.removeChild(elem.childNodes[option.start + 1]);
               break;
             case TEXT_TO_DOM:
-              insertAt(elem, start, nvd, true);
+              insertAt(elem, option.start, nvd, true);
               break;
             case DOM_TO_DOM:
             case TEXT_TO_TEXT:
@@ -131,7 +131,7 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
                 || ovd === '' && nvd === void 0) {
                 continue;
               }
-              ranges.push({ start:start, index:index, i:i });
+              ranges.push({ start:option.start, index:index, i:i });
               break;
           }
         }
@@ -143,7 +143,7 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
             || ovd === '' && nvd === void 0) {
             continue;
           }
-          ranges.push({ start:start, index:index, i:i });
+          ranges.push({ start: option.start, index:index, i:i });
         }
       }
     }
@@ -159,20 +159,20 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
             case TEXT_TO_NONE:
-              ranges.push({ start:start, index:index, i: j });
+              ranges.push({ start:option.start, index:index, i: j });
               break;
             case DOM_TO_DOM:
             case TEXT_TO_DOM:
             case DOM_TO_NONE:
             case NONE_TO_DOM:
-              elem.removeChild(elem.childNodes[start]);
+              elem.removeChild(elem.childNodes[option.start]);
               break;
           }
         }
         else {
           switch(changeList[changeList.length - 1]) {
             case DOM_TO_TEXT:
-              elem.removeChild(elem.childNodes[start]);
+              elem.removeChild(elem.childNodes[option.start]);
               break;
           }
         }
@@ -180,7 +180,7 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
       //可能第1个新的是空数组
       else {
         elem.removeChild(elem.childNodes[0]);
-        changeList.push(VirtualDom.isText(vd) ? TEXT_TO_NONE : DOM_TO_NONE);
+        option.state = VirtualDom.isText(vd) ? TEXT_TO_NONE : DOM_TO_NONE;
       }
     }
   }
@@ -195,28 +195,27 @@ function diffChild(elem, olds, news, index, ranges, start, changeList) {
             case TEXT_TO_TEXT:
             case TEXT_TO_NONE:
             case NONE_TO_TEXT:
-              ranges.push({ start:start, index:index, i: j });
+              ranges.push({ start: option.start, index:index, i: j });
               break;
             case DOM_TO_DOM:
             case TEXT_TO_DOM:
             case DOM_TO_NONE:
             case NONE_TO_DOM:
-              insertAt(elem, start, vd, true);
+              insertAt(elem, option.start, vd, true);
               break;
           }
         }
         else {
-          insertAt(elem, start++, vd);
+          insertAt(elem, option.start++, vd);
         }
       }
       //可能第1个老的是空数组
       else {
         replaceWith(elem, 0, vd, VirtualDom.isText(vd));
-        changeList.push(VirtualDom.isText(vd) ? TEXT_TO_TEXT : TEXT_TO_DOM);
+        option.state = VirtualDom.isText(vd) ? TEXT_TO_TEXT : TEXT_TO_DOM;
       }
     }
   }
-  return { start:start };
 }
 
 function diff(ovd, nvd) {
@@ -226,7 +225,7 @@ function diff(ovd, nvd) {
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
   var elem = ovd.element;
-  elem.setAttribute('migi-uid', nvd.uid);
+  nvd.__uid = ovd.uid;
   nvd.__element = elem;
   //删除老参数，添加新参数
   var ok = Object.keys(ovd.props);
@@ -260,10 +259,9 @@ function diff(ovd, nvd) {
     }
   });
   //渲染children
-  var start = 0;
   var ranges = [];
   var list = [];
-  var changeList = [];
+  var option = { start : 0 };
   //遍历孩子，长度取新老vd最小值
   for(var index = 0, len = Math.min(ovd.children.length, nvd.children.length); index < len; index++) {
     var oc = ovd.children[index];
@@ -273,8 +271,7 @@ function diff(ovd, nvd) {
     var olds = Array.isArray(oc) ? util.join(oc) : [oc];
     var news = Array.isArray(nc) ? util.join(nc) : [nc];
     //diff孩子节点
-    var temp = diffChild(elem, olds, news, index, ranges, start, changeList);
-    start = temp.start;
+    diffChild(elem, olds, news, index, ranges, option);
     list.push(news);
   }
   range.merge(ranges);
