@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="DBMON NOT REACT" />
-  <link href="bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <meta name="description" content="DBMON NOT REACT"/>
+  <link href="bootstrap.min.css" rel="stylesheet" type="text/css"/>
   <title>dbmon (migi)</title>
   <style>
-    .Query {
-      position: relative;
+    .Query{
+      position:relative;
     }
-
-    .Query:hover .popover {
-      left: -100%;
-      width: 100%;
-      display: block;
+    .Query:hover .popover{
+      left:-100%;
+      width:100%;
+      display:block;
     }
   </style>
 </head>
 <body>
-<script type="text/jsx">var i = 0;
+<script type="text/jsx">
   class Component extends migi.Component {
     constructor(...data) {
       super(...data);
@@ -25,19 +24,20 @@
       self._list = [];
       self.on(migi.Event.DOM, function() {
         var v = ENV.generateData().toArray();
-        self.list = [v[0]];
+        self.list = v;
         Monitoring.renderRate.ping();
-        if(i++ < 1) {
-          setTimeout(arguments.callee, ENV.timeout);
-        }
+        setTimeout(arguments.callee, ENV.timeout);
       });
     }
+
     get list() {
       return this._list;
     }
+
     set list(v) {
       this._list = v;
     }
+
     render() {
       return (
         <div>
@@ -84,30 +84,30 @@
     '#dbmon'
   );
 </script>
-  <div id="dbmon"></div>
-  <script src="es6-shim.js"></script>
-  <script src="sea.js"></script>
-  <script src="jquery-2.1.0.min.js"></script>
-  <script src="ENV.js"></script>
-  <script src="memory-stats.js"></script>
-  <script src="monitor.js"></script>
-  <script>
-    seajs.config({
-      alias: {
-        'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
-        'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
-        'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
-        'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
-      },
-      map: [function(url) {
-        return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
-      }]
-    });
-    define('fs', {});
-    seajs.use(['../init', 'lefty'], function(migi, lefty) {
-      lefty.init();
-      migi.init();
-    });
-  </script>
+<div id="dbmon"></div>
+<script src="es6-shim.js"></script>
+<script src="sea.js"></script>
+<script src="jquery-2.1.0.min.js"></script>
+<script src="ENV.js"></script>
+<script src="memory-stats.js"></script>
+<script src="monitor.js"></script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['../init', 'lefty'], function(migi, lefty) {
+    lefty.init();
+    migi.init();
+  });
+</script>
 </body>
 </html>

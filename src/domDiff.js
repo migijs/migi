@@ -2,21 +2,41 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import Component from './Component';
 import util from './util';
+import range from './range';
 
-function diffChild(elem, olds, news, prev, index, range, start, index, force) {
-  //转成数组方便对比
-  if(!Array.isArray(olds)) {
-    olds = [olds];
+const DOM_TO_TEXT = 0;
+const DOM_TO_DOM = 1;
+const TEXT_TO_DOM = 2;
+const TEXT_TO_TEXT = 3;
+const DOM_TO_NONE = 4;
+const TEXT_TO_NONE = 5;
+const NONE_TO_DOM = 6;
+const NONE_TO_TEXT = 7;
+
+function replaceWith(elem, index, vd, isText) {
+  var node = isText ? util.NODE : util.getParent(vd.name);
+  node.innerHTML = isText ? util.encodeHtml(vd.toString()) : vd.toString();
+  var cns = elem.childNodes;
+  if(index >= cns.length) {
+    elem.appendChild(node.firstChild);
   }
   else {
-    olds = util.join(olds);
+    elem.replaceChild(node.firstChild, cns[index]);
   }
-  if(!Array.isArray(news)) {
-    news = [news];
+}
+function insertAt(elem, index, vd, isText) {
+  var node = isText ? util.NODE : util.getParent(vd.name);
+  node.innerHTML = isText ? util.encodeHtml(vd.toString()) : vd.toString();
+  var cns = elem.childNodes;
+  if(index >= cns.length) {
+    elem.appendChild(node.firstChild);
   }
   else {
-    news = util.join(news);
+    elem.insertBefore(node.firstChild, cns[index]);
   }
+}
+
+function diffChild(elem, olds, news, index, ranges, start, changeList) {
   for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
     var ovd = olds[i];
     var nvd = news[i];
@@ -28,63 +48,181 @@ function diffChild(elem, olds, news, prev, index, range, start, index, force) {
         if(ovd.name == nvd.name) {
           diff(ovd, nvd);
         }
-        //否则重绘插入
+        //否则重绘替换
         else {
-          var s = child.toString();
-          var name = /^<([\w-])/.exec(s)[1];
-          var node = util.getParent(name);
-          node.innerHTML = s;
-          elem.replaceChild(node.firstChild, elem.childNodes[start]);
+          replaceWith(elem, start, nvd);
+          //别忘了触发DOM事件
+          nvd.emit(Event.DOM);
         }
         start++;
+        changeList.push(DOM_TO_DOM);
       }
       //新vd是text
-      else{}
+      else {
+        //非第1个
+        if(index || i) {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+            case TEXT_TO_TEXT:
+              elem.removeChild(elem.childNodes[start + 1]);
+              ranges.push({ start, index, i });
+              break;
+            case TEXT_TO_DOM:
+              replaceWith(elem, start++, nvd, true);
+              break;
+            case DOM_TO_DOM:
+              replaceWith(elem, start, nvd, true);
+              break;
+          }
+        }
+        //本身就是第1个，直接替换
+        else {
+          replaceWith(elem, start, nvd, true);
+        }
+        changeList.push(DOM_TO_TEXT);
+      }
     }
     //老vd是text
     else {
       //新vd是Element
       if(nvd instanceof Element) {
+        //非第1个
+        if(index || i) {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+            case DOM_TO_DOM:
+              replaceWith(elem, start++, nvd);
+              break;
+            case TEXT_TO_DOM:
+              insertAt(elem, start++, nvd);
+              break;
+            case TEXT_TO_TEXT:
+              insertAt(elem, ++start, nvd);
+              break;
+          }
+        }
+        //本身就是第1个，直接替换
+        else {
+          replaceWith(elem, start++, nvd);
+          //别忘了触发DOM事件
+          nvd.emit(Event.DOM);
+        }
+        changeList.push(TEXT_TO_DOM);
       }
-      //新vd是text
+      //新vd是text，进行文本对比更新
+      //注意用弱类型，字符串和数字弱相等即可；undefined和空字符串也相等
       else {
-        range.push({ start, index });
+        changeList.push(TEXT_TO_TEXT);
+        if(index || i) {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+              ranges.push({ start, index, i });
+              elem.removeChild(elem.childNodes[start + 1]);
+              break;
+            case TEXT_TO_DOM:
+              insertAt(elem, start, nvd, true);
+              break;
+            case DOM_TO_DOM:
+            case TEXT_TO_TEXT:
+              if(ovd == nvd) {
+                continue;
+              }
+              if(ovd === void 0 && nvd === ''
+                || ovd === '' && nvd === void 0) {
+                continue;
+              }
+              ranges.push({ start, index, i });
+              break;
+          }
+        }
+        else {
+          if(ovd == nvd) {
+            continue;
+          }
+          if(ovd === void 0 && nvd === ''
+            || ovd === '' && nvd === void 0) {
+            continue;
+          }
+          ranges.push({ start, index, i });
+        }
       }
     }
     //TODO: 当是Component的时候
   }
   //老的多余的删除
-  for(var j = i, len = olds.length; j < len; j++) {
-    elem.removeChild(elem.childNodes[start]);
+  if(i < olds.length) {
+    for(var j = i, len = olds.length; j < len; j++) {
+      var vd = olds[j];
+      if(index || i) {
+        if(VirtualDom.isText(vd)) {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+            case TEXT_TO_TEXT:
+            case TEXT_TO_NONE:
+              ranges.push({ start, index, i: j });
+              break;
+            case DOM_TO_DOM:
+            case TEXT_TO_DOM:
+            case DOM_TO_NONE:
+            case NONE_TO_DOM:
+              elem.removeChild(elem.childNodes[start]);
+              break;
+          }
+        }
+        else {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+              elem.removeChild(elem.childNodes[start]);
+              break;
+          }
+        }
+      }
+      //可能第1个新的是空数组
+      else {
+        elem.removeChild(elem.childNodes[0]);
+        changeList.push(VirtualDom.isText(vd) ? TEXT_TO_NONE : DOM_TO_NONE);
+      }
+    }
   }
   //新的多余的插入
-  if(i <= news.length - 1) {
-    var insert = elem.childNodes[start];
-    if(insert) {
-      for(var j = news.length - 1; j >= i; j--) {
-        var s = news[j].toString();
-        var name = /^<([\w-])/.exec(s)[1];
-        var node = util.getParent(name);
-        node.innerHTML = s;
-        elem.insertBefore(node.firstChild, insert);
+  else if(i < news.length) {
+    for(var j = i, len = news.length; j < len; j++) {
+      var vd = news[j];
+      if(index || i) {
+        if(VirtualDom.isText(vd)) {
+          switch(changeList[changeList.length - 1]) {
+            case DOM_TO_TEXT:
+            case TEXT_TO_TEXT:
+            case TEXT_TO_NONE:
+            case NONE_TO_TEXT:
+              ranges.push({ start, index, i: j });
+              break;
+            case DOM_TO_DOM:
+            case TEXT_TO_DOM:
+            case DOM_TO_NONE:
+            case NONE_TO_DOM:
+              insertAt(elem, start, vd, true);
+              break;
+          }
+        }
+        else {
+          insertAt(elem, start++, vd);
+        }
       }
-    }
-    else {
-      for(var j = i, l = news.length; j < l; j++) {
-        var s = news[j].toString();
-        var name = /^<([\w-])/.exec(s)[1];
-        var node = util.getParent(name);
-        node.innerHTML = s;
-        elem.appendChild(node.firstChild);
+      //可能第1个老的是空数组
+      else {
+        replaceWith(elem, 0, vd, VirtualDom.isText(vd));
+        changeList.push(VirtualDom.isText(vd) ? TEXT_TO_TEXT : TEXT_TO_DOM);
       }
     }
   }
-  return { start, prev };
+  return { start };
 }
 
 function diff(ovd, nvd) {
   //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
-  if(ovd === nvd) {
+  //后续用到对象池缓存时，引用可能相同，但uid会不同
+  if(ovd === nvd && ovd.uid === nvd.uid) {
     return;
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
@@ -124,16 +262,27 @@ function diff(ovd, nvd) {
   });
   //渲染children
   var start = 0;
-  var range = [];
-  var prev;
+  var ranges = [];
+  var list = [];
+  var changeList = [];
   //遍历孩子，长度取新老vd最小值
   for(var index = 0, len = Math.min(ovd.children.length, nvd.children.length); index < len; index++) {
     var oc = ovd.children[index];
     var nc = nvd.children[index];
     //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
-    var temp = diffChild(elem, oc, nc, prev, index, range, start, index);
+    //将array平铺开来，非array变array
+    var olds = Array.isArray(oc) ? util.join(oc) : [oc];
+    var news = Array.isArray(nc) ? util.join(nc) : [nc];
+    //diff孩子节点
+    var temp = diffChild(elem, olds, news, index, ranges, start, changeList);
     start = temp.start;
-    prev = temp.prev;
+    list.push(news);
+  }
+  range.merge(ranges);
+  if(ranges.length) {
+    ranges.forEach(function(item) {
+      range.update(item, nvd, list, elem);
+    });
   }
 }
 

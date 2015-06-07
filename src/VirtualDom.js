@@ -4,7 +4,7 @@ import Component from './Component';
 import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
-import merge from './merge';
+import range from './range';
 import match from './match';
 import sort from './sort';
 import domDiff from './domDiff';
@@ -27,11 +27,6 @@ const SELF_CLOSE = {
   'source': true,
   'track': true
 };
-
-const TEMP_NODE = document.createElement('div');
-
-const NEXT_MAYBE_TEXT = 0;
-const NEXT_MAYBE_TEXT_TOO = 1;
 
 class VirtualDom extends Element {
   constructor(name, props = {}, children = []) {
@@ -362,12 +357,11 @@ class VirtualDom extends Element {
   __onDom() {
     super.__onDom();
     var self = this;
-    var length = self.element.childNodes.length;
     var start = 0;
     var prev;
     for(var index = 0, len = self.children.length; index < len; index++) {
       var child = self.children[index];
-      var temp = self.__domChild(child, prev, index, start, len, length);
+      var temp = self.__domChild(child, prev, index, start, len);
       if(temp) {
         start = temp.start;
         index = temp.index;
@@ -376,13 +370,13 @@ class VirtualDom extends Element {
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __domChild(child, prev, index, start, len, length, force) {
+  __domChild(child, prev, index, start, len, force) {
     var self = this;
+    var temp;
     if(Array.isArray(child)) {
-      var temp;
-      util.join(child).forEach(function(item, i) {
+      child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        temp = self.__domChild(item, prev, index, start, len, length, index || i);
+        temp = self.__domChild(item, prev, index, start, len, index || i);
         if(temp) {
           start = temp.start;
           index = temp.index;
@@ -403,9 +397,12 @@ class VirtualDom extends Element {
     }
     //Obj类型时需判断是否TEXT
     else if(child instanceof Obj && child.type != Obj.TEXT) {
-      start += child.count;
-      var v = child.v;
-      prev = Array.isArray(v) ? util.getLast(v) : v;
+      temp = self.__domChild(child.v, prev, index, start, len, force);
+      if(temp) {
+        start = temp.start;
+        index = temp.index;
+        prev = temp.prev;
+      }
     }
     else if(VirtualDom.isText(child)) {
       if(VirtualDom.isEmptyText(child)) {
@@ -432,6 +429,7 @@ class VirtualDom extends Element {
         }
         var blank = document.createTextNode('');
         //可能仅一个空文本节点，或最后一个空文本节点
+        var length = self.element.childNodes.length;
         if(!length || start >= length) {
           self.element.appendChild(blank);
         }
@@ -473,20 +471,20 @@ class VirtualDom extends Element {
     //当文本节点时start不更新
     //Obj类型的判断type和count，及为文本时是否为空
     var start = 0;
-    var range = [];
+    var ranges = [];
     var prev;
     for(var index = 0, len = self.children.length; index < len; index++) {
       var child = self.children[index];
       //prev和start都传入，在child为数组的情况下自动计算返回
-      var temp = self.__checkObj(k, child, prev, index, range, start, len);
+      var temp = self.__checkObj(k, child, prev, index, ranges, start, len);
       start = temp.start;
       prev = temp.prev;
     }
     //得到range更新文本节点，非可视组件可能没有DOM
-    if(range.length && self.element) {
+    if(ranges.length && self.element) {
       //相邻的TEXT节点合并更新
-      merge(range);
-      range.forEach(function(item) {
+      range.merge(ranges);
+      ranges.forEach(function(item) {
         var prevArr;
         var nextArr;
         //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
@@ -550,8 +548,8 @@ class VirtualDom extends Element {
           //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
           //但当为innerHTML空时，没有孩子节点，所以特殊判断
           if(res) {
-            TEMP_NODE.innerHTML = res;
-            self.element.replaceChild(TEMP_NODE.firstChild, textNode);
+            util.NODE.innerHTML = res;
+            self.element.replaceChild(util.NODE.firstChild, textNode);
           }
           else if(util.lie) {
             textNode.innerText = '';
@@ -564,7 +562,7 @@ class VirtualDom extends Element {
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __checkObj(k, child, prev, index, range, start, len, force) {
+  __checkObj(k, child, prev, index, ranges, start, len, force) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -588,7 +586,7 @@ class VirtualDom extends Element {
         if(oldType == Obj.TEXT) {
           //新类型也是TEXT，进行range更新文本
           if(child.type == Obj.TEXT) {
-            range.push({ start, index });
+            ranges.push({ start, index });
           }
           //新类型是ELEMENT
           else {
@@ -598,7 +596,7 @@ class VirtualDom extends Element {
             if(index || force) {
               if(VirtualDom.isText(prev)) {
                 prevText = true;
-                range.push({ start, index: index - 1 });
+                ranges.push({ start, index: index - 1 });
                 //更新索引，前面有文本节点自增
                 start++;
               }
@@ -616,7 +614,7 @@ class VirtualDom extends Element {
                 nextText = true;
                 //注意坑，后面可能是个TEXT的Obj，但可能接下来的循环发生类型改变
                 //因此设置type，下一个循环会对range进行检查，改变需要特殊处理
-                range.push({ start: start, index: index + 1, type: NEXT_MAYBE_TEXT });
+                ranges.push({ start: start, index: index + 1, type: VirtualDom.NEXT_MAYBE_TEXT });
               }
             }
             //如果只有自己，需删除掉这个节点，插入在当前的索引位置即可
@@ -643,8 +641,16 @@ class VirtualDom extends Element {
                 self.element.appendChild(node.childNodes[0]);
               }
             }
+            //别忘了触发新vd的DOM事件
+            if(Array.isArray(child.v)) {
+              child.v.forEach(function(item) {
+                item.emit(Event.DOM);
+              });
+            }
+            else {
+              child.v.emit(Event.DOM);
+            }
           }
-          //TODO: 别忘了触发新vd的DOM事件
         }
         //老类型是ELEMENT
         else {
@@ -671,7 +677,7 @@ class VirtualDom extends Element {
             if(index || force) {
               if(VirtualDom.isText(prev)) {
                 single = false;
-                range.push({ start, index: index - 1 });
+                ranges.push({ start, index: index - 1 });
               }
             }
             //后面如有文本，设置range更新
@@ -683,7 +689,7 @@ class VirtualDom extends Element {
               if(VirtualDom.isText(next)) {
                 single = false;
                 //同样后面可能Obj变成非TEXT类型，记录type
-                range.push({ start, index: index + 1, type: NEXT_MAYBE_TEXT_TOO });
+                ranges.push({ start, index: index + 1, type: VirtualDom.NEXT_MAYBE_TEXT_TOO });
               }
             }
             //如果只有自己，本身渲染后插入
@@ -733,7 +739,7 @@ class VirtualDom extends Element {
       var temp;
       child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        temp = self.__checkObj(k, item, prev, index, range, start, len, i || index);
+        temp = self.__checkObj(k, item, prev, index, ranges, start, len, i || index);
         start = temp.start;
         prev = temp.prev;
       });
@@ -767,12 +773,10 @@ class VirtualDom extends Element {
       if(ovd.name == nvd.name) {
         domDiff(ovd, nvd);
       }
-      //否则重绘插入
+      //否则重绘替换
       else {
-        var s = child.toString();
-        var name = /^<([\w-])/.exec(s)[1];
-        var node = util.getParent(name);
-        node.innerHTML = s;
+        var node = util.getParent(nvd.name);
+        node.innerHTML = nvd.toString();
         self.element.replaceChild(node.firstChild, self.element.childNodes[start]);
       }
       start++;
@@ -787,19 +791,15 @@ class VirtualDom extends Element {
       var insert = self.element.childNodes[start];
       if(insert) {
         for(var j = news.length - 1; j >= i; j--) {
-          var s = news[j].toString();
-          var name = /^<([\w-])/.exec(s)[1];
-          var node = util.getParent(name);
-          node.innerHTML = s;
+          var node = util.getParent(news[j].name);
+          node.innerHTML = news[j].toString();
           self.element.insertBefore(node.firstChild, insert);
         }
       }
       else {
         for(var j = i, l = news.length; j < l; j++) {
-          var s = news[j].toString();
-          var name = /^<([\w-])/.exec(s)[1];
-          var node = util.getParent(name);
-          node.innerHTML = s;
+          var node = util.getParent(news[j].name);
+          node.innerHTML = news[j].toString();
           self.element.appendChild(node.firstChild);
         }
       }
@@ -925,5 +925,10 @@ class VirtualDom extends Element {
     return item === void 0 || !item.toString();
   }
 }
+
+//vd由node变为text的时候，记录后方可能会为文本
+VirtualDom.NEXT_MAYBE_TEXT = 0;
+//vd由text变为node的时候，记录后方可能会为文本
+VirtualDom.NEXT_MAYBE_TEXT_TOO = 1;
 
 export default VirtualDom;
