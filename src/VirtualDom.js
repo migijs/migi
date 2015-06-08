@@ -393,39 +393,38 @@ class VirtualDom extends Element {
     else if(child instanceof Obj) {
       index = self.__domChild(child.v, index, len, option, force);
     }
-    else if(VirtualDom.isText(child)) {
-      if(VirtualDom.isEmptyText(child)) {
-        //前方如有兄弟文本节点，无需插入
-        if(index || force) {
-          var prev = self.children[index - 1];
-          if(VirtualDom.isText(prev)) {
+    else if(VirtualDom.isEmptyText(child)) {
+      //前方如有兄弟文本节点，无需插入
+      if(index || force) {
+        var prev = self.children[index - 1];
+        if(VirtualDom.isText(prev)) {
+          return index;
+        }
+      }
+      //后方如有非空兄弟文本节点，无需插入；同时设置索引，提高循环性能
+      for(var i = index + 1; i < len; i++) {
+        var next = self.children[i];
+        if(VirtualDom.isText(next)) {
+          index++;
+          prev = next;
+          if(!VirtualDom.isEmptyText(next)) {
             return index;
           }
         }
-        //后方如有非空兄弟文本节点，无需插入；同时设置索引，提高循环性能
-        for(var i = index + 1; i < len; i++) {
-          var next = self.children[i];
-          if(VirtualDom.isText(next)) {
-            index++;
-            prev = next;
-            if(!VirtualDom.isEmptyText(next)) {
-              return index;
-            }
-          }
-          else {
-            break;
-          }
-        }
-        var blank = document.createTextNode('');
-        //可能仅一个空文本节点，或最后一个空文本节点
-        var length = self.element.childNodes.length;
-        if(!length || option.start >= length) {
-          self.element.appendChild(blank);
-        }
-        //插入
         else {
-          self.element.insertBefore(blank, self.element.childNodes[option.start]);
+          break;
         }
+      }
+      var blank = document.createTextNode('');
+      //可能仅一个空文本节点，或最后一个空文本节点
+      var cns = self.element.childNodes;
+      var length = cns.length;
+      if(!length || option.start >= length) {
+        self.element.appendChild(blank);
+      }
+      //插入
+      else {
+        self.element.insertBefore(blank, cns[option.start]);
       }
     }
     return index;
