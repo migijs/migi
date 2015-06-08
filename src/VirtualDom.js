@@ -372,7 +372,8 @@ class VirtualDom extends Element {
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
   __domChild(child, index, len, option, force) {
     var self = this;
-    if(Array.isArray(child)) {
+    //防止空数组跳过逻辑，它应该是个空字符串
+    if(Array.isArray(child) && child.length) {
       child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
         index = self.__domChild(item, index, len, option, index || i);
@@ -389,8 +390,7 @@ class VirtualDom extends Element {
       }
       option.prev = child;
     }
-    //Obj类型时需判断是否TEXT
-    else if(child instanceof Obj && child.type != Obj.TEXT) {
+    else if(child instanceof Obj) {
       index = self.__domChild(child.v, index, len, option, force);
     }
     else if(VirtualDom.isText(child)) {
@@ -925,7 +925,7 @@ class VirtualDom extends Element {
         return true;
       }
     }
-    //静态文本节点，包括空、undefined、null
+    //静态文本节点，包括空、undefined、null、空数组
     else if(!(item instanceof Element)) {
       return true;
     }
@@ -935,6 +935,7 @@ class VirtualDom extends Element {
     if(item instanceof Obj) {
       return item.empty;
     }
+    //静态文本节点，包括空、undefined、null、空数组
     return item === void 0 || !item.toString();
   }
 }

@@ -36,6 +36,8 @@
     }
     render() {
       var blank = '';
+      var arr = [];
+      var udf;
       return (
         <div>
           <p onClick={this.add}>点击添加一个随机数</p>
@@ -52,6 +54,8 @@
             <li title="DOM+变量"><span>dom</span>{this.list}</li>
             <li title="变量+DOM">{this.list}<span>dom</span></li>
             <li title="变量+DOM+变量">{this.list}<span>dom</span>{this.list}</li>
+            <li title="变量+[]+变量">{this.list} {arr} {this.list}</li>
+            <li title="变量+undefined+变量">{this.list} {udf} {this.list}</li>
           </ul>
         </div>
       );
