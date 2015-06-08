@@ -62,7 +62,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
       else {
         //非第1个
         if(index || i) {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
               elem.removeChild(elem.childNodes[option.start + 1]);
@@ -89,7 +89,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
       if(nvd instanceof Element) {
         //非第1个
         if(index || i) {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
             case DOM_TO_DOM:
               replaceWith(elem, option.start++, nvd);
@@ -115,7 +115,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
       else {
         option.state = TEXT_TO_TEXT;
         if(index || i) {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
               ranges.push({ start: option.start, index:index, i:i });
               elem.removeChild(elem.childNodes[option.start + 1]);
@@ -156,7 +156,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
       var vd = olds[j];
       if(index || i) {
         if(VirtualDom.isText(vd)) {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
             case TEXT_TO_NONE:
@@ -171,7 +171,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
           }
         }
         else {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
               elem.removeChild(elem.childNodes[option.start]);
               break;
@@ -191,7 +191,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
       var vd = news[j];
       if(index || i) {
         if(VirtualDom.isText(vd)) {
-          switch(changeList[changeList.length - 1]) {
+          switch(option.state) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
             case TEXT_TO_NONE:

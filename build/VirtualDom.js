@@ -360,52 +360,35 @@ var SELF_CLOSE = {
   VirtualDom.prototype.__onDom = function() {
     Element.prototype.__onDom.call(this);
     var self = this;
-    var start = 0;
-    var prev;
+    var option = { start: 0 };
     for(var index = 0, len = self.children.length; index < len; index++) {
       var child = self.children[index];
-      var temp = self.__domChild(child, prev, index, start, len);
-      if(temp) {
-        start = temp.start;
-        index = temp.index;
-        prev = temp.prev;
-      }
+      index = self.__domChild(child, index, len, option);
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  VirtualDom.prototype.__domChild = function(child, prev, index, start, len, force) {
+  VirtualDom.prototype.__domChild = function(child, index, len, option, force) {
     var self = this;
-    var temp;
     if(Array.isArray(child)) {
       child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        temp = self.__domChild(item, prev, index, start, len, index || i);
-        if(temp) {
-          start = temp.start;
-          index = temp.index;
-          prev = temp.prev;
-        }
+        index = self.__domChild(item, index, len, option, index || i);
       });
     }
     else if(child instanceof Element) {
       child.emit(Event.DOM);
-      start++;
+      option.start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及逻辑
       if(index || force) {
         if(VirtualDom.isText(prev)) {
-          start++;
+          option.start++;
         }
       }
-      prev = child;
+      option.prev = child;
     }
     //Obj类型时需判断是否TEXT
     else if(child instanceof Obj && child.type != Obj.TEXT) {
-      temp = self.__domChild(child.v, prev, index, start, len, force);
-      if(temp) {
-        start = temp.start;
-        index = temp.index;
-        prev = temp.prev;
-      }
+      index = self.__domChild(child.v, index, len, option, force);
     }
     else if(VirtualDom.isText(child)) {
       if(VirtualDom.isEmptyText(child)) {
@@ -413,7 +396,7 @@ var SELF_CLOSE = {
         if(index || force) {
           var prev = self.children[index - 1];
           if(VirtualDom.isText(prev)) {
-            return;
+            return index;
           }
         }
         //后方如有非空兄弟文本节点，无需插入；同时设置索引，提高循环性能
@@ -423,7 +406,7 @@ var SELF_CLOSE = {
             index++;
             prev = next;
             if(!VirtualDom.isEmptyText(next)) {
-              return { start:start, index:index, prev:prev };
+              return index;
             }
           }
           else {
@@ -433,16 +416,16 @@ var SELF_CLOSE = {
         var blank = document.createTextNode('');
         //可能仅一个空文本节点，或最后一个空文本节点
         var length = self.element.childNodes.length;
-        if(!length || start >= length) {
+        if(!length || option.start >= length) {
           self.element.appendChild(blank);
         }
         //插入
         else {
-          self.element.insertBefore(blank, self.element.childNodes[start]);
+          self.element.insertBefore(blank, self.element.childNodes[option.start]);
         }
       }
     }
-    return { start:start, index:index, prev:prev };
+    return index;
   }
   //@override
   VirtualDom.prototype.__onData = function(k) {
