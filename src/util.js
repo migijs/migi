@@ -76,8 +76,18 @@ function equal(a, b) {
   }
 }
 
-//TODO: 性能优化
+//打平数组，即变成1维；大部分情况下都是1维的，所以做预先判断
 function join(arr) {
+  var singleLevel = true;
+  for(var i = 0, len = arr.length; i < len; i++) {
+    if(Array.isArray(arr[i])) {
+      singleLevel = false;
+      break;
+    }
+  }
+  return singleLevel ? arr : joinPush(arr);
+}
+function joinPush(arr) {
   var res = [];
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
