@@ -370,34 +370,33 @@ class VirtualDom extends Element {
     }
   }
   //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __domChild(child, index, len, option, force) {
+  __domChild(child, index, len, option, i) {
     var self = this;
     //防止空数组跳过逻辑，它应该是个空字符串
     if(Array.isArray(child) && child.length) {
       child.forEach(function(item, i) {
         //第1个同时作为children的第1个要特殊处理
-        index = self.__domChild(item, index, len, option, index || i);
+        index = self.__domChild(item, index, len, option, i);
       });
     }
     else if(child instanceof Element) {
       child.emit(Event.DOM);
       option.start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及逻辑
-      if(index || force) {
-        if(VirtualDom.isText(prev)) {
+      if(index || i) {
+        if(VirtualDom.isText(option.prev)) {
           option.start++;
         }
       }
       option.prev = child;
     }
     else if(child instanceof Obj) {
-      index = self.__domChild(child.v, index, len, option, force);
+      index = self.__domChild(child.v, index, len, option, i);
     }
     else if(VirtualDom.isEmptyText(child)) {
       //前方如有兄弟文本节点，无需插入
-      if(index || force) {
-        var prev = self.children[index - 1];
-        if(VirtualDom.isText(prev)) {
+      if(index || i) {
+        if(VirtualDom.isText(option.prev)) {
           return index;
         }
       }
@@ -406,7 +405,7 @@ class VirtualDom extends Element {
         var next = self.children[i];
         if(VirtualDom.isText(next)) {
           index++;
-          prev = next;
+          option.prev = next;
           if(!VirtualDom.isEmptyText(next)) {
             return index;
           }
