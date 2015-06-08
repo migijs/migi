@@ -125,11 +125,14 @@ var DL = document.createElement('dl');
 var SELECT = document.createElement('select');
 var LIE = !+'\v1';
 
+var flag = true;
+
 var util = {
   clone:function(obj) {
     //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
+    if(flag && Element.hasOwnProperty('default')) {
       Element = Element['default'];
+      flag = false;
     }
     if(typeof obj != 'object') {
       return obj;
@@ -147,8 +150,9 @@ var util = {
   isDate: isType('Date'),
   equal:function(a, b) {
     //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
+    if(flag && Element.hasOwnProperty('default')) {
       Element = Element['default'];
+      flag = false;
     }
     return equal(a, b);
   },

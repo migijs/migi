@@ -29,11 +29,14 @@ const SELF_CLOSE = {
   'track': true
 };
 
+var flag = true;
+
 class VirtualDom extends Element {
   constructor(name, props = {}, children = []) {
     //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
+    if(flag && Component.hasOwnProperty('default')) {
       Component = Component['default'];
+      flag = false;
     }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {

@@ -2,13 +2,17 @@ import VirtualDom from './VirtualDom';
 import Event from './Event';
 import sort from './sort';
 
+var flag = true;
+
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
 //virtualDom当前传入的VirtualDom对象
 //first为初始化时第一次
 function match(names, classes, ids, style, virtualDom, first) {
-  if(VirtualDom.hasOwnProperty('default')) {
+  //fix循环依赖
+  if(flag && VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
+    flag = false;
   }
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, first);

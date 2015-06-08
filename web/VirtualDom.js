@@ -29,11 +29,14 @@ var SELF_CLOSE = {
   'track': true
 };
 
+var flag = true;
+
 !function(){var _11=Object.create(Element.prototype);_11.constructor=VirtualDom;VirtualDom.prototype=_11}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
-    if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
+    if(props===void 0)props={};if(children===void 0)children=[];if(flag && Component.hasOwnProperty('default')) {
       Component = Component['default'];
+      flag = false;
     }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {

@@ -125,11 +125,14 @@ const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
 const LIE = !+'\v1';
 
+var flag = true;
+
 var util = {
   clone(obj) {
     //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
+    if(flag && Element.hasOwnProperty('default')) {
       Element = Element['default'];
+      flag = false;
     }
     if(typeof obj != 'object') {
       return obj;
@@ -147,8 +150,9 @@ var util = {
   isDate: isType('Date'),
   equal(a, b) {
     //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
+    if(flag && Element.hasOwnProperty('default')) {
       Element = Element['default'];
+      flag = false;
     }
     return equal(a, b);
   },

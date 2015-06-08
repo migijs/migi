@@ -13,10 +13,13 @@ exports.merge=merge;function merge(ranges) {
   }
 };
 
+var flag = true;
+
 exports.update=update;function update(item, nvd, list, elem) {
   //fix循环依赖
-  if(VirtualDom.hasOwnProperty('default')) {
+  if(flag && VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
+    flag = false;
   }
   var first = item.index;
   var firstI = item.i;

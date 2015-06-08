@@ -285,17 +285,15 @@ function diff(ovd, nvd) {
   cachePool.add(ovd.destroy());
 }
 
+var flag = true;
+
 exports["default"]=function(ovd, nvd) {
-  //TODO: 可能可以用对象池技术来缓存废弃的vd，避免重复创建消耗，需改lefty编译优化
   //fix循环依赖
-  if(Element.hasOwnProperty('default')) {
+  if(flag && Element.hasOwnProperty('default')) {
     Element = Element['default'];
-  }
-  if(VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
-  }
-  if(Component.hasOwnProperty('default')) {
     Component = Component['default'];
+    flag = false;
   }
-  diff(ovd, nvd);
+  return diff(ovd, nvd);
 }});
