@@ -8,6 +8,7 @@ import range from './range';
 import match from './match';
 import sort from './sort';
 import domDiff from './domDiff';
+import cachePool from './cachePool';
 
 const SELF_CLOSE = {
   'img': true,
@@ -41,7 +42,7 @@ class VirtualDom extends Element {
     super(name, props, children);
     var self = this;
     self.__cache = {};
-    self.__names = [];
+    self.__names = null;
     self.__classes = null;
     self.__ids = null;
     self.__inline = null;
@@ -330,11 +331,10 @@ class VirtualDom extends Element {
   }
 
   get element() {
-    this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
-    return this.__element;
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
   }
   get names() {
-    return this.__names;
+    return this.__names || (this.__names = []);
   }
   set style(v) {
     var self = this;
@@ -903,6 +903,29 @@ class VirtualDom extends Element {
         child.__updateStyle();
       }
     });
+  }
+
+  init(name, props = {}, children = []) {
+    super.__init(name, props, children);
+    var self = this;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+    children.forEach(function(child) {
+      if(child !== void 0) {
+        child.__parent = self;
+      }
+    });
+    return this;
+  }
+  destroy() {
+    var self = this;
+    self.__cache = {};
+    self.__names = null;
+    self.__classes = null;
+    self.__ids = null;
+    self.__inline = null;
+    self.__hover = false;
+    self.__active = false;
+    return this;
   }
 
   static isText(item) {

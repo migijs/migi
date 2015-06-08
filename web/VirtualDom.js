@@ -8,6 +8,7 @@ var range=function(){var _6=require('./range');return _6.hasOwnProperty("default
 var match=function(){var _7=require('./match');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var sort=function(){var _8=require('./sort');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var domDiff=function(){var _9=require('./domDiff');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var cachePool=function(){var _10=require('./cachePool');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -28,7 +29,7 @@ var SELF_CLOSE = {
   'track': true
 };
 
-!function(){var _10=Object.create(Element.prototype);_10.constructor=VirtualDom;VirtualDom.prototype=_10}();
+!function(){var _11=Object.create(Element.prototype);_11.constructor=VirtualDom;VirtualDom.prototype=_11}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -41,7 +42,7 @@ var SELF_CLOSE = {
     Element.call(this,name, props, children);
     var self = this;
     self.__cache = {};
-    self.__names = [];
+    self.__names = null;
     self.__classes = null;
     self.__ids = null;
     self.__inline = null;
@@ -329,14 +330,13 @@ var SELF_CLOSE = {
     return res;
   }
 
-  var _11={};_11.element={};_11.element.get =function() {
-    this.__element = this.__element || document.querySelector('[migi-uid="' + this.uid + '"]');
-    return this.__element;
+  var _12={};_12.element={};_12.element.get =function() {
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
   }
-  _11.names={};_11.names.get =function() {
-    return this.__names;
+  _12.names={};_12.names.get =function() {
+    return this.__names || (this.__names = []);
   }
-  _11.style={};_11.style.set =function(v) {
+  _12.style={};_12.style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.parent instanceof VirtualDom) {
@@ -905,6 +905,29 @@ var SELF_CLOSE = {
     });
   }
 
+  VirtualDom.prototype.init = function(name, props, children) {
+    if(props===void 0)props={};if(children===void 0)children=[];Element.prototype.__init.call(this,name, props, children);
+    var self = this;
+    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+    children.forEach(function(child) {
+      if(child !== void 0) {
+        child.__parent = self;
+      }
+    });
+    return this;
+  }
+  VirtualDom.prototype.destroy = function() {
+    var self = this;
+    self.__cache = {};
+    self.__names = null;
+    self.__classes = null;
+    self.__ids = null;
+    self.__inline = null;
+    self.__hover = false;
+    self.__active = false;
+    return this;
+  }
+
   VirtualDom.isText=function(item) {
     //动态文本节点
     if(item instanceof Obj) {
@@ -924,7 +947,7 @@ var SELF_CLOSE = {
     }
     return item === void 0 || !item.toString();
   }
-Object.keys(_11).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_11[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
+Object.keys(_12).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_12[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 //vd由node变为text的时候，记录后方可能会为文本
 VirtualDom.NEXT_MAYBE_TEXT = 0;

@@ -13,6 +13,9 @@ function getDom(dom) {
 class Element extends Event {
   constructor(name, props, children) {
     super();
+    this.__init(name, props, children);
+  }
+  __init(name, props, children) {
     this.__name = name;
     this.__props = props;
     this.__children = children;

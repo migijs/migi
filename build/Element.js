@@ -13,6 +13,9 @@ function getDom(dom) {
 !function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
   function Element(name, props, children) {
     Event.call(this);
+    this.__init(name, props, children);
+  }
+  Element.prototype.__init = function(name, props, children) {
     this.__name = name;
     this.__props = props;
     this.__children = children;

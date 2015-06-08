@@ -3,6 +3,7 @@ import VirtualDom from './VirtualDom';
 import Component from './Component';
 import util from './util';
 import range from './range';
+import cachePool from './cachePool';
 
 const DOM_TO_TEXT = 0;
 const DOM_TO_DOM = 1;
@@ -280,6 +281,8 @@ function diff(ovd, nvd) {
       range.update(item, nvd, list, elem);
     });
   }
+  //缓存对象池
+  cachePool.add(ovd.destroy());
 }
 
 export default function(ovd, nvd) {

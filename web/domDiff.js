@@ -3,6 +3,7 @@ var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnPropert
 var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 var range=function(){var _4=require('./range');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var cachePool=function(){var _5=require('./cachePool');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -280,6 +281,8 @@ function diff(ovd, nvd) {
       range.update(item, nvd, list, elem);
     });
   }
+  //缓存对象池
+  cachePool.add(ovd.destroy());
 }
 
 exports["default"]=function(ovd, nvd) {
