@@ -254,6 +254,9 @@ class VirtualDom extends Element {
       if(self.__style) {
         self.__cache[prop] = s;
       }
+      if(prop == 'className') {
+        prop = 'class';
+      }
       res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
@@ -614,7 +617,7 @@ class VirtualDom extends Element {
                 nextText = true;
                 //注意坑，后面可能是个TEXT的Obj，但可能接下来的循环发生类型改变
                 //因此设置type，下一个循环会对range进行检查，改变需要特殊处理
-                ranges.push({ start: start, index: index + 1, type: VirtualDom.NEXT_MAYBE_TEXT });
+                ranges.push({ start: start, index: index + 1 });
               }
             }
             //如果只有自己，需删除掉这个节点，插入在当前的索引位置即可
@@ -664,7 +667,6 @@ class VirtualDom extends Element {
                 start++;
               }
             }
-            //TODO: 别忘了触发新vd的DOM事件
           }
           //新类型是TEXT
           else {
@@ -689,7 +691,7 @@ class VirtualDom extends Element {
               if(VirtualDom.isText(next)) {
                 single = false;
                 //同样后面可能Obj变成非TEXT类型，记录type
-                ranges.push({ start, index: index + 1, type: VirtualDom.NEXT_MAYBE_TEXT_TOO });
+                ranges.push({ start, index: index + 1 });
               }
             }
             //如果只有自己，本身渲染后插入
@@ -834,6 +836,8 @@ class VirtualDom extends Element {
       case 'nodeType':
         this.element[k] = v || false;
         break;
+      case 'className':
+        k = 'class';
       case 'id':
       case 'class':
         if(this.__style) {
@@ -948,10 +952,5 @@ class VirtualDom extends Element {
     return item === void 0 || !item.toString();
   }
 }
-
-//vd由node变为text的时候，记录后方可能会为文本
-VirtualDom.NEXT_MAYBE_TEXT = 0;
-//vd由text变为node的时候，记录后方可能会为文本
-VirtualDom.NEXT_MAYBE_TEXT_TOO = 1;
 
 export default VirtualDom;
