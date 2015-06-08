@@ -14,10 +14,9 @@ var TEXT_TO_NONE = 5;
 var NONE_TO_DOM = 6;
 var NONE_TO_TEXT = 7;
 
-function replaceWith(elem, index, vd, isText) {
+function replaceWith(elem, cns, index, vd, isText) {
   var node = isText ? util.NODE : util.getParent(vd.name);
   node.innerHTML = isText ? util.encodeHtml(vd.toString()) : vd.toString();
-  var cns = elem.childNodes;
   if(index >= cns.length) {
     elem.appendChild(node.firstChild);
   }
@@ -25,10 +24,9 @@ function replaceWith(elem, index, vd, isText) {
     elem.replaceChild(node.firstChild, cns[index]);
   }
 }
-function insertAt(elem, index, vd, isText) {
+function insertAt(elem, cns, index, vd, isText) {
   var node = isText ? util.NODE : util.getParent(vd.name);
   node.innerHTML = isText ? util.encodeHtml(vd.toString()) : vd.toString();
-  var cns = elem.childNodes;
   if(index >= cns.length) {
     elem.appendChild(node.firstChild);
   }
@@ -37,7 +35,7 @@ function insertAt(elem, index, vd, isText) {
   }
 }
 
-function diffChild(elem, olds, news, index, ranges, option) {
+function diffChild(elem, cns, olds, news, index, ranges, option) {
   for(var i = 0, len = Math.min(olds.length, news.length); i < len; i++) {
     var ovd = olds[i];
     var nvd = news[i];
@@ -51,7 +49,7 @@ function diffChild(elem, olds, news, index, ranges, option) {
         }
         //否则重绘替换
         else {
-          replaceWith(elem, option.start, nvd);
+          replaceWith(elem, cns, option.start, nvd);
           //别忘了触发DOM事件
           nvd.emit(Event.DOM);
         }
@@ -65,20 +63,20 @@ function diffChild(elem, olds, news, index, ranges, option) {
           switch(option.state) {
             case DOM_TO_TEXT:
             case TEXT_TO_TEXT:
-              elem.removeChild(elem.childNodes[option.start + 1]);
+              elem.removeChild(cns[option.start + 1]);
               ranges.push({ start: option.start, index:index, i:i });
               break;
             case TEXT_TO_DOM:
-              replaceWith(elem, option.start++, nvd, true);
+              replaceWith(elem, cns, option.start++, nvd, true);
               break;
             case DOM_TO_DOM:
-              replaceWith(elem, option.start, nvd, true);
+              replaceWith(elem, cns, option.start, nvd, true);
               break;
           }
         }
         //本身就是第1个，直接替换
         else {
-          replaceWith(elem, option.start, nvd, true);
+          replaceWith(elem, cns, option.start, nvd, true);
         }
         option.state = DOM_TO_TEXT;
       }
@@ -92,19 +90,19 @@ function diffChild(elem, olds, news, index, ranges, option) {
           switch(option.state) {
             case DOM_TO_TEXT:
             case DOM_TO_DOM:
-              replaceWith(elem, option.start++, nvd);
+              replaceWith(elem, cns, option.start++, nvd);
               break;
             case TEXT_TO_DOM:
-              insertAt(elem, option.start++, nvd);
+              insertAt(elem, cns, option.start++, nvd);
               break;
             case TEXT_TO_TEXT:
-              insertAt(elem, ++option.start, nvd);
+              insertAt(elem, cns, ++option.start, nvd);
               break;
           }
         }
         //本身就是第1个，直接替换
         else {
-          replaceWith(elem, option.start++, nvd);
+          replaceWith(elem, cns, option.start++, nvd);
           //别忘了触发DOM事件
           nvd.emit(Event.DOM);
         }
@@ -118,10 +116,10 @@ function diffChild(elem, olds, news, index, ranges, option) {
           switch(option.state) {
             case DOM_TO_TEXT:
               ranges.push({ start: option.start, index:index, i:i });
-              elem.removeChild(elem.childNodes[option.start + 1]);
+              elem.removeChild(cns[option.start + 1]);
               break;
             case TEXT_TO_DOM:
-              insertAt(elem, option.start, nvd, true);
+              insertAt(elem, cns, option.start, nvd, true);
               break;
             case DOM_TO_DOM:
             case TEXT_TO_TEXT:
@@ -166,21 +164,21 @@ function diffChild(elem, olds, news, index, ranges, option) {
             case TEXT_TO_DOM:
             case DOM_TO_NONE:
             case NONE_TO_DOM:
-              elem.removeChild(elem.childNodes[option.start]);
+              elem.removeChild(cns[option.start]);
               break;
           }
         }
         else {
           switch(option.state) {
             case DOM_TO_TEXT:
-              elem.removeChild(elem.childNodes[option.start]);
+              elem.removeChild(cns[option.start]);
               break;
           }
         }
       }
       //可能第1个新的是空数组
       else {
-        elem.removeChild(elem.childNodes[0]);
+        elem.removeChild(cns[0]);
         option.state = VirtualDom.isText(vd) ? TEXT_TO_NONE : DOM_TO_NONE;
       }
     }
@@ -202,17 +200,17 @@ function diffChild(elem, olds, news, index, ranges, option) {
             case TEXT_TO_DOM:
             case DOM_TO_NONE:
             case NONE_TO_DOM:
-              insertAt(elem, option.start, vd, true);
+              insertAt(elem, cns, option.start, vd, true);
               break;
           }
         }
         else {
-          insertAt(elem, option.start++, vd);
+          insertAt(elem, cns, option.start++, vd);
         }
       }
       //可能第1个老的是空数组
       else {
-        replaceWith(elem, 0, vd, VirtualDom.isText(vd));
+        replaceWith(elem, cns, 0, vd, VirtualDom.isText(vd));
         option.state = VirtualDom.isText(vd) ? TEXT_TO_TEXT : TEXT_TO_DOM;
       }
     }
@@ -263,6 +261,7 @@ function diff(ovd, nvd) {
   var ranges = [];
   var list = [];
   var option = { start : 0 };
+  var cns = elem.childNodes;
   //遍历孩子，长度取新老vd最小值
   for(var index = 0, len = Math.min(ovd.children.length, nvd.children.length); index < len; index++) {
     var oc = ovd.children[index];
@@ -272,13 +271,13 @@ function diff(ovd, nvd) {
     var olds = Array.isArray(oc) ? util.join(oc) : [oc];
     var news = Array.isArray(nc) ? util.join(nc) : [nc];
     //diff孩子节点
-    diffChild(elem, olds, news, index, ranges, option);
+    diffChild(elem, cns, olds, news, index, ranges, option);
     list.push(news);
   }
   range.merge(ranges);
   if(ranges.length) {
     ranges.forEach(function(item) {
-      range.update(item, nvd, list, elem);
+      range.update(item, nvd, list, elem, cns);
     });
   }
   //缓存对象池

@@ -15,7 +15,7 @@ exports.merge=merge;function merge(ranges) {
 
 var flag = true;
 
-exports.update=update;function update(item, nvd, list, elem) {
+exports.update=update;function update(item, nvd, list, elem, cns) {
   //fix循环依赖
   if(flag && VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
@@ -105,14 +105,15 @@ exports.update=update;function update(item, nvd, list, elem) {
     }
   }
   //console.log(nvd.name, nvd.props.class, nvd.children, item.start, elem.childNodes)
-  var textNode = elem.childNodes[item.start];
+  var textNode = cns[item.start];
   var now = util.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      util.NODE.innerHTML = res;
-      elem.replaceChild(util.NODE.firstChild, textNode);
+      var node = util.NODE;
+      node.innerHTML = res;
+      elem.replaceChild(node.firstChild, textNode);
     }
     else if(util.lie) {
       textNode.innerText = '';
