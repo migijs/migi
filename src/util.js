@@ -157,17 +157,7 @@ var util = {
     return equal(a, b);
   },
   encodeHtml(s, prop) {
-    var xmlchar = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
-      ' ': '&nbsp;'
-    };
-    return s.replace(prop ? /"/g : /</g, function($1){
-      return xmlchar[$1];
-    });
+    return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
   },
   NODE: NODE,
   TABLE: TABLE,
