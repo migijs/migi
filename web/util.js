@@ -165,7 +165,7 @@ var util = {
       "'": '&#39;',
       ' ': '&nbsp;'
     };
-    return s.replace(prop ? /[<>&'"]/g : /[<>&'" ]/g, function($1){
+    return s.replace(prop ? /"/g : /</g, function($1){
       return xmlchar[$1];
     });
   },
