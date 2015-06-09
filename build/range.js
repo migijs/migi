@@ -57,12 +57,18 @@ exports.update=update;function update(item, children, elem) {
   var textNode = cns[item.start];
   var now = util.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
-    //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
+    //textContent自动转义，保留空白
+    //ie的innerText会解释html标签，故用临时节点的innerHTML再replace代替
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      var node = util.NODE;
-      node.innerHTML = res;
-      elem.replaceChild(node.firstChild, textNode);
+      if(util.lie) {
+        var node = util.NODE;
+        node.innerHTML = res;
+        elem.replaceChild(node.firstChild, textNode);
+      }
+      else {
+        textNode.textContent = res;
+      }
     }
     else if(util.lie) {
       textNode.innerText = '';
