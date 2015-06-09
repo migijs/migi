@@ -111,6 +111,13 @@ var flag = true;
     //防止undefined的变量
     return s === void 0 ? '' : s.toString();
   }
+  Obj.prototype.update = function(ov) {
+    var nv = this.cb.call(this.context);
+    if(!util.equal(ov, nv)) {
+      this.v = nv;
+      return true;
+    }
+  }
 Object.keys(_2).forEach(function(k){Object.defineProperty(Obj.prototype,k,_2[k])});
 
 //jsx创建有3种类型：纯文本或js变量返回String或Array<String>都是TEXT、全部VirtualDom、全部COMPONENT；不准有混合类型

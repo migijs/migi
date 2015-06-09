@@ -3,10 +3,10 @@ import util from './util';
 
 export function merge(ranges) {
   //合并相邻更新的文本节点
-  for(var i = 0, len = ranges.length; i < len; i++){
+  for(var i = 0, len = ranges.length; i < len - 1; i++){
     var now = ranges[i];
     var next = ranges[i + 1];
-    if(next && now.start == next.start){
+    if(now.start == next.start){
       ranges.splice(i, 1);
       i--;
     }
@@ -94,7 +94,7 @@ export function update(item, nvd, list, elem, cns) {
   for(var i = first; i <= last; i++) {
     if(i == last) {
       for(var j = 0; j <= lastI; j++) {
-        res += nvd.__renderChild(list[i][j]);
+        res += VirtualDom.renderChild(list[i][j]);
       }
     }
     else if(i == first) {

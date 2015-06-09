@@ -19,7 +19,7 @@ var migi = {
   createElement:function(name, props, children) {
     if(util.isString(name)) {
       if(cachePool.index) {
-        return cachePool.get().init(name, props, children);
+        return cachePool.get().__init(name, props, children);
       }
       return new VirtualDom(name, props, children);
     }
