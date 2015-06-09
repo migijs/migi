@@ -567,10 +567,9 @@ class VirtualDom extends Element {
     else if(child instanceof Element) {
       child.emit(Event.DATA, k);
       option.start++;
-      if(index || i) {
-        if(VirtualDom.isText(option.prev)) {
-          option.start++;
-        }
+      //前面的文本再加一次
+      if(!first && option.prev == type.TEXT) {
+        option.start++;
       }
       option.prev = type.DOM;
     }
@@ -579,28 +578,22 @@ class VirtualDom extends Element {
         //数组类型记得递归记录history索引，结束后出栈
         history.push(0);
         child.forEach(function(item, i) {
-          hitory[history.length - 1] = i;
+          history[history.length - 1] = i;
           //第1个同时作为children的第1个要特殊处理
-          self.__checkObj(k, item, index, len, ranges, option, history);
+          self.__checkObj(k, item, index, len, ranges, option, history, first && !i);
         });
         history.pop();
       }
       //注意空数组算text类型
       else {
-        self.__record(history, option, first);
+        VirtualDom.record(history, option, first);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      self.__record(history, option, first);
+      VirtualDom.record(history, option, first);
       option.prev = type.TEXT;
-    }
-  }
-  //记录第一个text出现的位置
-  __record(history, option, first) {
-    if(first || option.prev == type.DOM) {
-      option.record = history.slice();
     }
   }
   __updateAttr(k, v) {
@@ -745,6 +738,12 @@ class VirtualDom extends Element {
       return res;
     }
     return util.encodeHtml(child.toString());
+  }
+  //记录第一个text出现的位置
+  static record(history, option, first) {
+    if(first || option.prev == type.DOM) {
+      option.record = history.slice();
+    }
   }
 }
 
