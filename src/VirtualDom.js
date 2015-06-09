@@ -344,7 +344,7 @@ class VirtualDom extends Element {
     super.__onDom();
     var self = this;
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
-    var option = { start: 0 };
+    var option = { start: 0, first: true };
     for(var index = 0, len = self.children.length; index < len; index++) {
       var child = self.children[index];
       self.__domChild(child, index, len, option);
@@ -374,7 +374,7 @@ class VirtualDom extends Element {
       child.emit(Event.DOM);
       option.start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及start索引逻辑
-      if(index || i) {
+      if(!option.first) {
         if(option.prev == type.TEXT) {
           option.start++;
         }
@@ -386,17 +386,20 @@ class VirtualDom extends Element {
     }
     else if(VirtualDom.isEmptyText(child)) {
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
-      if(index || i) {
+      if(!option.first) {
         if(option.prev == type.TEXT) {
           return;
         }
       }
       option.empty = true;
+      option.prev = type.TEXT;
     }
     //一旦是个非空text，之前记录的空text将无效，因为相邻的text会合并为一个text节点
     else {
       option.empty = false;
+      option.prev = type.TEXT;
     }
+    option.first = false;
   }
   __insertBlank(option) {
     var blank = document.createTextNode('');
@@ -442,106 +445,24 @@ class VirtualDom extends Element {
     //当文本节点时start不更新
     //Obj类型的判断type和count，及为文本时是否为空
     var ranges = [];
-    var option = { start: 0, record: [] };
+    var option = { start: 0, record: [], first: true };
     var history;
     var children = self.children;
     for(var index = 0, len = children.length; index < len; index++) {
       var child = children[index];
       //history记录着当前child索引，可能它是个数组，递归记录
       history = [index];
-      self.__checkObj(k, child, index, len, ranges, option, history, !index);
+      self.__checkObj(k, child, index, len, ranges, option, history);
     }
-    console.log(ranges);
     range.merge(ranges);
-    if(range.length) {
+    if(ranges.length) {
       ranges.forEach(function(item) {
-        range.update(item, nvd, list, elem, cns);
-      });
-    }
-    return;
-    //得到range更新文本节点，非可视组件可能没有DOM
-    if(ranges.length && self.element) {
-      //相邻的TEXT节点合并更新
-      range.merge(ranges);
-      ranges.forEach(function(item) {
-        var prevArr;
-        var nextArr;
-        //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
-        outer:
-        for(var first = item.index; first > 0; first--) {
-          var prev = self.children[first - 1];
-          //可能存在数组的情况，展开递归判断，命中后，保留文本项
-          if(Array.isArray(prev)) {
-            prevArr = util.join(prev);
-            for(var i = prevArr.length - 1; i >= 0; i--) {
-              prev = prevArr[i];
-              if(!VirtualDom.isText(prev)) {
-                prevArr = prevArr.slice(i + 1);
-                break outer;
-              }
-            }
-          }
-          //非数组将其置空，方便后面判断
-          else {
-            prevArr = null;
-            if(!VirtualDom.isText(prev)) {
-              break;
-            }
-          }
-        }
-        for(var last = item.index, len = self.children.length; last < len - 1; last++) {
-          var next = self.children[last + 1];
-          if(Array.isArray(next)) {
-            nextArr = util.join(next);
-            for(var i = 0, l = nextArr.length; i < l; i++) {
-              next = nextArr[i];
-              if(!VirtualDom.isText(next)) {
-                nextArr = nextArr.slice(0, i);
-                break;
-              }
-            }
-          }
-          else {
-            nextArr = null;
-            if(!VirtualDom.isText(next)) {
-              break;
-            }
-          }
-        }
-        var res = '';
-        for(var i = first; i <= last; i++) {
-          //根据前面的可能数组情况下预留的标识合并
-          if(i == first && prevArr) {
-            res += self.__renderChild(prevArr);
-          }
-          else if(i == last && nextArr) {
-            res += self.__renderChild(nextArr);
-          }
-          else {
-            res += self.__renderChild(self.children[i]);
-          }
-        }
-        var textNode = self.element.childNodes[item.start];
-        var now = util.lie ? textNode.innerText : textNode.textContent;
-        if(res != now) {
-          //textContent自动转义，保留空白，但显式时仍是合并多个空白，故用临时节点的innerHTML再replace代替
-          //但当为innerHTML空时，没有孩子节点，所以特殊判断
-          if(res) {
-            util.NODE.innerHTML = res;
-            self.element.replaceChild(util.NODE.firstChild, textNode);
-          }
-          else if(util.lie) {
-            textNode.innerText = '';
-          }
-          else {
-            textNode.textContent = '';
-          }
-        }
+        range.update(item, self.children, self.element);
       });
     }
   }
-  //force强制查看prev，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __checkObj(k, child, index, len, ranges, option, history, first) {
+  //first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
+  __checkObj(k, child, index, len, ranges, option, history) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -559,7 +480,7 @@ class VirtualDom extends Element {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff(this.element, ov, child.v, index, ranges, option, history);
+          domDiff(this.element, ov, child.v, ranges, option, history);
         }
       }
     }
@@ -568,7 +489,7 @@ class VirtualDom extends Element {
       child.emit(Event.DATA, k);
       option.start++;
       //前面的文本再加一次
-      if(!first && option.prev == type.TEXT) {
+      if(!option.first && option.prev == type.TEXT) {
         option.start++;
       }
       option.prev = type.DOM;
@@ -580,21 +501,22 @@ class VirtualDom extends Element {
         child.forEach(function(item, i) {
           history[history.length - 1] = i;
           //第1个同时作为children的第1个要特殊处理
-          self.__checkObj(k, item, index, len, ranges, option, history, first && !i);
+          self.__checkObj(k, item, index, len, ranges, option, history);
         });
         history.pop();
       }
       //注意空数组算text类型
       else {
-        VirtualDom.record(history, option, first);
+        VirtualDom.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      VirtualDom.record(history, option, first);
+      VirtualDom.record(history, option);
       option.prev = type.TEXT;
     }
+    option.first = false;
   }
   __updateAttr(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
@@ -740,8 +662,8 @@ class VirtualDom extends Element {
     return util.encodeHtml(child.toString());
   }
   //记录第一个text出现的位置
-  static record(history, option, first) {
-    if(first || option.prev == type.DOM) {
+  static record(history, option) {
+    if(option.first || option.prev == type.DOM) {
       option.record = history.slice();
     }
   }

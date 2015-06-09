@@ -31,14 +31,11 @@ function joinArray(arr) {
   return res;
 }
 
-var flag = true;
-
 class Obj {
   constructor(k, context, cb) {
     //fix循环依赖
-    if(flag && Element.hasOwnProperty('default')) {
+    if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
-      flag = false;
     }
 
     this.__k = k;

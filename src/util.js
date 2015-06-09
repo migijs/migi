@@ -76,30 +76,6 @@ function equal(a, b) {
   }
 }
 
-//打平数组，即变成1维；大部分情况下都是1维的，所以做预先判断
-function join(arr) {
-  var singleLevel = true;
-  for(var i = 0, len = arr.length; i < len; i++) {
-    if(Array.isArray(arr[i])) {
-      singleLevel = false;
-      break;
-    }
-  }
-  return singleLevel ? arr : joinPush(arr);
-}
-function joinPush(arr) {
-  var res = [];
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
-      res = res.concat(join(item));
-    }
-    else {
-      res.push(item);
-    }
-  });
-  return res;
-}
-
 function getFirst(arr) {
   var res = arr[0];
   if(Array.isArray(res)) {
@@ -125,14 +101,11 @@ const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
 const LIE = !+'\v1';
 
-var flag = true;
-
 var util = {
   clone(obj) {
     //fix循环依赖
-    if(flag && Element.hasOwnProperty('default')) {
+    if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
-      flag = false;
     }
     if(typeof obj != 'object') {
       return obj;
@@ -150,9 +123,8 @@ var util = {
   isDate: isType('Date'),
   equal(a, b) {
     //fix循环依赖
-    if(flag && Element.hasOwnProperty('default')) {
+    if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
-      flag = false;
     }
     return equal(a, b);
   },
@@ -192,7 +164,6 @@ var util = {
     while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
     return v;
   }(),
-  join,
   getFirst,
   getLast
 };

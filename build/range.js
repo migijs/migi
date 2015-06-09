@@ -1,5 +1,7 @@
-var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 
 exports.merge=merge;function merge(ranges) {
   //合并相邻更新的文本节点
@@ -7,104 +9,51 @@ exports.merge=merge;function merge(ranges) {
     var now = ranges[i];
     var next = ranges[i + 1];
     if(now.start == next.start){
-      ranges.splice(i, 1);
+      ranges.splice(i + 1, 1);
       i--;
+      len--;
     }
   }
 };
 
-var flag = true;
-
-exports.update=update;function update(item, nvd, list, elem, cns) {
-  //fix循环依赖
-  if(flag && VirtualDom.hasOwnProperty('default')) {
-    VirtualDom = VirtualDom['default'];
-    flag = false;
-  }
-  var first = item.index;
-  var firstI = item.i;
-  var last = item.index;
-  var lastI = item.i;
-  var len = list.length;
-  //利用虚拟索引向前向后找文本节点，拼接后更新到真实索引上
-  while(1) {
-    if(first) {
-      if(firstI) {
-        var prev = list[first][firstI - 1];
-        if(!VirtualDom.isText(prev)) {
-          break;
-        }
-        firstI--;
-      }
-      else {
-        var prev = list[first - 1][list[first - 1].length - 1];
-        if(!VirtualDom.isText(prev)) {
-          break;
-        }
-        first--;
-        firstI = list[first - 1].length - 1;
-      }
-    }
-    else {
-      if(firstI) {
-        var prev = list[first][firstI - 1];
-        if(!VirtualDom.isText(prev)) {
-          break;
-        }
-        firstI--;
-      }
-      else {
-        break;
-      }
-    }
-  }
-  //向后
-  while(1) {
-    if(last < len - 1) {
-      if(lastI < list[last].length - 1) {
-        var next = list[last][lastI + 1];
-        if(!VirtualDom.isText(next)) {
-          break;
-        }
-        lastI++;
-      }
-      else {
-        var next = list[last + 1][0];
-        if(!VirtualDom.isText(next)) {
-          break;
-        }
-        last++;
-        lastI = 0;
-      }
-    }
-    else {
-      if(lastI < list[last].length - 1) {
-        var next = list[last][lastI + 1];
-        if(!VirtualDom.isText(next)) {
-          break;
-        }
-        lastI++;
-      }
-      else {
-        break;
-      }
-    }
-  }
+function join(index, children) {
   var res = '';
-  for(var i = first; i <= last; i++) {
-    if(i == last) {
-      for(var j = 0; j <= lastI; j++) {
-        res += VirtualDom.renderChild(list[i][j]);
+  for(var i = index.shift(), len = children.length; i < len; i++) {
+    var child = children[i];
+    if(index.length) {
+      if(child instanceof Obj) {
+        res += join(index, child.v);
+      }
+      else {
+        res += join(index, child);
       }
     }
-    else if(i == first) {
-      for(var j = firstI; j <= list[first].length; j++) {}
+    else if(child instanceof Obj) {
+      if(child.v instanceof Element) {
+        break;
+      }
+      else {
+        res += child === void 0 ? '' : child.toString();
+      }
+    }
+    else if(child instanceof Element) {
+      break;
     }
     else {
-      for(var j = 0; j <= list[i].length; j++) {}
+      res += child === void 0 ? '' : child.toString();
     }
   }
-  //console.log(nvd.name, nvd.props.class, nvd.children, item.start, elem.childNodes)
+  return res;
+}
+
+exports.update=update;function update(item, children, elem) {
+  //fix循环依赖
+  if(VirtualDom.hasOwnProperty('default')) {
+    VirtualDom = VirtualDom['default'];
+  }
+  //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
+  var res = join(item.index, children);
+  var cns = elem.childNodes;
   var textNode = cns[item.start];
   var now = util.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
