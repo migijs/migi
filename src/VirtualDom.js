@@ -349,6 +349,10 @@ class VirtualDom extends Element {
       var child = self.children[index];
       self.__domChild(child, index, len, option);
     }
+    //可能最后一个是空白text，需特殊判断下插入
+    if(option.empty) {
+      self.__insertBlank(option);
+    }
   }
   //index和i结合判断首个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
   __domChild(child, index, len, option, i) {
