@@ -161,41 +161,53 @@ var flag = true;
     return res;
   }
 
-  VirtualDom.prototype.isFirst = function() {
+  VirtualDom.prototype.isFirst = function(children) {
     //本身就是Component的唯一节点
     if(this.parent instanceof Component) {
       return true;
     }
-    var children = this.parent.children;
+    children = children || this.parent.children;
     for(var i = 0, len = children.length; i < len; i++) {
       var child = children[i];
-      if(child == this) {
+      if(Array.isArray(child) && child.length) {
+        return this.isFirst(child);
+      }
+      else if(child == this) {
         return true;
       }
       else if(child instanceof VirtualDom) {
         return false;
       }
-      else if(child instanceof Obj && child.type == Obj.ELEMENT) {
-        return false;
+      else if(child instanceof Obj) {
+        child = child.v;
+        if(Array.isArray(child) && child.length) {
+          return this.isFirst(child);
+        }
       }
     }
   }
-  VirtualDom.prototype.isLast = function() {
+  VirtualDom.prototype.isLast = function(children) {
     //本身就是Component的唯一节点
     if(this.parent instanceof Component) {
       return true;
     }
-    var children = this.parent.children;
+    children = children || this.parent.children;
     for(var i = children.length - 1; i >= 0; i--) {
       var child = children[i];
-      if(child == this) {
+      if(Array.isArray(child) && child.length) {
+        return this.isLast(child);
+      }
+      else if(child == this) {
         return true;
       }
       else if(child instanceof VirtualDom) {
         return false;
       }
-      else if(child instanceof Obj && child.type == Obj.ELEMENT) {
-        return false;
+      else if(child instanceof Obj) {
+        child = child.v;
+        if(Array.isArray(child) && child.length) {
+          return this.isLast(child);
+        }
       }
     }
   }
