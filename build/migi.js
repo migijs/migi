@@ -16,16 +16,11 @@ var migi = {
     }
     return component;
   },
-  createElement:function(name, props, children) {
-    if(util.isString(name)) {
-      if(cachePool.index) {
-        return cachePool.get().__init(name, props, children);
-      }
-      return new VirtualDom(name, props, children);
-    }
-    else {
-      return new name(props, children);
-    }
+  createCp:function(name, props, children) {
+    return new name(props, children);
+  },
+  createVd:function(name, props, children) {
+    return cachePool.index ? cachePool.get().__init(name, props, children) : new VirtualDom(name, props, children);
   },
   Event:Event,
   eventBus: Event.mix({}),
