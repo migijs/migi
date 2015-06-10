@@ -1,3 +1,4 @@
+import Event from './Event';
 import Component from './Component';
 
 class NonVisualComponent extends Component {
