@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>下拉菜单</title>
+  <title>数据桥接</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
@@ -106,9 +106,12 @@
       self._value = '';
       self._show = false;
       self.on(migi.Event.DOM, function() {
-        self.findChild('Ajax').on('success', function(data) {
-          self.list = data;
-        });
+        var ajax = self.findChild('Ajax');
+        if(ajax) {
+          ajax.on('success', function(data) {
+            self.list = data;
+          });
+        }
         window.addEventListener('click', function(e) {
           if(e.target != self.element) {
             self.show = false;
@@ -155,6 +158,7 @@
       if(e.target.tagName == 'LI') {
         this.find('strong').html = this.value = e.target.innerHTML;
       }
+      this.emit('show');
     }
     handlerOver(e) {
       if(e.target.tagName == 'LI' && e.target.className != 'cur') {
@@ -179,27 +183,51 @@
           <strong>{ this.value || '&nbsp;' }</strong>
           <b></b>
           <ul class={ this.show ? 'c show' : 'c' } onMouseOver={ this.handlerOver }>
-          {
-            this.list.map(function(item) {
-              return <li title={ item.name }>{ item.name }</li>;
-            })
-          }
+            {
+              this.list.map(function(item) {
+                return <li title={ item.name }>{ item.name }</li>;
+              })
+            }
           </ul>
         </div>
       );
     }
   }
 
-  migi.render(
+  var ol = migi.render(
     <ol>
       <li>
         <Select>
           <Ajax url="./city.json"/>
         </Select>
+        <span> bridge: </span>
+        <Select/>
       </li>
     </ol>,
     '#example'
   );
+  var selects = ol.findAll('Select');
+  selects[0].bridge(selects[1], {
+    value: {
+      name: 'list',
+      middleware: function(d) {
+        for(var i = 0, len = this.list.length; i < len; i++) {
+          if(this.list[i].name == d) {
+            return this.list[i].citys;
+          }
+        }
+        return [];
+      }
+    }
+  });
+  selects[0].on('show', function() {
+    selects[1].show = false;
+  });
+  selects[1].on('show', function() {
+    selects[0].show = false;
+  });
+  //反过来也是一样
+  //selects[1].bridgeTo(selects[0]);
 </script>
 <script>
   seajs.config({

@@ -76,6 +76,49 @@ class Component extends Element {
   findAll(name, first) {
     return this.virtualDom.findAll(name, first);
   }
+  bind(target, include, exclude) {
+    var self = this;
+    self.on(Event.DATA, function(k) {
+      if(!include || include.indexOf(k) > -1) {
+        if(!exclude || exclude.indexOf(k) == -1) {
+          if(target[k] !== self[k]) {
+            target[k] = self[k];
+          }
+        }
+      }
+    });
+    target.on(Event.DATA, function(k) {
+      if(!include || include.indexOf(k) > -1) {
+        if(!exclude || exclude.indexOf(k) == -1) {
+          if(target[k] !== self[k]) {
+            self[k] = target[k];
+          }
+        }
+      }
+    });
+  }
+  bindTo(target, include, exclude) {
+    target.bind(this, include, exclude);
+  }
+  bridge(target, datas) {
+    var self = this;
+    self.on(Event.DATA, function(k) {
+      if(datas.hasOwnProperty(k)) {
+        var o = datas[k];
+        //同名无需name，直接function作为middleware
+        if(util.isFunction(o)) {
+          target[k] = o(self[k]);
+        }
+        else if(o.name) {
+          var v = o.middleware ? o.middleware.call(self, self[k]) : self[k];
+          target[o.name] = v;
+        }
+      }
+    });
+  }
+  bridgeTo(target, datas) {
+    target.bridge(this, datas);
+  }
 
   get virtualDom() {
     return this.__virtualDom;

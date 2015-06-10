@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>下拉菜单</title>
+  <title>数据绑定</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es6-shim.js"></script>
   <script src="sea.js"></script>
@@ -106,9 +106,12 @@
       self._value = '';
       self._show = false;
       self.on(migi.Event.DOM, function() {
-        self.findChild('Ajax').on('success', function(data) {
-          self.list = data;
-        });
+        var ajax = self.findChild('Ajax');
+        if(ajax) {
+          ajax.on('success', function(data) {
+            self.list = data;
+          });
+        }
         window.addEventListener('click', function(e) {
           if(e.target != self.element) {
             self.show = false;
@@ -179,27 +182,33 @@
           <strong>{ this.value || '&nbsp;' }</strong>
           <b></b>
           <ul class={ this.show ? 'c show' : 'c' } onMouseOver={ this.handlerOver }>
-          {
-            this.list.map(function(item) {
-              return <li title={ item.name }>{ item.name }</li>;
-            })
-          }
+            {
+              this.list.map(function(item) {
+                return <li title={ item.name }>{ item.name }</li>;
+              })
+            }
           </ul>
         </div>
       );
     }
   }
 
-  migi.render(
+  var ol = migi.render(
     <ol>
       <li>
         <Select>
           <Ajax url="./city.json"/>
         </Select>
+        <span> bind: </span>
+        <Select/>
       </li>
     </ol>,
     '#example'
   );
+  var selects = ol.findAll('Select');
+  selects[0].bind(selects[1], null, ['show']);
+  //反过来也是一样
+  //selects[1].bindTo(selects[0]);
 </script>
 <script>
   seajs.config({
