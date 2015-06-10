@@ -1,7 +1,7 @@
 {
   "name": "migi",
   "version": "0.0.4",
-  "description": "A JavaScript MVVM library on JSX",
+  "description": "A JavaScript MVVM WebComponent on JSX",
   "maintainers": [
     {
       "name": "army8735",
@@ -17,9 +17,9 @@
   },
   "keywords": [
     "javascript",
-    "user interface",
     "jsx",
-    "mvvm"
+    "mvvm",
+    "WebComponent"
   ],
   "author": "army8735",
   "license": "MIT",
@@ -54,9 +54,9 @@
     "node": ">= 0.10.0"
   },
   "spm": {
-    "main": "./migi.js",
+    "main": "./index.js",
     "output": [
-      "./migi.js"
+      "./index.js"
     ],
     "buildArgs": "--standalone"
   },
