@@ -78,3 +78,12 @@ export function update(item, children, elem) {
     }
   }
 }
+
+export function value(item, children) {
+  //fix循环依赖
+  if(VirtualDom.hasOwnProperty('default')) {
+    VirtualDom = VirtualDom['default'];
+  }
+  //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
+  return join(item.index, children);
+}

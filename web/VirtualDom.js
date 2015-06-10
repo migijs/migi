@@ -142,7 +142,7 @@ var flag = true;
       self.children.forEach(function(child) {
         if(child instanceof Obj) {
           self.on(Event.DOM, function() {
-            self.on(Event.DOM, arguments.callee);
+            self.off(Event.DOM, arguments.callee);
             function cb(e) {
               child.v = this.value;
               var key = child.k;
@@ -456,6 +456,11 @@ var flag = true;
     }
     range.merge(ranges);
     if(ranges.length) {
+      //textarea特殊判断
+      if(self.name == 'textarea') {
+        self.__updateAttr('value', range.value(ranges[0], self.children));
+        return;
+      }
       ranges.forEach(function(item) {
         range.update(item, self.children, self.element);
       });
