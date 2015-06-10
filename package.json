@@ -54,9 +54,9 @@
     "node": ">= 0.10.0"
   },
   "spm": {
-    "main": "./index.js",
+    "main": "./migi.js",
     "output": [
-      "./init.js"
+      "./migi.js"
     ],
     "buildArgs": "--standalone"
   },

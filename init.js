@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
   var head = document.head || document.getElementsByTagName('head')[0];
-  var migi = require('./index');
+  var migi = require('./web/migi')['default'];
   migi.init = function() {
     var jsx = document.querySelectorAll('script');
     for(var i = 0, len = jsx.length; i < len; i++) {
