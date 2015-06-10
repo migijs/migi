@@ -32,10 +32,9 @@ function getDom(dom) {
   }
 
   Element.prototype.__onDom = function() {
-    var self = this;
-    self.__dom = true;
+    this.__dom = true;
     //触发后就移除
-    self.off(Event.DOM, self.__onDom);
+    this.off(Event.DOM, this.__onDom);
   }
   //@abstract
   //__onData() {}

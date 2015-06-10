@@ -634,10 +634,6 @@ var flag = true;
     return this;
   }
 
-  VirtualDom.isText=function(item) {
-    //静态文本节点，包括空、undefined、null、空数组
-    return !(item instanceof Element);
-  }
   VirtualDom.isEmptyText=function(item) {
     //静态文本节点，包括空、undefined、null、空数组
     return item === void 0 || !item.toString();

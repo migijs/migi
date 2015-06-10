@@ -7,11 +7,18 @@ define(function(require, exports, module){var Component=function(){var _0=requir
 
   //非可视为空
   NonVisualComponent.prototype.toString = function() {
+    if(this.children.length) {
+      return Component.prototype.toString.call(this);
+    }
     return '';
   }
 
   //没有dom
-  NonVisualComponent.prototype.__onDom = function() {}
+  NonVisualComponent.prototype.__onDom = function() {
+    this.__dom = true;
+    //触发后就移除
+    this.off(Event.DOM, this.__onDom);
+  }
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
 exports["default"]=NonVisualComponent;});
