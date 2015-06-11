@@ -62,15 +62,14 @@
       'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
       'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
       'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
-      'jaw': seajs.resolve('../node_modules/jaw/index.js', seajs.data.cwd)
+      'jaw': seajs.resolve('../node_modules/jaw/init.js', seajs.data.cwd)
     },
     map: [function(url) {
       return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
     }]
   });
   define('fs', {});
-  seajs.use('jaw');
-  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+  seajs.use(['jssc', '../init', 'lefty', 'jaw'], function(jssc, migi, lefty) {
     var code = document.querySelector('pre code[class="brush:jsx"]');
     var jsx = document.querySelector('script[type="text/jsx"]');
     var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
