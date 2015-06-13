@@ -7,4 +7,4 @@ before_script:
   - nightwatch --version
 
 script:
-  - make test
+  - run_tests
