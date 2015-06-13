@@ -5,9 +5,7 @@ node_js:
 
 before_script:
   - mocha --version
+  - nightwatch --version
 
 script:
   - make test
-
-after_success:
-  - make coveralls

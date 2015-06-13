@@ -1,8 +1,10 @@
 var gulp = require('gulp');
 var clean = require('gulp-clean');
 var util = require('gulp-util');
+var rename = require('gulp-rename');
 var through2 = require('through2');
 var jsdc = require('jsdc');
+var lefty = require('lefty');
 
 var fs = require('fs');
 var path = require('path');
@@ -63,4 +65,25 @@ gulp.task('watch', function() {
       .pipe(through2.obj(cb2))
       .pipe(gulp.dest(to2));
   });
+});
+
+gulp.task('clean-jsx', function() {
+  gulp.src(['./tests/**/*.js', '!./tests/*.js'])
+    .pipe(clean());
+});
+
+function jsx(file, enc, cb) {
+  var target = file.path.replace('jsx',  'js');
+  util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
+  var content = file.contents.toString('utf-8');
+  content = 'define(["migi"],function(require,exports,module){' + lefty.parse(content, true) + '});';
+  file.contents = new Buffer(content);
+  cb(null, file);
+}
+
+gulp.task('build-test', ['clean-jsx'], function() {
+  gulp.src('./tests/**/*.jsx')
+    .pipe(through2.obj(jsx))
+    .pipe(rename({extname:'.js'}))
+    .pipe(gulp.dest('./tests/'));
 });
