@@ -213,5 +213,5 @@ pip-log.txt
 .mr.developer.cfg
 covrage.html
 node_modules/
-tests/*/*.js
+tests/**/script.js
 reports/

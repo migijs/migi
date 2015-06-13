@@ -68,7 +68,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('clean-jsx', function() {
-  gulp.src(['./tests/**/*.js', '!./tests/*.js'])
+  gulp.src(['./tests/**/script.js'])
     .pipe(clean());
 });
 
@@ -76,7 +76,7 @@ function jsx(file, enc, cb) {
   var target = file.path.replace('jsx',  'js');
   util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
   var content = file.contents.toString('utf-8');
-  content = 'define(["migi"],function(require,exports,module){' + lefty.parse(content, true) + '});';
+  content = lefty.parse(content, true);
   file.contents = new Buffer(content);
   cb(null, file);
 }
