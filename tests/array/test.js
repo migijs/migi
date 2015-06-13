@@ -4,7 +4,7 @@ var fs = require('fs');
 module.exports = {
   'array': function(browser) {
     browser
-      .url(path.join(__dirname, 'index.html'))
+      .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test div')
       .assert.elementPresent('#test h1')
