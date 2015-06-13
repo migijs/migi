@@ -2,9 +2,9 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
-  'array': function(browser) {console.log(path.join(__dirname, 'index.html'))
+  'array': function(browser) {
     browser
-      .url('file://' + path.join(__dirname, 'index.html'))
+      .url(path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test div')
       .assert.elementPresent('#test h1')
