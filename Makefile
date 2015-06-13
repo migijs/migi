@@ -9,7 +9,7 @@ init:
   @export SAUCE_ACCESS_KEY=6edc1ec9-7e0d-43c8-8d75-e9d8456d11f9
 
 test-nightwatch:
-	./node_modules/.bin/nightwatch --filter test.js --env chrome
+	@nightwatch --filter test.js --env chrome
 
 test: build-test test-nightwatch
 
