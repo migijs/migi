@@ -33,7 +33,7 @@ var migi = {
   Cb:Cb
 };
 
-if(!util.isUndefined(window)) {
+if(typeof window != 'undefined') {
   window.migi = migi;
 }
 
