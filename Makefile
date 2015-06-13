@@ -8,7 +8,12 @@ init:
 	@export SAUCE_USERNAME=army8735
   @export SAUCE_ACCESS_KEY=6edc1ec9-7e0d-43c8-8d75-e9d8456d11f9
 
-test-nightwatch:
+test-nightwatch: test-firefox test-chrome
+
+test-firefox:
+	@nightwatch --filter test.js
+
+test-chrome:
 	@nightwatch --filter test.js --env chrome
 
 test: build-test test-nightwatch
