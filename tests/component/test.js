@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
-  'coomponent': function(browser) {
+  'component': function(browser) {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)

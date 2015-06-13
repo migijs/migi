@@ -16,6 +16,9 @@ test-firefox:
 test-chrome:
 	@nightwatch --filter test.js --env chrome
 
+test-ie:
+	@nightwatch --filter test.js --env ie
+
 test: build-test test-nightwatch
 
 coveralls: build-test

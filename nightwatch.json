@@ -14,7 +14,7 @@
     "port" : 4444,
     "cli_args" : {
       "webdriver.chrome.driver" : "lib/chromedriver",
-      "webdriver.ie.driver" : ""
+      "webdriver.ie.driver" : "lib/IEDriverServer.exe"
     }
   },
 
@@ -37,6 +37,13 @@
     "chrome" : {
       "desiredCapabilities": {
         "browserName": "chrome",
+        "javascriptEnabled": true,
+        "acceptSslCerts": true
+      }
+    },
+    "ie" : {
+      "desiredCapabilities": {
+        "browserName": "ie",
         "javascriptEnabled": true,
         "acceptSslCerts": true
       }
