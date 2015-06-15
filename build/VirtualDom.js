@@ -542,6 +542,8 @@ var flag = true;
     }
     switch(k) {
       case 'value':
+        this.element[k] = v || '';
+        break;
       case 'checked':
       case 'selected':
       case 'selectedIndex':

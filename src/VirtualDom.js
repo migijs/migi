@@ -542,6 +542,8 @@ class VirtualDom extends Element {
     }
     switch(k) {
       case 'value':
+        this.element[k] = v || '';
+        break;
       case 'checked':
       case 'selected':
       case 'selectedIndex':
