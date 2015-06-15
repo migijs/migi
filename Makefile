@@ -17,7 +17,7 @@ test-chrome:
 test-ie:
 	@nightwatch --filter test.js --env ie
 
-test: build-test test-chrome
+test: build-test test-firefox
 
 coveralls: build-test
 	@mocha tests/test.js --require blanket --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
