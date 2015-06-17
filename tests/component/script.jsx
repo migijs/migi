@@ -11,3 +11,16 @@ migi.render(
   <HelloMessage name="migi"/>,
   '#test'
 );
+
+class HelloMessage2 extends migi.Component {
+  constructor(...data) {
+    super(...data);
+  }
+}
+
+migi.render(
+  <HelloMessage2>
+    <p>from a child</p>
+  </HelloMessage2>,
+  '#test2'
+);
