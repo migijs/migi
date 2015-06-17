@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var clean = require('gulp-clean');
+var rimraf = require('gulp-rimraf');
 var util = require('gulp-util');
 var rename = require('gulp-rename');
 var through2 = require('through2');
@@ -19,12 +19,12 @@ function mkdir(dir) {
 
 gulp.task('clean-bulid', function() {
   return gulp.src('./build/*')
-    .pipe(clean());
+    .pipe(rimraf());
 });
 
 gulp.task('clean-web', function() {
   return gulp.src('./web/*')
-    .pipe(clean());
+    .pipe(rimraf());
 });
 
 function cb(file, enc, cb) {
@@ -69,7 +69,7 @@ gulp.task('watch', function() {
 
 gulp.task('clean-jsx', function() {
   gulp.src(['./tests/**/script.js'])
-    .pipe(clean());
+    .pipe(rimraf());
 });
 
 function jsx(file, enc, cb) {

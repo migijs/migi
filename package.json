@@ -43,6 +43,7 @@
     "gulp": "~3.8.11",
     "gulp-clean": "~0.3.1",
     "gulp-rename": "~1.2.2",
+    "gulp-rimraf": "^0.1.1",
     "gulp-util": "~3.0.1",
     "jsdc": "~0.6.5",
     "mocha": "~2.2.5",
