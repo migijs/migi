@@ -90,8 +90,9 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
-      util.NODE.innerHTML = s;
-      dom.appendChild(util.NODE.firstChild);
+      var node = util.getParent(this.name);
+      node.innerHTML = s;
+      dom.appendChild(node.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -103,8 +104,9 @@ class Element extends Event {
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
-      util.NODE.innerHTML = s;
-      dom.insertBefore(util.NODE.firstChild, dom.firstChild);
+      var node = util.getParent(this.name);
+      node.innerHTML = s;
+      dom.insertBefore(node.firstChild, dom.firstChild);
     }
     else {
       dom.innerHTML = s;
@@ -114,31 +116,34 @@ class Element extends Event {
   before(dom) {
     this.__clean();
     var s = this.toString();
-    util.NODE.innerHTML = s;
+    var node = util.getParent(this.name);
+    node.innerHTML = s;
     dom = getDom(dom);
-    dom.parentNode.insertBefore(util.NODE.firstChild, dom);
+    dom.parentNode.insertBefore(node.firstChild, dom);
     this.emit(Event.DOM);
   }
   after(dom) {
     this.__clean();
     var s = this.toString();
-    util.NODE.innerHTML = s;
+    var node = util.getParent(this.name);
+    node.innerHTML = s;
     dom = getDom(dom);
     var next = dom.nextSibling;
     if(next) {
-      dom.parentNode.insertBefore(util.NODE.firstChild, next);
+      dom.parentNode.insertBefore(node.firstChild, next);
     }
     else {
-      dom.parentNode.appendChild(util.NODE.firstChild);
+      dom.parentNode.appendChild(node.firstChild);
     }
     this.emit(Event.DOM);
   }
   replace(dom) {
     this.__clean();
     var s = this.toString();
-    util.NODE.innerHTML = s;
+    var node = util.getParent(this.name);
+    node.innerHTML = s;
     dom = getDom(dom);
-    dom.parentNode.replaceChild(div.firstChild, dom);
+    dom.parentNode.replaceChild(node.firstChild, dom);
     this.emit(Event.DOM);
   }
 }
