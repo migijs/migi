@@ -66,5 +66,6 @@ module.exports = {
       .assert.elementPresent('#test9 div')
       .assert.containsText('#test9 div', '9')
       .assert.elementNotPresent('#test9 span')
+      .end()
   }
 };
