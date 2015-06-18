@@ -34,26 +34,7 @@ function swap(arr, a, b) {
   arr[a] = arr[b];
   arr[b] = temp;
 }
-function getM(arr, a, b) {
-  var max = min = arr[a];
-  var i = j = a;
-  for(; a < b; a++) {
-    if(arr[a] > max) {
-      max = arr[a];
-      i = a;
-    }
-    else if(arr[a] < min) {
-      min = arr[a];
-      j = a;
-    }
-  }
-  return {
-    max: max,
-    min: min,
-    i: i,
-    j: j
-  };
-}
+
 module.exports =  function(arr, compare) {
   if(!Array.isArray(arr)) {
     throw new Error('quick sort need an array');
