@@ -30,6 +30,12 @@ function getDom(dom) {
     this.on(Event.DOM, this.__onDom);
     this.on(Event.DATA, this.__onData);
   }
+  //防止多次插入后重复，清除上次，永远只存在一个实例
+  Element.prototype.__clean = function() {
+    if(this.dom) {
+      this.element.parentNode.removeChild(this.element);
+    }
+  }
 
   Element.prototype.__onDom = function() {
     this.__dom = true;
@@ -54,6 +60,9 @@ function getDom(dom) {
   _3.uid={};_3.uid.get =function() {
     return this.__uid;
   }
+  _3.element={};_3.element.get =function() {
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
+  }
   _3.dom={};_3.dom.get =function() {
     return this.__dom;
   }
@@ -71,11 +80,13 @@ function getDom(dom) {
   }
 
   Element.prototype.inTo = function(dom) {
+    this.__clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
   Element.prototype.appendTo = function(dom) {
+    this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
@@ -88,6 +99,7 @@ function getDom(dom) {
     this.emit(Event.DOM);
   }
   Element.prototype.prependTo = function(dom) {
+    this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
@@ -100,6 +112,7 @@ function getDom(dom) {
     this.emit(Event.DOM);
   }
   Element.prototype.before = function(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);
@@ -107,6 +120,7 @@ function getDom(dom) {
     this.emit(Event.DOM);
   }
   Element.prototype.after = function(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);
@@ -120,6 +134,7 @@ function getDom(dom) {
     this.emit(Event.DOM);
   }
   Element.prototype.replace = function(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);

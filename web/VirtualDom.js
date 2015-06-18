@@ -328,10 +328,7 @@ var flag = true;
     return res;
   }
 
-  var _13={};_13.element={};_13.element.get =function() {
-    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
-  }
-  _13.names={};_13.names.get =function() {
+  var _13={};_13.names={};_13.names.get =function() {
     return this.__names || (this.__names = []);
   }
   _13.style={};_13.style.set =function(v) {
@@ -642,14 +639,13 @@ var flag = true;
     return this;
   }
   VirtualDom.prototype.__destroy = function() {
-    var self = this;
-    self.__cache = {};
-    self.__names = null;
-    self.__classes = null;
-    self.__ids = null;
-    self.__inline = null;
-    self.__hover = false;
-    self.__active = false;
+    this.__cache = {};
+    this.__names = null;
+    this.__classes = null;
+    this.__ids = null;
+    this.__inline = null;
+    this.__hover = false;
+    this.__active = false;
     return this;
   }
 

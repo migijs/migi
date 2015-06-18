@@ -30,6 +30,12 @@ class Element extends Event {
     this.on(Event.DOM, this.__onDom);
     this.on(Event.DATA, this.__onData);
   }
+  //防止多次插入后重复，清除上次，永远只存在一个实例
+  __clean() {
+    if(this.dom) {
+      this.element.parentNode.removeChild(this.element);
+    }
+  }
 
   __onDom() {
     this.__dom = true;
@@ -54,6 +60,9 @@ class Element extends Event {
   get uid() {
     return this.__uid;
   }
+  get element() {
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
+  }
   get dom() {
     return this.__dom;
   }
@@ -71,11 +80,13 @@ class Element extends Event {
   }
 
   inTo(dom) {
+    this.__clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
   appendTo(dom) {
+    this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     if(dom.lastChild) {
@@ -88,6 +99,7 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
   prependTo(dom) {
+    this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     if(dom.firstChild) {
@@ -100,6 +112,7 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
   before(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);
@@ -107,6 +120,7 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
   after(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);
@@ -120,6 +134,7 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
   replace(dom) {
+    this.__clean();
     var s = this.toString();
     util.NODE.innerHTML = s;
     dom = getDom(dom);

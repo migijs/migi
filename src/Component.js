@@ -123,8 +123,9 @@ class Component extends Element {
   get virtualDom() {
     return this.__virtualDom;
   }
+  //@overwrite
   get element() {
-    return this.__element;
+    return this.virtualDom ? this.virtualDom.element : null;
   }
   set style(v) {
     this.__style = v;
@@ -135,7 +136,6 @@ class Component extends Element {
     super.__onDom();
     var self = this;
     self.virtualDom.emit(Event.DOM);
-    self.__element = self.virtualDom.element;
     self.element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {

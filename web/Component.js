@@ -123,8 +123,9 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
   var _5={};_5.virtualDom={};_5.virtualDom.get =function() {
     return this.__virtualDom;
   }
+  //@overwrite
   _5.element={};_5.element.get =function() {
-    return this.__element;
+    return this.virtualDom ? this.virtualDom.element : null;
   }
   _5.style={};_5.style.set =function(v) {
     this.__style = v;
@@ -135,7 +136,6 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     Element.prototype.__onDom.call(this);
     var self = this;
     self.virtualDom.emit(Event.DOM);
-    self.__element = self.virtualDom.element;
     self.element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
       if(child instanceof Component) {
