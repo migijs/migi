@@ -5,6 +5,7 @@ var rename = require('gulp-rename');
 var through2 = require('through2');
 var jsdc = require('jsdc');
 var lefty = require('lefty');
+var jaw = require('jaw');
 
 var fs = require('fs');
 var path = require('path');
@@ -76,14 +77,30 @@ function jsx(file, enc, cb) {
   var target = file.path.replace('jsx',  'js');
   util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
   var content = file.contents.toString('utf-8');
+  if(content.indexOf('`') > -1) {
+    content = content.replace(/`([^`]+)`/, function($0, $1) {
+      return JSON.stringify(jaw.parse($1));
+    });
+  }
   content = lefty.parse(content, true);
   file.contents = new Buffer(content);
   cb(null, file);
 }
 
 gulp.task('build-test', ['clean-jsx'], function() {
-  gulp.src('./tests/**/*.jsx')
+  gulp.src(['./tests/**/*.jsx', '!./tests/testm.jsx'])
     .pipe(through2.obj(jsx))
+    .pipe(rename({extname:'.js'}))
+    .pipe(gulp.dest('./tests/'));
+  gulp.src('./tests/testm.jsx')
+    .pipe(through2.obj(function(file, enc, cb) {
+      var target = file.path.replace('jsx',  'js');
+      util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
+      var content = file.contents.toString('utf-8');
+      content = lefty.parse(content);
+      file.contents = new Buffer(content);
+      cb(null, file);
+    }))
     .pipe(rename({extname:'.js'}))
     .pipe(gulp.dest('./tests/'));
 });
