@@ -221,4 +221,17 @@ describe('Event', function() {
     event.emit('name2');
     expect(count).to.eql(2);
   });
+  it('mix', function() {
+    var event = {};
+    migi.Event.mix(event);
+    var count = 0;
+    event.on('name', function() {
+      count++;
+    });
+    event.emit('name');
+    event.emit('name');
+    event.off('name');
+    event.emit('name');
+    expect(count).to.eql(2);
+  });
 });
