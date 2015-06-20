@@ -235,3 +235,60 @@ describe('Event', function() {
     expect(count).to.eql(2);
   });
 });
+
+describe('VirtualDom', function() {
+  beforeEach(function() {
+    migi.Element.clean();
+  });
+  it('instanceof', function() {
+    var div = <div>123</div>;
+    expect(div).to.be.a(migi.VirtualDom);
+    expect(div).to.be.a(migi.Element);
+    expect(div).to.be.a(migi.Event);
+  });
+  it('name', function() {
+    var div = <div>123</div>;
+    expect(div.name).to.eql('div');
+  });
+  it('selfClose', function() {
+    var img = <img src=""/>;
+    expect(img.name).to.eql('img');
+    var div = <div/>;
+    expect(div.name).to.eql('div');
+  });
+  it('toString()', function() {
+    var div = <div>123</div>;
+    expect(div.toString()).to.eql('<div migi-uid="0">123</div>');
+  });
+  it('children', function() {
+    var div = <div><span></span><span></span></div>;
+    expect(div.children.length).to.eql(2);
+  });
+  it('variable', function() {
+    var a = 1;
+    var b = 2;
+    var div = <div>{a} {b}</div>;
+    expect(div.toString()).to.eql('<div migi-uid="0">12</div>');
+  });
+  it('blank between variable', function() {
+    var a = 1;
+    var div = <div>{a} 2</div>;
+    expect(div.toString()).to.eql('<div migi-uid="0">1 2</div>');
+  });
+  it('className prop equal class', function() {
+    var div = <div className="a">123</div>;
+    expect(div.toString()).to.eql('<div class="a" migi-uid="0">123</div>');
+  });
+  it('parent', function() {
+    var div = <div><span></span></div>;
+    expect(div.children[0].parent).to.eql(div);
+  });
+  it('find', function() {
+    var div = <div><span></span></div>;
+    expect(div.find('span')).to.eql(div.children[0]);
+  });
+  it('find All', function() {
+    var div = <div><span></span></div>;
+    expect(div.findAll('span')).to.eql([div.children[0]]);
+  });
+});

@@ -146,6 +146,9 @@ class Element extends Event {
     dom.parentNode.replaceChild(node.firstChild, dom);
     this.emit(Event.DOM);
   }
+  static clean() {
+    uid = 0;
+  }
 }
 
 export default Element;
