@@ -30,14 +30,11 @@ var SELF_CLOSE = {
   'track': true
 };
 
-var flag = true;
-
 !function(){var _12=Object.create(Element.prototype);_12.constructor=VirtualDom;VirtualDom.prototype=_12}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
-    if(props===void 0)props={};if(children===void 0)children=[];if(flag && Component.hasOwnProperty('default')) {
+    if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
       Component = Component['default'];
-      flag = false;
     }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
@@ -267,11 +264,11 @@ var flag = true;
         });
         return '';
       }
-      if(self.__style) {
-        self.__cache[prop] = s;
-      }
       if(prop == 'className') {
         prop = 'class';
+      }
+      if(self.__style) {
+        self.__cache[prop] = s;
       }
       res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
@@ -605,7 +602,7 @@ var flag = true;
     }
     var id = (this.__cache.id || '').trim();
     if(id) {
-      this.__ids.push(id);
+      this.__ids.push('#' + id);
     }
     else {
       this.__ids.push('');

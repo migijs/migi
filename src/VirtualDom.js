@@ -264,11 +264,11 @@ class VirtualDom extends Element {
         });
         return '';
       }
-      if(self.__style) {
-        self.__cache[prop] = s;
-      }
       if(prop == 'className') {
         prop = 'class';
+      }
+      if(self.__style) {
+        self.__cache[prop] = s;
       }
       res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
@@ -602,7 +602,7 @@ class VirtualDom extends Element {
     }
     var id = (this.__cache.id || '').trim();
     if(id) {
-      this.__ids.push(id);
+      this.__ids.push('#' + id);
     }
     else {
       this.__ids.push('');
