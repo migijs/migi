@@ -215,3 +215,4 @@ covrage.html
 node_modules/
 tests/**/script.js
 reports/
+tests/testm.js

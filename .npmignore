@@ -10,3 +10,4 @@ node_modules/
 gulpfile.js
 tests/**/script.js
 reports/
+tests/testm.js
