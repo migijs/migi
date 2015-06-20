@@ -16,20 +16,27 @@ define(function(require, exports, module){
       //遍历防止此handle被侦听过了
       for(var i = 0, item = self.__hash[id], len = item.length; i < len; i++) {
         if(item[i] === handle) {
-          return;
+          return this;
         }
       }
       self.__hash[id].push(handle);
     }
+    return this;
   }
   Event.prototype.once = function(id, handle) {
     var self = this;
-    if(handle) {
-      self.on(id, function(data) {
-        data=[].slice.call(arguments, 0);handle.apply(self, data);
-        self.off(id, handle);
+    if(Array.isArray(id)) {
+      id.forEach(function(item) {
+        self.once(item, handle);
       });
     }
+    else if(handle) {
+      self.on(id, function(data) {
+        data=[].slice.call(arguments, 0);handle.apply(self, data);
+        self.off(id, arguments.callee);
+      });
+    }
+    return this;
   }
   Event.prototype.off = function(id, handle) {
     var self = this;
@@ -52,6 +59,7 @@ define(function(require, exports, module){
         delete self.__hash[id];
       }
     }
+    return this;
   }
   Event.prototype.emit = function(id, data) {
     data=[].slice.call(arguments, 1);var self = this;
@@ -63,15 +71,12 @@ define(function(require, exports, module){
     else {
       if(self.__hash.hasOwnProperty(id)) {
         var list = self.__hash[id].slice();
-        //侦听*的为所有
-        if(self.__hash.hasOwnProperty('*')) {
-          list = list.concat(self.__hash['*']);
-        }
         list.forEach(function(item) {
           item.apply(self, data);
         });
       }
     }
+    return this;
   }
   Event.mix=function(obj) {
     obj=[].slice.call(arguments, 0);obj.forEach(function(o) {
@@ -82,6 +87,7 @@ define(function(require, exports, module){
         o[fn] = event[fn];
       });
     });
+    return this;
   }
 
 

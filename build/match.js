@@ -2,17 +2,14 @@ var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnPropert
 var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var sort=function(){var _2=require('./sort');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 
-var flag = true;
-
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
 //virtualDom当前传入的VirtualDom对象
 //first为初始化时第一次
 function match(names, classes, ids, style, virtualDom, first) {
   //fix循环依赖
-  if(flag && VirtualDom.hasOwnProperty('default')) {
+  if(VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
-    flag = false;
   }
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, first);
@@ -59,8 +56,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
     if(style.hasOwnProperty(k)) {
       var item = style[k];
       if(i) {
-        //_d记录着深度，当i索引>深度跳出
-        if(item._d && i > item._d) {
+        //_d记录着深度，当i索引>深度跳出，没有深度（为0）不记录即不存在_d
+        if(!style._d || style._d && i > style._d) {
           break;
         }
         matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res);

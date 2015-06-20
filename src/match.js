@@ -56,8 +56,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
     if(style.hasOwnProperty(k)) {
       var item = style[k];
       if(i) {
-        //_d记录着深度，当i索引>深度跳出
-        if(item._d && i > item._d) {
+        //_d记录着深度，当i索引>深度跳出，没有深度（为0）不记录即不存在_d
+        if(!style._d || style._d && i > style._d) {
           break;
         }
         matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res);
