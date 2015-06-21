@@ -66,6 +66,12 @@ gulp.task('watch', function() {
       .pipe(through2.obj(cb2))
       .pipe(gulp.dest(to2));
   });
+  gulp.watch('./tests/**/*.jsx', function(file) {
+    gulp.src(file.path)
+      .pipe(through2.obj(jsx))
+      .pipe(rename({extname:'.js'}))
+      .pipe(gulp.dest(path.dirname(file.path)));
+  });
 });
 
 gulp.task('clean-jsx', function() {
@@ -78,7 +84,7 @@ function jsx(file, enc, cb) {
   util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
   var content = file.contents.toString('utf-8');
   if(content.indexOf('`') > -1) {
-    content = content.replace(/`([^`]+)`/, function($0, $1) {
+    content = content.replace(/`([^`]+)`/g, function($0, $1) {
       return JSON.stringify(jaw.parse($1));
     });
   }

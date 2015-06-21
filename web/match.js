@@ -12,7 +12,8 @@ function match(names, classes, ids, style, virtualDom, first) {
     VirtualDom = VirtualDom['default'];
   }
   var res = [];
-  matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, first);
+  var history = {};
+  matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, String(names.length - 1), history, first);
   sort(res, function(a, b) {
     return a._p > b._p;
   });
@@ -29,7 +30,8 @@ function match(names, classes, ids, style, virtualDom, first) {
 }
 //从底部往上匹配，即.a .b这样的选择器是.b->.a逆序对比
 //过程中只要不匹配就跳出，i从最大到0
-function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
+function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, first) {
+  history[cur] = true;
   //id、class、name可能单个或组合出现，每种都要匹配
   var combo = [];
   combo.push(names[i]);
@@ -55,15 +57,21 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
     var k = combo[j];
     if(style.hasOwnProperty(k)) {
       var item = style[k];
+      //_d记录着深度，当i索引>深度跳出，没有深度（为0）不记录即不存在_d
       if(i) {
-        //_d记录着深度，当i索引>深度跳出，没有深度（为0）不记录即不存在_d
-        if(!style._d || style._d && i > style._d) {
-          break;
+        if(style._d && i <= style._d) {
+          matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1), history);
         }
-        matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res);
+        //多层级时需递归所有层级组合，如<div><p><span>对应div span{}的样式时，并非一一对应
+        for(var l = i - 2; l >= 0; l--) {
+          var key = cur + ',' + l;
+          if(!history.hasOwnProperty(key)) {
+            matchSel(l, names, classes, ids, item, virtualDom.parent, res, key, history);
+          }
+        }
       }
       //i到0说明匹配完成，将值存入
-      else if(item.hasOwnProperty('_v')) {
+      if(item.hasOwnProperty('_v')) {
         res.push(item);
       }
       //首次进入处理:伪类
@@ -215,10 +223,6 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
         });
       }
     }
-  }
-  //当前有样式值
-  if(style.hasOwnProperty('_v')) {
-    res.push(style);
   }
 }
 
