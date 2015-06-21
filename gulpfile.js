@@ -88,19 +88,8 @@ function jsx(file, enc, cb) {
 }
 
 gulp.task('build-test', ['clean-jsx'], function() {
-  gulp.src(['./tests/**/*.jsx', '!./tests/testm.jsx'])
+  gulp.src('./tests/**/*.jsx')
     .pipe(through2.obj(jsx))
-    .pipe(rename({extname:'.js'}))
-    .pipe(gulp.dest('./tests/'));
-  gulp.src('./tests/testm.jsx')
-    .pipe(through2.obj(function(file, enc, cb) {
-      var target = file.path.replace('jsx',  'js');
-      util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
-      var content = file.contents.toString('utf-8');
-      content = lefty.parse(content);
-      file.contents = new Buffer(content);
-      cb(null, file);
-    }))
     .pipe(rename({extname:'.js'}))
     .pipe(gulp.dest('./tests/'));
 });

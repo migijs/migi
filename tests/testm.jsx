@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 
 require('./hack');
+require('es6-shim');
 
 var migi = require('../');
 var lefty = require('lefty');
@@ -290,5 +291,82 @@ describe('VirtualDom', function() {
   it('find All', function() {
     var div = <div><span></span></div>;
     expect(div.findAll('span')).to.eql([div.children[0]]);
+  });
+});
+
+describe('Component', function() {
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    render() {
+      return <div><span>123</span></div>;
+    }
+  }
+  beforeEach(function() {
+    migi.Element.clean();
+  });
+  it('instanceof', function() {
+    var cmpn = new Component();
+    expect(cmpn).to.be.a(migi.Component);
+    expect(cmpn).to.be.a(migi.Element);
+    expect(cmpn).to.be.a(migi.Event);
+  });
+  it('name', function() {
+    var cmpn = new Component();
+    expect(cmpn.name).to.eql('Component');
+  });
+  it('toString()', function() {
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="1">123</span></div>');
+  });
+  it('virtualDom', function() {
+    var cmpn = new Component();
+    cmpn.toString();
+    expect(cmpn.children.length).to.eql(0);
+    expect(cmpn.virtualDom).to.be.a(migi.VirtualDom);
+    expect(cmpn.virtualDom.name).to.eql('div');
+    expect(cmpn.virtualDom.children.length).to.eql(1);
+  });
+  it('children', function() {
+    var cmpn = new Component({}, [<span></span>]);
+    cmpn.toString();
+    expect(cmpn.children.length).to.eql(1);
+    expect(cmpn.children[0]).to.be.a(migi.VirtualDom);
+    expect(cmpn.children[0].name).to.eql('span');
+  });
+  it('parent', function() {
+    var cmpn = new Component();
+    cmpn.toString();
+    expect(cmpn.virtualDom.parent).to.eql(cmpn);
+  });
+  it('no overwrite render', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+    }
+    var cmpn = new Component({}, [<span></span>]);
+    expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="0"></span></div>');
+  });
+  it('find', function() {
+    var cmpn = new Component();
+    cmpn.toString();
+    expect(cmpn.find('span')).to.eql(cmpn.virtualDom.children[0]);
+  });
+  it('find All', function() {
+    var cmpn = new Component();
+    cmpn.toString();
+    expect(cmpn.findAll('span')).to.eql([cmpn.virtualDom.children[0]]);
+  });
+  it('findChild', function() {
+    var cmpn = new Component({}, [<span></span>]);
+    cmpn.toString();
+    expect(cmpn.findChild('span')).to.eql(cmpn.children[0]);
+  });
+  it('findChildren', function() {
+    var cmpn = new Component({}, [<span></span>]);
+    cmpn.toString();
+    expect(cmpn.findChildren('span')).to.eql([cmpn.children[0]]);
   });
 });

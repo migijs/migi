@@ -10,11 +10,11 @@ import Cb from './Cb';
 import cachePool from './cachePool';
 
 var migi = {
-  render(component, dom) {
+  render(element, dom) {
     if(dom) {
-      component.inTo(dom);
+      element.inTo(dom);
     }
-    return component;
+    return element;
   },
   createCp(name, props, children) {
     return new name(props, children);

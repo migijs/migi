@@ -10,11 +10,11 @@ var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("default")?_8[
 var cachePool=function(){var _9=require('./cachePool');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 
 var migi = {
-  render:function(component, dom) {
+  render:function(element, dom) {
     if(dom) {
-      component.inTo(dom);
+      element.inTo(dom);
     }
-    return component;
+    return element;
   },
   createCp:function(name, props, children) {
     return new name(props, children);
