@@ -494,7 +494,7 @@ describe('css', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<ol migi-uid="4"><li migi-uid="3"><h3 migi-uid="2"><span migi-class="txt" style="padding:1px;padding:3px;" migi-uid="1">123</span></h3></li></ol>');
   });
-  it.skip('very long dom && nonsequence', function() {
+  it('very long dom && nonsequence', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -505,7 +505,7 @@ describe('css', function() {
       }
     }
     var cmpn = new Component();
-    expect(cmpn.toString()).to.eql('<ol migi-uid="6"><li migi-uid="5"><h3 migi-uid="4"><div migi-uid="3"><p migi-uid="2"><span style="margin:0;color:#FFF;padding:0;" migi-uid="1">123</span></p></div></h3></li></ol>');
+    expect(cmpn.toString()).to.eql('<ol migi-uid="6"><li migi-uid="5"><h3 migi-uid="4"><div migi-uid="3"><p migi-uid="2"><span style="margin:0;padding:0;color:#FFF;line-height:2;" migi-uid="1">123</span></p></div></h3></li></ol>');
   });
   it('long cascading', function() {
     class Component extends migi.Component {
@@ -585,7 +585,7 @@ describe('css', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="3"><p migi-uid="2"><span style="margin:0;" migi-uid="1">123</span></p></div>');
   });
-  it.skip('complex', function() {
+  it('complex', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -616,5 +616,37 @@ describe('css', function() {
     }
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-class="" style="margin:0;" migi-uid="9"><p style="margin:1px;" migi-uid="1">click</p><p style="margin:1px;" migi-uid="3"><span style="padding:0;" migi-uid="2">txt</span></p><p style="margin:1px;" migi-uid="5"><span migi-class="txt" style="padding:0;padding:1px;padding:3px;" migi-uid="4">txt</span></p><span migi-class="txt" style="padding:1px;padding:3px;" migi-uid="6">txt</span><strong migi-class="txt" style="padding:1px;padding:3px;font-weight:700;padding:2px;" migi-uid="7">strong</strong><span migi-id="sp" migi-class="txt" style="padding:1px;padding:3px;padding:4px;" migi-uid="8">id</span></div>');
+  });
+  it('complex 2', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this._cn = 'toggle';
+        this.style = style;
+      }
+      get cn() {
+        return this._cn;
+      }
+      set cn(v) {
+        this._cn = 'toggle';
+      }
+      click() {
+        this.cn = 'toggle';
+      }
+      render() {
+        return (
+          <div class={this.cn}>
+            <p onClick={this.click}>click</p>
+            <p><span>txt</span></p>
+            <p><span class="txt">txt</span></p>
+            <span class="txt">txt</span>
+            <strong class="txt">strong</strong>
+            <span id="sp" class="txt">id</span>
+          </div>
+        );
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-class="toggle" style="margin:0;margin:1px;" migi-uid="9"><p style="margin:1px;margin:2px;" migi-uid="1">click</p><p style="margin:1px;margin:2px;" migi-uid="3"><span style="padding:0;" migi-uid="2">txt</span></p><p style="margin:1px;margin:2px;" migi-uid="5"><span migi-class="txt" style="padding:0;padding:1px;padding:3px;padding:7px;" migi-uid="4">txt</span></p><span migi-class="txt" style="padding:1px;padding:3px;padding:7px;" migi-uid="6">txt</span><strong migi-class="txt" style="padding:1px;padding:3px;margin:0;padding:6px;font-weight:700;padding:2px;padding:7px;" migi-uid="7">strong</strong><span migi-id="sp" migi-class="txt" style="padding:1px;padding:3px;padding:7px;padding:4px;padding:8px;" migi-uid="8">id</span></div>');
   });
 });
