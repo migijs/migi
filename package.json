@@ -34,7 +34,7 @@
     "es5-shim": "*",
     "es6-shim": "*",
     "lefty": "~0.0.8",
-    "jaw": "~0.0.4"
+    "jaw": "~0.0.5"
   },
   "devDependencies": {
     "blanket": "~1.1.7",
@@ -44,7 +44,7 @@
     "gulp-rename": "~1.2.2",
     "gulp-rimraf": "^0.1.1",
     "gulp-util": "~3.0.1",
-    "jsdc": "~0.6.5",
+    "jsdc": "~0.6.6",
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "~0.0.2",
     "nightwatch": "~0.6.15",

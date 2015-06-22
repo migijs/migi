@@ -650,3 +650,35 @@ describe('css', function() {
     expect(cmpn.toString()).to.eql('<div migi-class="toggle" style="margin:0;margin:1px;" migi-uid="9"><p style="margin:1px;margin:2px;" migi-uid="1">click</p><p style="margin:1px;margin:2px;" migi-uid="3"><span style="padding:0;" migi-uid="2">txt</span></p><p style="margin:1px;margin:2px;" migi-uid="5"><span migi-class="txt" style="padding:0;padding:1px;padding:3px;padding:7px;" migi-uid="4">txt</span></p><span migi-class="txt" style="padding:1px;padding:3px;padding:7px;" migi-uid="6">txt</span><strong migi-class="txt" style="padding:1px;padding:3px;margin:0;padding:6px;font-weight:700;padding:2px;padding:7px;" migi-uid="7">strong</strong><span migi-id="sp" migi-class="txt" style="padding:1px;padding:3px;padding:7px;padding:4px;padding:8px;" migi-uid="8">id</span></div>');
   });
 });
+
+describe('pseudo', function() {
+  beforeEach(function() {
+    migi.Element.clean();
+  });
+  it('first-child', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div:first-child{color:#FFF}span:first-child{margin:0}div span:first-child{padding:0}.a:first-child{font-size:0}`;
+      }
+      render() {
+        return <div><span class="a">1</span><span>2</span><span>3</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#FFF;" migi-uid="4"><span migi-class="a" style="margin:0;padding:0;font-size:0;" migi-uid="1">1</span><span migi-uid="2">2</span><span migi-uid="3">3</span></div>');
+  });
+  it('last-child', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div:last-child{color:#FFF}span:last-child{margin:0}div span:last-child{padding:0}.a:last-child{font-size:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><span class="a">3</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#FFF;" migi-uid="4"><span migi-uid="1">1</span><span migi-uid="2">2</span><span migi-class="a" style="margin:0;padding:0;font-size:0;" migi-uid="3">3</span></div>');
+  });
+});

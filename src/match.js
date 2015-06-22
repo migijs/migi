@@ -158,8 +158,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
             }
           }
           item = pseudoItem[1];
-          if(isMatch && item.hasOwnProperty('_v')) {
-            res.push(item);
+          if(isMatch) {
+            //同普通匹配一样
+            if(i) {
+              matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
+            }
+            if(item.hasOwnProperty('_v')) {
+              res.push(item);
+            }
           }
         });
       }
@@ -217,8 +223,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
             }
           }
           item = attrItem[1];
-          if(isMatch && item.hasOwnProperty('_v')) {
-            res.push(item);
+          if(isMatch) {
+            //同普通匹配一样
+            if(i) {
+              matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
+            }
+            if(item.hasOwnProperty('_v')) {
+              res.push(item);
+            }
           }
         });
       }
