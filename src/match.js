@@ -155,14 +155,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                 break;
             }
           }
-          item = pseudoItem[1];
           if(isMatch) {
+            item2 = pseudoItem[1];
             //同普通匹配一样
             if(i) {
-              matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
+              matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
             }
-            if(item.hasOwnProperty('_v')) {
-              dealStyle(res, item);
+            if(item2.hasOwnProperty('_v')) {
+              dealStyle(res, item2);
             }
           }
         });
@@ -220,14 +220,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
               }
             }
           }
-          item = attrItem[1];
           if(isMatch) {
+            item2 = attrItem[1];
             //同普通匹配一样
             if(i) {
-              matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
+              matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
             }
-            if(item.hasOwnProperty('_v')) {
-              dealStyle(res, item);
+            if(item2.hasOwnProperty('_v')) {
+              dealStyle(res, item2);
             }
           }
         });

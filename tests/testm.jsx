@@ -682,3 +682,126 @@ describe('pseudo', function() {
     expect(cmpn.toString()).to.eql('<div style="color:#FFF;" migi-uid="4"><span migi-uid="1">1</span><span migi-uid="2">2</span><span migi-class="a" style="margin:0;padding:0;font-size:0;" migi-uid="3">3</span></div>');
   });
 });
+
+describe('attr', function() {
+  beforeEach(function() {
+    migi.Element.clean();
+  });
+  it('novalue', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title]{margin:0}`;
+      }
+      render() {
+        return <div title="abc">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc" style="margin:0;" migi-uid="1">1</div>');
+  });
+  it('value', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title="abc"]{margin:0}div[title="abd"]{padding:0}`;
+      }
+      render() {
+        return <div title="abc">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc" style="margin:0;" migi-uid="1">1</div>');
+  });
+  it('^=', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title^="abc"]{margin:0}div[title^="ab"]{padding:0}div[title^="ac"]{font-size:0}`;
+      }
+      render() {
+        return <div title="abc">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc" style="margin:0;padding:0;" migi-uid="1">1</div>');
+  });
+  it('$=', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title$="abc"]{margin:0}div[title$="bc"]{padding:0}div[title$="ab"]{font-size:0}`;
+      }
+      render() {
+        return <div title="abc">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc" style="margin:0;padding:0;" migi-uid="1">1</div>');
+  });
+  it('~=', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title~="abc"]{margin:0}div[title~="ab"]{padding:0}div[title~="abcd"]{font-size:0}`;
+      }
+      render() {
+        return <div title="abc d">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc d" style="margin:0;" migi-uid="1">1</div>');
+  });
+  it('*=', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title*="b"]{margin:0}div[title*="ab"]{padding:0}div[title*="ac"]{font-size:0}`;
+      }
+      render() {
+        return <div title="abc">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc" style="margin:0;padding:0;" migi-uid="1">1</div>');
+  });
+  it('|=', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div[title|="bc"]{margin:0}div[title|="abc"]{padding:0}div[title|="f"]{font-size:0}`;
+      }
+      render() {
+        return <div title="abc-f">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="abc-f" style="padding:0;" migi-uid="1">1</div>');
+  });
+  it('depth', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div p span[title]{margin:0}`;
+      }
+      render() {
+        return <div><p><span title="a">1</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><p migi-uid="2"><span title="a" style="margin:0;" migi-uid="1">1</span></p></div>');
+  });
+  it('with pseudo', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div:first-child{margin:0}div[title]{padding:0}`;
+      }
+      render() {
+        return <div title="a">1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div title="a" style="margin:0;padding:0;" migi-uid="1">1</div>');
+  });
+});
