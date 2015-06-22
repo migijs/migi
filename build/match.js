@@ -15,16 +15,14 @@ function match(names, classes, ids, style, virtualDom, first) {
   var history = {};
   matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, String(names.length - 1), history, first);
   sort(res, function(a, b) {
-    return a._p > b._p;
-  });
-  var s = '';//TODO: 可能有相同优先级的样式，然后其_v的顺序却不同导致优先级错误
-  res.forEach(function(item) {
-    sort(item._v, function(a, b) {
+    if(a[2] == b[2]) {
       return a[0] > b[0];
-    });
-    item._v.forEach(function(style) {
-      s += style[1] + ';';
-    });
+    }
+    return a[2] > b[2];
+  });
+  var s = '';
+  res.forEach(function(item) {
+    s += item[1] + ';';
   });
   return s;
 }
@@ -72,7 +70,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
       }
       //i到0说明匹配完成，将值存入
       if(item.hasOwnProperty('_v')) {
-        res.push(item);
+        dealStyle(res, item);
       }
       //首次进入处理:伪类
       if(first && item.hasOwnProperty('_:')) {
@@ -164,7 +162,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
               matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
             }
             if(item.hasOwnProperty('_v')) {
-              res.push(item);
+              dealStyle(res, item);
             }
           }
         });
@@ -229,13 +227,20 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
               matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
             }
             if(item.hasOwnProperty('_v')) {
-              res.push(item);
+              dealStyle(res, item);
             }
           }
         });
       }
     }
   }
+}
+
+function dealStyle(res, item) {
+  item._v.forEach(function(style) {
+    style[2] = item._p;
+    res.push(style);
+  });
 }
 
 exports["default"]=match;

@@ -647,7 +647,7 @@ describe('css', function() {
       }
     }
     var cmpn = new Component();
-    expect(cmpn.toString()).to.eql('<div migi-class="toggle" style="margin:0;margin:1px;" migi-uid="9"><p style="margin:1px;margin:2px;" migi-uid="1">click</p><p style="margin:1px;margin:2px;" migi-uid="3"><span style="padding:0;" migi-uid="2">txt</span></p><p style="margin:1px;margin:2px;" migi-uid="5"><span migi-class="txt" style="padding:0;padding:1px;padding:3px;padding:7px;" migi-uid="4">txt</span></p><span migi-class="txt" style="padding:1px;padding:3px;padding:7px;" migi-uid="6">txt</span><strong migi-class="txt" style="padding:1px;padding:3px;margin:0;padding:6px;font-weight:700;padding:2px;padding:7px;" migi-uid="7">strong</strong><span migi-id="sp" migi-class="txt" style="padding:1px;padding:3px;padding:7px;padding:4px;padding:8px;" migi-uid="8">id</span></div>');
+    expect(cmpn.toString()).to.eql('<div migi-class="toggle" style="margin:0;margin:1px;" migi-uid="9"><p style="margin:1px;margin:2px;" migi-uid="1">click</p><p style="margin:1px;margin:2px;" migi-uid="3"><span style="padding:0;" migi-uid="2">txt</span></p><p style="margin:1px;margin:2px;" migi-uid="5"><span migi-class="txt" style="padding:0;padding:1px;padding:3px;padding:7px;" migi-uid="4">txt</span></p><span migi-class="txt" style="padding:1px;padding:3px;padding:7px;" migi-uid="6">txt</span><strong migi-class="txt" style="padding:1px;padding:3px;font-weight:700;padding:2px;padding:6px;margin:0;padding:7px;" migi-uid="7">strong</strong><span migi-id="sp" migi-class="txt" style="padding:1px;padding:3px;padding:7px;padding:4px;padding:8px;" migi-uid="8">id</span></div>');
   });
 });
 
