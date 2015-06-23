@@ -14,7 +14,7 @@ const TEXT_TO_TEXT = 3;
 
 function replaceWith(elem, cns, index, vd, isText) {
   var node = isText ? util.NODE : util.getParent(vd.name);
-  var s = vd === void 0 ? '' : vd.toString();
+  var s = vd === void 0 || vd === null ? '' : vd.toString();
   var target;
   if(s) {
     node.innerHTML = isText ? util.encodeHtml(s) : s;
@@ -36,7 +36,7 @@ function replaceWith(elem, cns, index, vd, isText) {
 }
 function insertAt(elem, cns, index, vd, isText) {
   var node = isText ? util.NODE : util.getParent(vd.name);
-  var s = vd === void 0 ? '' : vd.toString();
+  var s = vd === void 0 || vd === null ? '' : vd.toString();
   var target;
   if(s) {
     node.innerHTML = isText ? util.encodeHtml(s) : s;
@@ -117,10 +117,10 @@ function del(elem, ovd, ranges, option, history) {
 }
 
 function equalText(a, b) {
-  if(a === void 0) {
+  if(a === void 0 || a === null) {
     a = '';
   }
-  if(b === void 0) {
+  if(b === void 0 || b === null) {
     b = '';
   }
   return a.toString() == b.toString();

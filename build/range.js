@@ -33,14 +33,14 @@ function join(index, children) {
         break;
       }
       else {
-        res += child === void 0 ? '' : child.toString();
+        res += child === void 0 || child === null ? '' : child.toString();
       }
     }
     else if(child instanceof Element) {
       break;
     }
     else {
-      res += child === void 0 ? '' : child.toString();
+      res += child === void 0 || child === null ? '' : child.toString();
     }
   }
   return res;

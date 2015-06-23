@@ -34,7 +34,7 @@ class Obj {
   toString() {
     var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
     //防止undefined的变量
-    return s === void 0 ? '' : s.toString();
+    return s === void 0 || s === null ? '' : s.toString();
   }
   update(ov) {
     var nv = this.cb.call(this.context);

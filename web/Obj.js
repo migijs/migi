@@ -34,7 +34,7 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
   Obj.prototype.toString = function() {
     var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
     //防止undefined的变量
-    return s === void 0 ? '' : s.toString();
+    return s === void 0 || s === null ? '' : s.toString();
   }
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);

@@ -56,19 +56,14 @@ class VirtualDom extends Element {
     }
     super(name, props, children);
     var self = this;
+    self.__init(name, props, children);
     self.__cache = {};
     self.__names = null;
     self.__classes = null;
     self.__ids = null;
     self.__inline = null;
-    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     self.__hover = false;
     self.__active = false;
-    children.forEach(function(child) {
-      if(child !== void 0) {
-        child.__parent = self;
-      }
-    });
   }
 
   //@override
@@ -262,7 +257,7 @@ class VirtualDom extends Element {
       }
     }
     else {
-      var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 ? '' : v.toString());
+      var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
       if(prop == 'dangerouslySetInnerHTML') {
         self.on(Event.DOM, function() {
           self.off(Event.DOM, arguments.callee);
@@ -635,7 +630,7 @@ class VirtualDom extends Element {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
-      if(child !== void 0) {
+      if(child instanceof Element) {
         child.__parent = self;
       }
     });
@@ -654,10 +649,10 @@ class VirtualDom extends Element {
 
   static isEmptyText(item) {
     //静态文本节点，包括空、undefined、null、空数组
-    return item === void 0 || !item.toString();
+    return item === void 0 || item === null || !item.toString();
   }
   static renderChild(child) {
-    if(child === void 0) {
+    if(child === void 0 || child === null) {
       return '';
     }
     if(child instanceof Element) {
