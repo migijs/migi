@@ -92,6 +92,19 @@ function getLast(arr) {
   return res;
 }
 
+function joinArray(arr) {
+  var res = '';
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      res += joinArray(item);
+    }
+    else {
+      res += item.toString();
+    }
+  });
+  return res;
+}
+
 const NODE = document.createElement('div');
 const TABLE = document.createElement('table');
 const TBODY = document.createElement('tbody');
@@ -165,7 +178,8 @@ var util = {
     return v;
   }(),
   getFirst,
-  getLast
+  getLast,
+  joinArray
 };
 
 export default util;

@@ -1,19 +1,6 @@
 import Element from './Element';
 import util from './util';
 
-function joinArray(arr) {
-  var res = '';
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
-      res += joinArray(item);
-    }
-    else {
-      res += item.toString();
-    }
-  });
-  return res;
-}
-
 class Obj {
   constructor(k, context, cb) {
     //fix循环依赖
@@ -45,7 +32,7 @@ class Obj {
     return this.__cb;
   }
   toString() {
-    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
+    var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
     //防止undefined的变量
     return s === void 0 ? '' : s.toString();
   }

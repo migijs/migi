@@ -217,8 +217,8 @@ var SELF_CLOSE = {
     if(/^on[A-Z]/.test(prop)) {
       self.on(Event.DOM, function() {
         self.off(Event.DOM, arguments.callee);
-        var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
-          return Up.toLowerCase();
+        var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
+          return up.toLowerCase();
         });
         self.element.addEventListener(name, function(event) {
           var item = self.props[prop];
@@ -233,30 +233,20 @@ var SELF_CLOSE = {
     }
     //Obj类型绑定处理
     else if(v instanceof Obj) {
-      if(util.isString(v.v)) {
-        var s = v.toString();
-        //特殊html不转义
-        if(prop == 'dangerouslySetInnerHTML') {
-          self.on(Event.DOM, function() {
-            self.off(Event.DOM, arguments.callee);
-            self.element.innerHTML = s;
-          });
-          return '';
-        }
-        if(self.__style) {
-          self.__cache[prop] = s;
-        }
-        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      var s = v.toString();
+      //特殊html不转义
+      if(prop == 'dangerouslySetInnerHTML') {
+        self.on(Event.DOM, function() {
+          self.off(Event.DOM, arguments.callee);
+          self.element.innerHTML = s;
+        });
+        return '';
       }
-      else if(!!v.v) {
-        if(self.__style) {
-          self.__cache[prop] = s;
-        }
-        res = ' ' + prop;
-      }
+      self.__cache[prop] = s;
+      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     else {
-      var s = v.toString();
+      var s = Array.isArray(v) ? util.joinArray(v) : v.toString();
       if(prop == 'dangerouslySetInnerHTML') {
         self.on(Event.DOM, function() {
           self.off(Event.DOM, arguments.callee);
@@ -267,9 +257,7 @@ var SELF_CLOSE = {
       if(prop == 'className') {
         prop = 'class';
       }
-      if(self.__style) {
-        self.__cache[prop] = s;
-      }
+      self.__cache[prop] = s;
       res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之

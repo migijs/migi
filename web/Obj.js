@@ -1,19 +1,6 @@
 define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
-function joinArray(arr) {
-  var res = '';
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
-      res += joinArray(item);
-    }
-    else {
-      res += item.toString();
-    }
-  });
-  return res;
-}
-
 
   function Obj(k, context, cb) {
     //fix循环依赖
@@ -45,7 +32,7 @@ function joinArray(arr) {
     return this.__cb;
   }
   Obj.prototype.toString = function() {
-    var s = Array.isArray(this.v) ? joinArray(this.v) : this.v;
+    var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
     //防止undefined的变量
     return s === void 0 ? '' : s.toString();
   }
