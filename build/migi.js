@@ -20,7 +20,7 @@ var migi = {
     return new name(props, children);
   },
   createVd:function(name, props, children) {
-    return cachePool.index ? cachePool.get().__init(name, props, children) : new VirtualDom(name, props, children);
+    return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event:Event,
   eventBus: Event.mix({}),

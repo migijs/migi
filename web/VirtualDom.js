@@ -56,7 +56,6 @@ var SPECIAL_PROP = {
     }
     Element.call(this,name, props, children);
     var self = this;
-    self.__init(name, props, children);
     self.__cache = {};
     self.__names = null;
     self.__classes = null;
@@ -64,6 +63,7 @@ var SPECIAL_PROP = {
     self.__inline = null;
     self.__hover = false;
     self.__active = false;
+    self.__init(name, children);
   }
 
   //@override
@@ -625,15 +625,18 @@ var SPECIAL_PROP = {
     });
   }
 
-  VirtualDom.prototype.__init = function(name, props, children) {
-    if(props===void 0)props={};if(children===void 0)children=[];Element.prototype.__init.call(this,name, props, children);
-    var self = this;
+  VirtualDom.prototype.__init = function(name, children) {
+    if(children===void 0)children=[];var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
       if(child instanceof Element) {
         child.__parent = self;
       }
     });
+  }
+  VirtualDom.prototype.__reset = function(name, props, children) {
+    if(props===void 0)props={};if(children===void 0)children=[];Element.prototype.__reset.call(this,name, props, children);
+    this.__init(name, children);
     return this;
   }
   VirtualDom.prototype.__destroy = function() {

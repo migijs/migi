@@ -56,7 +56,6 @@ class VirtualDom extends Element {
     }
     super(name, props, children);
     var self = this;
-    self.__init(name, props, children);
     self.__cache = {};
     self.__names = null;
     self.__classes = null;
@@ -64,6 +63,7 @@ class VirtualDom extends Element {
     self.__inline = null;
     self.__hover = false;
     self.__active = false;
+    self.__init(name, children);
   }
 
   //@override
@@ -625,8 +625,7 @@ class VirtualDom extends Element {
     });
   }
 
-  __init(name, props = {}, children = []) {
-    super.__init(name, props, children);
+  __init(name, children = []) {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
@@ -634,6 +633,10 @@ class VirtualDom extends Element {
         child.__parent = self;
       }
     });
+  }
+  __reset(name, props = {}, children = []) {
+    super.__reset(name, props, children);
+    this.__init(name, children);
     return this;
   }
   __destroy() {
