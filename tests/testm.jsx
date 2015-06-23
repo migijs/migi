@@ -292,6 +292,11 @@ describe('VirtualDom', function() {
     var div = <div><span></span></div>;
     expect(div.findAll('span')).to.eql([div.children[0]]);
   });
+  it('special prop', function() {
+    var udf;
+    var input = <input value={udf} checked={udf}/>;
+    expect(input.toString()).to.eql('<input value="" migi-uid="0"/>');
+  });
 });
 
 describe('Component', function() {
@@ -368,6 +373,19 @@ describe('Component', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
     expect(cmpn.findChildren('span')).to.eql([cmpn.children[0]]);
+  });
+  it('special prop', function() {
+    var udf;
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <input value={this.udf} checked={this.udf} name={udf}/>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<input value="" name="" migi-uid="1"/>');
   });
 });
 

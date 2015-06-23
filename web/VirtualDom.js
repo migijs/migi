@@ -30,6 +30,20 @@ var SELF_CLOSE = {
   'track': true
 };
 
+var SPECIAL_PROP = {
+  'checked': true,
+  'selected': true,
+  'selectedIndex': true,
+  'readOnly': true,
+  'multiple': true,
+  'defaultValue': true,
+  'autofocus': true,
+  'async': true,
+  'tagName': true,
+  'nodeName': true,
+  'nodeType': true
+};
+
 !function(){var _12=Object.create(Element.prototype);_12.constructor=VirtualDom;VirtualDom.prototype=_12}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
@@ -243,10 +257,12 @@ var SELF_CLOSE = {
         return '';
       }
       self.__cache[prop] = s;
-      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v.v) {
+        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      }
     }
     else {
-      var s = Array.isArray(v) ? util.joinArray(v) : v.toString();
+      var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 ? '' : v.toString());
       if(prop == 'dangerouslySetInnerHTML') {
         self.on(Event.DOM, function() {
           self.off(Event.DOM, arguments.callee);
@@ -258,7 +274,9 @@ var SELF_CLOSE = {
         prop = 'class';
       }
       self.__cache[prop] = s;
-      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v) {
+        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      }
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
     if(self.__style) {
