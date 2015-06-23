@@ -626,7 +626,7 @@ var SPECIAL_PROP = {
   }
 
   VirtualDom.prototype.__init = function(name, children) {
-    if(children===void 0)children=[];var self = this;
+    var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
       if(child instanceof Element) {

@@ -625,7 +625,7 @@ class VirtualDom extends Element {
     });
   }
 
-  __init(name, children = []) {
+  __init(name, children) {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
     children.forEach(function(child) {
