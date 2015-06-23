@@ -561,9 +561,9 @@ class VirtualDom extends Element {
         }
         break;
     }
+    this.__cache[k] = v;
     //使用了jaw内联解析css
     if(this.__style) {
-      this.__cache[k] = v;
       this.__updateStyle();
     }
   }
