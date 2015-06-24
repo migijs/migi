@@ -499,6 +499,7 @@ class VirtualDom extends Element {
     //递归通知，增加索引
     else if(child instanceof Element) {
       delete option.t2d;
+      delete option.d2t;
       child.emit(Event.DATA, k);
       option.start++;
       //前面的文本再加一次
@@ -520,14 +521,14 @@ class VirtualDom extends Element {
       }
       //注意空数组算text类型
       else {
-        domDiff.t2d(option, this.element, child);
+        domDiff.check(option, this.element, child, ranges);
         range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      domDiff.t2d(option, this.element, child);
+      domDiff.check(option, this.element, child, ranges);
       range.record(history, option);
       option.prev = type.TEXT;
     }

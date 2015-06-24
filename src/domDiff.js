@@ -105,10 +105,11 @@ function del(elem, ovd, ranges, option, history) {
     else {
       switch(option.state) {
         case DOM_TO_TEXT:
+          elem.removeChild(elem.childNodes[option.start + 1]);
         case TEXT_TO_TEXT:
+        case DOM_TO_DOM:
           addRange(ranges, option);
           break;
-        case DOM_TO_DOM:
         case TEXT_TO_DOM:
           elem.removeChild(elem.childNodes[option.start]);
           break;
@@ -208,6 +209,9 @@ export function diff(elem, ov, nv, ranges, option, history) {
   //当最后一次对比是TEXT变为DOM时记录，因为随后的text可能要更新
   if(option.state == TEXT_TO_DOM) {
     option.t2d = true;
+  }
+  else if(option.state == DOM_TO_TEXT) {
+    option.d2t = true;
   }
 }
 
@@ -429,9 +433,9 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         else {
           switch(option.state) {
             case DOM_TO_TEXT:
-              elem.removeChild(cns[option.start + 1]);
             case TEXT_TO_TEXT:
               addRange(ranges, option);
+              elem.removeChild(cns[option.start + 1]);
               break;
             case TEXT_TO_DOM:
               replaceWith(elem, cns, option.start++, nvd, true);
@@ -491,9 +495,13 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   option.first = false;
 }
 
-export function t2d(option, elem, vd) {
+export function check(option, elem, vd, ranges) {
   if(option.t2d) {
     delete option.t2d;
     insertAt(elem, elem.childNodes, option.start++, vd, true);
+  }
+  else if(option.d2t) {
+    delete option.d2t;
+    del(elem, vd, ranges, option);
   }
 }
