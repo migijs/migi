@@ -2,6 +2,7 @@ define(function(require, exports, module){var Element=function(){var _0=require(
 var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var type=function(){var _4=require('./type');return _4.hasOwnProperty("default")?_4["default"]:_4}();
 
 exports.merge=merge;function merge(ranges) {
   //合并相邻更新的文本节点
@@ -86,4 +87,10 @@ exports.value=value;function value(item, children) {
   }
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   return join(item.index, children);
+}
+
+exports.record=record;function record(history, option) {
+  if(option.first || option.prev == type.DOM) {
+    option.record = history.slice();
+  }
 }});

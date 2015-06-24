@@ -519,13 +519,13 @@ var SPECIAL_PROP = {
       }
       //注意空数组算text类型
       else {
-        VirtualDom.record(history, option);
+        range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      VirtualDom.record(history, option);
+      range.record(history, option);
       option.prev = type.TEXT;
     }
     option.first = false;
@@ -672,12 +672,6 @@ var SPECIAL_PROP = {
       return res;
     }
     return util.encodeHtml(child.toString());
-  }
-  //记录第一个text出现的位置
-  VirtualDom.record=function(history, option) {
-    if(option.first || option.prev == type.DOM) {
-      option.record = history.slice();
-    }
   }
 Object.keys(_13).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_13[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 

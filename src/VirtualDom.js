@@ -519,13 +519,13 @@ class VirtualDom extends Element {
       }
       //注意空数组算text类型
       else {
-        VirtualDom.record(history, option);
+        range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      VirtualDom.record(history, option);
+      range.record(history, option);
       option.prev = type.TEXT;
     }
     option.first = false;
@@ -672,12 +672,6 @@ class VirtualDom extends Element {
       return res;
     }
     return util.encodeHtml(child.toString());
-  }
-  //记录第一个text出现的位置
-  static record(history, option) {
-    if(option.first || option.prev == type.DOM) {
-      option.record = history.slice();
-    }
   }
 }
 

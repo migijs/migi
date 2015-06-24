@@ -2,6 +2,7 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import Obj from './Obj';
 import util from './util';
+import type from './type';
 
 export function merge(ranges) {
   //合并相邻更新的文本节点
@@ -86,4 +87,10 @@ export function value(item, children) {
   }
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   return join(item.index, children);
+}
+
+export function record(history, option) {
+  if(option.first || option.prev == type.DOM) {
+    option.record = history.slice();
+  }
 }
