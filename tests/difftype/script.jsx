@@ -12,7 +12,6 @@ class Component extends migi.Component {
   }
   set data(v) {
     this._data = v;
-    this.record();
   }
   click() {
     switch(this.i++) {
@@ -32,20 +31,25 @@ class Component extends migi.Component {
         this.data = 'txt';
         break;
     }
+    this.record();
   }
   record() {
-    var strong = this.element.querySelector('strong');
+    var ps = this.element.querySelectorAll('p');
     var lis = this.element.querySelectorAll('li');
     var s = '';
+    var s2 = '';
     for(var i = 0, len = lis.length; i < len; i++) {
       s += lis[i].childNodes.length + ',';
+      s2 += lis[i].innerHTML + ',';
     }
-    strong.innerHTML = s;
+    ps[0].innerHTML = s;
+    ps[1].innerHTML = s2.replace(/</g, '&lt;');
   }
   render() {
     return <div>
-        <p onClick={this.click} ref="click">click</p>
-        <strong></strong>
+        <strong onClick={this.click} ref="click">click</strong>
+        <p></p>
+        <p></p>
         <ul>
           <li title="1个变量">{this.data}</li>
           <li title="静态+变量">before{this.data}</li>

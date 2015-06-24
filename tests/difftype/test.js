@@ -21,11 +21,12 @@ module.exports = {
       .assert.containsText('#test li[title="DOM+变量+DOM"]', 'domdom')
       .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'domdom')
       .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'domdom')
-      .assert.containsText('#test strong', '1,1,1,1,1,1,1,1,1,1,2,2,3,4,4,')
+      .assert.containsText('#test p:first-child', '1,1,1,1,1,1,1,1,1,1,2,2,3,4,4,')
+      .assert.containsText('#test p:last-child', ',before,after,beforeafter,,,,,middle,beforemiddleafter,<span migi-uid="14">dom</span>,<span migi-uid="16">dom</span>,<span migi-uid="18">dom</span><span migi-uid="19">dom</span>,<span migi-uid="21">dom</span><span migi-uid="22">dom</span>,<span migi-uid="24">dom</span><span migi-uid="25">dom</span>,')
   },
   'empty to text': function(browser) {
     browser
-      .click('#test p')
+      .click('#test strong')
       .assert.containsText('#test li[title="1个变量"]', 'txt')
       .assert.containsText('#test li[title="静态+变量"]', 'beforetxt')
       .assert.containsText('#test li[title="变量+静态"]', 'txtafter')
@@ -41,11 +42,12 @@ module.exports = {
       .assert.containsText('#test li[title="DOM+变量+DOM"]', 'domtxtdom')
       .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'domtxtdomtxt')
       .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'txtdomtxtdom')
-      .assert.containsText('#test strong', '1,1,1,1,1,1,1,1,1,1,2,2,3,4,4,')
+      .assert.containsText('#test p:first-child', '1,1,1,1,1,1,1,1,1,1,2,2,3,4,4,')
+      .assert.containsText('#test p:last-child', 'txt,beforetxt,txtafter,beforetxtafter,txt,txt,txt,txttxt,txtmiddletxt,beforetxtmiddletxtafter,txt<span migi-uid="14">dom</span>,<span migi-uid="16">dom</span>txt,<span migi-uid="18">dom</span>txt<span migi-uid="19">dom</span>,<span migi-uid="21">dom</span>txt<span migi-uid="22">dom</span>txt,txt<span migi-uid="24">dom</span>txt<span migi-uid="25">dom</span>,')
   },
   'text to dom': function(browser) {
     browser
-      .click('#test p')
+      .click('#test strong')
       .assert.containsText('#test li[title="1个变量"]', 'dom')
       .assert.elementPresent('#test li[title="1个变量"] b')
       .assert.containsText('#test li[title="静态+变量"]', 'beforedom')
@@ -76,6 +78,7 @@ module.exports = {
       .assert.elementPresent('#test li[title="DOM+变量+DOM+变量"] b')
       .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'domdomdomdom')
       .assert.elementPresent('#test li[title="变量+DOM+变量+DOM"] b')
-      .assert.containsText('#test strong', '1,1,1,1,1,1,1,1,1,1,2,2,3,4,4,')
+      .assert.containsText('#test p:first-child', '1,2,2,3,2,2,3,2,3,5,2,2,3,4,4,')
+      .assert.containsText('#test p:last-child', '<b migi-uid="29">dom</b>,before<b migi-uid="29">dom</b>,<b migi-uid="29">dom</b>after,before<b migi-uid="29">dom</b>after,<b migi-uid="29">dom</b>,<b migi-uid="29">dom</b>,<b migi-uid="29">dom</b>,<b migi-uid="29">dom</b><b migi-uid="29">dom</b>,<b migi-uid="29">dom</b>middle<b migi-uid="29">dom</b>,before<b migi-uid="29">dom</b>middle<b migi-uid="29">dom</b>after,<b migi-uid="29">dom</b><span migi-uid="14">dom</span>,<span migi-uid="16">dom</span><b migi-uid="29">dom</b>,<span migi-uid="18">dom</span><b migi-uid="29">dom</b><span migi-uid="19">dom</span>,<span migi-uid="21">dom</span><b migi-uid="29">dom</b><span migi-uid="22">dom</span><b migi-uid="29">dom</b>,<b migi-uid="29">dom</b><span migi-uid="24">dom</span><b migi-uid="29">dom</b><span migi-uid="25">dom</span>,')
   }
 };
