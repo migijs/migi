@@ -40,6 +40,9 @@ function insertAt(elem, cns, index, vd, isText) {
     node.innerHTML = isText ? util.encodeHtml(s) : s;
     target = node.firstChild;
   }
+  else {
+    target = document.createTextNode('');
+  }
   if(index >= cns.length) {
     elem.appendChild(target);
   }
@@ -128,7 +131,7 @@ function addRange(ranges, option) {
   ranges.push({ start: option.start, index: option.record.slice() });
 }
 
-function diff(ovd, nvd) {
+function diffVd(ovd, nvd) {
   //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
   if(ovd === nvd) {
     return;
@@ -191,7 +194,7 @@ function diff(ovd, nvd) {
   cachePool.add(ovd.__destroy());
 }
 
-export default function(elem, ov, nv, ranges, option, history) {
+export function diff(elem, ov, nv, ranges, option, history) {
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if(!option.first) {
     if(option.prev == type.TEXT) {
@@ -202,6 +205,10 @@ export default function(elem, ov, nv, ranges, option, history) {
     }
   }
   diffChild(elem, ov, nv, ranges, option, history);
+  //当最后一次对比是TEXT变为DOM时记录，因为随后的text可能要更新
+  if(option.state == TEXT_TO_DOM) {
+    option.t2d = true;
+  }
 }
 
 function diffChild(elem, ovd, nvd, ranges, option, history) {
@@ -446,6 +453,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         else {
           switch(option.state) {
             case DOM_TO_TEXT:
+              option.start++;
             case DOM_TO_DOM:
               replaceWith(elem, cns, option.start++, nvd);
               break;
@@ -455,6 +463,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             case TEXT_TO_TEXT:
               addRange(ranges, option);
               insertAt(elem, cns, ++option.start, nvd);
+              option.start++;
               break;
           }
         }
@@ -465,7 +474,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
       case 3:
         //DOM名没变递归diff
         if(ovd.name == nvd.name) {
-          diff(ovd, nvd);
+          diffVd(ovd, nvd);
         }
         //否则重绘替换
         else {
@@ -480,4 +489,11 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
     }
   }
   option.first = false;
+}
+
+export function t2d(option, elem, vd) {
+  if(option.t2d) {
+    delete option.t2d;
+    insertAt(elem, elem.childNodes, option.start++, vd, true);
+  }
 }

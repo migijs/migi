@@ -56,6 +56,11 @@ export function update(item, children, elem) {
   var res = join(item.index, children);
   var cns = elem.childNodes;
   var textNode = cns[item.start];
+  //神奇的地方，更新的对象是个DOM而不是TEXT，会发生在混杂情况下的t2d变化
+  //如t1{t}t2{t}变为t1{d}t2{d}，t2记录的range的start在3，而其目前是第2个{d}的DOM，插入在t2d逻辑中
+  if(textNode.nodeType == 1) {
+    return;
+  }
   var now = util.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白

@@ -492,12 +492,13 @@ var SPECIAL_PROP = {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff(this.element, ov, child.v, ranges, option, history);
+          domDiff.diff(this.element, ov, child.v, ranges, option, history);
         }
       }
     }
     //递归通知，增加索引
     else if(child instanceof Element) {
+      delete option.t2d;
       child.emit(Event.DATA, k);
       option.start++;
       //前面的文本再加一次
@@ -519,12 +520,14 @@ var SPECIAL_PROP = {
       }
       //注意空数组算text类型
       else {
+        domDiff.t2d(option, this.element, child);
         range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
+      domDiff.t2d(option, this.element, child);
       range.record(history, option);
       option.prev = type.TEXT;
     }
