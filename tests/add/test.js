@@ -129,28 +129,28 @@ module.exports = {
       .assert.containsText('#test li[title="变量+null+变量"]', '')
       .assert.containsText('#test strong', '1,1,1,1,1,1,1,1,2,2,3,4,3,1,1,1,')
   },
-  'add': function(browser) {
+  'add 2': function(browser) {
     browser
       .click('#test p[ref="add"]')
-      .assert.containsText('#test li[title="1个文本变量"]', '0')
-      .assert.containsText('#test li[title="2个文本变量"]', '00')
-      .assert.containsText('#test li[title="静态+变量"]', 'start 0')
-      .assert.containsText('#test li[title="变量+静态"]', '0 end')
-      .assert.containsText('#test li[title="变量+静态+变量"]', '0 middle 0')
-      .assert.containsText('#test li[title="空+变量"]', '0')
-      .assert.containsText('#test li[title="变量+空"]', '0')
-      .assert.containsText('#test li[title="变量+空+变量"]', '00')
-      .assert.containsText('#test li[title="DOM+变量"]', 'dom0')
-      .assert.containsText('#test li[title="变量+DOM"]', '0dom')
-      .assert.containsText('#test li[title="DOM+变量+DOM"]', 'dom0dom')
-      .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'dom0dom0')
-      .assert.containsText('#test li[title="变量+DOM+变量"]', '0dom0')
-      .assert.containsText('#test li[title="变量+[]+变量"]', '00')
-      .assert.containsText('#test li[title="变量+undefined+变量"]', '00')
-      .assert.containsText('#test li[title="变量+null+变量"]', '00')
+      .assert.containsText('#test li[title="1个文本变量"]', '2')
+      .assert.containsText('#test li[title="2个文本变量"]', '22')
+      .assert.containsText('#test li[title="静态+变量"]', 'start 2')
+      .assert.containsText('#test li[title="变量+静态"]', '2 end')
+      .assert.containsText('#test li[title="变量+静态+变量"]', '2 middle 2')
+      .assert.containsText('#test li[title="空+变量"]', '2')
+      .assert.containsText('#test li[title="变量+空"]', '2')
+      .assert.containsText('#test li[title="变量+空+变量"]', '22')
+      .assert.containsText('#test li[title="DOM+变量"]', 'dom2')
+      .assert.containsText('#test li[title="变量+DOM"]', '2dom')
+      .assert.containsText('#test li[title="DOM+变量+DOM"]', 'dom2dom')
+      .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'dom2dom2')
+      .assert.containsText('#test li[title="变量+DOM+变量"]', '2dom2')
+      .assert.containsText('#test li[title="变量+[]+变量"]', '22')
+      .assert.containsText('#test li[title="变量+undefined+变量"]', '22')
+      .assert.containsText('#test li[title="变量+null+变量"]', '22')
       .assert.containsText('#test strong', '1,1,1,1,1,1,1,1,2,2,3,4,3,1,1,1,')
   },
-  'del again': function(browser) {
+  'del 2': function(browser) {
     browser
       .click('#test p[ref="del"]')
       .assert.containsText('#test li[title="1个文本变量"]', '')
