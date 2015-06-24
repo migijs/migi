@@ -48,8 +48,8 @@ class Component extends migi.Component {
   render() {
     return <div>
         <strong onClick={this.click} ref="click">click</strong>
-        <p></p>
-        <p></p>
+        <p ref="1"></p>
+        <p ref="2"></p>
         <ul>
           <li title="1个变量">{this.data}</li>
           <li title="静态+变量">before{this.data}</li>
