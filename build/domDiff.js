@@ -453,6 +453,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               insertAt(elem, cns, option.start++, nvd);
               break;
             case TEXT_TO_TEXT:
+              addRange(ranges, option);
               insertAt(elem, cns, ++option.start, nvd);
               break;
           }
