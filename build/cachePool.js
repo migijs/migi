@@ -1,4 +1,4 @@
-var MAX = 3000;
+var MAX = 4096;
 var cache = new Array(MAX);
 
 var o = {

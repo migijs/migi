@@ -13,6 +13,8 @@ function getDom(dom) {
 class Element extends Event {
   constructor(name, props, children) {
     super();
+    //TODO: 大数处理
+    this.__uid = uid++;
     this.__reset(name, props, children);
   }
   __reset(name, props, children) {
@@ -20,8 +22,6 @@ class Element extends Event {
     this.__props = props;
     this.__children = children;
 
-    //TODO: 大数处理
-    this.__uid = uid++;
     this.__element = null;
     this.__parent = null;
     this.__style = null;

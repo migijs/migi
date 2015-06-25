@@ -1,4 +1,4 @@
-define(function(require, exports, module){var MAX = 3000;
+define(function(require, exports, module){var MAX = 4096;
 var cache = new Array(MAX);
 
 var o = {

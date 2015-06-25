@@ -13,6 +13,8 @@ function getDom(dom) {
 !function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
   function Element(name, props, children) {
     Event.call(this);
+    //TODO: 大数处理
+    this.__uid = uid++;
     this.__reset(name, props, children);
   }
   Element.prototype.__reset = function(name, props, children) {
@@ -20,8 +22,6 @@ function getDom(dom) {
     this.__props = props;
     this.__children = children;
 
-    //TODO: 大数处理
-    this.__uid = uid++;
     this.__element = null;
     this.__parent = null;
     this.__style = null;
