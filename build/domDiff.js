@@ -409,6 +409,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               elem.removeChild(cns[option.start + 1]);
               break;
             case TEXT_TO_DOM:
+              addRange(ranges, option);
               insertAt(elem, cns, option.start, nvd, true);
               break;
             case DOM_TO_DOM:
@@ -423,7 +424,12 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         //不是第一个但text内容不变时，需根据之前的状态判断处理
         else {
           switch(option.state) {
+            case DOM_TO_TEXT:
+              addRange(ranges, option);
+              elem.removeChild(cns[option.start + 1]);
+              break;
             case TEXT_TO_DOM:
+              addRange(ranges, option);
               insertAt(elem, cns, option.start, nvd, true);
               break;
           }
