@@ -30,7 +30,10 @@ function join(index, children) {
       }
     }
     else if(child instanceof Obj) {
-      if(child.v instanceof Element) {
+      if(Array.isArray(child.v)) {
+        res += joinObj(child.v, {});
+      }
+      else if(child.v instanceof Element) {
         break;
       }
       else {
@@ -38,6 +41,27 @@ function join(index, children) {
       }
     }
     else if(child instanceof Element) {
+      break;
+    }
+    else {
+      res += child === void 0 || child === null ? '' : child.toString();
+    }
+  }
+  return res;
+}
+//递归找到第一个不是text的为止，将之前的text拼接返回
+function joinObj(arr, history) {
+  var res = '';
+  for(var i = 0, len = arr.length; i < len; i++) {
+    var child = arr[i];
+    if(history.end) {
+      break;
+    }
+    if(Array.isArray(child)) {
+      res += joinObj(child, history);
+    }
+    else if(child instanceof Element) {
+      history.end = true;
       break;
     }
     else {

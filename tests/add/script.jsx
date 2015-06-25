@@ -12,7 +12,6 @@ class Component extends migi.Component {
   }
   set list(_list) {
     this._list = _list;
-    this.record();
   }
   record() {
     var strong = this.element.querySelector('strong');
@@ -27,10 +26,12 @@ class Component extends migi.Component {
     var num = this.i++;
     this.list.push(num);
     this.list = this.list;
+    this.record();
   }
   del() {
     this.list.pop();
     this.list = this.list;
+    this.record();
   }
   render() {
     var blank = '';

@@ -206,7 +206,7 @@ exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
     }
   }
   diffChild(elem, ov, nv, ranges, option, history);
-  //当最后一次对比是TEXT变为DOM时记录，因为随后的text可能要更新
+  //当最后一次对比是类型变换时记录，因为随后的text可能要更新
   if(option.state == TEXT_TO_DOM) {
     option.t2d = true;
   }
