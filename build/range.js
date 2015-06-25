@@ -31,7 +31,11 @@ function join(index, children) {
     }
     else if(child instanceof Obj) {
       if(Array.isArray(child.v)) {
-        res += joinObj(child.v, {});
+        var history = {};
+        res += joinObj(child.v, history);
+        if(history.end) {
+          break;
+        }
       }
       else if(child.v instanceof Element) {
         break;
