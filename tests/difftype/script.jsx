@@ -30,6 +30,54 @@ class Component extends migi.Component {
       case 4:
         this.data = 'txt';
         break;
+      case 5:
+        this.data = [];
+        break;
+      case 6:
+        this.data = <b>dom</b>;
+        break;
+      case 7:
+        this.data = [];
+        break;
+      case 8:
+        this.data = 'txt';
+        break;
+      case 9:
+        this.data = ['txt'];
+        break;
+      case 10:
+        this.data = 'txt';
+        break;
+      case 11:
+        this.data = [<b>dom</b>];
+        break;
+      case 12:
+        this.data = 'txt';
+        break;
+      case 13:
+        this.data = ['txt',<b>dom</b>];
+        break;
+      case 14:
+        this.data = <b>dom</b>;
+        break;
+      case 15:
+        this.data = [<b>dom</b>,'txt'];
+        break;
+      case 16:
+        this.data = 'txt';
+        break;
+      case 17:
+        this.data = [<b>dom</b>,'txt'];
+        break;
+      case 18:
+        this.data = <b>dom</b>;
+        break;
+      case 19:
+        this.data = ['txt',<b>dom</b>];
+        break;
+      case 20:
+        this.data = <b>dom</b>;
+        break;
     }
     this.record();
   }

@@ -67,7 +67,16 @@ function add(elem, nvd, ranges, option, history) {
   }
   else {
     if(nvd instanceof Element) {
-      insertAt(elem, elem.childNodes, option.start++, nvd);
+      switch(option.state) {
+        case DOM_TO_TEXT:
+        case TEXT_TO_TEXT:
+          addRange(ranges, option);
+          option.start++;
+        case DOM_TO_DOM:
+        case TEXT_TO_DOM:
+          insertAt(elem, elem.childNodes, option.start++, nvd);
+          break;
+      }
       //option.state = DOM_TO_DOM;
     }
     else {
@@ -278,113 +287,20 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   }
   //老的是数组新的不是
   else if(oa) {
-    var length = ovd.length;
     //将老的第1个和新的相比，注意老的第一个可能还是个数组，递归下去
-    if(length) {
-      diffChild(elem, ovd[0], nvd, ranges, option, history);
-      //移除剩余的老的
-      for(var i = 1; i < length; i++) {
-        del(elem, ovd[i], ranges, option, history);
-      }
-    }
-    //老的是个空数组，相当于空TEXT
-    else {
-      //新的是DOM
-      if(nvd instanceof Element) {
-        var cns = elem.childNodes;
-        //本身就是第1个，直接替换
-        if(option.first) {
-          replaceWith(elem, cns, option.start++, nvd);
-        }
-        else {
-          switch(option.state) {
-            case DOM_TO_TEXT:
-            case DOM_TO_DOM:
-              replaceWith(elem, cns, option.start++, nvd);
-              break;
-            case TEXT_TO_DOM:
-              insertAt(elem, cns, option.start++, nvd);
-              break;
-            case TEXT_TO_TEXT:
-              insertAt(elem, cns, ++option.start, nvd);
-              break;
-          }
-        }
-        option.state = TEXT_TO_DOM;
-      }
-      //新的是TEXT
-      else {
-        option.state = TEXT_TO_TEXT;
-        if(option.first) {
-          range.record(history, option);
-          if(ovd != nvd) {
-            if((ovd !== void 0 || nvd !== '')
-              && (ovd !== '' || nvd !== void 0)) {
-              addRange(ranges, option);
-            }
-          }
-        }
-        else {
-          var cns = elem.childNodes;
-          switch(option.state) {
-            case DOM_TO_TEXT:
-              addRange(ranges, option);
-              elem.removeChild(cns[option.start + 1]);
-              break;
-            case TEXT_TO_DOM:
-              insertAt(elem, cns, option.start, nvd, true);
-              break;
-            case DOM_TO_DOM:
-            case TEXT_TO_TEXT:
-              if(ovd != nvd) {
-                if((ovd !== void 0 || nvd !== '')
-                  && (ovd !== '' || nvd !== void 0)) {
-                  addRange(ranges, option);
-                }
-              }
-              break;
-          }
-        }
-      }
+    diffChild(elem, ovd[0], nvd, ranges, option, history);
+    //移除剩余的老的
+    for(var i = 1, len = ovd.length; i < len; i++) {
+      del(elem, ovd[i], ranges, option, history);
     }
   }
   //新的是数组老的不是
   else if(na) {
-    var length = nvd.length;
     //将新的第1个和老的相比，注意新的第一个可能还是个数组，递归下去
-    if(length) {
-      diffChild(elem, ovd, nvd[0], ranges, option, history);
-      //增加剩余的新的
-      for(var i = 1; i < length; i++) {
-        add(elem, nvd[i], ranges, option, history);
-      }
-    }
-    //新的是个空数组，相当于空TEXT
-    else {
-      //老的是DOM
-      if(ovd instanceof Element) {
-        var cns = elem.childNodes;
-        //本身就是第1个，直接替换
-        if(option.first) {
-          range.record(history, option);
-          replaceWith(elem, cns, option.start, nvd, true);
-        }
-        else {
-          switch(option.state) {
-            case DOM_TO_TEXT:
-            case TEXT_TO_TEXT:
-              elem.removeChild(cns[option.start + 1]);
-              addRange(ranges, option);
-              break;
-            case TEXT_TO_DOM:
-              replaceWith(elem, cns, option.start++, nvd, true);
-              break;
-            case DOM_TO_DOM:
-              replaceWith(elem, cns, option.start, nvd, true);
-              break;
-          }
-        }
-      }
+    diffChild(elem, ovd, nvd[0], ranges, option, history);
+    //增加剩余的新的
+    for(var i = 1, len = nvd.length; i < len; i++) {
+      add(elem, nvd[i], ranges, option, history);
     }
   }
   //都不是数组
