@@ -9,3 +9,4 @@ demo/
 node_modules/
 gulpfile.js
 reports/
+lib/
