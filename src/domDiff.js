@@ -476,6 +476,14 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
       //DOM变DOM
       case 3:
+        if(!option.first) {
+          switch(option.state) {
+            case DOM_TO_TEXT:
+            case TEXT_TO_TEXT:
+              option.start++;
+              break;
+          }
+        }
         //DOM名没变递归diff
         if(ovd.name == nvd.name) {
           diffVd(ovd, nvd);
