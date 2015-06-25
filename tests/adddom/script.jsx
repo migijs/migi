@@ -23,8 +23,7 @@ class Component extends migi.Component {
     strong.innerHTML = s;
   }
   add() {
-    var num = this.i++;
-    this.list.push(<b>{num}</b>);
+    this.list.push(<b>{this.i++}</b>);
     this.list = this.list;
     this.record();
   }

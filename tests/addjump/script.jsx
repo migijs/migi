@@ -24,10 +24,12 @@ class Component extends migi.Component {
   }
   add() {
     this.list.push(this.i++);
+    this.list.push(this.i++);
     this.list = this.list;
     this.record();
   }
   del() {
+    this.list.pop();
     this.list.pop();
     this.list = this.list;
     this.record();
