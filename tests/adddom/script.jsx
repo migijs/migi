@@ -35,8 +35,8 @@ class Component extends migi.Component {
   render() {
     return (
       <div>
-        <p onClick={this.add} ref="add">点击添加一个dom</p>
-        <p onClick={this.del} ref="del">点击删除一个dom</p>
+        <p onClick={this.add} ref="add">点击添加1个dom</p>
+        <p onClick={this.del} ref="del">点击删除1个dom</p>
         <strong></strong>
         <ul>
           <li title="1个变量">{this.list}</li>

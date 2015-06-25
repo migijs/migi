@@ -40,8 +40,8 @@ class Component extends migi.Component {
     var udf;
     return (
       <div>
-        <p onClick={this.add} ref="add">点击添加一个数</p>
-        <p onClick={this.del} ref="del">点击删除一个数</p>
+        <p onClick={this.add} ref="add">点击添加2个数</p>
+        <p onClick={this.del} ref="del">点击删除2个数</p>
         <strong></strong>
         <ul>
           <li title="1个文本变量">{this.list}</li>

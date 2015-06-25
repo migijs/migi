@@ -638,9 +638,11 @@ class VirtualDom extends Element {
       }
     });
   }
+  //@overwrite
   __reset(name, props = {}, children = []) {
     super.__reset(name, props, children);
     this.__init(name, children);
+    this.__hasDes = false;
     return this;
   }
   __destroy() {
@@ -651,6 +653,7 @@ class VirtualDom extends Element {
     this.__inline = null;
     this.__hover = false;
     this.__active = false;
+    this.__hasDes = true;
     return this;
   }
 

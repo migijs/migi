@@ -638,9 +638,11 @@ var SPECIAL_PROP = {
       }
     });
   }
+  //@overwrite
   VirtualDom.prototype.__reset = function(name, props, children) {
     if(props===void 0)props={};if(children===void 0)children=[];Element.prototype.__reset.call(this,name, props, children);
     this.__init(name, children);
+    this.__hasDes = false;
     return this;
   }
   VirtualDom.prototype.__destroy = function() {
@@ -651,6 +653,7 @@ var SPECIAL_PROP = {
     this.__inline = null;
     this.__hover = false;
     this.__active = false;
+    this.__hasDes = true;
     return this;
   }
 

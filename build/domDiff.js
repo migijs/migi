@@ -68,7 +68,7 @@ function add(elem, nvd, ranges, option, history) {
   else {
     if(nvd instanceof Element) {
       insertAt(elem, elem.childNodes, option.start++, nvd);
-      option.state = DOM_TO_DOM;
+      //option.state = DOM_TO_DOM;
     }
     else {
       switch(option.state) {
@@ -81,7 +81,7 @@ function add(elem, nvd, ranges, option, history) {
           insertAt(elem, elem.childNodes, option.start, nvd, true);
           break;
       }
-      option.state = TEXT_TO_TEXT;
+      //option.state = TEXT_TO_TEXT;
     }
   }
   option.first = false;
@@ -98,7 +98,16 @@ function del(elem, ovd, ranges, option, history) {
   }
   else {
     if(ovd instanceof Element) {
-      elem.removeChild(elem.childNodes[option.start]);
+      switch(option.state) {
+        case DOM_TO_TEXT:
+        case TEXT_TO_TEXT:
+          elem.removeChild(elem.childNodes[option.start + 1]);
+          break;
+        case DOM_TO_DOM:
+        case TEXT_TO_DOM:
+          elem.removeChild(elem.childNodes[option.start]);
+          break;
+      }
       //缓存对象池
       cachePool.add(ovd.__destroy());
     }
@@ -445,6 +454,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               break;
           }
         }
+        //缓存对象池
+        cachePool.add(ovd.__destroy());
         option.state = DOM_TO_TEXT;
         option.prev = type.TEXT;
         break;
@@ -493,6 +504,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
           var node = util.getParent(nvd.name);
           node.innerHTML = nvd.toString();
           elem.replaceChild(node.firstChild, elem.childNodes[option.start]);
+          //缓存对象池
+          cachePool.add(ovd.__destroy());
         }
         option.state = DOM_TO_DOM;
         option.prev = type.DOM;
