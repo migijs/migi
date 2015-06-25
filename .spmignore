@@ -8,5 +8,4 @@ tests/
 demo/
 node_modules/
 gulpfile.js
-tests/**/script.js
 reports/
