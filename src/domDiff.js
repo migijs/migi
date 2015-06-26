@@ -56,100 +56,78 @@ function insertAt(elem, cns, index, vd, isText) {
 }
 
 function add(elem, nvd, ranges, option, history) {
-  //可能第1个老的是空数组
-  if(option.first) {
-    var isDOM = nvd instanceof Element;
-    replaceWith(elem, elem.childNodes, 0, nvd, !isDOM);
-    option.state = isDOM ? TEXT_TO_DOM : TEXT_TO_TEXT;
-    if(!isDOM) {
-      range.record(history, option);
+  if(nvd instanceof Element) {
+    switch(option.state) {
+      case DOM_TO_TEXT:
+      //d(t) -> td(t)，插入一个d时需记录，应该是tad，效果等同t2d
+      //option.t2d = true;
+      case TEXT_TO_TEXT:
+        addRange(ranges, option);
+        option.start++;
+        //t(t) -> td(t)，插入一个d时需记录，后面可能的t需操作
+        option.t2d = true;
+      case TEXT_TO_DOM:
+        //t(t) -> dd(t)，插入一个d时需记录，后面可能的t需操作
+        option.t2d = true;
+      case DOM_TO_DOM:
+        insertAt(elem, elem.childNodes, option.start++, nvd);
     }
+    option.state = DOM_TO_DOM;
+    option.prev = type.DOM;
   }
   else {
-    if(nvd instanceof Element) {
-      switch(option.state) {
-        case DOM_TO_TEXT:
-          //d(t) -> td(t)，插入一个d时需记录，应该是tad，效果等同t2d
-          //option.t2d = true;
-        case TEXT_TO_TEXT:
-          addRange(ranges, option);
-          option.start++;
-          //t(t) -> td(t)，插入一个d时需记录，后面可能的t需操作
-          option.t2d = true;
-        case TEXT_TO_DOM:
-          //t(t) -> dd(t)，插入一个d时需记录，后面可能的t需操作
-          option.t2d = true;
-        case DOM_TO_DOM:
-          insertAt(elem, elem.childNodes, option.start++, nvd);
-      }
-      option.state = DOM_TO_DOM;
-      option.prev = type.DOM;
+    switch(option.state) {
+      case DOM_TO_TEXT:
+        //d(t) -> tt(t)，删掉一个t时记录，后面可能的t需操作
+        option.d2t = true;
+      case TEXT_TO_TEXT:
+        addRange(ranges, option);
+        option.state = TEXT_TO_TEXT;
+        break;
+      case DOM_TO_DOM:
+      case TEXT_TO_DOM:
+        range.record(history, option);
+        insertAt(elem, elem.childNodes, option.start, nvd, true);
+        option.state = DOM_TO_TEXT;
+        option.d2t = true;
+        break;
     }
-    else {
-      switch(option.state) {
-        case DOM_TO_TEXT:
-          //d(t) -> tt(t)，删掉一个t时记录，后面可能的t需操作
-          option.d2t = true;
-        case TEXT_TO_TEXT:
-          addRange(ranges, option);
-          option.state = TEXT_TO_TEXT;
-          break;
-        case DOM_TO_DOM:
-        case TEXT_TO_DOM:
-          range.record(history, option);
-          option.d2t = true;
-          insertAt(elem, elem.childNodes, option.start, nvd, true);
-          option.state = DOM_TO_TEXT;
-          break;
-      }
-      option.prev = type.TEXT;
-    }
+    option.prev = type.TEXT;
   }
   option.first = false;
 }
 function del(elem, ovd, ranges, option, history) {
-  //可能第1个新的是空数组
-  if(option.first) {
-    elem.removeChild(elem.childNodes[0]);
-    var isDOM = ovd instanceof Element;
-    option.state = isDOM ? TEXT_TO_TEXT : DOM_TO_DOM;
-    if(!isDOM) {
-      range.record(history, option);
+  if(ovd instanceof Element) {
+    switch(option.state) {
+      case DOM_TO_TEXT:
+      case TEXT_TO_TEXT:
+        elem.removeChild(elem.childNodes[option.start + 1]);
+        option.prev = type.TEXT;
+        break;
+      case TEXT_TO_DOM:
+        option.state = DOM_TO_DOM;
+      case DOM_TO_DOM:
+        elem.removeChild(elem.childNodes[option.start]);
+        option.prev = type.DOM;
+        break;
     }
+    //缓存对象池
+    cachePool.add(ovd.__destroy());
   }
   else {
-    if(ovd instanceof Element) {
-      switch(option.state) {
-        case DOM_TO_TEXT:
-        case TEXT_TO_TEXT:
-          elem.removeChild(elem.childNodes[option.start + 1]);
-          option.prev = type.TEXT;
-          break;
-        case TEXT_TO_DOM:
-          option.state = DOM_TO_DOM;
-        case DOM_TO_DOM:
-          elem.removeChild(elem.childNodes[option.start]);
-          option.prev = type.DOM;
-          break;
-      }
-      //缓存对象池
-      cachePool.add(ovd.__destroy());
-    }
-    else {
-      switch(option.state) {
-        case DOM_TO_TEXT:
-          elem.removeChild(elem.childNodes[option.start + 1]);
-          option.state = TEXT_TO_TEXT;
-        case TEXT_TO_TEXT:
-          option.prev = type.TEXT;
-        case DOM_TO_DOM:
-          addRange(ranges, option);
-          break;
-        case TEXT_TO_DOM:
-          elem.removeChild(elem.childNodes[option.start]);
-          option.prev = type.DOM;
-          break;
-      }
+    switch(option.state) {
+      case DOM_TO_TEXT:
+        elem.removeChild(elem.childNodes[option.start + 1]);
+        option.state = TEXT_TO_TEXT;
+      case TEXT_TO_TEXT:
+        option.prev = type.TEXT;
+      case DOM_TO_DOM:
+        addRange(ranges, option);
+        break;
+      case TEXT_TO_DOM:
+        elem.removeChild(elem.childNodes[option.start]);
+        option.prev = type.DOM;
+        break;
     }
   }
 }
