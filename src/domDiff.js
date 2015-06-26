@@ -139,12 +139,15 @@ function del(elem, ovd, ranges, option, history) {
       switch(option.state) {
         case DOM_TO_TEXT:
           elem.removeChild(elem.childNodes[option.start + 1]);
+          option.state = TEXT_TO_TEXT;
         case TEXT_TO_TEXT:
+          option.prev = type.TEXT;
         case DOM_TO_DOM:
           addRange(ranges, option);
           break;
         case TEXT_TO_DOM:
           elem.removeChild(elem.childNodes[option.start]);
+          option.prev = type.DOM;
           break;
       }
     }
