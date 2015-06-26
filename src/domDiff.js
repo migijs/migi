@@ -55,81 +55,118 @@ function insertAt(elem, cns, index, vd, isText) {
   }
 }
 
-function add(elem, nvd, ranges, option, history) {
-  if(nvd instanceof Element) {
+function add(elem, vd, ranges, option, history) {
+  if(vd instanceof Element) {
     switch(option.state) {
       case DOM_TO_TEXT:
-      //d(t) -> td(t)，插入一个d时需记录，应该是tad，效果等同t2d
-      //option.t2d = true;
+        //d(t) -> td(t)
+        option.d2t = true;
+        break;
       case TEXT_TO_TEXT:
         addRange(ranges, option);
         option.start++;
-        //t(t) -> td(t)，插入一个d时需记录，后面可能的t需操作
+        //t(t) -> td(t)
         option.t2d = true;
+        break;
       case TEXT_TO_DOM:
-        //t(t) -> dd(t)，插入一个d时需记录，后面可能的t需操作
+        //t(t) -> dd(t)
         option.t2d = true;
-      case DOM_TO_DOM:
-        insertAt(elem, elem.childNodes, option.start++, nvd);
+        break;
+      //case DOM_TO_DOM:
+        //d(t) -> dd(t)
     }
+    insertAt(elem, elem.childNodes, option.start++, vd);
     option.state = DOM_TO_DOM;
     option.prev = type.DOM;
   }
   else {
+    check(option, elem, vd, ranges, history);
     switch(option.state) {
       case DOM_TO_TEXT:
-        //d(t) -> tt(t)，删掉一个t时记录，后面可能的t需操作
+        //d(t) -> tt(t)
         option.d2t = true;
       case TEXT_TO_TEXT:
         addRange(ranges, option);
-        option.state = TEXT_TO_TEXT;
+        //t(t) -> tt(t)
         break;
-      case DOM_TO_DOM:
       case TEXT_TO_DOM:
         range.record(history, option);
-        insertAt(elem, elem.childNodes, option.start, nvd, true);
-        option.state = DOM_TO_TEXT;
+        insertAt(elem, elem.childNodes, option.start, vd, true);
+        addRange(ranges, option);
+        //t(t) -> dt(t)
+        break;
+      case DOM_TO_DOM:
+        range.record(history, option);
+        insertAt(elem, elem.childNodes, option.start, vd, true);
+        //d(t) -> dt(t)
         option.d2t = true;
         break;
     }
+    option.state = TEXT_TO_TEXT;
     option.prev = type.TEXT;
   }
-  option.first = false;
 }
-function del(elem, ovd, ranges, option, history) {
-  if(ovd instanceof Element) {
+function del(elem, vd, ranges, option, history) {
+  if(vd instanceof Element) {
     switch(option.state) {
       case DOM_TO_TEXT:
-      case TEXT_TO_TEXT:
-        elem.removeChild(elem.childNodes[option.start + 1]);
+        removeAt(elem, option.start + 1);
         option.prev = type.TEXT;
+        //dd(t) -> t(t)
+        option.d2t = true;
+        break;
+      case TEXT_TO_TEXT:
+        removeAt(elem, option.start + 1);
+        option.prev = type.TEXT;
+        //td(t) -> t(t)
+        option.d2t = true;
         break;
       case TEXT_TO_DOM:
+        removeAt(elem, option.start);
         option.state = DOM_TO_DOM;
-      case DOM_TO_DOM:
-        elem.removeChild(elem.childNodes[option.start]);
         option.prev = type.DOM;
+        //td(t) -> d(t)
+        break;
+      case DOM_TO_DOM:
+        removeAt(elem, option.start);
+        option.prev = type.DOM;
+        //dd(t) -> d(t)
         break;
     }
     //缓存对象池
-    cachePool.add(ovd.__destroy());
+    cachePool.add(vd.__destroy());
   }
   else {
     switch(option.state) {
       case DOM_TO_TEXT:
-        elem.removeChild(elem.childNodes[option.start + 1]);
+        removeAt(elem, option.start + 1);
+        addRange(ranges, option);
         option.state = TEXT_TO_TEXT;
-      case TEXT_TO_TEXT:
         option.prev = type.TEXT;
+        //dt(t) -> t(t)
+        break;
+      case TEXT_TO_TEXT:
+        addRange(ranges, option);
+        option.prev = type.TEXT;
+        //tt(t) -> t(t)
+        break;
       case DOM_TO_DOM:
         addRange(ranges, option);
+        removeAt(elem, option.start);
+        option.prev = type.DOM;
+        //dt(t) -> d(t)
+        option.t2d = true;
         break;
       case TEXT_TO_DOM:
-        elem.removeChild(elem.childNodes[option.start]);
         option.prev = type.DOM;
+        //tt(t) -> d(t)
+        option.t2d = true;
         break;
     }
   }
+}
+function removeAt(elem, start) {
+  elem.removeChild(elem.childNodes[start]);
 }
 
 function equalText(a, b) {
@@ -422,6 +459,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
               option.start++;
               break;
           }
+          delete option.t2d;
+          delete option.d2t;
         }
         //DOM名没变递归diff
         if(ovd.name == nvd.name) {
@@ -453,6 +492,7 @@ export function check(option, elem, vd, ranges, history) {
   }
   else if(option.d2t) {
     delete option.d2t;
-    del(elem, vd, ranges, option);
+    addRange(ranges, option);
+    removeAt(elem, option.start + 1);
   }
 }

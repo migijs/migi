@@ -326,6 +326,24 @@ module.exports = {
       .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'txtdomtxtdom')
       .assert.containsText('#test p[ref="1"]', '1,1,1,1,1,1,1,2,2,3,4,4,')
       .assert.containsText('#test p[ref="2"]', 'txt,beforetxt,txtafter,beforetxtafter,txttxt,txtmiddletxt,beforetxtmiddletxtafter,txt<span migi-uid="11">dom</span>,<span migi-uid="13">dom</span>txt,<span migi-uid="15">dom</span>txt<span migi-uid="16">dom</span>,<span migi-uid="18">dom</span>txt<span migi-uid="19">dom</span>txt,txt<span migi-uid="21">dom</span>txt<span migi-uid="22">dom</span>,')
+  },
+  'text2[dom,text]': function(browser) {
+    browser
+      .click('#test strong')
+      .assert.containsText('#test li[title="1个变量"]', 'domtxt')
+      .assert.containsText('#test li[title="静态+变量"]', 'beforedomtxt')
+      .assert.containsText('#test li[title="变量+静态"]', 'domtxtafter')
+      .assert.containsText('#test li[title="静态+变量+静态"]', 'beforedomtxtafter')
+      .assert.containsText('#test li[title="变量+变量"]', 'domtxtdomtxt')
+      .assert.containsText('#test li[title="变量+静态+变量"]', 'domtxtmiddledomtxt')
+      .assert.containsText('#test li[title="静态+变量+静态+变量+静态"]', 'beforedomtxtmiddledomtxtafter')
+      .assert.containsText('#test li[title="变量+DOM"]', 'domtxtdom')
+      .assert.containsText('#test li[title="DOM+变量"]', 'domdomtxt')
+      .assert.containsText('#test li[title="DOM+变量+DOM"]', 'domdomtxtdom')
+      .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'domdomtxtdomdomtxt')
+      .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'domtxtdomdomtxtdom')
+      .assert.containsText('#test p[ref="1"]', '2,3,2,3,4,4,5,3,3,4,6,6,')
+      .assert.containsText('#test p[ref="2"]', '<b migi-uid="33">dom</b>txt,before<b migi-uid="33">dom</b>txt,<b migi-uid="33">dom</b>txtafter,before<b migi-uid="33">dom</b>txtafter,<b migi-uid="33">dom</b>txt<b migi-uid="33">dom</b>txt,<b migi-uid="33">dom</b>txtmiddle<b migi-uid="33">dom</b>txt,before<b migi-uid="33">dom</b>txtmiddle<b migi-uid="33">dom</b>txtafter,<b migi-uid="33">dom</b>txt<span migi-uid="11">dom</span>,<span migi-uid="13">dom</span><b migi-uid="33">dom</b>txt,<span migi-uid="15">dom</span><b migi-uid="33">dom</b>txt<span migi-uid="16">dom</span>,<span migi-uid="18">dom</span><b migi-uid="33">dom</b>txt<span migi-uid="19">dom</span><b migi-uid="33">dom</b>txt,<b migi-uid="33">dom</b>txt<span migi-uid="21">dom</span><b migi-uid="33">dom</b>txt<span migi-uid="22">dom</span>,')
       .end()
   }
 };
