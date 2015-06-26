@@ -59,8 +59,8 @@ function add(elem, vd, ranges, option, history) {
   if(vd instanceof Element) {
     switch(option.state) {
       case DOM_TO_TEXT:
+        option.start++;
         //d(t) -> td(t)
-        option.d2t = true;
         break;
       case TEXT_TO_TEXT:
         addRange(ranges, option);
@@ -151,7 +151,6 @@ function del(elem, vd, ranges, option, history) {
         //tt(t) -> t(t)
         break;
       case DOM_TO_DOM:
-        addRange(ranges, option);
         removeAt(elem, option.start);
         option.prev = type.DOM;
         //dt(t) -> d(t)
