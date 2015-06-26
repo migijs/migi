@@ -380,6 +380,24 @@ module.exports = {
       .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'txtdomdomtxtdomdom')
       .assert.containsText('#test p[ref="1"]', '2,2,3,3,4,4,5,3,3,4,6,6,')
       .assert.containsText('#test p[ref="2"]', 'txt<b migi-uid="35">dom</b>,beforetxt<b migi-uid="35">dom</b>,txt<b migi-uid="35">dom</b>after,beforetxt<b migi-uid="35">dom</b>after,txt<b migi-uid="35">dom</b>txt<b migi-uid="35">dom</b>,txt<b migi-uid="35">dom</b>middletxt<b migi-uid="35">dom</b>,beforetxt<b migi-uid="35">dom</b>middletxt<b migi-uid="35">dom</b>after,txt<b migi-uid="35">dom</b><span migi-uid="11">dom</span>,<span migi-uid="13">dom</span>txt<b migi-uid="35">dom</b>,<span migi-uid="15">dom</span>txt<b migi-uid="35">dom</b><span migi-uid="16">dom</span>,<span migi-uid="18">dom</span>txt<b migi-uid="35">dom</b><span migi-uid="19">dom</span>txt<b migi-uid="35">dom</b>,txt<b migi-uid="35">dom</b><span migi-uid="21">dom</span>txt<b migi-uid="35">dom</b><span migi-uid="22">dom</span>,')
+  },
+  '[text,dom]2dom': function(browser) {
+    browser
+      .click('#test strong')
+      .assert.containsText('#test li[title="1个变量"]', 'dom')
+      .assert.containsText('#test li[title="静态+变量"]', 'beforedom')
+      .assert.containsText('#test li[title="变量+静态"]', 'domafter')
+      .assert.containsText('#test li[title="静态+变量+静态"]', 'beforedomafter')
+      .assert.containsText('#test li[title="变量+变量"]', 'dom')
+      .assert.containsText('#test li[title="变量+静态+变量"]', 'dommiddledom')
+      .assert.containsText('#test li[title="静态+变量+静态+变量+静态"]', 'beforedommiddledomafter')
+      .assert.containsText('#test li[title="变量+DOM"]', 'domdom')
+      .assert.containsText('#test li[title="DOM+变量"]', 'domdom')
+      .assert.containsText('#test li[title="DOM+变量+DOM"]', 'domdomdom')
+      .assert.containsText('#test li[title="DOM+变量+DOM+变量"]', 'domdomdomdom')
+      .assert.containsText('#test li[title="变量+DOM+变量+DOM"]', 'domdomdomdom')
+      .assert.containsText('#test p[ref="1"]', '1,2,2,3,2,3,5,2,2,3,4,4,')
+      .assert.containsText('#test p[ref="2"]', '<b migi-uid="36">dom</b>,before<b migi-uid="36">dom</b>,<b migi-uid="36">dom</b>after,before<b migi-uid="36">dom</b>after,<b migi-uid="36">dom</b><b migi-uid="36">dom</b>,<b migi-uid="36">dom</b>middle<b migi-uid="36">dom</b>,before<b migi-uid="36">dom</b>middle<b migi-uid="36">dom</b>after,<b migi-uid="36">dom</b><span migi-uid="11">dom</span>,<span migi-uid="13">dom</span><b migi-uid="36">dom</b>,<span migi-uid="15">dom</span><b migi-uid="36">dom</b><span migi-uid="16">dom</span>,<span migi-uid="18">dom</span><b migi-uid="36">dom</b><span migi-uid="19">dom</span><b migi-uid="36">dom</b>,<b migi-uid="36">dom</b><span migi-uid="21">dom</span><b migi-uid="36">dom</b><span migi-uid="22">dom</span>,')
       .end()
   }
 };
