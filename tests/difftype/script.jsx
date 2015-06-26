@@ -76,7 +76,7 @@ class Component extends migi.Component {
         this.data = ['txt',<b>dom</b>];
         break;
       case 20:
-        this.data = <b>dom</b>;
+        this.data = [<b>dom</b>,<b>dom</b>];
         break;
     }
     this.record();
