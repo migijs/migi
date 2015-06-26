@@ -521,14 +521,14 @@ class VirtualDom extends Element {
       }
       //注意空数组算text类型
       else {
-        domDiff.check(option, this.element, child, ranges);
+        domDiff.check(option, this.element, child, ranges, history);
         range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      domDiff.check(option, this.element, child, ranges);
+      domDiff.check(option, this.element, child, ranges, history);
       range.record(history, option);
       option.prev = type.TEXT;
     }

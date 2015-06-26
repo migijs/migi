@@ -17,27 +17,30 @@ exports.merge=merge;function merge(ranges) {
   }
 };
 
-function join(index, children) {
+function join(index, children, history) {
   var res = '';
   for(var i = index.shift(), len = children.length; i < len; i++) {
     var child = children[i];
     if(index.length) {
       if(child instanceof Obj) {
-        res += join(index, child.v);
+        res += join(index, child.v, history);
       }
       else {
-        res += join(index, child);
+        res += join(index, child, history);
+      }
+      if(history.end) {
+        break;
       }
     }
     else if(child instanceof Obj) {
       if(Array.isArray(child.v)) {
-        var history = {};
         res += joinObj(child.v, history);
         if(history.end) {
           break;
         }
       }
       else if(child.v instanceof Element) {
+        history.end = true;
         break;
       }
       else {
@@ -45,6 +48,7 @@ function join(index, children) {
       }
     }
     else if(child instanceof Element) {
+      history.end = true;
       break;
     }
     else {
@@ -81,7 +85,7 @@ exports.update=update;function update(item, children, elem) {
     VirtualDom = VirtualDom['default'];
   }
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
-  var res = join(item.index, children);
+  var res = join(item.index, children, {});
   var cns = elem.childNodes;
   var textNode = cns[item.start];
   //神奇的地方，更新的对象是个DOM而不是TEXT，会发生在混杂情况下的t2d变化

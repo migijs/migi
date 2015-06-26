@@ -69,28 +69,40 @@ function add(elem, nvd, ranges, option, history) {
     if(nvd instanceof Element) {
       switch(option.state) {
         case DOM_TO_TEXT:
+          //d(t) -> td(t)，插入一个d时需记录，应该是tad，效果等同t2d
+          //option.t2d = true;
         case TEXT_TO_TEXT:
           addRange(ranges, option);
           option.start++;
-        case DOM_TO_DOM:
+          //t(t) -> td(t)，插入一个d时需记录，后面可能的t需操作
+          option.t2d = true;
         case TEXT_TO_DOM:
+          //t(t) -> dd(t)，插入一个d时需记录，后面可能的t需操作
+          option.t2d = true;
+        case DOM_TO_DOM:
           insertAt(elem, elem.childNodes, option.start++, nvd);
-          break;
       }
-      //option.state = DOM_TO_DOM;
+      option.state = DOM_TO_DOM;
+      option.prev = type.DOM;
     }
     else {
       switch(option.state) {
         case DOM_TO_TEXT:
+          //d(t) -> tt(t)，删掉一个t时记录，后面可能的t需操作
+          option.d2t = true;
         case TEXT_TO_TEXT:
           addRange(ranges, option);
+          option.state = TEXT_TO_TEXT;
           break;
         case DOM_TO_DOM:
         case TEXT_TO_DOM:
+          range.record(history, option);
+          option.d2t = true;
           insertAt(elem, elem.childNodes, option.start, nvd, true);
+          option.state = DOM_TO_TEXT;
           break;
       }
-      //option.state = TEXT_TO_TEXT;
+      option.prev = type.TEXT;
     }
   }
   option.first = false;
@@ -100,7 +112,7 @@ function del(elem, ovd, ranges, option, history) {
   if(option.first) {
     elem.removeChild(elem.childNodes[0]);
     var isDOM = ovd instanceof Element;
-    option.state = isDOM ? TEXT_TO_TEXT : DOM_TO_TEXT;
+    option.state = isDOM ? TEXT_TO_TEXT : DOM_TO_DOM;
     if(!isDOM) {
       range.record(history, option);
     }
@@ -111,10 +123,13 @@ function del(elem, ovd, ranges, option, history) {
         case DOM_TO_TEXT:
         case TEXT_TO_TEXT:
           elem.removeChild(elem.childNodes[option.start + 1]);
+          option.prev = type.TEXT;
           break;
-        case DOM_TO_DOM:
         case TEXT_TO_DOM:
+          option.state = DOM_TO_DOM;
+        case DOM_TO_DOM:
           elem.removeChild(elem.childNodes[option.start]);
+          option.prev = type.DOM;
           break;
       }
       //缓存对象池
@@ -223,17 +238,19 @@ exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
       option.state = DOM_TO_DOM;
     }
   }
-  diffChild(elem, ov, nv, ranges, option, history);
+  diffChild(elem, ov, nv, ranges, option, history, true);
   //当最后一次对比是类型变换时记录，因为随后的text可能要更新
-  if(option.state == TEXT_TO_DOM) {
-    option.t2d = true;
-  }
-  else if(option.state == DOM_TO_TEXT) {
-    option.d2t = true;
+  if(!option.t2d && !option.d2t) {
+    if(option.state == TEXT_TO_DOM) {
+      option.t2d = true;
+    }
+    else if(option.state == DOM_TO_TEXT) {
+      option.d2t = true;
+    }
   }
 }
 
-function diffChild(elem, ovd, nvd, ranges, option, history) {
+function diffChild(elem, ovd, nvd, ranges, option, history, first) {
   //新老值是否是数组处理方式不同
   var oa = Array.isArray(ovd);
   var na = Array.isArray(nvd);
@@ -255,15 +272,16 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
       //有内容的数组变为空数组
       case 1:
-        diffChild(elem, ovd[0], nvd[0], ranges, option, history);
+        diffChild(elem, ovd[0], nvd[0], ranges, option, history, first);
         for(var i = 1; i < ol; i++) {
           del(elem, ovd[i], ranges, option, history);
         }
         break;
       //空数组变为有内容
       case 2:
-        diffChild(elem, ovd[0], nvd[0], ranges, option, history);
+        diffChild(elem, ovd[0], nvd[0], ranges, option, history, first);
         for(var i = 1; i < nl; i++) {
+          history[history.length - 1] = i;
           add(elem, nvd[i], ranges, option, history);
         }
         break;
@@ -271,7 +289,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
       case 3:
         for(var i = 0, len = Math.min(ol, nl); i < len; i++) {
           history[history.length - 1] = i;
-          diffChild(elem, ovd[i], nvd[i], ranges, option, history);
+          diffChild(elem, ovd[i], nvd[i], ranges, option, history, first && !i);
         }
         //老的多余的删除
         for(var j = i; j < ol; j++) {
@@ -279,6 +297,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         }
         //新的多余的插入
         for(var j = i; j < nl; j++) {
+          history[history.length - 1] = i;
           add(elem, nvd[j], ranges, option, history);
         }
         break;
@@ -288,7 +307,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   //老的是数组新的不是
   else if(oa) {
     //将老的第1个和新的相比，注意老的第一个可能还是个数组，递归下去
-    diffChild(elem, ovd[0], nvd, ranges, option, history);
+    diffChild(elem, ovd[0], nvd, ranges, option, history, first);
     //移除剩余的老的
     for(var i = 1, len = ovd.length; i < len; i++) {
       del(elem, ovd[i], ranges, option, history);
@@ -296,12 +315,15 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   }
   //新的是数组老的不是
   else if(na) {
+    history.push(0);
     //将新的第1个和老的相比，注意新的第一个可能还是个数组，递归下去
-    diffChild(elem, ovd, nvd[0], ranges, option, history);
+    diffChild(elem, ovd, nvd[0], ranges, option, history, first);
     //增加剩余的新的
     for(var i = 1, len = nvd.length; i < len; i++) {
+      history[history.length - 1] = i;
       add(elem, nvd[i], ranges, option, history);
     }
+    history.pop();
   }
   //都不是数组
   else {
@@ -311,6 +333,9 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
     switch(oe + ne) {
       //都是text时，根据上个节点类型和history设置range
       case 0:
+        if(!option.first && first) {
+          check(option, elem, nvd, ranges, history);
+        }
         range.record(history, option);
         var cns = elem.childNodes;
         if(option.first) {
@@ -438,10 +463,12 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   option.first = false;
 }
 
-exports.check=check;function check(option, elem, vd, ranges) {
+exports.check=check;function check(option, elem, vd, ranges, history) {
   if(option.t2d) {
     delete option.t2d;
-    insertAt(elem, elem.childNodes, option.start++, vd, true);
+    range.record(history, option);
+    addRange(ranges, option);
+    insertAt(elem, elem.childNodes, option.start, vd, true);
   }
   else if(option.d2t) {
     delete option.d2t;

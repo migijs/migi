@@ -103,9 +103,6 @@ class Component extends migi.Component {
           <li title="静态+变量">before{this.data}</li>
           <li title="变量+静态">{this.data}after</li>
           <li title="静态+变量+静态">before{this.data}after</li>
-          <li title="空+变量">{null} {this.data}</li>
-          <li title="变量+空">{this.data} {null}</li>
-          <li title="空+变量+空">{null} {this.data} {null}</li>
           <li title="变量+变量">{this.data} {this.data}</li>
           <li title="变量+静态+变量">{this.data}middle{this.data}</li>
           <li title="静态+变量+静态+变量+静态">before{this.data}middle{this.data}after</li>
