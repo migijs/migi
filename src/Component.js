@@ -78,41 +78,61 @@ class Component extends Element {
   }
   bind(target, include, exclude) {
     var self = this;
-    self.on(Event.DATA, function(k) {
+    if(target == this) {
+      throw new Error('can not bind self: ' + self.name);
+    }
+    function cb1(k, origin) {
+      if(origin == cb2) {
+        return;
+      }
       if(!include || include.indexOf(k) > -1) {
         if(!exclude || exclude.indexOf(k) == -1) {
-          if(target[k] !== self[k]) {
-            target[k] = self[k];
-          }
+          target[k] = self[k];
         }
       }
-    });
-    target.on(Event.DATA, function(k) {
+    }
+    function cb2(k, origin) {
+      if(origin == cb1) {
+        return;
+      }
       if(!include || include.indexOf(k) > -1) {
         if(!exclude || exclude.indexOf(k) == -1) {
-          if(target[k] !== self[k]) {
-            self[k] = target[k];
-          }
+          self[k] = target[k];
         }
       }
-    });
+    }
+    self.on(Event.DATA, cb1);
+    target.on(Event.DATA, cb2);
   }
   bindTo(target, include, exclude) {
     target.bind(this, include, exclude);
   }
+  __cb(target, k, o, origin) {
+    if(origin == target.__cb) {
+      return;
+    }
+    //同名无需name，直接function作为middleware
+    if(util.isFunction(o)) {
+      target[k] = o(this[k]);
+    }
+    //只有name说明无需数据处理
+    else if(util.isString(o)) {
+      target[o] = this[k];
+    }
+    else if(o.name) {
+      var v = o.middleware ? o.middleware.call(this, this[k]) : this[k];
+      target[o.name] = v;
+    }
+  }
   bridge(target, datas) {
     var self = this;
-    self.on(Event.DATA, function(k) {
+    if(target == this) {
+      throw new Error('can not bridge self: ' + self.name);
+    }
+    self.on(Event.DATA, function(k, origin) {
       if(datas.hasOwnProperty(k)) {
         var o = datas[k];
-        //同名无需name，直接function作为middleware
-        if(util.isFunction(o)) {
-          target[k] = o(self[k]);
-        }
-        else if(o.name) {
-          var v = o.middleware ? o.middleware.call(self, self[k]) : self[k];
-          target[o.name] = v;
-        }
+        self.__cb(target, k, o, origin);
       }
     });
   }
