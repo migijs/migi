@@ -107,8 +107,8 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
   Component.prototype.bindTo = function(target, include, exclude) {
     target.bind(this, include, exclude);
   }
-  Component.prototype.__cb = function(target, k, o, origin) {
-    if(origin == target.__cb) {
+  Component.prototype.__bcb = function(target, k, o, origin) {
+    if(origin == target.__bcb) {
       return;
     }
     //同名无需name，直接function作为middleware
@@ -132,7 +132,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     self.on(Event.DATA, function(k, origin) {
       if(datas.hasOwnProperty(k)) {
         var o = datas[k];
-        self.__cb(target, k, o, origin);
+        self.__bcb(target, k, o, origin);
       }
     });
   }

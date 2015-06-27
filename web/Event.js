@@ -93,5 +93,6 @@ define(function(require, exports, module){
 
 Event.DOM = '__0';
 Event.DATA = '__1';
+Event.CACHE_DATA = '__2';
 
 exports["default"]=Event;});

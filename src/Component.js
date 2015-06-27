@@ -107,8 +107,8 @@ class Component extends Element {
   bindTo(target, include, exclude) {
     target.bind(this, include, exclude);
   }
-  __cb(target, k, o, origin) {
-    if(origin == target.__cb) {
+  __bcb(target, k, o, origin) {
+    if(origin == target.__bcb) {
       return;
     }
     //同名无需name，直接function作为middleware
@@ -132,7 +132,7 @@ class Component extends Element {
     self.on(Event.DATA, function(k, origin) {
       if(datas.hasOwnProperty(k)) {
         var o = datas[k];
-        self.__cb(target, k, o, origin);
+        self.__bcb(target, k, o, origin);
       }
     });
   }
