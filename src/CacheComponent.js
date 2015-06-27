@@ -7,16 +7,16 @@ class CachedComponent extends Component {
     this.__handler = {};
   }
 
-  __onData(target, k) {
+  __onData(k) {
     var self = this;
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
     function cb() {
-      self.virtualDom.emit(Event.DATA, target, k);
+      self.virtualDom.emit(Event.DATA, k);
       self.children.forEach(function(child) {
         if(child instanceof Component) {
-          child.emit(Event.DATA, target, k);
+          child.emit(Event.DATA, k);
         }
       });
     }

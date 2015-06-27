@@ -7,16 +7,16 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
     this.__handler = {};
   }
 
-  CachedComponent.prototype.__onData = function(target, k) {
+  CachedComponent.prototype.__onData = function(k) {
     var self = this;
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
     function cb() {
-      self.virtualDom.emit(Event.DATA, target, k);
+      self.virtualDom.emit(Event.DATA, k);
       self.children.forEach(function(child) {
         if(child instanceof Component) {
-          child.emit(Event.DATA, target, k);
+          child.emit(Event.DATA, k);
         }
       });
     }
