@@ -12,18 +12,16 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
-    function cb() {
-      self.virtualDom.emit(Event.DATA, k);
+    self.__handler[k] = true;
+    setTimeout(function() {
+      var keys = Object.keys(self.__handler);
+      self.__handler = {};
+      self.virtualDom.emit(Event.DATA, keys);
       self.children.forEach(function(child) {
         if(child instanceof Component) {
-          child.emit(Event.DATA, k);
+          child.emit(Event.DATA, keys);
         }
       });
-    }
-    self.__handler[k] = cb;
-    setTimeout(function() {
-      cb();
-      delete self.__handler[k];
     }, 1);
   }
 Object.keys(Component).forEach(function(k){CachedComponent[k]=Component[k]});
