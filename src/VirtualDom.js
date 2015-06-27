@@ -333,7 +333,7 @@ class VirtualDom extends Element {
     var self = this;
     self.__style = v;
     if(self.parent instanceof VirtualDom) {
-      self.__names = self.parent.names.slice(0);
+      self.__names = self.parent.names.slice();
     }
     else {
       self.__names = [];
@@ -587,8 +587,8 @@ class VirtualDom extends Element {
   __match(first) {
     this.__inline = this.__cache.style || '';
     if(this.parent instanceof VirtualDom) {
-      this.__classes = this.parent.__classes.slice(0);
-      this.__ids = this.parent.__ids.slice(0);
+      this.__classes = this.parent.__classes.slice();
+      this.__ids = this.parent.__ids.slice();
     }
     else {
       this.__classes = [];
