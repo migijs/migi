@@ -179,6 +179,9 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);
     }
+    this.children.forEach(function(child) {
+      child.emit(Event.DATA, k);
+    })
   }
 Object.keys(_5).forEach(function(k){Object.defineProperty(Component.prototype,k,_5[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 

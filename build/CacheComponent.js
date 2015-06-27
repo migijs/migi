@@ -9,7 +9,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
   }
 
   CachedComponent.prototype.__onData = function(k) {
-    var self = this;
+    var _3=this;var self = this;
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
@@ -20,7 +20,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
         var keys = Object.keys(self.__handler);
         self.__handler = {};
         self.__cb = null;
-        Component.prototype.__onData.call(this,k);
+        Component.prototype.__onData.call(_3,keys);
       }, 1);
     }
   }

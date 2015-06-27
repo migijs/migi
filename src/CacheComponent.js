@@ -20,7 +20,7 @@ class CachedComponent extends Component {
         var keys = Object.keys(self.__handler);
         self.__handler = {};
         self.__cb = null;
-        super.__onData(k);
+        super.__onData(keys);
       }, 1);
     }
   }

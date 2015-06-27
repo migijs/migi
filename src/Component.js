@@ -179,6 +179,9 @@ class Component extends Element {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);
     }
+    this.children.forEach(function(child) {
+      child.emit(Event.DATA, k);
+    })
   }
 }
 
