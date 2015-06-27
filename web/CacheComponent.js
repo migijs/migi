@@ -20,12 +20,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
         var keys = Object.keys(self.__handler);
         self.__handler = {};
         self.__cb = null;
-        self.virtualDom.emit(Event.DATA, keys);
-        self.children.forEach(function(child) {
-          if(child instanceof Component) {
-            child.emit(Event.DATA, keys);
-          }
-        });
+        Component.prototype.__onData.call(this,k);
       }, 1);
     }
   }

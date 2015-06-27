@@ -20,12 +20,7 @@ class CachedComponent extends Component {
         var keys = Object.keys(self.__handler);
         self.__handler = {};
         self.__cb = null;
-        self.virtualDom.emit(Event.DATA, keys);
-        self.children.forEach(function(child) {
-          if(child instanceof Component) {
-            child.emit(Event.DATA, keys);
-          }
-        });
+        super.__onData(k);
       }, 1);
     }
   }
