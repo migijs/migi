@@ -32,54 +32,8 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")
       }, 1);
     }
   }
-  //@overwrite
-  CachedComponent.prototype.bind = function(target, include, exclude) {
-    var self = this;
-    if(target == this) {
-      throw new Error('can not bind self: ' + self.name);
-    }
-    self.on(Event.CACHE_DATA, function(k) {
-      //变更时设置对方不更新，防止闭环
-      target.__flag = true;
-      if(Array.isArray(k)) {
-        k.forEach(function(k) {
-          if(!include || include.indexOf(k) > -1) {
-            if(!exclude || exclude.indexOf(k) == -1) {
-              target[k] = self[k];
-            }
-          }
-        });
-      }
-      else {
-        if(!include || include.indexOf(k) > -1) {
-          if(!exclude || exclude.indexOf(k) == -1) {
-            target[k] = self[k];
-          }
-        }
-      }
-      target.__flag = false;
-    });
-    target.on(Event.CACHE_DATA, function(k) {
-      self.__flag = true;
-      if(Array.isArray(k)) {
-        k.forEach(function(k) {
-          if(!include || include.indexOf(k) > -1) {
-            if(!exclude || exclude.indexOf(k) == -1) {
-              self[k] = target[k];
-            }
-          }
-        });
-      }
-      else {
-        if(!include || include.indexOf(k) > -1) {
-          if(!exclude || exclude.indexOf(k) == -1) {
-            self[k] = target[k];
-          }
-        }
-      }
-      self.__flag = false;
-    });
-  }
+  //逻辑和Component复用，代码有点交叉的味道
+  //bind{}
   //@overwrite
   CachedComponent.prototype.bridge = function(target, datas) {
     var self = this;

@@ -47,7 +47,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
       var child = this.children[i];
       if(child instanceof Element) {
         if(child instanceof Component) {
-          if(child.name == name) {
+          if(child.name == name || child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -55,7 +55,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
           }
         }
         else {
-          if(child.name == name) {
+          if(child.name == name || child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -81,28 +81,54 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     if(target == this) {
       throw new Error('can not bind self: ' + self.name);
     }
-    function cb1(k, origin) {
+    function cb1(keys, origin) {
       if(origin == cb2) {
         return;
       }
-      if(!include || include.indexOf(k) > -1) {
-        if(!exclude || exclude.indexOf(k) == -1) {
-          target[k] = self[k];
+      //变更时设置对方CacheComponent不更新，防止闭环
+      target.__flag = true;
+      //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
+      if(!Array.isArray(keys)) {
+        keys = [keys];
+      }
+      //不能用foreach，会干扰origin的caller判断
+      for(var i = 0, len = keys.length; i < len; i++) {
+        var k = keys[i];
+        if(!include || include.indexOf(k) > -1) {
+          if(!exclude || exclude.indexOf(k) == -1) {
+            target[k] = self[k];
+          }
         }
       }
+      //关闭开关
+      target.__flag = false;
     }
-    function cb2(k, origin) {
+    function cb2(keys, origin) {
       if(origin == cb1) {
         return;
       }
-      if(!include || include.indexOf(k) > -1) {
-        if(!exclude || exclude.indexOf(k) == -1) {
-          self[k] = target[k];
+      //变更时设置对方CacheComponent不更新，防止闭环
+      self.__flag = true;
+      //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
+      if(!Array.isArray(keys)) {
+        keys = [keys];
+      }
+      //不能用foreach，会干扰origin的caller判断
+      for(var i = 0, len = keys.length; i < len; i++) {
+        var k = keys[i];
+        if(!include || include.indexOf(k) > -1) {
+          if(!exclude || exclude.indexOf(k) == -1) {
+            self[k] = target[k];
+          }
         }
       }
+      //关闭开关
+      self.__flag = false;
     }
-    self.on(Event.DATA, cb1);
-    target.on(Event.DATA, cb2);
+    //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
+    //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
+    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, cb1);
+    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, cb2);
   }
   Component.prototype.bindTo = function(target, include, exclude) {
     target.bind(this, include, exclude);
@@ -181,7 +207,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     }
     this.children.forEach(function(child) {
       child.emit(Event.DATA, k);
-    })
+    });
   }
 Object.keys(_5).forEach(function(k){Object.defineProperty(Component.prototype,k,_5[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
