@@ -76,22 +76,6 @@ function equal(a, b) {
   }
 }
 
-function getFirst(arr) {
-  var res = arr[0];
-  if(Array.isArray(res)) {
-    return getFirst(res);
-  }
-  return res;
-}
-
-function getLast(arr) {
-  var res = arr[arr.length - 1];
-  if(Array.isArray(res)) {
-    return getLast(res);
-  }
-  return res;
-}
-
 function joinArray(arr) {
   var res = '';
   arr.forEach(function(item) {
@@ -177,8 +161,6 @@ var util = {
     while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
     return v;
   }(),
-  getFirst,
-  getLast,
   joinArray
 };
 
