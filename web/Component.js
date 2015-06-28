@@ -47,7 +47,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
       var child = this.children[i];
       if(child instanceof Element) {
         if(child instanceof Component) {
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -55,7 +55,7 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
           }
         }
         else {
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;

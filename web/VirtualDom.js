@@ -303,7 +303,7 @@ var SPECIAL_PROP = {
       if(child instanceof Element) {
         if(child instanceof Component) {
           //传入的可能是个class或者string
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -311,7 +311,7 @@ var SPECIAL_PROP = {
           }
         }
         else {
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;

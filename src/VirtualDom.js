@@ -303,7 +303,7 @@ class VirtualDom extends Element {
       if(child instanceof Element) {
         if(child instanceof Component) {
           //传入的可能是个class或者string
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -311,7 +311,7 @@ class VirtualDom extends Element {
           }
         }
         else {
-          if(child.name == name || child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
