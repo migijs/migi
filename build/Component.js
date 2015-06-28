@@ -133,33 +133,43 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
   Component.prototype.bindTo = function(target, include, exclude) {
     target.bind(this, include, exclude);
   }
-  Component.prototype.__bcb = function(target, k, o, origin) {
+  Component.prototype.__bcb = function(target, k, stream, origin) {
     if(origin == target.__bcb) {
       return;
     }
+    //变更时设置对方CacheComponent不更新，防止闭环
+    target.__flag = true;
     //同名无需name，直接function作为middleware
-    if(util.isFunction(o)) {
-      target[k] = o(this[k]);
+    if(util.isFunction(stream)) {
+      target[k] = stream(this[k]);
     }
     //只有name说明无需数据处理
-    else if(util.isString(o)) {
-      target[o] = this[k];
+    else if(util.isString(stream)) {
+      target[stream] = this[k];
     }
-    else if(o.name) {
-      var v = o.middleware ? o.middleware.call(this, this[k]) : this[k];
-      target[o.name] = v;
+    else if(stream.name) {
+      var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+      target[stream.name] = v;
     }
+    //打开开关
+    target.__flag = false;
   }
   Component.prototype.bridge = function(target, datas) {
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
     }
-    self.on(Event.DATA, function(k, origin) {
-      if(datas.hasOwnProperty(k)) {
-        var o = datas[k];
-        self.__bcb(target, k, o, origin);
+    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //CacheComponent可能是个数组，统一逻辑
+      if(!Array.isArray(keys)) {
+        keys = [keys];
       }
+      keys.forEach(function(k) {
+        if(datas.hasOwnProperty(k)) {
+          var stream = datas[k];
+          self.__bcb(target, k, stream, origin);
+        }
+      });
     });
   }
   Component.prototype.bridgeTo = function(target, datas) {

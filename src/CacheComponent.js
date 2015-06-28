@@ -34,27 +34,7 @@ class CachedComponent extends Component {
   }
   //逻辑和Component复用，代码有点交叉的味道
   //bind{}
-  //@overwrite
-  bridge(target, datas) {
-    var self = this;
-    if(target == this) {
-      throw new Error('can not bridge self: ' + self.name);
-    }
-    self.on(Event.CACHE_DATA, function(k) {
-      //变更时设置对方不更新，防止闭环
-      target.__flag = true;
-      if(!Array.isArray(k)) {
-        k = [k];
-      }
-      k.forEach(function(k) {
-        if(datas.hasOwnProperty(k)) {
-          var o = datas[k];
-          self.__bcb(target, k, o);
-        }
-      });
-      target.__flag = false;
-    });
-  }
+  //bridge{}
 }
 
 export default CachedComponent;
