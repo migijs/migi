@@ -32,10 +32,11 @@ function isOrigin(o) {
   return util.isBoolean(o) || util.isNull(o) || util.isNumber(o) || util.isUndefined(o) || util.isString(o);
 }
 function equal(a, b) {
-  if(a === b) {
-    return true;
+  //vd常量
+  if(a instanceof Element || b instanceof Element) {
+    return a == b;
   }
-  if(isOrigin(a) || isOrigin(b) || util.isFunction(a) || util.isFunction(b)) {
+  if(isOrigin(a) || isOrigin(b)) {
     return a === b;
   }
   if(util.isArray(a)) {
@@ -56,7 +57,7 @@ function equal(a, b) {
     if(!util.isDate(b)) {
       return false;
     }
-    return a.toString() === b.toString();
+    return a - b == 0;
   }
   if(util.isObject(a)) {
     if(!util.isObject(b)) {
