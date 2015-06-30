@@ -237,6 +237,11 @@ function diffVd(ovd, nvd) {
   }
   range.merge(ranges);
   if(ranges.length) {
+    //textarea特殊判断
+    if(nvd.name == 'textarea') {
+      nvd.__updateAttr('value', range.value(ranges[0], nvd.children));
+      return;
+    }
     ranges.forEach(function(item) {
       range.update(item, nvd.children, elem);
     });
