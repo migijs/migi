@@ -494,7 +494,6 @@ export function check(option, elem, vd, ranges, history) {
   if(option.t2d) {
     delete option.t2d;
     range.record(history, option);
-    addRange(ranges, option);
     insertAt(elem, elem.childNodes, option.start, vd, true);
   }
   else if(option.d2t) {
