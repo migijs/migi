@@ -97,11 +97,12 @@ export function update(item, children, elem) {
   if(res != now) {
     //textContent自动转义，保留空白
     //ie的innerText会解释html标签，故用临时节点的innerHTML再replace代替
+    //有实体字符时也不能用textContent
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      if(util.lie) {
+      if(util.lie || /&([a-z]|#\d+);/i.test(res)) {
         var node = util.NODE;
-        node.innerHTML = res;
+        node.innerHTML = util.encodeHtml(res);
         elem.replaceChild(node.firstChild, textNode);
       }
       else {
