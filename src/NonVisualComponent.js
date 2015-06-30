@@ -17,8 +17,6 @@ class NonVisualComponent extends Component {
   //没有dom
   __onDom() {
     this.__dom = true;
-    //触发后就移除
-    this.off(Event.DOM, this.__onDom);
   }
 }
 

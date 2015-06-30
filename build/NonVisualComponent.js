@@ -17,8 +17,6 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
   //没有dom
   NonVisualComponent.prototype.__onDom = function() {
     this.__dom = true;
-    //触发后就移除
-    this.off(Event.DOM, this.__onDom);
   }
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 

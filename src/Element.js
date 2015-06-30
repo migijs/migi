@@ -27,7 +27,7 @@ class Element extends Event {
     this.__style = null;
     this.__dom = false;
 
-    this.on(Event.DOM, this.__onDom);
+    this.once(Event.DOM, this.__onDom);
     this.on(Event.DATA, this.__onData);
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
@@ -39,8 +39,6 @@ class Element extends Event {
 
   __onDom() {
     this.__dom = true;
-    //触发后就移除
-    this.off(Event.DOM, this.__onDom);
   }
   //@abstract
   //__onData() {}

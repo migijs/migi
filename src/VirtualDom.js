@@ -92,8 +92,7 @@ class VirtualDom extends Element {
     if(self.name == 'input') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        self.on(Event.DOM, function() {
-          self.off(Event.DOM, arguments.callee);
+        self.once(Event.DOM, function() {
           function cb() {
             item.v = this.value;
             var key = item.k;
@@ -127,8 +126,7 @@ class VirtualDom extends Element {
     else if(self.name == 'select') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        self.on(Event.DOM, function() {
-          self.off(Event.DOM, arguments.callee);
+        self.once(Event.DOM, function() {
           function cb() {
             item.v = this.value;
             var key = item.k;
@@ -147,8 +145,7 @@ class VirtualDom extends Element {
     if(self.name == 'textarea') {
       self.children.forEach(function(child) {
         if(child instanceof Obj) {
-          self.on(Event.DOM, function() {
-            self.off(Event.DOM, arguments.callee);
+          self.once(Event.DOM, function() {
             function cb(e) {
               child.v = this.value;
               var key = child.k;
@@ -224,8 +221,7 @@ class VirtualDom extends Element {
     var res = '';
     //onXxx侦听处理
     if(/^on[A-Z]/.test(prop)) {
-      self.on(Event.DOM, function() {
-        self.off(Event.DOM, arguments.callee);
+      self.once(Event.DOM, function() {
         var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
@@ -245,8 +241,7 @@ class VirtualDom extends Element {
       var s = v.toString();
       //特殊html不转义
       if(prop == 'dangerouslySetInnerHTML') {
-        self.on(Event.DOM, function() {
-          self.off(Event.DOM, arguments.callee);
+        self.once(Event.DOM, function() {
           self.element.innerHTML = s;
         });
         return '';
@@ -259,8 +254,7 @@ class VirtualDom extends Element {
     else {
       var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
       if(prop == 'dangerouslySetInnerHTML') {
-        self.on(Event.DOM, function() {
-          self.off(Event.DOM, arguments.callee);
+        self.once(Event.DOM, function() {
           self.element.innerHTML = s;
         });
         return '';
