@@ -100,7 +100,7 @@ var SPECIAL_PROP = {
               var key = item.k;
               item.context[key] = this.value;
             }
-            switch(self.__cache.type) {
+            switch(self.__cache.type.toLowerCase()) {
               //一些无需联动
               case 'button':
               case 'hidden':
@@ -113,6 +113,7 @@ var SPECIAL_PROP = {
               case 'checkbox':
               case 'radio':
               case 'range':
+              case 'color':
                 self.__addListener('change', cb);
                 break;
               //其它无需change，但input等
