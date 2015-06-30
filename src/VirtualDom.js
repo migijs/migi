@@ -100,7 +100,11 @@ class VirtualDom extends Element {
               var key = item.k;
               item.context[key] = this.value;
             }
-            switch(self.__cache.type.toLowerCase()) {
+            var type = self.__cache.type;
+            if(type === void 0 || type === null) {
+              type = '';
+            }
+            switch(type.toLowerCase()) {
               //一些无需联动
               case 'button':
               case 'hidden':
@@ -140,14 +144,11 @@ class VirtualDom extends Element {
         }
       }
     }
-    //自闭合标签特殊处理
-    if(self.__selfClose) {
-      return res + '/>';
-    }
-    res += '>';
-    //textarea的value在标签的childNodes里
-    if(self.name == 'textarea') {
-      self.children.forEach(function(child) {
+    //textarea的value在标签的childNodes里，这里只处理单一child情况
+    //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
+    else if(self.name == 'textarea') {
+      if(self.children.length == 1) {
+        var child = self.children[0];
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
@@ -158,8 +159,13 @@ class VirtualDom extends Element {
             self.__addListener(['input', 'paste', 'cut'], cb);
           });
         }
-      });
+      }
     }
+    //自闭合标签特殊处理
+    if(self.__selfClose) {
+      return res + '/>';
+    }
+    res += '>';
     //渲染children
     res += self.__renderChildren();
     res +='</' + self.name + '>';

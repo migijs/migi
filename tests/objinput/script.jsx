@@ -9,7 +9,7 @@ class Component extends migi.Component {
     this._txt = v;
   }
   click() {
-    this.txt = '456';
+    this.txt = this.txt ? null : '456';
   }
   render() {
     return <div>
@@ -22,6 +22,9 @@ class Component extends migi.Component {
         <input type="text" value={"123"} ref="5"/>
         <input value={this.txt} ref="6"/>
         <input type="text" value={this.txt} ref="7"/>
+        <textarea ref="8">123</textarea>
+        <textarea ref="9">{"123"}</textarea>
+        <textarea ref="10">{this.txt}</textarea>
       </div>;
   }
 }

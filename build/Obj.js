@@ -10,9 +10,6 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
 
     this.__k = k;
     this.__context = context;
-    this.__empty = true;
-    this.type = null;
-    this.__count = 0;
     this.__cb = cb;
     this.v = cb.call(context);
   }

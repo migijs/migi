@@ -14,6 +14,9 @@ module.exports = {
       .assert.value('#test input[ref="5"]', '123')
       .assert.value('#test input[ref="6"]', '')
       .assert.value('#test input[ref="7"]', '')
+      .assert.value('#test [ref="8"]', '123')
+      .assert.value('#test [ref="9"]', '123')
+      .assert.value('#test [ref="10"]', '')
   },
   'click': function(browser) {
     browser
@@ -26,6 +29,24 @@ module.exports = {
       .assert.value('#test input[ref="5"]', '123')
       .assert.value('#test input[ref="6"]', '456')
       .assert.value('#test input[ref="7"]', '456')
+      .assert.value('#test [ref="8"]', '123')
+      .assert.value('#test [ref="9"]', '123')
+      .assert.value('#test [ref="10"]', '456')
+  },
+  'click again': function(browser) {
+    browser
+      .click('#test p')
+      .assert.value('#test input[ref="0"]', '')
+      .assert.value('#test input[ref="1"]', '')
+      .assert.value('#test input[ref="2"]', '123')
+      .assert.value('#test input[ref="3"]', '123')
+      .assert.value('#test input[ref="4"]', '123')
+      .assert.value('#test input[ref="5"]', '123')
+      .assert.value('#test input[ref="6"]', '')
+      .assert.value('#test input[ref="7"]', '')
+      .assert.value('#test [ref="8"]', '123')
+      .assert.value('#test [ref="9"]', '123')
+      .assert.value('#test [ref="10"]', '')
       .end()
   }
 };

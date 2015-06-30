@@ -44,7 +44,7 @@ function join(index, children, history) {
         break;
       }
       else {
-        res += child === void 0 || child === null ? '' : child.toString();
+        res += child.toString();
       }
     }
     else if(child instanceof Element) {
@@ -124,7 +124,7 @@ exports.value=value;function value(item, children) {
     VirtualDom = VirtualDom['default'];
   }
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
-  return join(item.index, children);
+  return join(item.index, children, {});
 }
 
 exports.record=record;function record(history, option) {

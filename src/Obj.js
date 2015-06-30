@@ -10,9 +10,6 @@ class Obj {
 
     this.__k = k;
     this.__context = context;
-    this.__empty = true;
-    this.type = null;
-    this.__count = 0;
     this.__cb = cb;
     this.v = cb.call(context);
   }
