@@ -197,15 +197,8 @@ function diffVd(ovd, nvd) {
   //记录对比过的prop
   var hash = {};
   ok.forEach(function(prop) {
-    //TODO: 侦听引用对比
-    if(/^on[A-Z]/.test(prop)) {
-      //TODO: removeEventListener参数
-      var name = prop.slice(2).replace(/[A-Z]/g, function(Up) {
-        return Up.toLowerCase();
-      });
-      elem.removeEventListener(name);
-    }
-    else {
+    //onXXX事件由__listener中的引用移除
+    if(!/^on[A-Z]/.test(prop)) {
       hash[prop] = true;
       //对比老属性，相同无需更新
       var v = ovd.props[prop];
@@ -215,13 +208,86 @@ function diffVd(ovd, nvd) {
       }
     }
   });
+  //移除__listener记录的引用
+  ovd.__removeListener();
   //添加新vd的属性
   nk.forEach(function(prop) {
-    //TODO: onXxx
-    if(!hash.hasOwnProperty(prop)) {
+    if(/^on[A-Z]/.test(prop)) {
+      var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
+        return up.toLowerCase();
+      });
+      nvd.__addListener(name, function(event) {
+        var item = nvd.props[prop];
+        if(item instanceof Cb) {
+          item.cb.call(item.context, event);
+        }
+        else {
+          item(event);
+        }
+      });
+    }
+    else if(!hash.hasOwnProperty(prop)) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
+  //:input的value
+  if(nvd.name == 'input') {
+    if(nvd.props.hasOwnProperty('value')) {
+      var item = nvd.props.value;
+      if(item instanceof Obj) {
+        function cb() {
+          item.v = this.value;
+          var key = item.k;
+          item.context[key] = this.value;
+        }
+        switch(nvd.__cache.type) {
+          //一些无需联动
+          case 'button':
+          case 'hidden':
+          case 'image':
+          case 'file':
+          case 'reset':
+          case 'submit':
+            break;
+          //只需侦听change
+          case 'checkbox':
+          case 'radio':
+          case 'range':
+            nvd.__addListener('change', cb);
+            break;
+          //其它无需change，但input等
+          default:
+            nvd.__addListener(['input', 'paste', 'cut'], cb);
+            break;
+        }
+      }
+    }
+  }
+  else if(nvd.name == 'select') {
+    if(nvd.props.hasOwnProperty('value')) {
+      var item = nvd.props.value;
+      if(item instanceof Obj) {
+        function cb() {
+          item.v = this.value;
+          var key = item.k;
+          item.context[key] = this.value;
+        }
+        nvd.__addListener('change', cb);
+      }
+    }
+  }
+  else if(nvd.name == 'textarea') {
+    nvd.children.forEach(function(child) {
+      if(child instanceof Obj) {
+        function cb(e) {
+          child.v = this.value;
+          var key = child.k;
+          child.context[key] = this.value;
+        }
+        nvd.__addListener(['input', 'paste', 'cut'], cb);
+      }
+    });
+  }
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };

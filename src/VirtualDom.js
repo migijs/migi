@@ -56,13 +56,14 @@ class VirtualDom extends Element {
     }
     super(name, props, children);
     var self = this;
-    self.__cache = {};
-    self.__names = null;
-    self.__classes = null;
-    self.__ids = null;
-    self.__inline = null;
-    self.__hover = false;
-    self.__active = false;
+    self.__cache = {}; //缓存计算好的props
+    self.__names = null; //从Component根节点到自己的tagName列表，以便css计算
+    self.__classes = null; //同上，class列表
+    self.__ids = null; //同上，id列表
+    self.__inline = null; //昏村本身props的style属性
+    self.__hover = false; //是否处于鼠标hover状态
+    self.__active = false; //是否处于鼠标active状态
+    self.__listener = null; //添加的event的cb引用，remove时使用
     self.__init(name, children);
   }
 
@@ -92,48 +93,50 @@ class VirtualDom extends Element {
     if(self.name == 'input') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        self.once(Event.DOM, function() {
-          function cb() {
-            item.v = this.value;
-            var key = item.k;
-            item.context[key] = this.value;
-          }
-          switch(self.__cache.type) {
-            //一些无需联动
-            case 'button':
-            case 'hidden':
-            case 'image':
-            case 'file':
-            case 'reset':
-            case 'submit':
-              break;
-            //只需侦听change
-            case 'checkbox':
-            case 'radio':
-            case 'range':
-              self.element.addEventListener('change', cb);
-              break;
-            //其它无需change，但input等
-            default:
-              self.element.addEventListener('input', cb);
-              self.element.addEventListener('paste', cb);
-              self.element.addEventListener('cut', cb);
-              break;
-          }
-        });
+        if(item instanceof Obj) {
+          self.once(Event.DOM, function() {
+            function cb() {
+              item.v = this.value;
+              var key = item.k;
+              item.context[key] = this.value;
+            }
+            switch(self.__cache.type) {
+              //一些无需联动
+              case 'button':
+              case 'hidden':
+              case 'image':
+              case 'file':
+              case 'reset':
+              case 'submit':
+                break;
+              //只需侦听change
+              case 'checkbox':
+              case 'radio':
+              case 'range':
+                self.__addListener('change', cb);
+                break;
+              //其它无需change，但input等
+              default:
+                self.__addListener(['input', 'paste', 'cut'], cb);
+                break;
+            }
+          });
+        }
       }
     }
     else if(self.name == 'select') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        self.once(Event.DOM, function() {
-          function cb() {
-            item.v = this.value;
-            var key = item.k;
-            item.context[key] = this.value;
-          }
-          self.element.addEventListener('change', cb);
-        });
+        if(item instanceof Obj) {
+          self.once(Event.DOM, function() {
+            function cb() {
+              item.v = this.value;
+              var key = item.k;
+              item.context[key] = this.value;
+            }
+            self.__addListener('change', cb);
+          });
+        }
       }
     }
     //自闭合标签特殊处理
@@ -151,9 +154,7 @@ class VirtualDom extends Element {
               var key = child.k;
               child.context[key] = this.value;
             }
-            self.element.addEventListener('input', cb);
-            self.element.addEventListener('paste', cb);
-            self.element.addEventListener('cut', cb);
+            self.__addListener(['input', 'paste', 'cut'], cb);
           });
         }
       });
@@ -225,7 +226,7 @@ class VirtualDom extends Element {
         var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
-        self.element.addEventListener(name, function(event) {
+        self.__addListener(name, function(event) {
           var item = self.props[prop];
           if(item instanceof Cb) {
             item.cb.call(item.context, event);
@@ -285,6 +286,47 @@ class VirtualDom extends Element {
       res += VirtualDom.renderChild(child);
     });
     return res;
+  }
+  __addListener(name, cb) {
+    var self = this;
+    if(Array.isArray(name)) {
+      name.forEach(function(n) {
+        self.__addListener(n, cb);
+      });
+    }
+    else {
+      //一般没有event，也就不生成对象防止diff比对
+      self.__listener = self.__listener || {};
+      if(self.__listener.hasOwnProperty(name)) {
+        var temp = self.__listener[name];
+        if(Array.isArray(temp)) {
+          temp.push(cb);
+        }
+        else {
+          self.__listener[name] = [temp, cb];
+        }
+      }
+      else {
+        self.__listener[name] = cb;
+      }
+      self.element.addEventListener(name, cb);
+    }
+  }
+  __removeListener() {
+    var self = this;
+    if(self.__listener) {
+      Object.keys(self.__listener).forEach(function(name) {
+        var item = self.__listener[name];
+        if(Array.isArray(item)) {
+          item.forEach(function(cb) {
+            self.element.removeEventListener(name, cb);
+          });
+        }
+        else {
+          self.element.removeEventListener(name, item);
+        }
+      });
+    }
   }
 
   find(name) {
@@ -667,6 +709,7 @@ class VirtualDom extends Element {
     this.__inline = null;
     this.__hover = false;
     this.__active = false;
+    this.__listener = null;
     this.__hasDes = true;
     return this;
   }
