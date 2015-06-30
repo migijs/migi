@@ -230,64 +230,8 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
-  //:input的value
-  if(nvd.name == 'input') {
-    if(nvd.props.hasOwnProperty('value')) {
-      var item = nvd.props.value;
-      if(item instanceof Obj) {
-        function cb() {
-          item.v = this.value;
-          var key = item.k;
-          item.context[key] = this.value;
-        }
-        switch(nvd.__cache.type) {
-          //一些无需联动
-          case 'button':
-          case 'hidden':
-          case 'image':
-          case 'file':
-          case 'reset':
-          case 'submit':
-            break;
-          //只需侦听change
-          case 'checkbox':
-          case 'radio':
-          case 'range':
-            nvd.__addListener('change', cb);
-            break;
-          //其它无需change，但input等
-          default:
-            nvd.__addListener(['input', 'paste', 'cut'], cb);
-            break;
-        }
-      }
-    }
-  }
-  else if(nvd.name == 'select') {
-    if(nvd.props.hasOwnProperty('value')) {
-      var item = nvd.props.value;
-      if(item instanceof Obj) {
-        function cb() {
-          item.v = this.value;
-          var key = item.k;
-          item.context[key] = this.value;
-        }
-        nvd.__addListener('change', cb);
-      }
-    }
-  }
-  else if(nvd.name == 'textarea') {
-    nvd.children.forEach(function(child) {
-      if(child instanceof Obj) {
-        function cb(e) {
-          child.v = this.value;
-          var key = child.k;
-          child.context[key] = this.value;
-        }
-        nvd.__addListener(['input', 'paste', 'cut'], cb);
-      }
-    });
-  }
+  //:input的value要侦听数据绑定
+  nvd.__checkListener();
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };

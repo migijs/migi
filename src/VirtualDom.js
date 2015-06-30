@@ -90,77 +90,7 @@ class VirtualDom extends Element {
     }
     res += ' migi-uid="' + self.uid + '"';
     //input和select这种:input要侦听数据绑定
-    if(self.name == 'input') {
-      if(self.props.hasOwnProperty('value')) {
-        var item = self.props.value;
-        if(item instanceof Obj) {
-          self.once(Event.DOM, function() {
-            function cb() {
-              item.v = this.value;
-              var key = item.k;
-              item.context[key] = this.value;
-            }
-            var type = self.__cache.type;
-            if(type === void 0 || type === null) {
-              type = '';
-            }
-            switch(type.toLowerCase()) {
-              //一些无需联动
-              case 'button':
-              case 'hidden':
-              case 'image':
-              case 'file':
-              case 'reset':
-              case 'submit':
-                break;
-              //只需侦听change
-              case 'checkbox':
-              case 'radio':
-              case 'range':
-              case 'color':
-                self.__addListener('change', cb);
-                break;
-              //其它无需change，但input等
-              default:
-                self.__addListener(['input', 'paste', 'cut'], cb);
-                break;
-            }
-          });
-        }
-      }
-    }
-    else if(self.name == 'select') {
-      if(self.props.hasOwnProperty('value')) {
-        var item = self.props.value;
-        if(item instanceof Obj) {
-          self.once(Event.DOM, function() {
-            function cb() {
-              item.v = this.value;
-              var key = item.k;
-              item.context[key] = this.value;
-            }
-            self.__addListener('change', cb);
-          });
-        }
-      }
-    }
-    //textarea的value在标签的childNodes里，这里只处理单一child情况
-    //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
-    else if(self.name == 'textarea') {
-      if(self.children.length == 1) {
-        var child = self.children[0];
-        if(child instanceof Obj) {
-          self.once(Event.DOM, function() {
-            function cb(e) {
-              child.v = this.value;
-              var key = child.k;
-              child.context[key] = this.value;
-            }
-            self.__addListener(['input', 'paste', 'cut'], cb);
-          });
-        }
-      }
-    }
+    self.__checkListener();
     //自闭合标签特殊处理
     if(self.__selfClose) {
       return res + '/>';
@@ -293,6 +223,80 @@ class VirtualDom extends Element {
       res += VirtualDom.renderChild(child);
     });
     return res;
+  }
+  __checkListener() {
+    var self = this;
+    if(self.name == 'input') {
+      if(self.props.hasOwnProperty('value')) {
+        var item = self.props.value;
+        if(item instanceof Obj) {
+          self.once(Event.DOM, function() {
+            function cb() {
+              item.v = this.value;
+              var key = item.k;
+              item.context[key] = this.value;
+            }
+            var type = self.__cache.type;
+            if(type === void 0 || type === null) {
+              type = '';
+            }
+            switch(type.toLowerCase()) {
+              //一些无需联动
+              case 'button':
+              case 'hidden':
+              case 'image':
+              case 'file':
+              case 'reset':
+              case 'submit':
+                break;
+              //只需侦听change
+              case 'checkbox':
+              case 'radio':
+              case 'range':
+              case 'color':
+                self.__addListener('change', cb);
+                break;
+              //其它无需change，但input等
+              default:
+                self.__addListener(['input', 'paste', 'cut'], cb);
+                break;
+            }
+          });
+        }
+      }
+    }
+    else if(self.name == 'select') {
+      if(self.props.hasOwnProperty('value')) {
+        var item = self.props.value;
+        if(item instanceof Obj) {
+          self.once(Event.DOM, function() {
+            function cb() {
+              item.v = this.value;
+              var key = item.k;
+              item.context[key] = this.value;
+            }
+            self.__addListener('change', cb);
+          });
+        }
+      }
+    }
+    //textarea的value在标签的childNodes里，这里只处理单一child情况
+    //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
+    else if(self.name == 'textarea') {
+      if(self.children.length == 1) {
+        var child = self.children[0];
+        if(child instanceof Obj) {
+          self.once(Event.DOM, function() {
+            function cb(e) {
+              child.v = this.value;
+              var key = child.k;
+              child.context[key] = this.value;
+            }
+            self.__addListener(['input', 'paste', 'cut'], cb);
+          });
+        }
+      }
+    }
   }
   __addListener(name, cb) {
     var self = this;
