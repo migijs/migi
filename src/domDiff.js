@@ -210,7 +210,7 @@ function diffVd(ovd, nvd) {
   });
   //移除__listener记录的引用
   ovd.__removeListener();
-  //添加新vd的属性
+  //添加新vd的属性，不会出现Cb侦听
   nk.forEach(function(prop) {
     if(/^on[A-Z]/.test(prop)) {
       var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
@@ -218,20 +218,13 @@ function diffVd(ovd, nvd) {
       });
       nvd.__addListener(name, function(event) {
         var item = nvd.props[prop];
-        if(item instanceof Cb) {
-          item.cb.call(item.context, event);
-        }
-        else {
-          item(event);
-        }
+        item(event);
       });
     }
     else if(!hash.hasOwnProperty(prop)) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
-  //:input的value要侦听数据绑定
-  nvd.__checkListener();
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
