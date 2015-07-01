@@ -100,7 +100,7 @@ export function update(item, children, elem) {
     //有实体字符时也不能用textContent
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      if(util.lie || /&([a-z]|#\d+);/i.test(res)) {
+      if(util.lie || /&([a-z]+|#\d+);/i.test(res)) {
         var node = util.NODE;
         node.innerHTML = util.encodeHtml(res);
         elem.replaceChild(node.firstChild, textNode);
