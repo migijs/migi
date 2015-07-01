@@ -11,45 +11,66 @@ const TEXT_TO_DOM = 2;
 const TEXT_TO_TEXT = 3;
 
 function replaceWith(elem, cns, index, vd, isText) {
-  var node = isText ? util.NODE : util.getParent(vd.name);
-  var s = vd === void 0 || vd === null ? '' : vd.toString();
+  //insertAdjacentHTML在插入text时浏览器行为表现不一致，ff会合并相邻text，chrome则不会
+  //因此DOM使用insertAdjacentHTML，text则用textNode
   var target;
-  if(s) {
-    node.innerHTML = isText ? util.encodeHtml(s) : s;
-    target = node.firstChild;
+  if(isText) {
+    vd = vd === void 0 || vd === null ? '' : vd.toString();
+    if(vd) {
+      var node = util.NODE;
+      node.innerHTML = util.encodeHtml(vd);
+      target = node.firstChild;
+    }
+    else {
+      target = document.createTextNode('');
+    }
+    if(index >= cns.length) {
+      elem.appendChild(target);
+    }
+    else {
+      elem.replaceChild(target, cns[index]);
+    }
   }
   else {
-    target = document.createTextNode('');
-  }
-  if(index >= cns.length) {
-    elem.appendChild(target);
-  }
-  else {
-    elem.replaceChild(target, cns[index]);
-  }
-  if(!isText) {
+    target = vd.toString();
+    if(index >= cns.length) {
+      elem.insertAdjacentHTML('beforeend', target);
+    }
+    else {
+      elem.insertAdjacentHTML('beforeend', target);
+      elem.removeChild(cns[index]);
+    }
     //别忘了触发DOM事件
     vd.emit(Event.DOM);
   }
 }
 function insertAt(elem, cns, index, vd, isText) {
-  var node = isText ? util.NODE : util.getParent(vd.name);
-  var s = vd === void 0 || vd === null ? '' : vd.toString();
   var target;
-  if(s) {
-    node.innerHTML = isText ? util.encodeHtml(s) : s;
-    target = node.firstChild;
+  if(isText) {
+    vd = vd === void 0 || vd === null ? '' : vd.toString();
+    if(vd) {
+      var node = util.NODE;
+      node.innerHTML = util.encodeHtml(vd);
+      target = node.firstChild;
+    }
+    else {
+      target = document.createTextNode('');
+    }
+    if(index >= cns.length) {
+      elem.appendChild(target);
+    }
+    else {
+      elem.insertBefore(target, cns[index]);
+    }
   }
   else {
-    target = document.createTextNode('');
-  }
-  if(index >= cns.length) {
-    elem.appendChild(target);
-  }
-  else {
-    elem.insertBefore(target, cns[index]);
-  }
-  if(!isText) {
+    target = vd.toString();
+    if(index >= cns.length) {
+      elem.insertAdjacentHTML('beforeend', target);
+    }
+    else {
+      cns[index].insertAdjacentHTML('beforestart', target);
+    }
     //别忘了触发DOM事件
     vd.emit(Event.DOM);
   }
@@ -475,9 +496,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
         }
         //否则重绘替换
         else {
-          var node = util.getParent(nvd.name);
-          node.innerHTML = nvd.toString();
-          elem.replaceChild(node.firstChild, elem.childNodes[option.start]);
+          elem.insertAdjacentHTML('afterend', nvd.toString());
+          elem.parentNode.removeChild(elem);
+          //别忘了触发DOM事件
+          nvd.emit(Event.DOM);
           //缓存对象池
           cachePool.add(ovd.__destroy());
         }

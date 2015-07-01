@@ -94,12 +94,6 @@ function joinArray(arr) {
 }
 
 const NODE = document.createElement('div');
-const TABLE = document.createElement('table');
-const TBODY = document.createElement('tbody');
-const TR = document.createElement('tr');
-const UL = document.createElement('ul');
-const DL = document.createElement('dl');
-const SELECT = document.createElement('select');
 const LIE = !+'\v1';
 
 var util = {
@@ -130,29 +124,6 @@ var util = {
     return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
   },
   NODE: NODE,
-  TABLE: TABLE,
-  TR: TR,
-  getParent(name) {
-    //TODO: insertAdjacentHTML
-    switch(name.toLowerCase()) {
-      case 'td':
-        return TR;
-      case 'tr':
-        return TBODY;
-      case 'tbody':
-      case 'thead':
-        return TABLE;
-      case 'li':
-        return UL;
-      case 'dt':
-      case 'dd':
-        return DL;
-      case 'option':
-        return SELECT;
-      default:
-        return NODE;
-    }
-  },
   lie: LIE,
   version: function() {
     if(!LIE) {
