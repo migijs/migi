@@ -77,7 +77,7 @@ function insertAt(elem, cns, index, vd, isText) {
       elem.insertAdjacentHTML('beforeend', target);
     }
     else {
-      cns[index].insertAdjacentHTML('beforestart', target);
+      cns[index].insertAdjacentHTML('beforebegin', target);
     }
     //别忘了触发DOM事件
     vd.emit(Event.DOM);
