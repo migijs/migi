@@ -37,8 +37,16 @@ function replaceWith(elem, cns, index, vd, isText) {
       elem.insertAdjacentHTML('beforeend', target);
     }
     else {
-      elem.insertAdjacentHTML('beforeend', target);
-      elem.removeChild(cns[index]);
+      //textNode没有insertAdjacentHTML方法，必须使用replaceChild
+      if(cns[index].nodeType == 1) {
+        cns[index].insertAdjacentHTML('afterend', target);
+        elem.removeChild(cns[index]);
+      }
+      else {
+        var node = util.getParent(vd.name);
+        node.innerHTML = target;
+        elem.replaceChild(node.firstChild, cns[index]);
+      }
     }
     //别忘了触发DOM事件
     vd.emit(Event.DOM);

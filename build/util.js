@@ -94,6 +94,12 @@ function joinArray(arr) {
 }
 
 var NODE = document.createElement('div');
+var TABLE = document.createElement('table');
+var TBODY = document.createElement('tbody');
+var TR = document.createElement('tr');
+var UL = document.createElement('ul');
+var DL = document.createElement('dl');
+var SELECT = document.createElement('select');
 var LIE = !+'\v1';
 
 var util = {
@@ -124,6 +130,27 @@ var util = {
     return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
   },
   NODE: NODE,
+  getParent:function(name) {
+    //TODO: insertAdjacentHTML
+    switch(name.toLowerCase()) {
+      case 'td':
+        return TR;
+      case 'tr':
+        return TBODY;
+      case 'tbody':
+      case 'thead':
+        return TABLE;
+      case 'li':
+        return UL;
+      case 'dt':
+      case 'dd':
+        return DL;
+      case 'option':
+        return SELECT;
+      default:
+        return NODE;
+    }
+  },
   lie: LIE,
   version: function() {
     if(!LIE) {
