@@ -219,7 +219,7 @@ class VirtualDom extends Element {
   __renderChildren() {
     var self = this;
     var res = '';
-    self.children.forEach(function(child) {
+    self.children.forEach(function(child) {console.log(child)
       res += VirtualDom.renderChild(child);
     });
     return res;
@@ -737,7 +737,7 @@ class VirtualDom extends Element {
       return child.toString();
     }
     if(child instanceof Obj) {
-      return child.toString();
+      return util.encodeHtml(child.toString());
     }
     if(Array.isArray(child)) {
       var res = '';

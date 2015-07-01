@@ -219,7 +219,7 @@ var SPECIAL_PROP = {
   VirtualDom.prototype.__renderChildren = function() {
     var self = this;
     var res = '';
-    self.children.forEach(function(child) {
+    self.children.forEach(function(child) {console.log(child)
       res += VirtualDom.renderChild(child);
     });
     return res;
@@ -737,7 +737,7 @@ var SPECIAL_PROP = {
       return child.toString();
     }
     if(child instanceof Obj) {
-      return child.toString();
+      return util.encodeHtml(child.toString());
     }
     if(Array.isArray(child)) {
       var res = '';
