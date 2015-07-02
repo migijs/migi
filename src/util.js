@@ -106,6 +106,7 @@ const TR = document.createElement('tr');
 const UL = document.createElement('ul');
 const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
+const MENU = document.createElement('menu');
 const LIE = !+'\v1';
 
 var util = {
@@ -144,6 +145,7 @@ var util = {
         return TBODY;
       case 'tbody':
       case 'thead':
+      case 'col':
         return TABLE;
       case 'li':
         return UL;
@@ -152,6 +154,8 @@ var util = {
         return DL;
       case 'option':
         return SELECT;
+      case 'menuitem':
+        return MENU;
       default:
         return NODE;
     }

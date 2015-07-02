@@ -27,7 +27,8 @@ const SELF_CLOSE = {
   'area': true,
   'param': true,
   'source': true,
-  'track': true
+  'track': true,
+  'wbr': true
 };
 
 const SPECIAL_PROP = {
