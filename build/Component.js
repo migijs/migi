@@ -193,7 +193,7 @@ var bridgeOrigin = {};
     this.__style = v;
   }
 
-  //@override
+  //@overwrite
   Component.prototype.__onDom = function() {
     Element.prototype.__onDom.call(this);
     var self = this;
@@ -216,7 +216,7 @@ var bridgeOrigin = {};
         self.element.addEventListener(name, stopPropagation);
       });
   }
-  //@override
+  //@overwrite
   Component.prototype.__onData = function(k) {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);

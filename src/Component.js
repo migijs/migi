@@ -193,7 +193,7 @@ class Component extends Element {
     this.__style = v;
   }
 
-  //@override
+  //@overwrite
   __onDom() {
     super.__onDom();
     var self = this;
@@ -216,7 +216,7 @@ class Component extends Element {
         self.element.addEventListener(name, stopPropagation);
       });
   }
-  //@override
+  //@overwrite
   __onData(k) {
     if(this.virtualDom) {
       this.virtualDom.emit(Event.DATA, k);
