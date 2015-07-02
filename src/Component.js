@@ -3,6 +3,9 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
 
+var bindOrigin = -1;
+var bridgeOrigin = -1;
+
 class Component extends Element {
   constructor(props = {}, children = []) {
     var self = this;
@@ -134,7 +137,8 @@ class Component extends Element {
     target.bind(this, include, exclude);
   }
   __bcb(target, k, stream, origin) {
-    if(origin == target.__bcb) {
+    //对比来源uid和target是否相同，防止闭环死循环
+    if(target.uid == bridgeOrigin) {
       return;
     }
     //变更时设置对方CacheComponent不更新，防止闭环
@@ -160,6 +164,10 @@ class Component extends Element {
       throw new Error('can not bridge self: ' + self.name);
     }
     self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //来源不是__bcb则说明不是由bridge触发的，而是真正数据源，记录uid
+      if(origin != self.__bcb) {
+        bridgeOrigin = self.uid;
+      }
       //CacheComponent可能是个数组，统一逻辑
       if(!Array.isArray(keys)) {
         keys = [keys];

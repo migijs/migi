@@ -3,6 +3,9 @@ var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("def
 var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 
+var bindOrigin = -1;
+var bridgeOrigin = -1;
+
 !function(){var _4=Object.create(Element.prototype);_4.constructor=Component;Component.prototype=_4}();
   function Component(props, children) {
     if(props===void 0)props={};if(children===void 0)children=[];var self = this;
@@ -134,7 +137,8 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
     target.bind(this, include, exclude);
   }
   Component.prototype.__bcb = function(target, k, stream, origin) {
-    if(origin == target.__bcb) {
+    //对比来源uid和target是否相同，防止闭环死循环
+    if(target.uid == bridgeOrigin) {
       return;
     }
     //变更时设置对方CacheComponent不更新，防止闭环
@@ -160,6 +164,10 @@ var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")
       throw new Error('can not bridge self: ' + self.name);
     }
     self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //来源不是__bcb则说明不是由bridge触发的，而是真正数据源，记录uid
+      if(origin != self.__bcb) {
+        bridgeOrigin = self.uid;
+      }
       //CacheComponent可能是个数组，统一逻辑
       if(!Array.isArray(keys)) {
         keys = [keys];
