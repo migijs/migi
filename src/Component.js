@@ -3,8 +3,8 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
 
-var bindOrigin = -1;
-var bridgeOrigin = -1;
+var bindOrigin = {};
+var bridgeOrigin = {};
 
 class Component extends Element {
   constructor(props = {}, children = []) {
@@ -79,81 +79,87 @@ class Component extends Element {
   findAll(name, first) {
     return this.virtualDom.findAll(name, first);
   }
+  __bicb(target, keys, include, exclude) {
+    //对比来源uid是否出现过，防止闭环死循环
+    if(bindOrigin.hasOwnProperty(target.uid)) {
+      return;
+    }
+    bindOrigin[target.uid] = true;
+    //变更时设置对方CacheComponent不更新，防止闭环
+    target.__flag = true;
+    //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
+    if(!Array.isArray(keys)) {
+      keys = [keys];
+    }
+    //不能用foreach，会干扰origin的caller判断
+    for(var i = 0, len = keys.length; i < len; i++) {
+      var k = keys[i];
+      if(!include || include.indexOf(k) > -1) {
+        if(!exclude || exclude.indexOf(k) == -1) {
+          target[k] = this[k];
+        }
+      }
+    }
+    //关闭开关
+    target.__flag = false;
+  }
   bind(target, include, exclude) {
     var self = this;
     if(target == this) {
       throw new Error('can not bind self: ' + self.name);
     }
-    function cb1(keys, origin) {
-      if(origin == cb2) {
-        return;
-      }
-      //变更时设置对方CacheComponent不更新，防止闭环
-      target.__flag = true;
-      //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
-      if(!Array.isArray(keys)) {
-        keys = [keys];
-      }
-      //不能用foreach，会干扰origin的caller判断
-      for(var i = 0, len = keys.length; i < len; i++) {
-        var k = keys[i];
-        if(!include || include.indexOf(k) > -1) {
-          if(!exclude || exclude.indexOf(k) == -1) {
-            target[k] = self[k];
-          }
-        }
-      }
-      //关闭开关
-      target.__flag = false;
-    }
-    function cb2(keys, origin) {
-      if(origin == cb1) {
-        return;
-      }
-      //变更时设置对方CacheComponent不更新，防止闭环
-      self.__flag = true;
-      //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
-      if(!Array.isArray(keys)) {
-        keys = [keys];
-      }
-      //不能用foreach，会干扰origin的caller判断
-      for(var i = 0, len = keys.length; i < len; i++) {
-        var k = keys[i];
-        if(!include || include.indexOf(k) > -1) {
-          if(!exclude || exclude.indexOf(k) == -1) {
-            self[k] = target[k];
-          }
-        }
-      }
-      //关闭开关
-      self.__flag = false;
-    }
     //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
     //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
-    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, cb1);
-    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, cb2);
+    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
+      if(origin != self.__bicb) {
+        bindOrigin = {};
+        bindOrigin[self.uid] = true;
+      }
+      self.__bicb(target, keys, include, exclude);
+    });
+    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
+      if(origin != target.__bicb) {
+        bindOrigin = {};
+        bindOrigin[target.uid] = true;
+      }
+      target.__bicb(self, keys, include, exclude);
+    });
   }
   bindTo(target, include, exclude) {
     target.bind(this, include, exclude);
   }
-  __bcb(target, k, stream, origin) {
-    //对比来源uid和target是否相同，防止闭环死循环
-    if(target.uid == bridgeOrigin) {
+  __brcb(target, keys, datas) {
+    //对比来源uid是否出现过，防止闭环死循环
+    if(bridgeOrigin.hasOwnProperty(target.uid)) {
       return;
     }
+    bridgeOrigin[target.uid] = true;
     //变更时设置对方CacheComponent不更新，防止闭环
     target.__flag = true;
-    //同名无需name，直接function作为middleware
-    if(util.isFunction(stream)) {
-      target[k] = stream(this[k]);
+    //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
+    if(!Array.isArray(keys)) {
+      keys = [keys];
     }
-    //只有name说明无需数据处理
-    else if(util.isString(stream)) {
-      target[stream] = this[k];
-    }
-    else if(stream.name) {
-      var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-      target[stream.name] = v;
+    //遍历变更数据项
+    for(var i = 0, len = keys.length; i < len; i++) {
+      var k = keys[i];
+      if(datas.hasOwnProperty(k)) {
+        var stream = datas[k];
+        //同名无需name，直接function作为middleware
+        if(util.isFunction(stream)) {
+          target[k] = stream(this[k]);
+        }
+        //只有name说明无需数据处理
+        else if(util.isString(stream)) {
+          target[stream] = this[k];
+        }
+        else if(stream.name) {
+          var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+          target[stream.name] = v;
+        }
+      }
     }
     //打开开关
     target.__flag = false;
@@ -164,20 +170,12 @@ class Component extends Element {
       throw new Error('can not bridge self: ' + self.name);
     }
     self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是__bcb则说明不是由bridge触发的，而是真正数据源，记录uid
-      if(origin != self.__bcb) {
-        bridgeOrigin = self.uid;
+      //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
+      if(origin != self.__brcb) {
+        bridgeOrigin = {};
+        bridgeOrigin[self.uid] = true;
       }
-      //CacheComponent可能是个数组，统一逻辑
-      if(!Array.isArray(keys)) {
-        keys = [keys];
-      }
-      keys.forEach(function(k) {
-        if(datas.hasOwnProperty(k)) {
-          var stream = datas[k];
-          self.__bcb(target, k, stream, origin);
-        }
-      });
+      self.__brcb(target, keys, datas);
     });
   }
   bridgeTo(target, datas) {
