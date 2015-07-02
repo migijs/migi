@@ -34,4 +34,4 @@ cps[2].bridgeTo(cps[0], {
   'txt': 'txt'
 });
 
-cps[0].txt = 'txt';
+cps[0].txt = '123';
