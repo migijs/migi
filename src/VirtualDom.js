@@ -601,6 +601,9 @@ class VirtualDom extends Element {
     }
     option.first = false;
   }
+  //TODO: 一个神奇的现象，实体字符作为attr在初始化时作为String拼接和在setAttribute中表现不一致
+  //如&nbsp;会成为charCode 160的Non-breaking space，而非32的Normal space
+  //但是setAttribute会保留实体字符形式
   __updateAttr(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
       this.element.innerHTML = v || '';
@@ -631,7 +634,7 @@ class VirtualDom extends Element {
           if(v === null || v === void 0) {
             this.element.removeAttribute('migi-' + k);
           }
-          else{
+          else {
             this.element.setAttribute('migi-' + k, v);
           }
           break;
@@ -640,7 +643,7 @@ class VirtualDom extends Element {
         if(v === null || v === void 0) {
           this.element.removeAttribute(k);
         }
-        else{
+        else {
           this.element.setAttribute(k, v);
         }
         break;
