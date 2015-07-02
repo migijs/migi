@@ -176,7 +176,7 @@ class VirtualDom extends Element {
     }
     //Obj类型绑定处理
     else if(v instanceof Obj) {
-      var s = v.toString();
+      var s = v.toString(true);
       //特殊html不转义
       if(prop == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
@@ -219,7 +219,7 @@ class VirtualDom extends Element {
   __renderChildren() {
     var self = this;
     var res = '';
-    self.children.forEach(function(child) {console.log(child)
+    self.children.forEach(function(child) {
       res += VirtualDom.renderChild(child);
     });
     return res;
@@ -733,11 +733,8 @@ class VirtualDom extends Element {
     if(child === void 0 || child === null) {
       return '';
     }
-    if(child instanceof Element) {
+    if(child instanceof Element || child instanceof Obj) {
       return child.toString();
-    }
-    if(child instanceof Obj) {
-      return util.encodeHtml(child.toString());
     }
     if(Array.isArray(child)) {
       var res = '';

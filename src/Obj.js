@@ -28,10 +28,20 @@ class Obj {
   get cb() {
     return this.__cb;
   }
-  toString() {
-    var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
+  toString(prop) {
+    //array调用join包括转码
+    if(Array.isArray(this.v)) {
+      return util.joinArray(this.v, prop);
+    }
     //防止undefined的变量
-    return s === void 0 || s === null ? '' : s.toString();
+    if(this.v === void 0 || this.v === null) {
+      return '';
+    }
+    var s = this.v.toString();
+    if(prop) {
+      return util.encodeHtml(s, prop);
+    }
+    return this.v instanceof Element ? s : util.encodeHtml(s, prop);
   }
   update(ov) {
     var nv = this.cb.call(this.context);

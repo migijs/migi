@@ -28,10 +28,20 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
   _2.cb={};_2.cb.get =function() {
     return this.__cb;
   }
-  Obj.prototype.toString = function() {
-    var s = Array.isArray(this.v) ? util.joinArray(this.v) : this.v;
+  Obj.prototype.toString = function(prop) {
+    //array调用join包括转码
+    if(Array.isArray(this.v)) {
+      return util.joinArray(this.v, prop);
+    }
     //防止undefined的变量
-    return s === void 0 || s === null ? '' : s.toString();
+    if(this.v === void 0 || this.v === null) {
+      return '';
+    }
+    var s = this.v.toString();
+    if(prop) {
+      return util.encodeHtml(s, prop);
+    }
+    return this.v instanceof Element ? s : util.encodeHtml(s, prop);
   }
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);

@@ -80,14 +80,20 @@ function equal(a, b) {
   }
 }
 
-function joinArray(arr) {
+function joinArray(arr, prop) {
   var res = '';
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
-    else {
+    else if(item instanceof Element) {
       res += item.toString();
+    }
+    else if(item === void 0 || item === null) {
+      res += '';
+    }
+    else {
+      res += util.encodeHtml(item.toString(), prop);
     }
   });
   return res;
@@ -131,7 +137,6 @@ var util = {
   },
   NODE: NODE,
   getParent:function(name) {
-    //TODO: insertAdjacentHTML
     switch(name.toLowerCase()) {
       case 'td':
         return TR;
@@ -160,7 +165,13 @@ var util = {
     while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
     return v;
   }(),
-  joinArray:joinArray
+  joinArray: function(arr, prop) {
+    //fix循环依赖
+    if(Element.hasOwnProperty('default')) {
+      Element = Element['default'];
+    }
+    return joinArray(arr, prop);
+  }
 };
 
 exports["default"]=util;});
