@@ -269,7 +269,7 @@ function diffVd(ovd, nvd) {
     }
   });
   //input和select这种:input要侦听数据绑定
-  nvd.__checkListener();
+  //nvd.__checkListener();
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
@@ -535,7 +535,11 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
             break;
           //Component和VirtualDom变化则直接重绘
           case 1:
+            diffVd(ovd.virtualDom, nvd);
+            break;
           case 2:
+            diffVd(ovd, nvd.virtualDom);
+            break;
           //Component的class类型没变则diff，否则重绘
           case 3:
             if(ovd.constructor == nvd.constructor) {
@@ -544,9 +548,9 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
             }
             else {
               elem.innerHTML = nvd.toString();
-              //别忘了触发DOM事件
-              nvd.emit(Event.DOM);
             }
+            //别忘了触发DOM事件
+            nvd.emit(Event.DOM);
             break;
         }
         option.state = DOM_TO_DOM;

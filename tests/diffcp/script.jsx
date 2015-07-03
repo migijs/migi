@@ -31,6 +31,9 @@ class Component extends migi.Component {
       case 5:
         this.cp = <Component2/>;
         break;
+      case 6:
+        this.cp = 'txt';
+        break;
     }
   }
   render() {

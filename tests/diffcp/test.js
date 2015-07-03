@@ -93,6 +93,11 @@ module.exports = {
     browser
       .click('#test p[ref="2"]')
       .assert.containsText('#test [ref="3"]', 'c22')
+  },
+  'cp2 to txt': function(browser) {
+    browser
+      .click('#test p[ref="0"]')
+      .assert.containsText('#test [ref="1"]', 'txt')
       .end()
   }
 };
