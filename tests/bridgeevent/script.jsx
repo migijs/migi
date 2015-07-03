@@ -177,6 +177,40 @@ class Component10 extends migi.Component {
     return <p>{this.txt}</p>;
   }
 }
+class Component11 extends migi.Component {
+  constructor(...data) {
+    super(...data);
+    this.bridge(migi.eventBus, {
+      'txt': 'txt11'
+    });
+  }
+  get txt() {
+    return this._txt;
+  }
+  set txt(v) {
+    this._txt = v;
+  }
+  render() {
+    return <p>{this.txt}</p>;
+  }
+}
+class Component12 extends migi.Component {
+  constructor(...data) {
+    super(...data);
+    this.bridgeTo(migi.eventBus, {
+      'txt11': 'txt'
+    });
+  }
+  get txt() {
+    return this._txt;
+  }
+  set txt(v) {
+    this._txt = v;
+  }
+  render() {
+    return <p>{this.txt}</p>;
+  }
+}
 
 var vd = migi.render(
   <div>
@@ -190,6 +224,8 @@ var vd = migi.render(
     <Component8/>
     <Component9/>
     <Component10/>
+    <Component11/>
+    <Component12/>
   </div>,
   '#test'
 );
@@ -201,3 +237,4 @@ cps[2].txt = '22';
 cps[4].txt5 = '33';
 cps[6].txt7 = '44';
 cps[8].txt9 = '55';
+cps[10].txt = '66';
