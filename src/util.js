@@ -138,7 +138,7 @@ var util = {
   },
   NODE: NODE,
   getParent(name) {
-    switch(name.toLowerCase()) {
+    switch(name) {
       case 'td':
         return TR;
       case 'tr':

@@ -407,7 +407,7 @@ var SPECIAL_PROP = {
     }
     //可能最后一个是空白text，需特殊判断下插入
     if(option.empty) {
-      self.__insertBlank(option);
+      self.__insertBlank(option.start);
     }
   }
   //index和i结合判断首个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
@@ -423,7 +423,7 @@ var SPECIAL_PROP = {
     else if(child instanceof Element) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
-        self.__insertBlank(option);
+        self.__insertBlank(option.start);
         option.empty = false;
       }
       //递归通知DOM事件，增加start索引
@@ -457,18 +457,18 @@ var SPECIAL_PROP = {
     }
     option.first = false;
   }
-  VirtualDom.prototype.__insertBlank = function(option) {
+  VirtualDom.prototype.__insertBlank = function(start) {
     var blank = document.createTextNode('');
     var elem = this.element;
     var cns = elem.childNodes;
     //可能仅一个空文本节点，或最后一个空文本节点
     var length = cns.length;
-    if(!length || option.start >= length) {
+    if(!length || start >= length) {
       elem.appendChild(blank);
     }
     //插入
     else {
-      elem.insertBefore(blank, cns[option.start]);
+      elem.insertBefore(blank, cns[start]);
     }
   }
   //@override

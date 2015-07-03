@@ -13,7 +13,6 @@ function getDom(dom) {
 class Element extends Event {
   constructor(name, props, children) {
     super();
-    //TODO: 大数处理
     this.__uid = uid++;
     this.__reset(name, props, children);
   }
