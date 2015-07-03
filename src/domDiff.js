@@ -1,5 +1,7 @@
 import Event from './Event';
 import Element from './Element';
+import Component from './Component';
+import Cb from './Cb';
 import util from './util';
 import range from './range';
 import cachePool from './cachePool';
@@ -254,13 +256,20 @@ function diffVd(ovd, nvd) {
       });
       nvd.__addListener(name, function(event) {
         var item = nvd.props[prop];
-        item(event);
+        if(item instanceof Cb) {
+          item.cb.call(item.context, event);
+        }
+        else {
+          item(event);
+        }
       });
     }
     else if(!hash.hasOwnProperty(prop)) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
+  //input和select这种:input要侦听数据绑定
+  nvd.__checkListener();
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
@@ -290,6 +299,10 @@ function diffVd(ovd, nvd) {
 }
 
 export function diff(elem, ov, nv, ranges, option, history) {
+  //fix循环依赖
+  if(Component.hasOwnProperty('default')) {
+    Component = Component['default'];
+  }
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if(!option.first) {
     if(option.prev == type.TEXT) {
@@ -505,22 +518,42 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
           delete option.t2d;
           delete option.d2t;
         }
-        //DOM名没变递归diff
-        if(ovd.name == nvd.name) {
-          diffVd(ovd, nvd);
-        }
-        //否则重绘替换
-        else {
-          elem.insertAdjacentHTML('afterend', nvd.toString());
-          elem.parentNode.removeChild(elem);
-          //别忘了触发DOM事件
-          nvd.emit(Event.DOM);
-          //缓存对象池
-          cachePool.add(ovd.__destroy());
+        var ocp = ovd instanceof Component ? 1 : 0;
+        var ncp = nvd instanceof Component ? 2 : 0;
+        switch(ocp + ncp) {
+          //DOM名没变递归diff，否则重绘
+          case 0:
+            if(ovd.name == nvd.name) {
+              diffVd(ovd, nvd);
+            }
+            else {
+              elem.insertAdjacentHTML('afterend', nvd.toString());
+              elem.parentNode.removeChild(elem);
+              //别忘了触发DOM事件
+              nvd.emit(Event.DOM);
+            }
+            break;
+          //Component和VirtualDom变化则直接重绘
+          case 1:
+          case 2:
+          //Component的class类型没变则diff，否则重绘
+          case 3:
+            if(ovd.constructor == nvd.constructor) {
+              nvd.toString();
+              diffVd(ovd.virtualDom, nvd.virtualDom);
+            }
+            else {
+              elem.innerHTML = nvd.toString();
+              //别忘了触发DOM事件
+              nvd.emit(Event.DOM);
+            }
+            break;
         }
         option.state = DOM_TO_DOM;
         option.prev = type.DOM;
         option.start++;
+        //缓存对象池
+        cachePool.add(ovd.__destroy());
         break;
     }
   }

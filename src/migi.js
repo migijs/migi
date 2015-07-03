@@ -8,6 +8,7 @@ import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
+import eventBus from './eventBus';
 
 var migi = {
   render(element, dom) {
@@ -23,7 +24,7 @@ var migi = {
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event,
-  eventBus: Event.mix({}),
+  eventBus,
   Element,
   Component,
   NonVisualComponent,

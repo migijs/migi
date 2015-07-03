@@ -2,11 +2,12 @@ var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var eventBus=function(){var _4=require('./eventBus');return _4.hasOwnProperty("default")?_4["default"]:_4}();
 
 var bindOrigin = {};
 var bridgeOrigin = {};
 
-!function(){var _4=Object.create(Element.prototype);_4.constructor=Component;Component.prototype=_4}();
+!function(){var _5=Object.create(Element.prototype);_5.constructor=Component;Component.prototype=_5}();
   function Component(props, children) {
     if(props===void 0)props={};if(children===void 0)children=[];var self = this;
     var name = self.constructor.toString();
@@ -108,6 +109,9 @@ var bridgeOrigin = {};
     if(target == this) {
       throw new Error('can not bind self: ' + self.name);
     }
+    if(target != eventBus && !(target instanceof Component)) {
+      throw new Error('can only bind to eventBus/Component: ' + self.name);
+    }
     //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
     //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
     self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
@@ -118,14 +122,20 @@ var bridgeOrigin = {};
       }
       self.__bicb(target, keys, include, exclude);
     });
-    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
-      if(origin != target.__bicb) {
-        bindOrigin = {};
-        bindOrigin[target.uid] = true;
-      }
-      target.__bicb(self, keys, include, exclude);
-    });
+    //eventBus作为中间数据透传
+    if(target == eventBus) {
+      //TODO
+    }
+    else {
+      target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+        //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
+        if(origin != target.__bicb) {
+          bindOrigin = {};
+          bindOrigin[target.uid] = true;
+        }
+        target.__bicb(self, keys, include, exclude);
+      });
+    }
   }
   Component.prototype.bindTo = function(target, include, exclude) {
     target.bind(this, include, exclude);
@@ -147,17 +157,23 @@ var bridgeOrigin = {};
       var k = keys[i];
       if(datas.hasOwnProperty(k)) {
         var stream = datas[k];
-        //同名无需name，直接function作为middleware
-        if(util.isFunction(stream)) {
-          target[k] = stream(this[k]);
+        //eventBus作为中间数据透传
+        if(target == eventBus) {
+          //TODO
         }
-        //只有name说明无需数据处理
-        else if(util.isString(stream)) {
-          target[stream] = this[k];
-        }
-        else if(stream.name) {
-          var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-          target[stream.name] = v;
+        else {
+          //同名无需name，直接function作为middleware
+          if(util.isFunction(stream)) {
+            target[k] = stream(this[k]);
+          }
+          //只有name说明无需数据处理
+          else if(util.isString(stream)) {
+            target[stream] = this[k];
+          }
+          else if(stream.name) {
+            var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+            target[stream.name] = v;
+          }
         }
       }
     }
@@ -169,9 +185,12 @@ var bridgeOrigin = {};
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
     }
+    if(target != eventBus && !(target instanceof Component)) {
+      throw new Error('can only bridge to eventBus/Component: ' + self.name);
+    }
     self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
-      if(origin != self.__brcb) {
+      if(origin != self.__brcb && origin != eventBus.__brcb) {
         bridgeOrigin = {};
         bridgeOrigin[self.uid] = true;
       }
@@ -182,14 +201,14 @@ var bridgeOrigin = {};
     target.bridge(this, datas);
   }
 
-  var _5={};_5.virtualDom={};_5.virtualDom.get =function() {
+  var _6={};_6.virtualDom={};_6.virtualDom.get =function() {
     return this.__virtualDom;
   }
   //@overwrite
-  _5.element={};_5.element.get =function() {
+  _6.element={};_6.element.get =function() {
     return this.virtualDom ? this.virtualDom.element : null;
   }
-  _5.style={};_5.style.set =function(v) {
+  _6.style={};_6.style.set =function(v) {
     this.__style = v;
   }
 
@@ -200,7 +219,7 @@ var bridgeOrigin = {};
     self.virtualDom.emit(Event.DOM);
     self.element.setAttribute('migi-name', this.name);
     self.children.forEach(function(child) {
-      if(child instanceof Component) {
+      if(child instanceof Element) {
         child.emit(Event.DOM);
       }
     });
@@ -225,6 +244,9 @@ var bridgeOrigin = {};
       child.emit(Event.DATA, k);
     });
   }
-Object.keys(_5).forEach(function(k){Object.defineProperty(Component.prototype,k,_5[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
+  Component.prototype.__destroy = function() {
+    return this.virtualDom.__destroy();
+  }
+Object.keys(_6).forEach(function(k){Object.defineProperty(Component.prototype,k,_6[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
 exports["default"]=Component;

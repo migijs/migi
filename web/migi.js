@@ -8,6 +8,7 @@ var util=function(){var _6=require('./util');return _6.hasOwnProperty("default")
 var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var cachePool=function(){var _9=require('./cachePool');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var eventBus=function(){var _10=require('./eventBus');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 
 var migi = {
   render:function(element, dom) {
@@ -23,7 +24,7 @@ var migi = {
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event:Event,
-  eventBus: Event.mix({}),
+  eventBus:eventBus,
   Element:Element,
   Component:Component,
   NonVisualComponent:NonVisualComponent,

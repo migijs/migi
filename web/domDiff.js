@@ -1,9 +1,11 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var range=function(){var _3=require('./range');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var cachePool=function(){var _4=require('./cachePool');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var type=function(){var _5=require('./type');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var Cb=function(){var _3=require('./Cb');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var util=function(){var _4=require('./util');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var range=function(){var _5=require('./range');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var cachePool=function(){var _6=require('./cachePool');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var type=function(){var _7=require('./type');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -254,13 +256,20 @@ function diffVd(ovd, nvd) {
       });
       nvd.__addListener(name, function(event) {
         var item = nvd.props[prop];
-        item(event);
+        if(item instanceof Cb) {
+          item.cb.call(item.context, event);
+        }
+        else {
+          item(event);
+        }
       });
     }
     else if(!hash.hasOwnProperty(prop)) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
+  //input和select这种:input要侦听数据绑定
+  nvd.__checkListener();
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
@@ -290,6 +299,10 @@ function diffVd(ovd, nvd) {
 }
 
 exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
+  //fix循环依赖
+  if(Component.hasOwnProperty('default')) {
+    Component = Component['default'];
+  }
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if(!option.first) {
     if(option.prev == type.TEXT) {
@@ -505,22 +518,42 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
           delete option.t2d;
           delete option.d2t;
         }
-        //DOM名没变递归diff
-        if(ovd.name == nvd.name) {
-          diffVd(ovd, nvd);
-        }
-        //否则重绘替换
-        else {
-          elem.insertAdjacentHTML('afterend', nvd.toString());
-          elem.parentNode.removeChild(elem);
-          //别忘了触发DOM事件
-          nvd.emit(Event.DOM);
-          //缓存对象池
-          cachePool.add(ovd.__destroy());
+        var ocp = ovd instanceof Component ? 1 : 0;
+        var ncp = nvd instanceof Component ? 2 : 0;
+        switch(ocp + ncp) {
+          //DOM名没变递归diff，否则重绘
+          case 0:
+            if(ovd.name == nvd.name) {
+              diffVd(ovd, nvd);
+            }
+            else {
+              elem.insertAdjacentHTML('afterend', nvd.toString());
+              elem.parentNode.removeChild(elem);
+              //别忘了触发DOM事件
+              nvd.emit(Event.DOM);
+            }
+            break;
+          //Component和VirtualDom变化则直接重绘
+          case 1:
+          case 2:
+          //Component的class类型没变则diff，否则重绘
+          case 3:
+            if(ovd.constructor == nvd.constructor) {
+              nvd.toString();
+              diffVd(ovd.virtualDom, nvd.virtualDom);
+            }
+            else {
+              elem.innerHTML = nvd.toString();
+              //别忘了触发DOM事件
+              nvd.emit(Event.DOM);
+            }
+            break;
         }
         option.state = DOM_TO_DOM;
         option.prev = type.DOM;
         option.start++;
+        //缓存对象池
+        cachePool.add(ovd.__destroy());
         break;
     }
   }
