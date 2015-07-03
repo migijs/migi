@@ -122,20 +122,14 @@ class Component extends Element {
       }
       self.__bicb(target, keys, include, exclude);
     });
-    //eventBus作为中间数据透传
-    if(target == eventBus) {
-      //TODO
-    }
-    else {
-      target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-        //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
-        if(origin != target.__bicb) {
-          bindOrigin = {};
-          bindOrigin[target.uid] = true;
-        }
-        target.__bicb(self, keys, include, exclude);
-      });
-    }
+    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
+      if(origin != target.__bicb) {
+        bindOrigin = {};
+        bindOrigin[target.uid] = true;
+      }
+      target.__bicb(self, keys, include, exclude);
+    });
   }
   bindTo(target, include, exclude) {
     target.bind(this, include, exclude);
@@ -159,7 +153,18 @@ class Component extends Element {
         var stream = datas[k];
         //eventBus作为中间数据透传
         if(target == eventBus) {
-          //TODO
+          //同名无需name，直接function作为middleware
+          if(util.isFunction(stream)) {
+            target.emit(Event.DATA, k, stream(this[k]));
+          }
+          //只有name说明无需数据处理
+          else if(util.isString(stream)) {
+            target.emit(Event.DATA, stream, this[k]);
+          }
+          else if(stream.name) {
+            var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+            target.emit(Event.DATA, stream.name, v);
+          }
         }
         else {
           //同名无需name，直接function作为middleware
