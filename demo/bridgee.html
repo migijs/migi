@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>桥接总线</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx" jssc="true">
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self.bridge(migi.eventBus, {
+        'txt': 'txt'
+      });
+      self.bridgeTo(migi.eventBus, {
+        'txt': 'txt'
+      });
+      setInterval(function() {
+        self.txt = 'from a';
+      }, 2000);
+    }
+    get txt() {
+      return this._txt;
+    }
+    set txt(v) {
+      this._txt = v;
+    }
+    render() {
+      return <p>{this.txt}</p>;
+    }
+  }
+  class Component2 extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      var self = this;
+      self.bridge(migi.eventBus, {
+        'txt': 'txt'
+      });
+      self.bridgeTo(migi.eventBus, {
+        'txt': 'txt'
+      });
+      setTimeout(function() {
+        setInterval(function() {
+          self.txt = 'from b';
+        }, 2000);
+      }, 1000);
+    }
+    get txt() {
+      return this._txt;
+    }
+    set txt(v) {
+      this._txt = v;
+    }
+    render() {
+      return <p>{this.txt}</p>;
+    }
+  }
+
+  migi.render(
+    <div>
+      <Component/>
+      <Component2/>
+    </div>,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"][jssc="true"]');
+    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
