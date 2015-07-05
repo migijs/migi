@@ -63,18 +63,6 @@ class Element extends Event {
   get dom() {
     return this.__dom;
   }
-  get html() {
-    return this.element.innerHTML;
-  }
-  set html(v) {
-    this.element.innerHTML = v;
-  }
-  get text() {
-    return util.lie ? this.element.innerText : this.element.textContent;
-  }
-  set text(v) {
-    this.element.innerHTML = util.encodeHtml(v);
-  }
 
   inTo(dom) {
     this.__clean();

@@ -63,18 +63,6 @@ function getDom(dom) {
   _3.dom={};_3.dom.get =function() {
     return this.__dom;
   }
-  _3.html={};_3.html.get =function() {
-    return this.element.innerHTML;
-  }
-  _3.html.set =function(v) {
-    this.element.innerHTML = v;
-  }
-  _3.text={};_3.text.get =function() {
-    return util.lie ? this.element.innerText : this.element.textContent;
-  }
-  _3.text.set =function(v) {
-    this.element.innerHTML = util.encodeHtml(v);
-  }
 
   Element.prototype.inTo = function(dom) {
     this.__clean();
