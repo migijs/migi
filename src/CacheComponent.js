@@ -6,29 +6,48 @@ class CachedComponent extends Component {
   constructor(...data) {
     super(...data);
     this.__handler = {};
-    this.__cb = null;
+    this.__bridgeHandler = {};
+    this.__ccb = null;
+    this.__bcb = null;
     this.__flag = false;
   }
 
   __onData(k) {
     var self = this;
     if(self.__flag) {
-      super.__onData(k);
+      self.__bridgeData(k);
       return;
     }
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
     self.__handler[k] = true;
-    if(!self.__cb) {
-      self.__cb = true;
+    if(!self.__ccb) {
+      self.__ccb = true;
       setTimeout(function() {
         var keys = Object.keys(self.__handler);
         self.__handler = {};
-        self.__cb = null;
+        self.__ccb = null;
         keys = keys.length > 1 ? keys : keys[0];
         super.__onData(keys);
         self.emit(Event.CACHE_DATA, keys);
+      }, 1);
+    }
+  }
+  __bridgeData(k) {
+    var self = this;
+    if(self.__bridgeHandler.hasOwnProperty(k)) {
+      return;
+    }
+    self.__bridgeHandler[k] = true;
+    if(!self.__bcb) {
+      self.__bcb = true;
+      setTimeout(function() {
+        var keys = Object.keys(self.__bridgeHandler);
+        self.__handler = {};
+        self.__bcb = null;
+        keys = keys.length > 1 ? keys : keys[0];
+        super.__onData(keys);
       }, 1);
     }
   }
