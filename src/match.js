@@ -33,24 +33,56 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
   //id、class、name可能单个或组合出现，每种都要匹配
   var combo = [];
   combo.push(names[i]);
+  var hasClass = 0;
   if(classes[i]) {
     combo.push(classes[i]);
+    hasClass = 1;
   }
+  var hasId = 0;
   if(ids[i]) {
     combo.push(ids[i]);
+    hasId = 2;
   }
   //排序，name<class<id
   sort(combo, function(a, b) {
     return a < b;
   });
   //将可能的组合添加进入combo
-  //tag + class/id
-  combo.push(combo[0] + combo[1]);
-  //class和id都有
-  if(combo.length > 3) {
-    combo.push(combo[0] + combo[2]);
-    combo.push(combo[1] + combo[2]);
-    combo.push(combo[0] + combo[1] + combo[2]);
+  //只有当前有_*时说明有*才匹配
+  if(style.hasOwnProperty('_*')) {
+    combo.push('*');
+  }
+  switch(hasClass + hasId) {
+    //只有class
+    case 1:
+      combo.push(combo[0] + combo[1]);
+      if(style.hasOwnProperty('_*.')) {
+        combo.push('*' + combo[1]);
+      }
+      break;
+    //只有id
+    case 2:
+      combo.push(combo[0] + combo[1]);
+      if(style.hasOwnProperty('_*#')) {
+        combo.push('*' + combo[1]);
+      }
+      break;
+    //class和id都有
+    case 3:
+      combo.push(combo[0] + combo[1]);
+      combo.push(combo[0] + combo[2]);
+      combo.push(combo[1] + combo[2]);
+      combo.push(combo[0] + combo[1] + combo[2]);
+      if(style.hasOwnProperty('_*.')) {
+        combo.push('*' + combo[1]);
+      }
+      if(style.hasOwnProperty('_*#')) {
+        combo.push('*' + combo[2]);
+      }
+      if(style.hasOwnProperty('_*.#')) {
+        combo.push('*' + combo[1] + combo[2]);
+      }
+      break;
   }
   for(var j = 0, len = combo.length; j < len; j++) {
     var k = combo[j];

@@ -712,6 +712,71 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div style="color:#FFF;" migi-uid="4"><span migi-uid="1">1</span><span migi-uid="2">2</span><span migi-class="a" style="margin:0;padding:0;font-size:0;" migi-uid="3">3</span></div>');
   });
+  it('*', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `*{margin:0}`;
+      }
+      render() {
+        return <div><p><span>123</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="margin:0;" migi-uid="3"><p style="margin:0;" migi-uid="2"><span style="margin:0;" migi-uid="1">123</span></p></div>');
+  });
+  it('*.class', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `*.a{margin:0}`;
+      }
+      render() {
+        return <div class="a"><p><span class="b">123</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-class="a" style="margin:0;" migi-uid="3"><p migi-uid="2"><span migi-class="b" migi-uid="1">123</span></p></div>');
+  });
+  it('*#id', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `*#a{margin:0}`;
+      }
+      render() {
+        return <div id="a"><p id="b"><span class="a">123</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-id="a" style="margin:0;" migi-uid="3"><p migi-id="b" migi-uid="2"><span migi-class="a" migi-uid="1">123</span></p></div>');
+  });
+  it('nest *', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div *{margin:0}div * span{padding:0}* p span{color:#F00}`;
+      }
+      render() {
+        return <div><p><span>123</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><p style="margin:0;" migi-uid="2"><span style="margin:0;padding:0;color:#F00;" migi-uid="1">123</span></p></div>');
+  });
+  it('undefined', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div.undefined{margin:0}div#undefined{padding:0}`;
+      }
+      render() {
+        return <div>123</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="1">123</div>');
+  });
 });
 
 describe('attr', function() {
