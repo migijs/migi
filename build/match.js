@@ -44,12 +44,13 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
     return a < b;
   });
   //将可能的组合添加进入combo
-  for(var j = 0, len = combo.length; j < len; j++) {
-    var s = combo[j];
-    for(var k = j + 1; k < len; k++) {
-      s += combo[k];
-      combo.push(s);
-    }
+  //tag + class/id
+  combo.push(combo[0] + combo[1]);
+  //class和id都有
+  if(combo.length > 3) {
+    combo.push(combo[0] + combo[2]);
+    combo.push(combo[1] + combo[2]);
+    combo.push(combo[0] + combo[1] + combo[2]);
   }
   for(var j = 0, len = combo.length; j < len; j++) {
     var k = combo[j];

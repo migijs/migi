@@ -603,6 +603,19 @@ describe('css', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="3"><p migi-uid="2"><span style="margin:0;" migi-uid="1">123</span></p></div>');
   });
+  it('both tag/class/id', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div.d1#d2{margin:0}p#p2.p1{margin:1}span.s1#s2{margin:2}`;
+      }
+      render() {
+        return <div class="d1" id="d2"><p class="p1" id="p2"><span class="s1" id="s2">123</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-class="d1" migi-id="d2" style="margin:0;" migi-uid="3"><p migi-class="p1" migi-id="p2" style="margin:1;" migi-uid="2"><span migi-class="s1" migi-id="s2" style="margin:2;" migi-uid="1">123</span></p></div>');
+  });
   it('complex', function() {
     class Component extends migi.Component {
       constructor(...data) {
