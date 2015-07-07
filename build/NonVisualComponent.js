@@ -7,6 +7,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
   }
 
   //非可视为空
+  //@overwrite
   NonVisualComponent.prototype.toString = function() {
     if(this.children.length) {
       return Component.prototype.toString.call(this);
@@ -15,6 +16,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
   }
 
   //没有dom
+  //@overwrite
   NonVisualComponent.prototype.__onDom = function() {
     this.__dom = true;
   }

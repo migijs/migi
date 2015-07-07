@@ -7,6 +7,7 @@ class NonVisualComponent extends Component {
   }
 
   //非可视为空
+  //@overwrite
   toString() {
     if(this.children.length) {
       return super.toString();
@@ -15,6 +16,7 @@ class NonVisualComponent extends Component {
   }
 
   //没有dom
+  //@overwrite
   __onDom() {
     this.__dom = true;
   }

@@ -12,6 +12,7 @@ class CachedComponent extends Component {
     this.__flag = false;
   }
 
+  //@overwrite
   __onData(k) {
     var self = this;
     if(self.__flag) {

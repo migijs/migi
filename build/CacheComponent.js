@@ -12,6 +12,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")
     this.__flag = false;
   }
 
+  //@overwrite
   CachedComponent.prototype.__onData = function(k) {
     var _4=this;var self = this;
     if(self.__flag) {

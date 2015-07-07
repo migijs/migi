@@ -114,7 +114,7 @@ var bridgeOrigin = {};
     }
     //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
     //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
-    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+    self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
       if(origin != self.__bicb) {
         bindOrigin = {};
@@ -122,7 +122,7 @@ var bridgeOrigin = {};
       }
       self.__bicb(target, keys, include, exclude);
     });
-    target.on(target.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+    target.on(target instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
       if(origin != target.__bicb) {
         bindOrigin = {};
@@ -193,7 +193,7 @@ var bridgeOrigin = {};
     if(target != eventBus && !(target instanceof Component)) {
       throw new Error('can only bridge to eventBus/Component: ' + self.name);
     }
-    self.on(self.__handler ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+    self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
       if(origin != self.__brcb && origin != eventBus.__brcb) {
         bridgeOrigin = {};

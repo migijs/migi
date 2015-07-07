@@ -34,8 +34,8 @@ var migi = {
   Cb:Cb
 };
 
-if(typeof window != 'undefined') {
-  window.migi = migi;
-}
+!function() {
+  this.migi = migi;
+}.call();
 
 exports["default"]=migi;});
