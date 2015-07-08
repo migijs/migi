@@ -22,7 +22,7 @@ function join(index, children, history) {
   for(var i = index.shift(), len = children.length; i < len; i++) {
     var child = children[i];
     if(index.length) {
-      if(child instanceof Obj) {
+      if(child instanceof Obj) {console.log(index,child.v)
         res += join(index, child.v, history);
       }
       else {
@@ -50,6 +50,9 @@ function join(index, children, history) {
     else if(child instanceof Element) {
       history.end = true;
       break;
+    }
+    else if(Array.isArray(child)) {
+      res += util.joinArray(child, null, true);
     }
     else {
       res += child === void 0 || child === null ? '' : child.toString();
