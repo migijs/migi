@@ -1,14 +1,14 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var VirtualDom=function(){var _3=require('./VirtualDom');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var NonVisualComponent=function(){var _4=require('./NonVisualComponent');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var CacheComponent=function(){var _5=require('./CacheComponent');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var util=function(){var _6=require('./util');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var Obj=function(){var _7=require('./Obj');return _7.hasOwnProperty("default")?_7["default"]:_7}();
-var Cb=function(){var _8=require('./Cb');return _8.hasOwnProperty("default")?_8["default"]:_8}();
-var cachePool=function(){var _9=require('./cachePool');return _9.hasOwnProperty("default")?_9["default"]:_9}();
-var eventBus=function(){var _10=require('./eventBus');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var EventBus=function(){var _2=require('./EventBus');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var VirtualDom=function(){var _4=require('./VirtualDom');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var NonVisualComponent=function(){var _5=require('./NonVisualComponent');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var CacheComponent=function(){var _6=require('./CacheComponent');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var util=function(){var _7=require('./util');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var Obj=function(){var _8=require('./Obj');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var cachePool=function(){var _10=require('./cachePool');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 
 var migi = {
   render:function(element, dom) {
@@ -24,7 +24,8 @@ var migi = {
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event:Event,
-  eventBus:eventBus,
+  EventBus:EventBus,
+  eventBus: new EventBus,
   Element:Element,
   Component:Component,
   NonVisualComponent:NonVisualComponent,

@@ -1,5 +1,6 @@
 import Event from './Event';
 import Element from './Element';
+import EventBus from './EventBus';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
@@ -8,7 +9,6 @@ import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
-import eventBus from './eventBus';
 
 var migi = {
   render(element, dom) {
@@ -24,7 +24,8 @@ var migi = {
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event,
-  eventBus,
+  EventBus,
+  eventBus: new EventBus,
   Element,
   Component,
   NonVisualComponent,

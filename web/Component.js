@@ -2,7 +2,7 @@ define(function(require, exports, module){var Event=function(){var _0=require('.
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var eventBus=function(){var _4=require('./eventBus');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var EventBus=function(){var _4=require('./EventBus');return _4.hasOwnProperty("default")?_4["default"]:_4}();
 
 var bindOrigin = {};
 var bridgeOrigin = {};
@@ -109,8 +109,8 @@ var bridgeOrigin = {};
     if(target == this) {
       throw new Error('can not bind self: ' + self.name);
     }
-    if(target != eventBus && !(target instanceof Component)) {
-      throw new Error('can only bind to eventBus/Component: ' + self.name);
+    if(!(target instanceof EventBus) && !(target instanceof Component)) {
+      throw new Error('can only bind to EventBus/Component: ' + self.name);
     }
     //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
     //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
@@ -152,7 +152,7 @@ var bridgeOrigin = {};
       if(datas.hasOwnProperty(k)) {
         var stream = datas[k];
         //eventBus作为中间数据透传
-        if(target == eventBus) {
+        if(target instanceof EventBus) {
           //同名无需name，直接function作为middleware
           if(util.isFunction(stream)) {
             target.emit(Event.DATA, k, stream(this[k]));
@@ -190,12 +190,12 @@ var bridgeOrigin = {};
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
     }
-    if(target != eventBus && !(target instanceof Component)) {
-      throw new Error('can only bridge to eventBus/Component: ' + self.name);
+    if(!(target instanceof EventBus) && !(target instanceof Component)) {
+      throw new Error('can only bridge to EventBus/Component: ' + self.name);
     }
     self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
-      if(origin != self.__brcb && origin != eventBus.__brcb) {
+      if(origin != self.__brcb && origin != EventBus.prototype.__brcb) {
         bridgeOrigin = {};
         bridgeOrigin[self.uid] = true;
       }
