@@ -268,20 +268,29 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
-  //input和select这种:input要侦听数据绑定
-  //nvd.__checkListener();
+  var ol = ovd.children.length;
+  var nl = nvd.children.length;
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
   var history;
   //遍历孩子，长度取新老vd最小值
-  for(var index = 0, len = Math.min(ovd.children.length, nvd.children.length); index < len; index++) {
-    var oc = ovd.children[index];
-    var nc = nvd.children[index];
+  for(var i = 0, len = Math.min(ol, nl); i < len; i++) {
+    var oc = ovd.children[i];
+    var nc = nvd.children[i];
     //history记录着当前child索引，可能它是个数组，递归记录
-    history = [index];
+    history = [i];
     //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
     diffChild(elem, oc, nc, ranges, option, history);
+  }
+  //老的多余的删除
+  for(var j = i; j < ol; j++) {
+    del(elem, ovd.children[j], ranges, option, history);
+  }
+  //新的多余的插入
+  for(var j = i; j < nl; j++) {
+    history[history.length - 1] = i;
+    add(elem, nvd.children[j], ranges, option, history);
   }
   range.merge(ranges);
   if(ranges.length) {

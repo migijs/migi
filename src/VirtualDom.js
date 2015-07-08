@@ -520,7 +520,7 @@ class VirtualDom extends Element {
         self.__updateAttr('value', range.value(ranges[0], self.children));
         return;
       }
-      ranges.forEach(function(item) {console.log(JSON.stringify(item))
+      ranges.forEach(function(item) {
         range.update(item, self.children, self.element);
       });
     }
@@ -562,7 +562,7 @@ class VirtualDom extends Element {
       if(change) {
         var ov = child.v;
         //对比是否真正发生变更
-        if(child.update(ov)) {console.log(JSON.stringify(history))
+        if(child.update(ov)) {
           domDiff.diff(this.element, ov, child.v, ranges, option, history);
         }
       }
