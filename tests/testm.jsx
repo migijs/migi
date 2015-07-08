@@ -25,6 +25,12 @@ describe('api', function() {
   it('#Event', function() {
     expect(migi.Event).to.be.a(Function);
   });
+  it('#EventBus', function() {
+    expect(migi.EventBus).to.be.a(Function);
+  });
+  it('#eventBus', function() {
+    expect(migi.eventBus).to.be.a(Object);
+  });
   it('#Element', function() {
     expect(migi.Element).to.be.a(Function);
   });
