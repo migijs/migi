@@ -195,7 +195,7 @@ class Component extends Element {
     }
     self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
-      if(origin != self.__brcb && origin != EventBus.prototype.__brcb) {
+      if(origin != self.__brcb && origin != target.__brcb) {
         bridgeOrigin = {};
         bridgeOrigin[self.uid] = true;
       }
