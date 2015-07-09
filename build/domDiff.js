@@ -163,10 +163,22 @@ function del(elem, vd, ranges, option, temp, last) {
   }
   else if(vd instanceof Element) {
     if(temp.hasOwnProperty('prev')) {
-      if(temp.prev == type.TEXT && temp.d) {
+      //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
+      if(temp.prev == type.TEXT) {
+        if(temp.d) {
+          removeAt(elem, option.start + 1);
+        }
         removeAt(elem, option.start + 1);
       }
-      removeAt(elem, option.start + 1);
+      //刚删过d的话，检查之前最后的节点状态判别索引是否要+1
+      else {
+        if(option.prev == type.TEXT) {
+          removeAt(elem, option.start + 1);
+        }
+        else {
+          removeAt(elem, option.start);
+        }
+      }
     }
     else {
       switch(option.state) {
