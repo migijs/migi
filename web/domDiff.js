@@ -94,7 +94,12 @@ function insertAt(elem, cns, index, vd, isText) {
 }
 
 function add(elem, vd, ranges, option, history) {
-  if(vd instanceof Element) {
+  if(Array.isArray(vd)) {
+    vd.forEach(function(item) {
+      add(elem, item, ranges, option, history);
+    });
+  }
+  else if(vd instanceof Element) {
     switch(option.state) {
       case DOM_TO_TEXT:
         option.start++;
@@ -144,8 +149,13 @@ function add(elem, vd, ranges, option, history) {
     option.prev = type.TEXT;
   }
 }
-function del(elem, vd, ranges, option, history) {
-  if(vd instanceof Element) {
+function del(elem, vd, ranges, option) {
+  if(Array.isArray(vd)) {
+    vd.forEach(function(item) {
+      del(elem, item, ranges, option);
+    });
+  }
+  else if(vd instanceof Element) {
     switch(option.state) {
       case DOM_TO_TEXT:
         removeAt(elem, option.start + 1);
@@ -285,7 +295,7 @@ function diffVd(ovd, nvd) {
   }
   //老的多余的删除
   for(var j = i; j < ol; j++) {
-    del(elem, ovd.children[j], ranges, option, history);
+    del(elem, ovd.children[j], ranges, option);
   }
   //新的多余的插入
   for(var j = i; j < nl; j++) {
@@ -357,7 +367,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
       case 1:
         diffChild(elem, ovd[0], nvd[0], ranges, option, history, first);
         for(var i = 1; i < ol; i++) {
-          del(elem, ovd[i], ranges, option, history);
+          del(elem, ovd[i], ranges, option);
         }
         break;
       //空数组变为有内容
@@ -376,7 +386,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
         }
         //老的多余的删除
         for(var j = i; j < ol; j++) {
-          del(elem, ovd[j], ranges, option, history);
+          del(elem, ovd[j], ranges, option);
         }
         //新的多余的插入
         for(var j = i; j < nl; j++) {
@@ -393,7 +403,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, first) {
     diffChild(elem, ovd[0], nvd, ranges, option, history, first);
     //移除剩余的老的
     for(var i = 1, len = ovd.length; i < len; i++) {
-      del(elem, ovd[i], ranges, option, history);
+      del(elem, ovd[i], ranges, option);
     }
   }
   //新的是数组老的不是

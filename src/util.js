@@ -80,7 +80,7 @@ function equal(a, b) {
   }
 }
 
-function joinArray(arr, prop, noEncode) {
+function joinArray(arr, prop) {
   var res = '';
   arr.forEach(function(item) {
     if(Array.isArray(item)) {
@@ -91,9 +91,6 @@ function joinArray(arr, prop, noEncode) {
     }
     else if(item === void 0 || item === null) {
       res += '';
-    }
-    else if(noEncode) {
-      return item.toString();
     }
     else {
       res += util.encodeHtml(item.toString(), prop);
