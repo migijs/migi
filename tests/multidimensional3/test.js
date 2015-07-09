@@ -16,7 +16,7 @@ module.exports = {
   'click del': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '')
+      .assert.containsText('#test [ref]', '^$')
   },
   'click add2': function(browser) {
     browser
@@ -26,7 +26,7 @@ module.exports = {
   'click del2': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '')
+      .assert.containsText('#test [ref]', '^$')
   },
   'click add3': function(browser) {
     browser
@@ -36,7 +36,7 @@ module.exports = {
   'click del3': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '')
+      .assert.containsText('#test [ref]', '^$')
   },
   'click add4': function(browser) {
     browser
@@ -46,7 +46,7 @@ module.exports = {
   'click del4': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '')
+      .assert.containsText('#test [ref]', '^$')
       .end()
   }
 };
