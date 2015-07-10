@@ -105,6 +105,7 @@ function add(elem, vd, ranges, option, history, first) {
       history[history.length - 1] = i;
       add(elem, item, ranges, option, history, first);
     }
+    history.pop();
   }
   else if(vd instanceof Element) {
     switch(option.state) {

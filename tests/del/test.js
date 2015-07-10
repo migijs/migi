@@ -48,5 +48,16 @@ module.exports = {
       .click('#test p')
       .assert.containsText('#test [ref]', '^$1')
       .end()
+  },
+  'click add5': function(browser) {
+    browser
+      .click('#test p')
+      .assert.containsText('#test [ref]', '^1<span migi-uid="17">d</span>23<span migi-uid="18">d</span>4$5')
+  },
+  'click del5': function(browser) {
+    browser
+      .click('#test p')
+      .assert.containsText('#test [ref]', '^1<span migi-uid="17">d</span>2<span migi-uid="18">d</span>5$5')
+      .end()
   }
 };

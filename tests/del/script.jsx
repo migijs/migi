@@ -42,6 +42,12 @@ class Component extends migi.Component {
       case 7:
         this.data = '';
         break;
+      case 8:
+        this.data = [1, <span>d</span>, [2, 3], <span>d</span>, 4];
+        break;
+      case 9:
+        this.data = [1, <span>d</span>, [2], <span>d</span>, 5];
+        break;
     }
     this.record();
   }
