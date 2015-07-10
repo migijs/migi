@@ -1,4 +1,4 @@
-# A JavaScript MVVM library on JSX
+# A JavaScript MVVM Webcomponent on JSX
 
 `migi`取自动漫寄生兽主角小右，意指以jsx语法将html模板寄生在js上。
 
@@ -42,8 +42,15 @@ https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
 ##### Event static
 * mix(...obj:Object):void 将Event的方法混入到指定obj上
 
+#### EventBus
+* bridge(target:Component, datas:Object\<key:String, value:String/Function/Object>) 单向数据流动至target组件，datas为键值对，key表明联动数据名，value有3种形式
+ * 当value为String时，标明流动对象的数据名
+ * 当value为Function时，流动对象的数据名为同名key，其唯一参数为变量值，返回处理后的数据值
+ * 当value为Object时，name标明流动对象的数据名，middleware为中间件处理数据方法，同上Function
+* bridgeTo(target:Component, datas:Object\<key:String, value:String/Function/Object>) 同bridge，但是调用target的bridge方法桥接自己
+
 ## Demo
-* demo目录下是一个web端的实时转换例子，本地浏览需要npm install安装依赖
+* demo目录下是一个web端的使用教程示例，本地浏览需要npm install安装依赖
 * 依赖的语法解析器来自于homunculus：https://github.com/army8735/homunculus
 * 依赖的jsx翻译工具来自于lefty：https://github.com/migijs/lefty
 * 依赖的css注入工具来自于jaw：https://github.com/migijs/jaw
