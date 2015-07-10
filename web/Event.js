@@ -87,7 +87,6 @@ define(function(require, exports, module){
         o[fn] = event[fn];
       });
     });
-    return this;
   }
 
 

@@ -87,7 +87,6 @@
         o[fn] = event[fn];
       });
     });
-    return this;
   }
 
 

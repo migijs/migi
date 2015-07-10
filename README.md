@@ -17,7 +17,29 @@ npm install migi
 https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
 
 ## API
-暂无
+
+### migi
+* render(element:Element, dom:DOM/String):Element 渲染element到指定dom中作为innerHTML，会调用element的toString方法
+* createCp(name:String, props:Object, children:Array\<VirtualDom>):Component 创建指定name名称和props属性的组件，孩子列表children
+* createVd(name:String, props:Object, children:Array\<VirtualDom>):VirtualDom 创建指定name名称和props属性的虚拟DOM，孩子列表children
+* Event:class Event类
+* EventBus:class EventBus类
+* eventBus:EventBus 默认的全局事件总线
+* Element:class Element类，Component组件和VirtualDom虚拟DOM抽象父类
+* Component:class Component类
+* NonVisualComponent:class NonVisualComponent类，父类为Component
+* CacheComponent:class CacheComponent，父类为Component
+* VirtualDom:class VirtualDom虚拟DOM类
+* Obj:class get/set数据变动侦听类
+* Cb:class VirtualDom点击侦听类
+
+#### Event
+* on(id:String/Array\<String>, handle:Function):Event 添加侦听
+* off(id:String/Array\<String>, handle:Function):Event 删除侦听
+* once(id:String/Array\<String>, handle:Function):Event 添加侦听，且只执行一次
+* emit(id:String/Array\<String>, ...data:Object):Event 触发事件，参数变长
+##### Event static
+* mix(...obj:Object):void 将Event的方法混入到指定obj上
 
 ## Demo
 * demo目录下是一个web端的实时转换例子，本地浏览需要npm install安装依赖

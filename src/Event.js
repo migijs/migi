@@ -87,7 +87,6 @@ class Event {
         o[fn] = event[fn];
       });
     });
-    return this;
   }
 }
 
