@@ -38,6 +38,7 @@ https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
 * off(id:String/Array\<String>, handle:Function):Event 删除侦听
 * once(id:String/Array\<String>, handle:Function):Event 添加侦听，且只执行一次
 * emit(id:String/Array\<String>, ...data:Object):Event 触发事件，参数变长
+
 ##### Event static
 * mix(...obj:Object):void 将Event的方法混入到指定obj上
 
