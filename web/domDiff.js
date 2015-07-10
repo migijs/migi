@@ -95,12 +95,14 @@ function insertAt(elem, cns, index, vd, isText) {
 
 function add(elem, vd, ranges, option, history, first) {
   if(Array.isArray(vd)) {
+    history.push(0);
     for(var i = 0, len = vd.length; i < len; i++) {
       var item = vd[i];
       if(i > 0) {
         first = false;
         delete option.t2d;
       }
+      history[history.length - 1] = i;
       add(elem, item, ranges, option, history, first);
     }
   }
@@ -216,7 +218,7 @@ function del(elem, vd, ranges, option, temp, last) {
   else {
     if(temp.hasOwnProperty('prev')) {
       if(last && temp.d) {
-        removeAt(elem, option.start);
+        removeAt(elem, option.start + 1);
         option.t2d = true;
       }
     }
