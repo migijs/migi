@@ -19,25 +19,25 @@ class Component extends migi.Component {
   click() {
     switch(this.i++) {
       case 0:
-        this.data = [1, [[2, <span>d</span>], 4]];
+        this.data = [<span>d</span>, [<span>d</span>, 1, 2]];
         break;
       case 1:
         this.data = '';
         break;
       case 2:
-        this.data = [1, 2, <b>3</b>, <b>4</b>];
+        this.data = [<span>d</span>, [<span>d</span>, 1, 2], <span>d</span>];
         break;
       case 3:
         this.data = '';
         break;
       case 4:
-        this.data = [1, 2, <b>3</b>, <b>4</b>, 5];
+        this.data = [<span>d</span>, [<span>d</span>, 1, 2], <span>d</span>, <span>d</span>];
         break;
       case 5:
         this.data = '';
         break;
       case 6:
-        this.data = [1, 2, <b>3</b>, <b>4</b>, 5, <b>6</b>, 7, <b>8</b>];
+        this.data = [<span>d</span>, [<span>d</span>, 1, 2], <span>d</span>, 3];
         break;
       case 7:
         this.data = '';
