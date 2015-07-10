@@ -47,7 +47,6 @@ module.exports = {
     browser
       .click('#test p')
       .assert.containsText('#test [ref]', '^$1')
-      .end()
   },
   'click add5': function(browser) {
     browser
