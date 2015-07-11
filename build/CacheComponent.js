@@ -52,6 +52,7 @@ var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")
       }, 1);
     }
   }
+
   //逻辑和Component复用，代码有点交叉的味道
   //bind{}
   //bridge{}

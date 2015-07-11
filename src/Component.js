@@ -250,6 +250,7 @@ class Component extends Element {
     });
   }
   __destroy() {
+    this.__hash = {};
     return this.$virtualDom.__destroy();
   }
 }

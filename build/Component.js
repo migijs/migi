@@ -250,6 +250,7 @@ var bridgeOrigin = {};
     });
   }
   Component.prototype.__destroy = function() {
+    this.__hash = {};
     return this.$virtualDom.__destroy();
   }
 Object.keys(_6).forEach(function(k){Object.defineProperty(Component.prototype,k,_6[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});

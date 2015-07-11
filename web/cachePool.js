@@ -1,7 +1,7 @@
 define(function(require, exports, module){var MAX = 4096;
 var cache = new Array(MAX);
 
-var o = {
+var pool = {
   index: 0,
   add: function(item) {
     if(!item.__hasDes && this.index < MAX) {
@@ -13,4 +13,4 @@ var o = {
   }
 };
 
-exports["default"]=o;});
+exports["default"]=pool;});

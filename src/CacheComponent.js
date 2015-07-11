@@ -52,6 +52,7 @@ class CachedComponent extends Component {
       }, 1);
     }
   }
+
   //逻辑和Component复用，代码有点交叉的味道
   //bind{}
   //bridge{}

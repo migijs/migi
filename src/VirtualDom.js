@@ -719,6 +719,7 @@ class VirtualDom extends Element {
     return this;
   }
   __destroy() {
+    this.__hash = {};
     this.__cache = {};
     this.__names = null;
     this.__classes = null;
