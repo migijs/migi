@@ -1,7 +1,7 @@
 class Test extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.style = `
+    this.$style = `
       a{padding:0}
       a[title]{padding:1px}
       a[title="b"]{padding:2px}

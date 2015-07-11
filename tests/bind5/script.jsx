@@ -22,10 +22,10 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.findAll(Component);
+var cps = vd.$findAll(Component);
 
-cps[0].bind(cps[1]);
-cps[1].bind(cps[2]);
-cps[2].bind(cps[0]);
+cps[0].$bind(cps[1]);
+cps[1].$bind(cps[2]);
+cps[2].$bind(cps[0]);
 
 cps[0].txt = 'txt';

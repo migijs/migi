@@ -90,7 +90,7 @@
     }
     request() {
       var self = this;
-      var url = self.props.url;
+      var url = self.$props.url;
       $.getJSON(url, function(data) {
         self.emit('success', data);
       });
@@ -106,14 +106,14 @@
       self._value = '';
       self._show = false;
       self.on(migi.Event.DOM, function() {
-        var ajax = self.findChild('Ajax');
+        var ajax = self.$findChild('Ajax');
         if(ajax) {
           ajax.on('success', function(data) {
             self.list = data;
           });
         }
         window.addEventListener('click', function(e) {
-          if(e.target != self.element) {
+          if(e.target != self.$element) {
             self.show = false;
           }
         });
@@ -137,11 +137,11 @@
     set show(v) {
       this._show = v;
       if(v) {
-        var cur = this.element.querySelector('.cur');
+        var cur = this.$element.querySelector('.cur');
         if(cur) {
           cur.className = '';
         }
-        cur = this.element.querySelector('li[title="' + this.value + '"]');
+        cur = this.$element.querySelector('li[title="' + this.value + '"]');
         if(cur) {
           cur.className = 'cur';
         }
@@ -156,12 +156,12 @@
     handleClick(e) {
       this.show = !this.show;
       if(e.target.tagName == 'LI') {
-        this.find('strong').html = this.value = e.target.innerHTML;
+        this.value = e.target.innerHTML;
       }
     }
     handlerOver(e) {
       if(e.target.tagName == 'LI' && e.target.className != 'cur') {
-        var cur = this.element.querySelector('.cur');
+        var cur = this.$element.querySelector('.cur');
         if(cur) {
           cur.className = '';
         }
@@ -205,8 +205,8 @@
     </ol>,
     '#example'
   );
-  var selects = ol.findAll('Select');
-  selects[0].bind(selects[1], null, ['show']);
+  var selects = ol.$findAll('Select');
+  selects[0].$bind(selects[1], null, ['show']);
   //反过来也是一样
   //selects[1].bindTo(selects[0]);
 </script>

@@ -1,7 +1,7 @@
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt': 'txt'
     });
   }
@@ -35,7 +35,7 @@ class Component2 extends migi.Component {
 class Component3 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt': 'txt34'
     });
   }
@@ -69,7 +69,7 @@ class Component4 extends migi.Component {
 class Component5 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt5': function(v) {
         return v + v;
       }
@@ -105,7 +105,7 @@ class Component6 extends migi.Component {
 class Component7 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt7': {
         name: 'txt7'
       }
@@ -141,7 +141,7 @@ class Component8 extends migi.Component {
 class Component9 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt9': {
         name: 'txt99',
         middleware: function(v) {
@@ -180,7 +180,7 @@ class Component10 extends migi.Component {
 class Component11 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.bridge(migi.eventBus, {
+    this.$bridge(migi.eventBus, {
       'txt': 'txt11'
     });
   }
@@ -230,7 +230,7 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.findAll(migi.Component);
+var cps = vd.$findAll(migi.Component);
 
 cps[0].txt = '11';
 cps[2].txt = '22';

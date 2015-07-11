@@ -36,8 +36,8 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.findAll(migi.Component);
+var cps = vd.$findAll(migi.Component);
 
-cps[0].bind(cps[1]);
+cps[0].$bind(cps[1]);
 
 cps[0].txt = 'txt';

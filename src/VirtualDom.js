@@ -71,9 +71,9 @@ class VirtualDom extends Element {
   //@override
   toString() {
     var self = this;
-    var res = '<' + self.name;
+    var res = '<' + self.$name;
     //处理属性
-    Object.keys(self.props).forEach(function(prop) {
+    Object.keys(self.$props).forEach(function(prop) {
       var s = self.__renderProp(prop);
       res += s;
     });
@@ -89,7 +89,7 @@ class VirtualDom extends Element {
         }
       }
     }
-    res += ' migi-uid="' + self.uid + '"';
+    res += ' migi-uid="' + self.$uid + '"';
     //input和select这种:input要侦听数据绑定
     self.__checkListener();
     //自闭合标签特殊处理
@@ -99,20 +99,20 @@ class VirtualDom extends Element {
     res += '>';
     //渲染children
     res += self.__renderChildren();
-    res +='</' + self.name + '>';
+    res +='</' + self.$name + '>';
     return res;
   }
 
-  isFirst(children) {
+  $isFirst(children) {
     //本身就是Component的唯一节点
-    if(this.parent instanceof Component) {
+    if(this.$parent instanceof Component) {
       return true;
     }
-    children = children || this.parent.children;
+    children = children || this.$parent.$children;
     for(var i = 0, len = children.length; i < len; i++) {
       var child = children[i];
       if(Array.isArray(child) && child.length) {
-        return this.isFirst(child);
+        return this.$isFirst(child);
       }
       else if(child == this) {
         return true;
@@ -123,21 +123,21 @@ class VirtualDom extends Element {
       else if(child instanceof Obj) {
         child = child.v;
         if(Array.isArray(child) && child.length) {
-          return this.isFirst(child);
+          return this.$isFirst(child);
         }
       }
     }
   }
-  isLast(children) {
+  $isLast(children) {
     //本身就是Component的唯一节点
-    if(this.parent instanceof Component) {
+    if(this.$parent instanceof Component) {
       return true;
     }
-    children = children || this.parent.children;
+    children = children || this.$parent.$children;
     for(var i = children.length - 1; i >= 0; i--) {
       var child = children[i];
       if(Array.isArray(child) && child.length) {
-        return this.isLast(child);
+        return this.$isLast(child);
       }
       else if(child == this) {
         return true;
@@ -148,7 +148,7 @@ class VirtualDom extends Element {
       else if(child instanceof Obj) {
         child = child.v;
         if(Array.isArray(child) && child.length) {
-          return this.isLast(child);
+          return this.$isLast(child);
         }
       }
     }
@@ -156,7 +156,7 @@ class VirtualDom extends Element {
 
   __renderProp(prop) {
     var self = this;
-    var v = self.props[prop];
+    var v = self.$props[prop];
     var res = '';
     //onXxx侦听处理
     if(/^on[A-Z]/.test(prop)) {
@@ -165,7 +165,7 @@ class VirtualDom extends Element {
           return up.toLowerCase();
         });
         self.__addListener(name, function(event) {
-          var item = self.props[prop];
+          var item = self.$props[prop];
           if(item instanceof Cb) {
             item.cb.call(item.context, event);
           }
@@ -181,7 +181,7 @@ class VirtualDom extends Element {
       //特殊html不转义
       if(prop == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
-          self.element.innerHTML = s;
+          self.$element.innerHTML = s;
         });
         return '';
       }
@@ -194,7 +194,7 @@ class VirtualDom extends Element {
       var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
       if(prop == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
-          self.element.innerHTML = s;
+          self.$element.innerHTML = s;
         });
         return '';
       }
@@ -220,16 +220,16 @@ class VirtualDom extends Element {
   __renderChildren() {
     var self = this;
     var res = '';
-    self.children.forEach(function(child) {
+    self.$children.forEach(function(child) {
       res += renderChild(child);
     });
     return res;
   }
   __checkListener() {
     var self = this;
-    if(self.name == 'input') {
-      if(self.props.hasOwnProperty('value')) {
-        var item = self.props.value;
+    if(self.$name == 'input') {
+      if(self.$props.hasOwnProperty('value')) {
+        var item = self.$props.value;
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb() {
@@ -266,9 +266,9 @@ class VirtualDom extends Element {
         }
       }
     }
-    else if(self.name == 'select') {
-      if(self.props.hasOwnProperty('value')) {
-        var item = self.props.value;
+    else if(self.$name == 'select') {
+      if(self.$props.hasOwnProperty('value')) {
+        var item = self.$props.value;
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb() {
@@ -283,9 +283,9 @@ class VirtualDom extends Element {
     }
     //textarea的value在标签的childNodes里，这里只处理单一child情况
     //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
-    else if(self.name == 'textarea') {
-      if(self.children.length == 1) {
-        var child = self.children[0];
+    else if(self.$name == 'textarea') {
+      if(self.$children.length == 1) {
+        var child = self.$children[0];
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
@@ -321,7 +321,7 @@ class VirtualDom extends Element {
       else {
         self.__listener[name] = cb;
       }
-      self.element.addEventListener(name, cb);
+      self.$element.addEventListener(name, cb);
     }
   }
   __removeListener() {
@@ -331,27 +331,27 @@ class VirtualDom extends Element {
         var item = self.__listener[name];
         if(Array.isArray(item)) {
           item.forEach(function(cb) {
-            self.element.removeEventListener(name, cb);
+            self.$element.removeEventListener(name, cb);
           });
         }
         else {
-          self.element.removeEventListener(name, item);
+          self.$element.removeEventListener(name, item);
         }
       });
     }
   }
 
-  find(name) {
-    return this.findAll(name, true)[0];
+  $find(name) {
+    return this.$findAll(name, true)[0];
   }
-  findAll(name, first) {
+  $findAll(name, first) {
     var res = [];
-    for(var i = 0, len = this.children.length; i < len; i++) {
-      var child = this.children[i];
+    for(var i = 0, len = this.$children.length; i < len; i++) {
+      var child = this.$children[i];
       if(child instanceof Element) {
         if(child instanceof Component) {
           //传入的可能是个class或者string
-          if(child.name == name || util.isFunction(name) && child instanceof name) {
+          if(child.$name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -359,13 +359,13 @@ class VirtualDom extends Element {
           }
         }
         else {
-          if(child.name == name || util.isFunction(name) && child instanceof name) {
+          if(child.$name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
             }
           }
-          res = res.concat(child.findAll(name));
+          res = res.concat(child.$findAll(name));
           if(first && res.length) {
             break;
           }
@@ -375,22 +375,22 @@ class VirtualDom extends Element {
     return res;
   }
 
-  get names() {
+  get $names() {
     return this.__names || (this.__names = []);
   }
-  set style(v) {
+  set $style(v) {
     var self = this;
     self.__style = v;
-    if(self.parent instanceof VirtualDom) {
-      self.__names = self.parent.names.slice();
+    if(self.$parent instanceof VirtualDom) {
+      self.__names = self.$parent.$names.slice();
     }
     else {
       self.__names = [];
     }
-    self.__names.push(self.name);
-    self.children.forEach(function(child) {
+    self.__names.push(self.$name);
+    self.$children.forEach(function(child) {
       if(child instanceof VirtualDom) {
-        child.style = v;
+        child.$style = v;
       }
     });
   }
@@ -401,8 +401,8 @@ class VirtualDom extends Element {
     var self = this;
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
-    for(var index = 0, len = self.children.length; index < len; index++) {
-      var child = self.children[index];
+    for(var index = 0, len = self.$children.length; index < len; index++) {
+      var child = self.$children[index];
       self.__domChild(child, index, len, option);
     }
     //可能最后一个是空白text，需特殊判断下插入
@@ -462,7 +462,7 @@ class VirtualDom extends Element {
   }
   __insertBlank(start) {
     var blank = document.createTextNode('');
-    var elem = this.element;
+    var elem = this.$element;
     var cns = elem.childNodes;
     //可能仅一个空文本节点，或最后一个空文本节点
     var length = cns.length;
@@ -478,8 +478,8 @@ class VirtualDom extends Element {
   __onData(k) {
     var self = this;
     //联动属性值
-    for(var key in self.props) {
-      var item = self.props[key];
+    for(var key in self.$props) {
+      var item = self.$props[key];
       if(item instanceof Obj) {
         var change = false;
         if(Array.isArray(item.k)) {
@@ -506,7 +506,7 @@ class VirtualDom extends Element {
     var ranges = [];
     var option = { start: 0, record: [], first: true };
     var history;
-    var children = self.children;
+    var children = self.$children;
     for(var index = 0, len = children.length; index < len; index++) {
       var child = children[index];
       //history记录着当前child索引，可能它是个数组，递归记录
@@ -515,12 +515,12 @@ class VirtualDom extends Element {
     }
     if(ranges.length) {
       //textarea特殊判断
-      if(self.name == 'textarea') {
-        self.__updateAttr('value', range.value(ranges[0], self.children));
+      if(self.$name == 'textarea') {
+        self.__updateAttr('value', range.value(ranges[0], self.$children));
         return;
       }
       ranges.forEach(function(item) {
-        range.update(item, self.children, self.element);
+        range.update(item, self.$children, self.$element);
       });
     }
   }
@@ -562,7 +562,7 @@ class VirtualDom extends Element {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff.diff(this.element, ov, child.v, ranges, option, history);
+          domDiff.diff(this.$element, ov, child.v, ranges, option, history);
         }
       }
     }
@@ -591,14 +591,14 @@ class VirtualDom extends Element {
       }
       //注意空数组算text类型
       else {
-        domDiff.check(option, this.element, child, ranges, history);
+        domDiff.check(option, this.$element, child, ranges, history);
         range.record(history, option);
         option.prev = type.TEXT;
       }
     }
     //else其它情况为文本节点或者undefined忽略
     else {
-      domDiff.check(option, this.element, child, ranges, history);
+      domDiff.check(option, this.$element, child, ranges, history);
       range.record(history, option);
       option.prev = type.TEXT;
     }
@@ -609,12 +609,12 @@ class VirtualDom extends Element {
   //但是setAttribute会保留实体字符形式
   __updateAttr(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
-      this.element.innerHTML = v || '';
+      this.$element.innerHTML = v || '';
       return;
     }
     switch(k) {
       case 'value':
-        this.element[k] = v || '';
+        this.$element[k] = v || '';
         break;
       case 'checked':
       case 'selected':
@@ -627,7 +627,7 @@ class VirtualDom extends Element {
       case 'tagName':
       case 'nodeName':
       case 'nodeType':
-        this.element[k] = v || false;
+        this.$element[k] = v || false;
         break;
       case 'className':
         k = 'class';
@@ -635,19 +635,19 @@ class VirtualDom extends Element {
       case 'class':
         if(this.__style) {
           if(v === null || v === void 0) {
-            this.element.removeAttribute('migi-' + k);
+            this.$element.removeAttribute('migi-' + k);
           }
           else {
-            this.element.setAttribute('migi-' + k, v);
+            this.$element.setAttribute('migi-' + k, v);
           }
           break;
         }
       default:
         if(v === null || v === void 0) {
-          this.element.removeAttribute(k);
+          this.$element.removeAttribute(k);
         }
         else {
-          this.element.setAttribute(k, v);
+          this.$element.setAttribute(k, v);
         }
         break;
     }
@@ -659,9 +659,9 @@ class VirtualDom extends Element {
   }
   __match(first) {
     this.__inline = this.__cache.style || '';
-    if(this.parent instanceof VirtualDom) {
-      this.__classes = this.parent.__classes.slice();
-      this.__ids = this.parent.__ids.slice();
+    if(this.$parent instanceof VirtualDom) {
+      this.__classes = this.$parent.__classes.slice();
+      this.__ids = this.$parent.__ids.slice();
     }
     else {
       this.__classes = [];
@@ -692,10 +692,10 @@ class VirtualDom extends Element {
   }
   __updateStyle() {
     var s = this.__match();
-    if(this.element.getAttribute('style') != s) {
-      this.element.setAttribute('style', s);
+    if(this.$element.getAttribute('style') != s) {
+      this.$element.setAttribute('style', s);
     }
-    this.children.forEach(function(child) {
+    this.$children.forEach(function(child) {
       if(child instanceof VirtualDom) {
         child.__updateStyle();
       }

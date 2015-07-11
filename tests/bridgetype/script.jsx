@@ -41,22 +41,22 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.findAll(migi.Component);
+var cps = vd.$findAll(migi.Component);
 
-cps[0].bridge(cps[1], {
+cps[0].$bridge(cps[1], {
   'txt': function(v) {
     return v + v;
   }
 });
-cps[2].bridge(cps[3], {
+cps[2].$bridge(cps[3], {
   'txt': {
     name: 'txt2'
   }
 });
-cps[4].bridge(cps[5], {
+cps[4].$bridge(cps[5], {
   'txt': 'txt2'
 });
-cps[6].bridge(cps[7], {
+cps[6].$bridge(cps[7], {
   'txt': {
     name: 'txt2',
     middleware: function(v) {

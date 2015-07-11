@@ -14,6 +14,6 @@ var vd = migi.render(
   '#test'
 );
 
-var cp = vd.find(Component);
+var cp = vd.$find(Component);
 
 document.querySelector('#test2').innerHTML = cp instanceof Component;

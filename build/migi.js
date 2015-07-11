@@ -13,7 +13,7 @@ var cachePool=function(){var _10=require('./cachePool');return _10.hasOwnPropert
 var migi = {
   render:function(element, dom) {
     if(dom) {
-      element.inTo(dom);
+      element.$inTo(dom);
     }
     return element;
   },

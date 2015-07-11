@@ -32,7 +32,7 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
       }
     }
   }
-  EventBus.prototype.bridge = function(target, datas) {
+  EventBus.prototype.$bridge = function(target, datas) {
     var self = this;
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
@@ -42,8 +42,8 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
       });
     });
   }
-  EventBus.prototype.bridgeTo = function(target, datas) {
-    target.bridge(this, datas);
+  EventBus.prototype.$bridgeTo = function(target, datas) {
+    target.$bridge(this, datas);
   }
 Object.keys(Event).forEach(function(k){EventBus[k]=Event[k]});
 

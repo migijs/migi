@@ -8,7 +8,7 @@ class NV extends migi.NonVisualComponent {
   }
   request() {
     var self = this;
-    var url = self.props.url;
+    var url = self.$props.url;
     $.getJSON(url, function(data) {
       self.emit('success', data);
     });

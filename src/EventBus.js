@@ -32,7 +32,7 @@ class EventBus extends Event {
       }
     }
   }
-  bridge(target, datas) {
+  $bridge(target, datas) {
     var self = this;
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
@@ -42,8 +42,8 @@ class EventBus extends Event {
       });
     });
   }
-  bridgeTo(target, datas) {
-    target.bridge(this, datas);
+  $bridgeTo(target, datas) {
+    target.$bridge(this, datas);
   }
 }
 

@@ -31,8 +31,8 @@ class Element extends Event {
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
-    if(this.dom) {
-      this.element.parentNode.removeChild(this.element);
+    if(this.$dom) {
+      this.$element.parentNode.removeChild(this.$element);
     }
   }
 
@@ -42,63 +42,63 @@ class Element extends Event {
   //@abstract
   //__onData() {}
 
-  get name() {
+  get $name() {
     return this.__name;
   }
-  get props() {
+  get $props() {
     return this.__props;
   }
-  get children() {
+  get $children() {
     return this.__children;
   }
-  get parent() {
+  get $parent() {
     return this.__parent;
   }
-  get uid() {
+  get $uid() {
     return this.__uid;
   }
-  get element() {
-    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
+  get $element() {
+    return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
   }
-  get dom() {
+  get $dom() {
     return this.__dom;
   }
 
-  inTo(dom) {
+  $inTo(dom) {
     this.__clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
-  appendTo(dom) {
+  $appendTo(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforeend', s);
     this.emit(Event.DOM);
   }
-  prependTo(dom) {
+  $prependTo(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterbegin', s);
     this.emit(Event.DOM);
   }
-  before(dom) {
+  $before(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforebegin', s);
     this.emit(Event.DOM);
   }
-  after(dom) {
+  $after(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
     this.emit(Event.DOM);
   }
-  replace(dom) {
+  $replace(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
@@ -106,7 +106,7 @@ class Element extends Event {
     dom.parentNode.removeChild(dom);
     this.emit(Event.DOM);
   }
-  static clean() {
+  static __clean() {
     uid = 0;
   }
 }

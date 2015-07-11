@@ -22,14 +22,14 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.findAll(Component);
-cps[0].bridge(cps[1], {
+var cps = vd.$findAll(Component);
+cps[0].$bridge(cps[1], {
   'txt': 'txt'
 });
-cps[1].bridge(cps[2], {
+cps[1].$bridge(cps[2], {
   'txt': 'txt'
 });
-cps[2].bridge(cps[0], {
+cps[2].$bridge(cps[0], {
   'txt': 'txt'
 });
 cps[0].txt = '123';

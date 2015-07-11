@@ -3,8 +3,8 @@ class Component extends migi.Component {
     super(...data);
     var self = this;
     self.on(migi.Event.DOM, function() {
-      self.element.querySelector('p').innerHTML = 'len:' + self.element.childNodes.length
-        + ',html:' + self.element.innerHTML.replace(/</g, '&lt;');
+      self.$element.querySelector('p').innerHTML = 'len:' + self.$element.childNodes.length
+        + ',html:' + self.$element.innerHTML.replace(/</g, '&lt;');
     });
   }
   get txt() {

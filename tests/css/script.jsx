@@ -1,4 +1,4 @@
-var style = `
+var $style = `
   div{margin:0}
   div p{margin:1px}
   div p span{padding:0}
@@ -20,7 +20,7 @@ class Test extends migi.Component {
   constructor(...data) {
     super(...data);
     this._cn = '';
-    this.style = style;
+    this.$style = $style;
   }
   get cn() {
     return this._cn;

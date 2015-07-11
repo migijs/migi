@@ -97,8 +97,8 @@ class Component extends migi.Component {
     this.record();
   }
   record() {
-    this.element.querySelector('p[ref="1"]').innerHTML = this.element.querySelector('div').childNodes.length;
-    this.element.querySelector('p[ref="2"]').innerHTML = this.element.querySelector('div').innerHTML.replace(/</g, '&lt;');
+    this.$element.querySelector('p[ref="1"]').innerHTML = this.$element.querySelector('div').childNodes.length;
+    this.$element.querySelector('p[ref="2"]').innerHTML = this.$element.querySelector('div').innerHTML.replace(/</g, '&lt;');
   }
   render() {
     return <div>

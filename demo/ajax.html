@@ -24,7 +24,7 @@
     }
     request() {
       var self = this;
-      var url = self.props.url;
+      var url = self.$props.url;
       $.getJSON(url, function(data) {
         self.emit('success', data);
       });
@@ -35,7 +35,7 @@
       super(...data);
       var self = this;
       self._text = 'loading...';
-      self.findChild('Ajax').on('success', function(data) {
+      self.$findChild('Ajax').on('success', function(data) {
         self.txt = data.name;
       });
     }

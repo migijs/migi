@@ -15,10 +15,10 @@
     constructor(...data) {
       super(...data);
       var self = this;
-      self.bridge(migi.eventBus, {
+      self.$bridge(migi.eventBus, {
         'txt': 'txt'
       });
-      self.bridgeTo(migi.eventBus, {
+      self.$bridgeTo(migi.eventBus, {
         'txt': 'txt'
       });
       setInterval(function() {
@@ -39,10 +39,10 @@
     constructor(...data) {
       super(...data);
       var self = this;
-      self.bridge(migi.eventBus, {
+      self.$bridge(migi.eventBus, {
         'txt': 'txt'
       });
-      self.bridgeTo(migi.eventBus, {
+      self.$bridgeTo(migi.eventBus, {
         'txt': 'txt'
       });
       setTimeout(function() {
