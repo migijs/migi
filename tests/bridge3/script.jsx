@@ -41,7 +41,7 @@ var cps = vd.$findAll(migi.Component);
 cps[0].$bridge(cps[1], {
   'txt': 'txt'
 });
-cps[0].bridgeTo(cps[1], {
+cps[0].$bridgeTo(cps[1], {
   'txt': 'txt'
 });
 

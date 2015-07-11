@@ -349,7 +349,7 @@ function diffVd(ovd, nvd) {
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
   var elem = ovd.$element;
-  nvd.__uid = ovd.uid;
+  nvd.__uid = ovd.$uid;
   nvd.__element = elem;
   //删除老参数，添加新参数
   var ok = Object.keys(ovd.$props);
@@ -370,7 +370,7 @@ function diffVd(ovd, nvd) {
   });
   //移除__listener记录的引用
   ovd.__removeListener();
-  //添加新vd的属性，不会出现Cb侦听
+  //添加新vd的属性
   nk.forEach(function(prop) {
     if(/^on[A-Z]/.test(prop)) {
       var $name = prop.slice(2).replace(/[A-Z]/g, function(up) {
@@ -679,16 +679,16 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             break;
           //Component和VirtualDom变化则直接重绘
           case 1:
-            diffVd(ovd.virtualDom, nvd);
+            diffVd(ovd.$virtualDom, nvd);
             break;
           case 2:
-            diffVd(ovd, nvd.virtualDom);
+            diffVd(ovd, nvd.$virtualDom);
             break;
           //Component的class类型没变则diff，否则重绘
           case 3:
             if(ovd.constructor == nvd.constructor) {
               nvd.toString();
-              diffVd(ovd.virtualDom, nvd.virtualDom);
+              diffVd(ovd.$virtualDom, nvd.$virtualDom);
             }
             else {
               elem.innerHTML = nvd.toString();
