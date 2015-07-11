@@ -513,7 +513,6 @@ class VirtualDom extends Element {
       history = [index];
       self.__checkObj(k, child, index, len, ranges, option, history);
     }
-    range.merge(ranges);
     if(ranges.length) {
       //textarea特殊判断
       if(self.name == 'textarea') {

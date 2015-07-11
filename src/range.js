@@ -4,19 +4,6 @@ import Obj from './Obj';
 import util from './util';
 import type from './type';
 
-export function merge(ranges) {
-  //合并相邻更新的文本节点
-  for(var i = 0, len = ranges.length; i < len - 1; i++){
-    var now = ranges[i];
-    var next = ranges[i + 1];
-    if(now.start == next.start){
-      ranges.splice(i + 1, 1);
-      i--;
-      len--;
-    }
-  }
-};
-
 function join(index, children, history) {
   var res = '';
   for(var i = index.shift(), len = children.length; i < len; i++) {

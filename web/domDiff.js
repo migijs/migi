@@ -336,7 +336,10 @@ function equalText(a, b) {
 }
 
 function addRange(ranges, option) {
-  ranges.push({ start: option.start, index: option.record.slice() });
+  var len = ranges.length;
+  if(!len || ranges[len - 1].start < option.start) {
+    ranges.push({ start: option.start, index: option.record.slice() });
+  }
 }
 
 function diffVd(ovd, nvd) {
@@ -416,7 +419,6 @@ function diffVd(ovd, nvd) {
       add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1);
     }
   }
-  range.merge(ranges);
   if(ranges.length) {
     //textarea特殊判断
     if(nvd.name == 'textarea') {

@@ -4,19 +4,6 @@ var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("default")?_
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 var type=function(){var _4=require('./type');return _4.hasOwnProperty("default")?_4["default"]:_4}();
 
-exports.merge=merge;function merge(ranges) {
-  //合并相邻更新的文本节点
-  for(var i = 0, len = ranges.length; i < len - 1; i++){
-    var now = ranges[i];
-    var next = ranges[i + 1];
-    if(now.start == next.start){
-      ranges.splice(i + 1, 1);
-      i--;
-      len--;
-    }
-  }
-};
-
 function join(index, children, history) {
   var res = '';
   for(var i = index.shift(), len = children.length; i < len; i++) {
