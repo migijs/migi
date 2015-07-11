@@ -27,6 +27,8 @@ var bridgeOrigin = {};
         });
       }
     });
+
+    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   //@abstract
@@ -241,12 +243,17 @@ var bridgeOrigin = {};
       });
   }
   //@overwrite
-  Component.prototype.__onData = function(k) {
+  Component.prototype.__onData = function(k, caller) {
     if(this.$virtualDom) {
-      this.$virtualDom.emit(Event.DATA, k);
+      this.$virtualDom.__onData(k);
     }
     this.$children.forEach(function(child) {
-      child.emit(Event.DATA, k);
+      if(child instanceof Component) {
+        child.emit(Event.DATA, k, caller);
+      }
+      else if(child instanceof VirtualDom) {
+        child.__onData(k);
+      }
     });
   }
   Component.prototype.__destroy = function() {

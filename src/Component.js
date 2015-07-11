@@ -27,6 +27,8 @@ class Component extends Element {
         });
       }
     });
+
+    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   //@abstract
@@ -241,12 +243,17 @@ class Component extends Element {
       });
   }
   //@overwrite
-  __onData(k) {
+  __onData(k, caller) {
     if(this.$virtualDom) {
-      this.$virtualDom.emit(Event.DATA, k);
+      this.$virtualDom.__onData(k);
     }
     this.$children.forEach(function(child) {
-      child.emit(Event.DATA, k);
+      if(child instanceof Component) {
+        child.emit(Event.DATA, k, caller);
+      }
+      else if(child instanceof VirtualDom) {
+        child.__onData(k);
+      }
     });
   }
   __destroy() {

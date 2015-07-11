@@ -27,7 +27,6 @@ class Element extends Event {
     this.__dom = false;
 
     this.once(Event.DOM, this.__onDom);
-    this.on(Event.DATA, this.__onData);
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
@@ -39,8 +38,6 @@ class Element extends Event {
   __onDom() {
     this.__dom = true;
   }
-  //@abstract
-  //__onData() {}
 
   get $name() {
     return this.__name;

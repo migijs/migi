@@ -570,7 +570,9 @@ class VirtualDom extends Element {
     else if(child instanceof Element) {
       delete option.t2d;
       delete option.d2t;
-      child.emit(Event.DATA, k);
+      if(child instanceof VirtualDom) {
+        child.__onData(k);
+      }
       option.start++;
       //前面的文本再加一次
       if(!option.first && option.prev == type.TEXT) {

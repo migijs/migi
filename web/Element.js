@@ -27,7 +27,6 @@ function getDom(dom) {
     this.__dom = false;
 
     this.once(Event.DOM, this.__onDom);
-    this.on(Event.DATA, this.__onData);
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   Element.prototype.__clean = function() {
@@ -39,8 +38,6 @@ function getDom(dom) {
   Element.prototype.__onDom = function() {
     this.__dom = true;
   }
-  //@abstract
-  //__onData() {}
 
   var _3={};_3.$name={};_3.$name.get =function() {
     return this.__name;
