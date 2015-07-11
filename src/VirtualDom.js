@@ -221,7 +221,7 @@ class VirtualDom extends Element {
     var self = this;
     var res = '';
     self.children.forEach(function(child) {
-      res += VirtualDom.renderChild(child);
+      res += renderChild(child);
     });
     return res;
   }
@@ -443,7 +443,7 @@ class VirtualDom extends Element {
     else if(child instanceof Obj) {
       self.__domChild(child.v, index, len, option, i);
     }
-    else if(VirtualDom.isEmptyText(child)) {
+    else if(isEmptyText(child)) {
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
       if(!option.first) {
         if(option.prev == type.TEXT) {
@@ -731,27 +731,27 @@ class VirtualDom extends Element {
     this.__hasDes = true;
     return this;
   }
+}
 
-  static isEmptyText(item) {
-    //静态文本节点，包括空、undefined、null、空数组
-    return item === void 0 || item === null || !item.toString();
+//静态文本节点，包括空、undefined、null、空数组
+function isEmptyText(item) {
+  return item === void 0 || item === null || !item.toString();
+}
+function renderChild(child) {
+  if(child === void 0 || child === null) {
+    return '';
   }
-  static renderChild(child) {
-    if(child === void 0 || child === null) {
-      return '';
-    }
-    if(child instanceof Element || child instanceof Obj) {
-      return child.toString();
-    }
-    if(Array.isArray(child)) {
-      var res = '';
-      child.forEach(function(item) {
-        res += VirtualDom.renderChild(item);
-      });
-      return res;
-    }
-    return util.encodeHtml(child.toString());
+  if(child instanceof Element || child instanceof Obj) {
+    return child.toString();
   }
+  if(Array.isArray(child)) {
+    var res = '';
+    child.forEach(function(item) {
+      res += renderChild(item);
+    });
+    return res;
+  }
+  return util.encodeHtml(child.toString());
 }
 
 export default VirtualDom;
