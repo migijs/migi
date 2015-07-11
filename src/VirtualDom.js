@@ -8,7 +8,6 @@ import range from './range';
 import match from './match';
 import sort from './sort';
 import domDiff from './domDiff';
-import cachePool from './cachePool';
 import type from './type';
 
 const SELF_CLOSE = {

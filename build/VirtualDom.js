@@ -8,8 +8,7 @@ var range=function(){var _6=require('./range');return _6.hasOwnProperty("default
 var match=function(){var _7=require('./match');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var sort=function(){var _8=require('./sort');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var domDiff=function(){var _9=require('./domDiff');return _9.hasOwnProperty("default")?_9["default"]:_9}();
-var cachePool=function(){var _10=require('./cachePool');return _10.hasOwnProperty("default")?_10["default"]:_10}();
-var type=function(){var _11=require('./type');return _11.hasOwnProperty("default")?_11["default"]:_11}();
+var type=function(){var _10=require('./type');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -45,7 +44,7 @@ var SPECIAL_PROP = {
   'nodeType': true
 };
 
-!function(){var _12=Object.create(Element.prototype);_12.constructor=VirtualDom;VirtualDom.prototype=_12}();
+!function(){var _11=Object.create(Element.prototype);_11.constructor=VirtualDom;VirtualDom.prototype=_11}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -375,10 +374,10 @@ var SPECIAL_PROP = {
     return res;
   }
 
-  var _13={};_13.$names={};_13.$names.get =function() {
+  var _12={};_12.$names={};_12.$names.get =function() {
     return this.__names || (this.__names = []);
   }
-  _13.$style={};_13.$style.set =function(v) {
+  _12.$style={};_12.$style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.$parent instanceof VirtualDom) {
@@ -733,7 +732,7 @@ var SPECIAL_PROP = {
     this.__hasDes = true;
     return this;
   }
-Object.keys(_13).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_13[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
+Object.keys(_12).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_12[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 //静态文本节点，包括空、undefined、null、空数组
 function isEmptyText(item) {
