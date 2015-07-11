@@ -96,7 +96,8 @@ function insertAt(elem, cns, index, vd, isText) {
 function add(elem, vd, ranges, option, history, first) {
   if(Array.isArray(vd)) {
     history.push(0);
-    for(var i = 0, len = vd.length; i < len; i++) {
+    //防止空数组跳过的情况
+    for(var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
       var item = vd[i];
       if(i > 0) {
         first = false;
