@@ -451,9 +451,6 @@ var SPECIAL_PROP = {
         }
       }
       option.prev = type.DOM;
-      if(child instanceof Component) {
-        child.emit(Event.DOM);
-      }
     }
     else if(child instanceof Obj) {
       self.__domChild(child.v, index, len, option);
