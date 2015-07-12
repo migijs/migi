@@ -15,6 +15,7 @@ class Component extends Element {
     super(name, props, children);
 
     self.__virtualDom = null;
+    self.__render = false;
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -33,6 +34,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
+    this.__render = true;
     return new VirtualDom('div', this.$props, this.$children);
   }
   //@override
@@ -225,11 +227,14 @@ class Component extends Element {
     var self = this;
     self.$virtualDom.emit(Event.DOM);
     self.$element.setAttribute('migi-name', this.$name);
-    self.$children.forEach(function(child) {
-      if(child instanceof Element) {
-        child.emit(Event.DOM);
-      }
-    });
+    //没有覆盖render方法时才触发children，因为此时children默认被render调用输出
+    if(!self.__render) {
+      self.$children.forEach(function(child) {
+        if(child instanceof Element) {
+          child.emit(Event.DOM);
+        }
+      });
+    }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
       if(e.target != self.$element) {
