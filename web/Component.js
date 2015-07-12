@@ -257,6 +257,7 @@ var bridgeOrigin = {};
     });
   }
   Component.prototype.__destroy = function() {
+    this.emit(Event.DESTROY);
     this.__hash = {};
     return this.$virtualDom.__destroy();
   }

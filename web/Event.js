@@ -91,7 +91,8 @@ define(function(require, exports, module){
 
 
 Event.DOM = '__0';
-Event.DATA = '__1';
-Event.CACHE_DATA = '__2';
+Event.DESTROY = '__1';
+Event.DATA = '__2';
+Event.CACHE_DATA = '__3';
 
 exports["default"]=Event;});
