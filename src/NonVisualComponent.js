@@ -9,9 +9,6 @@ class NonVisualComponent extends Component {
   //非可视为空
   //@overwrite
   toString() {
-    if(this.children.length) {
-      return super.toString();
-    }
     return '';
   }
 

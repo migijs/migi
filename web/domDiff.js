@@ -545,8 +545,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   }
   //都不是数组
   else {
-    var oe = ovd instanceof Element ? 1 : 0;
-    var ne = nvd instanceof Element ? 2 : 0;
+    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
+    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
     //新老值是否为DOM或TEXT分4种情况
     switch(oe + ne) {
       //都是text时，根据上个节点类型和history设置range
@@ -703,6 +703,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         //缓存对象池
         cachePool.add(ovd.__destroy());
         break;
+    }
+    //非可视组件被当作空字符串处理，不要忘了DOM事件
+    if(nvd instanceof migi.NonVisualComponent) {
+      nvd.emit(Event.DOM);
     }
   }
   option.first = false;
