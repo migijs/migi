@@ -46,7 +46,7 @@ function equal(a, b) {
     if(!Array.isArray(b)) {
       return false;
     }
-    if(a.length !== b.length) {
+    if(a.length != b.length) {
       return false;
     }
     for(var i = 0, len = a.length; i < len; i++) {
