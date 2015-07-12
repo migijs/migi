@@ -41,6 +41,10 @@ https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
 
 ##### Event static
 * mix(...obj:Object):void 将Event的方法混入到指定obj上
+* DOM:String='__0' 标明DOM事件
+* DESTROY:String='__1' 标明DESTROY事件
+* DATA:String='__2' 标明DATA事件
+* CACHE_DATA:String='__3' 标明CACHE_DATA事件
 
 #### EventBus
 * bridge(target:Component, datas:Object\<key:String, value:String/Function/Object>) 单向数据流动至target组件，datas为键值对，key表明联动数据名，value有3种形式
@@ -48,6 +52,20 @@ https://github.com/migijs/migi/wiki/%E6%96%87%E6%A1%A3
  * 当value为Function时，流动对象的数据名为同名key，其唯一参数为变量值，返回处理后的数据值
  * 当value为Object时，name标明流动对象的数据名，middleware为中间件处理数据方法，同上Function
 * bridgeTo(target:Component, datas:Object\<key:String, value:String/Function/Object>) 同bridge，但是调用target的bridge方法桥接自己
+
+#### Element
+> Element及其子类均和DOM相关，由于需要被开发者继承的关系，除了特殊的render和toString方法，其它所有public方法均已$开头
+
+* $name:String 获取名字，组件为constructor名，vd为tagName
+* $props:Object\<key:String, value:*> 获取属性
+* $children:Array\<*> 获取孩子节点们
+* $parent:Element 获取父亲节点
+* $uid:int 获取唯一id
+* $element:HtmlElement 获取真实DOM节点
+* $dom:Boolean 获取是否被添加到DOM上
+
+##### 拥有的事件
+* DOM 被添加到真实DOM时触发
 
 ## Demo
 * demo目录下是一个web端的使用教程示例，本地浏览需要npm install安装依赖
