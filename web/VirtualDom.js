@@ -344,32 +344,49 @@ var SPECIAL_PROP = {
     return this.$findAll(name, true)[0];
   }
   VirtualDom.prototype.$findAll = function(name, first) {
-    var res = [];
-    for(var i = 0, len = this.$children.length; i < len; i++) {
-      var child = this.$children[i];
+    return this.__findAll(name, this.$children, [], first);
+  }
+  VirtualDom.prototype.__findAll = function(name, children, res, first) {
+    for(var i = 0, len = children.length; i < len; i++) {
+      var child = children[i];
       if(child instanceof Element) {
-        if(child instanceof Component) {
-          //传入的可能是个class或者string
-          if(child.$name == name || util.isFunction(name) && child instanceof name) {
-            res.push(child);
-            if(first) {
-              break;
-            }
-          }
+        res = this.__findEq(name, child, res, first);
+      }
+      else if(child instanceof Obj) {
+        child = child.v;
+        if(Array.isArray(child)) {
+          this.__findAll(name, child, res, first);
         }
-        else {
-          if(child.$name == name || util.isFunction(name) && child instanceof name) {
-            res.push(child);
-            if(first) {
-              break;
-            }
-          }
-          res = res.concat(child.$findAll(name));
-          if(first && res.length) {
-            break;
-          }
+        else if(child instanceof Element) {
+          res = this.__findEq(name, child, res, first);
         }
       }
+      else if(Array.isArray(child)) {
+        this.__findAll(name, child, res, first);
+      }
+      if(first && res.length) {
+        break;
+      }
+    }
+    return res;
+  }
+  VirtualDom.prototype.__findEq = function(name, child, res, first) {
+    //cp不递归
+    if(child instanceof Component) {
+      //传入的可能是个class或者string
+      if(child.$name == name || util.isFunction(name) && child instanceof name) {
+        res.push(child);
+      }
+    }
+    //vd递归
+    else {
+      if(child.$name == name || util.isFunction(name) && child instanceof name) {
+        res.push(child);
+        if(first) {
+          return;
+        }
+      }
+      res = res.concat(child.$findAll(name, first));
     }
     return res;
   }
@@ -410,13 +427,12 @@ var SPECIAL_PROP = {
     }
   }
   //index和i结合判断首个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  VirtualDom.prototype.__domChild = function(child, index, len, option, i) {
+  VirtualDom.prototype.__domChild = function(child, index, len, option) {
     var self = this;
     //防止空数组跳过逻辑，它被认为是个空字符串
     if(Array.isArray(child) && child.length) {
-      child.forEach(function(item, i) {
-        //第1个同时作为children的第1个要特殊处理
-        self.__domChild(item, index, len, option, i);
+      child.forEach(function(item) {
+        self.__domChild(item, index, len, option);
       });
     }
     else if(child instanceof Element) {
@@ -440,7 +456,7 @@ var SPECIAL_PROP = {
       }
     }
     else if(child instanceof Obj) {
-      self.__domChild(child.v, index, len, option, i);
+      self.__domChild(child.v, index, len, option);
     }
     else if(isEmptyText(child)) {
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
