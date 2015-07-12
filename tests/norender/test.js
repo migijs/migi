@@ -6,7 +6,7 @@ module.exports = {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
-      .assert.elementPresent('#record1')
+      .assert.elementPresent('#record')
       .assert.containsText('#record', '1')
       .assert.elementNotPresent('#record2')
       .end();

@@ -1,16 +1,9 @@
 class NV extends migi.NonVisualComponent {
   constructor(...data) {
     super(...data);
-    this.on(migi.Event.DOM, function() {
-      this.emit('success', {name:'migi'});
-    });
   }
   request() {
-    var self = this;
-    var url = self.$props.url;
-    $.getJSON(url, function(data) {
-      self.emit('success', data);
-    });
+    this.emit('success', {name:'migi'});
   }
 }
 class MyComponent extends migi.Component {
@@ -20,7 +13,7 @@ class MyComponent extends migi.Component {
     self._text = '';
     self.$findChild('NV').on('success', function(data) {
       self.txt = data.name;
-    });
+    }).request();
   }
   get txt() {
     return this._text;
