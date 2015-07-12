@@ -228,7 +228,7 @@ class Component extends Element {
     self.$virtualDom.emit(Event.DOM);
     self.$element.setAttribute('migi-name', this.$name);
     //没有覆盖render方法时才触发children，因为此时children默认被render调用输出
-    if(!self.__render) {
+    if(self.__render) {
       self.$children.forEach(function(child) {
         if(child instanceof Element) {
           child.emit(Event.DOM);
