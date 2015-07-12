@@ -383,7 +383,7 @@ var SPECIAL_PROP = {
       if(child.$name == name || util.isFunction(name) && child instanceof name) {
         res.push(child);
         if(first) {
-          return;
+          return res;
         }
       }
       res = res.concat(child.$findAll(name, first));
