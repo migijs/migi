@@ -9,6 +9,7 @@ import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
+import util from './util';
 
 var migi = {
   render(element, dom) {
@@ -32,7 +33,8 @@ var migi = {
   CacheComponent,
   VirtualDom,
   Obj,
-  Cb
+  Cb,
+  util
 };
 
 if(typeof window != 'undefined') {

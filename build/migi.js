@@ -9,6 +9,7 @@ var util=function(){var _7=require('./util');return _7.hasOwnProperty("default")
 var Obj=function(){var _8=require('./Obj');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var Cb=function(){var _9=require('./Cb');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 var cachePool=function(){var _10=require('./cachePool');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var util=function(){var _11=require('./util');return _11.hasOwnProperty("default")?_11["default"]:_11}();
 
 var migi = {
   render:function(element, dom) {
@@ -32,7 +33,8 @@ var migi = {
   CacheComponent:CacheComponent,
   VirtualDom:VirtualDom,
   Obj:Obj,
-  Cb:Cb
+  Cb:Cb,
+  util:util
 };
 
 if(typeof window != 'undefined') {
