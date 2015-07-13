@@ -32,6 +32,9 @@ function replaceWith(elem, cns, index, vd, isText) {
     else {
       elem.replaceChild(target, cns[index]);
     }
+    if(vd instanceof migi.NonVisualComponent) {
+      vd.emit(Event.DOM);
+    }
   }
   else {
     target = vd.toString();
@@ -71,6 +74,9 @@ function insertAt(elem, cns, index, vd, isText) {
     }
     else {
       elem.insertBefore(target, cns[index]);
+    }
+    if(vd instanceof migi.NonVisualComponent) {
+      vd.emit(Event.DOM);
     }
   }
   else {

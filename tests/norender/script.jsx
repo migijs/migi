@@ -15,8 +15,7 @@ class NV extends migi.NonVisualComponent {
     });
   }
 }
-
-class Component2 extends migi.Component {
+class Component extends migi.Component {
   constructor(...data) {
     super(...data);
   }
@@ -33,13 +32,16 @@ class NV2 extends migi.NonVisualComponent {
         div.id = 'record2';
         document.body.appendChild(div);
       }
-      div.innerHTML = 0;
+      div.innerHTML = count;
     });
   }
 }
-class Component extends migi.Component {
+class Component2 extends migi.Component {
   constructor(...data) {
     super(...data);
+  }
+  render() {
+    return <div/>;
   }
 }
 
