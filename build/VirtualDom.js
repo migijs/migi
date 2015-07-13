@@ -435,7 +435,7 @@ var SPECIAL_PROP = {
         self.__domChild(item, index, len, option);
       });
     }
-    else if(child instanceof Element) {
+    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
         self.__insertBlank(option.start);

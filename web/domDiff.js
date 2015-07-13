@@ -104,7 +104,7 @@ function add(elem, vd, ranges, option, history, temp, last) {
     }
     history.pop();
   }
-  else if(vd instanceof Element) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
     if(temp.hasOwnProperty('prev')) {
       if(option.prev == type.TEXT) {
         option.start++;
@@ -207,7 +207,7 @@ function del(elem, vd, ranges, option, temp, last) {
       del(elem, item, ranges, option, temp, last && i == len - 1);
     });
   }
-  else if(vd instanceof Element) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
     if(temp.hasOwnProperty('prev')) {
       //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
       if(temp.prev == type.TEXT) {
