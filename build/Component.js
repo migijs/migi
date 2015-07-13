@@ -225,15 +225,23 @@ var bridgeOrigin = {};
     var self = this;
     self.$virtualDom.emit(Event.DOM);
     self.$element.setAttribute('migi-name', this.$name);
+    //指定允许冒泡
+    if(self.$props.allowPropagation) {
+      return;
+    }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
-      if(e.target != self.$element) {
+      e = e || window.event;
+      if(e.target != self.$element && e.srcElement != self.$element) {
         e.stopPropagation();
       }
     }
-    ['click', 'dblclick', 'focus', 'blur', 'change', 'abort', 'error', 'load', 'mousedown', 'mousemove', 'mouseover',
-      'mouseup', 'mouseout', 'reset', 'resize', 'scroll', 'select', 'submit', 'unload', 'DOMActivate',
-      'DOMFocusIn', 'DOMFocusOut'].forEach(function(name) {
+    //仅考虑用户事件，媒体等忽略
+    ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
+      'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
+      'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
+      'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
+      'touchmove', 'touchend'].forEach(function(name) {
         self.$element.addEventListener(name, stopPropagation);
       });
   }
