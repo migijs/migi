@@ -17,10 +17,10 @@ function replaceWith(elem, cns, index, vd, isText) {
   //因此DOM使用insertAdjacentHTML，text则用textNode
   var target;
   if(isText) {
-    vd = vd === void 0 || vd === null ? '' : vd.toString();
+    var s = vd === void 0 || vd === null ? '' : vd.toString();
     if(vd) {
       var node = util.NODE;
-      node.innerHTML = util.encodeHtml(vd);
+      node.innerHTML = util.encodeHtml(s);
       target = node.firstChild;
     }
     else {
@@ -60,7 +60,7 @@ function replaceWith(elem, cns, index, vd, isText) {
 function insertAt(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
-    vd = vd === void 0 || vd === null ? '' : vd.toString();
+    var s = vd === void 0 || vd === null ? '' : vd.toString();
     if(vd) {
       var node = util.NODE;
       node.innerHTML = util.encodeHtml(vd);
