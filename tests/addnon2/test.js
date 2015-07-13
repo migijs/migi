@@ -16,7 +16,7 @@ module.exports = {
   'replace': function(browser) {
     browser
       .click('#test p[ref="add"]')
-      .assert.containsText('#test strong', '0')
+      .assert.containsText('#test strong', '1')
       .end()
   }
 };
