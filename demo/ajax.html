@@ -16,11 +16,9 @@
     constructor(...data) {
       super(...data);
       var self = this;
-      self.on(migi.Event.DOM, function() {
-        setTimeout(function() {
-          self.request();
-        }, 1000);
-      });
+      setTimeout(function() {
+        self.request();
+      }, 1000);
     }
     request() {
       var self = this;

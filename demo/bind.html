@@ -84,9 +84,7 @@
     constructor(...data) {
       super(...data);
       var self = this;
-      self.on(migi.Event.DOM, function() {
-        self.request();
-      });
+      self.request();
     }
     request() {
       var self = this;
