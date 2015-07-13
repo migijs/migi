@@ -18,7 +18,7 @@ function replaceWith(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
     var s = vd === void 0 || vd === null ? '' : vd.toString();
-    if(vd) {
+    if(s) {
       var node = util.NODE;
       node.innerHTML = util.encodeHtml(s);
       target = node.firstChild;
@@ -61,7 +61,7 @@ function insertAt(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
     var s = vd === void 0 || vd === null ? '' : vd.toString();
-    if(vd) {
+    if(s) {
       var node = util.NODE;
       node.innerHTML = util.encodeHtml(s);
       target = node.firstChild;
