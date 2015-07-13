@@ -10,6 +10,7 @@ import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
 import util from './util';
+import sort from './sort';
 
 var migi = {
   render(element, dom) {
@@ -34,7 +35,8 @@ var migi = {
   VirtualDom,
   Obj,
   Cb,
-  util
+  util,
+  sort
 };
 
 if(typeof window != 'undefined') {

@@ -52,6 +52,12 @@ describe('api', function() {
   it('#Cb', function() {
     expect(migi.Cb).to.be.a(Function);
   });
+  it('#util', function() {
+    expect(migi.util).to.be.a(Object);
+  });
+  it('#sort', function() {
+    expect(migi.sort).to.be.a(Function);
+  });
 });
 
 describe('Event', function() {
