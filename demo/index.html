@@ -39,23 +39,31 @@
   </li>
   <li>
     <a href="component.html" title="component">自定义组件</a>
-    <span>当jsx中的html的tagName为一个继承自migi.Component的类时，将生产一个组件类的实例，并调用其render()方法渲染。它的props属性为第1个参数，来自于attribute</span>
+    <span>当jsx中的html的tagName为一个继承自migi.Component的类时，将生产一个组件类的实例，并调用其render()方法渲染。它的$props属性为第1个参数，来自于attribute</span>
   </li>
   <li>
     <a href="template.html" title="template">作为普通模板</a>
     <span>一个自定义组件或jsx的模板对象，因为覆写了toString()方法，所以可以作为一个String类型被使用</span>
   </li>
   <li>
-    <a href="children.html" title="children">children属性</a>
-    <span>自定义组件拥有children属性，是个数组，指向实际运行时其html的孩子节点</span>
+    <a href="children.html" title="children">$children属性</a>
+    <span>自定义组件拥有$children属性，是个数组，指向实际运行时其html的孩子节点</span>
   </li>
   <li>
     <a href="shadow.html" title="shadow">shadow作用域隔离</a>
     <span>如同WebComponent一样，组件内的事件是不向外冒泡的，但这并不能阻止捕获。在下面的css组件中，如果使用了jaw构建，css也将shadow化</span>
   </li>
   <li>
+    <a href="allow.html" title="shadow">allowPropagation</a>
+    <span>如果组件声明了allowPropagation，那么事件则可冒泡</span>
+  </li>
+  <li>
     <a href="dom.html" title="dom">侦听操作DOM</a>
-    <span>当渲染完毕时，自定义组件拥有element对象指向其根节点DOM，即render()方法的根节点</span>
+    <span>当渲染完毕时，自定义组件拥有$element对象指向其根节点DOM，即render()方法的根节点</span>
+  </li>
+  <li>
+    <a href="find.html" title="dom">$find</a>
+    <span>$find和$findAll寻找$virtualDom下的孩子（们），$findChild和$findChildren则寻找参数下的孩子（们）</span>
   </li>
   <li>
     <a href="unidirectional.html" title="unidirectional">get/set单向数据绑定</a>
@@ -127,7 +135,7 @@
   </li>
   <li>
     <a href="bridgee.html" title="bridge">数据中转事件总线</a>
-    <span>虽然用find方法可以找到若干个组件进行数据联动，但毕竟不方便。migi.eventBus作为事件总线外，还可以用作数据中转站，同样的bridge接口串联2个组件数据</span>
+    <span>虽然用$find方法可以找到若干个组件进行数据联动，但毕竟不方便。migi.eventBus作为事件总线外，还可以用作数据中转站，同样的bridge接口串联2个组件数据</span>
   </li>
   <li>
     <a href="benchmark.html" title="benchmark">性能测试</a>
