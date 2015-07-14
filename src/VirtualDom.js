@@ -412,9 +412,14 @@ class VirtualDom extends Element {
   }
 
   //@override
-  __onDom() {
+  __onDom(fake) {
     super.__onDom();
     var self = this;
+    //fake无需插入空白节点，直接递归通知
+    if(fake) {
+      Component.fakeDom(self.$children);
+      return;
+    }
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
     for(var index = 0, len = self.$children.length; index < len; index++) {

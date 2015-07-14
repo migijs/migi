@@ -58,12 +58,16 @@
     <span>如果组件声明了allowPropagation，那么事件则可冒泡</span>
   </li>
   <li>
-    <a href="dom.html" title="dom">侦听操作DOM</a>
-    <span>当渲染完毕时，自定义组件拥有$element对象指向其根节点DOM，即render()方法的根节点</span>
-  </li>
-  <li>
     <a href="find.html" title="dom">$find</a>
     <span>$find和$findAll寻找$virtualDom下的孩子（们），$findChild和$findChildren则寻找参数下的孩子（们）</span>
+  </li>
+  <li>
+    <a href="fake.html" title="dom">DOM事件和fake</a>
+    <span>组件和vd被添加到DOM上时，会触发Event.DOM事件；当没覆写render方法时其子节点会被作为$children渲染添加到DOM上，否则并没有，此时也有DOM事件但第一个参数fake为true表明是假的</span>
+  </li>
+  <li>
+    <a href="dom.html" title="dom">侦听操作DOM</a>
+    <span>当渲染完毕时，自定义组件拥有$element对象指向其根节点DOM，即render()方法的根节点</span>
   </li>
   <li>
     <a href="unidirectional.html" title="unidirectional">get/set单向数据绑定</a>

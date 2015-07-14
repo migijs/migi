@@ -225,6 +225,11 @@ var bridgeOrigin = {};
     var self = this;
     self.$virtualDom.emit(Event.DOM);
     self.$element.setAttribute('migi-name', this.$name);
+    //无覆盖render时渲染标签的$children；有时渲染render的$children
+    //标签的$children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
+    if(this.$children.length && this.$children != this.$virtualDom.$children) {
+      Component.fakeDom(this.$children);
+    }
     //指定允许冒泡
     if(self.$props.allowPropagation) {
       return;
@@ -263,6 +268,17 @@ var bridgeOrigin = {};
     this.emit(Event.DESTROY);
     this.__hash = {};
     return this.$virtualDom.__destroy();
+  }
+
+  Component.fakeDom=function(child) {
+    if(Array.isArray(child)) {
+      child.forEach(function(item) {
+        Component.fakeDom(item);
+      });
+    }
+    else if(child instanceof Element) {
+      child.emit(Event.DOM, true);
+    }
   }
 Object.keys(_6).forEach(function(k){Object.defineProperty(Component.prototype,k,_6[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
