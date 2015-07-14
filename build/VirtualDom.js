@@ -415,6 +415,11 @@ var SPECIAL_PROP = {
   VirtualDom.prototype.__onDom = function(fake) {
     Element.prototype.__onDom.call(this);
     var self = this;
+    //fake无需插入空白节点，直接递归通知
+    if(fake) {
+      Component.fakeDom(self.$children);
+      return;
+    }
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
     for(var index = 0, len = self.$children.length; index < len; index++) {
@@ -442,7 +447,7 @@ var SPECIAL_PROP = {
         option.empty = false;
       }
       //递归通知DOM事件，增加start索引
-      child.emit(Event.DOM, fake);
+      child.emit(Event.DOM);
       option.start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及start索引逻辑
       if(!option.first) {
@@ -457,7 +462,7 @@ var SPECIAL_PROP = {
     }
     else if(isEmptyText(child)) {
       if(child instanceof migi.NonVisualComponent) {
-        child.emit(Event.DOM, fake);
+        child.emit(Event.DOM);
       }
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
       if(!option.first) {
