@@ -225,6 +225,11 @@ class Component extends Element {
     var self = this;
     self.$virtualDom.emit(Event.DOM);
     self.$element.setAttribute('migi-name', this.$name);
+    //无覆盖render时渲染标签的$children；有时渲染render的$children
+    //标签的$children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
+    if(this.$children.length && this.$children != this.$virtualDom.$children) {
+      fakeDom(this.$children);
+    }
     //指定允许冒泡
     if(self.$props.allowPropagation) {
       return;
@@ -263,6 +268,17 @@ class Component extends Element {
     this.emit(Event.DESTROY);
     this.__hash = {};
     return this.$virtualDom.__destroy();
+  }
+}
+
+function fakeDom(child) {
+  if(Array.isArray(child)) {
+    child.forEach(function(item) {
+      fakeDom(item);
+    });
+  }
+  else if(child instanceof Element) {
+    child.emit(Event.DOM, true);
   }
 }
 
