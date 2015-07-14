@@ -11,3 +11,6 @@ gulpfile.js
 reports/
 lib/
 temp.html
+.log
+logo.jpg
+nightwatch.json
