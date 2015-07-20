@@ -15,6 +15,7 @@ class Component extends Element {
     super(name, props, children);
 
     self.__virtualDom = null;
+    self.__ref = {};
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -215,8 +216,14 @@ class Component extends Element {
   get $element() {
     return this.$virtualDom ? this.$virtualDom.$element : null;
   }
+  get $style() {
+    return this.__style;
+  }
   set $style(v) {
     this.__style = v;
+  }
+  get $ref() {
+    return this.__ref;
   }
 
   //@overwrite

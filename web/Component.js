@@ -15,6 +15,7 @@ var bridgeOrigin = {};
     Element.call(this,name, props, children);
 
     self.__virtualDom = null;
+    self.__ref = {};
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -215,8 +216,14 @@ var bridgeOrigin = {};
   _6.$element={};_6.$element.get =function() {
     return this.$virtualDom ? this.$virtualDom.$element : null;
   }
-  _6.$style={};_6.$style.set =function(v) {
+  _6.$style={};_6.$style.get =function() {
+    return this.__style;
+  }
+  _6.$style.set =function(v) {
     this.__style = v;
+  }
+  _6.$ref={};_6.$ref.get =function() {
+    return this.__ref;
   }
 
   //@overwrite
