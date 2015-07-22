@@ -227,14 +227,14 @@ class Component extends Element {
   }
 
   //@overwrite
-  __onDom() {
+  __onDom(fake) {
     super.__onDom();
     var self = this;
-    self.$virtualDom.emit(Event.DOM);
+    self.$virtualDom.emit(Event.DOM, fake);
     self.$element.setAttribute('migi-name', this.$name);
     //无覆盖render时渲染标签的$children；有时渲染render的$children
     //标签的$children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
-    if(this.$children.length && this.$children != this.$virtualDom.$children) {
+    if(!fake && this.$children != this.$virtualDom.$children) {
       Component.fakeDom(this.$children);
     }
     //指定允许冒泡
@@ -283,7 +283,10 @@ class Component extends Element {
         Component.fakeDom(item);
       });
     }
-    else if(child instanceof Element) {
+    else if(child instanceof Component) {
+      child.emit(Event.DOM, true);
+    }
+    else if(child instanceof VirtualDom) {
       child.emit(Event.DOM, true);
     }
   }

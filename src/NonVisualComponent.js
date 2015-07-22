@@ -16,6 +16,7 @@ class NonVisualComponent extends Component {
   //@overwrite
   __onDom() {
     this.__dom = true;
+    Component.fakeDom(this.$children);
   }
 }
 

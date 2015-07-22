@@ -16,6 +16,7 @@ var Component=function(){var _1=require('./Component');return _1.hasOwnProperty(
   //@overwrite
   NonVisualComponent.prototype.__onDom = function() {
     this.__dom = true;
+    Component.fakeDom(this.$children);
   }
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
