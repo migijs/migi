@@ -355,14 +355,14 @@ class VirtualDom extends Element {
       else if(child instanceof Obj) {
         child = child.v;
         if(Array.isArray(child)) {
-          this.__findAll(name, child, res, first);
+          res = this.__findAll(name, child, res, first);
         }
         else if(child instanceof Element) {
           res = this.__findEq(name, child, res, first);
         }
       }
       else if(Array.isArray(child)) {
-        this.__findAll(name, child, res, first);
+        res = this.__findAll(name, child, res, first);
       }
       if(first && res.length) {
         break;
@@ -727,11 +727,7 @@ class VirtualDom extends Element {
   __init(name, children) {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
-    children.forEach(function(child) {
-      if(child instanceof Element) {
-        child.__parent = self;
-      }
-    });
+    childParent(children, this);
   }
   //@overwrite
   __reset(name, props = {}, children = []) {
@@ -751,6 +747,7 @@ class VirtualDom extends Element {
     this.__active = false;
     this.__listener = null;
     this.__hasDes = true;
+    this.__top = null;
     return this;
   }
 }
@@ -774,6 +771,16 @@ function renderChild(child) {
     return res;
   }
   return util.encodeHtml(child.toString());
+}
+function childParent(child, parent) {
+  if(Array.isArray(child)) {
+    child.forEach(function(item) {
+      childParent(item, parent);
+    });
+  }
+  else if(child instanceof Element) {
+    child.__parent = parent;
+  }
 }
 
 export default VirtualDom;

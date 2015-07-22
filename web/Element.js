@@ -23,6 +23,7 @@ function getDom(dom) {
 
     this.__element = null;
     this.__parent = null;
+    this.__top = null;
     this.__style = null;
     this.__dom = false;
 
@@ -50,6 +51,18 @@ function getDom(dom) {
   }
   _3.$parent={};_3.$parent.get =function() {
     return this.__parent;
+  }
+  _3.$top={};_3.$top.get =function() {
+    return this.__top || (this.__top = function(self) {
+        var p = self.$parent;
+        while(p) {
+          if(p instanceof migi.Component) {
+            return p;
+          }
+          p = p.$parent;
+        }
+        return null;
+      }(this));
   }
   _3.$uid={};_3.$uid.get =function() {
     return this.__uid;

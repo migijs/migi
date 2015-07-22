@@ -9,6 +9,8 @@ var migi = require('../');
 var lefty = require('lefty');
 var jaw = require('jaw');
 
+global.migi = migi;
+
 describe('api', function() {
   it('global scope on window', function() {
     expect(window.migi).to.eql(migi);
@@ -302,7 +304,8 @@ describe('VirtualDom', function() {
   });
   it('$find All', function() {
     var div = <div><span></span></div>;
-    expect(div.$findAll('span')).to.eql([div.$children[0]]);
+    expect(div.$findAll('span').length).to.eql(1);
+    expect(div.$findAll('span')[0]).to.eql(div.$children[0]);
   });
   it('special prop', function() {
     var udf;
@@ -398,6 +401,44 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<input value="" name="" migi-uid="1"/>');
+  });
+  it('$parent', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <div><p><span>1</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var p = div.$find('p');
+    var span = p.$find('span');
+    expect(cmpn.$parent).to.eql(null);
+    expect(div.$parent).to.eql(cmpn);
+    expect(span.$parent).to.eql(p);
+    expect(p.$parent).to.eql(div);
+  });
+  it('$top', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <div><p><span>1</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var p = div.$find('p');
+    var span = p.$find('span');
+    expect(cmpn.$top).to.eql(null);
+    expect(div.$top).to.eql(cmpn);
+    expect(span.$top).to.eql(cmpn);
+    expect(p.$top).to.eql(cmpn);
   });
 });
 

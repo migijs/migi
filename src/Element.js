@@ -23,6 +23,7 @@ class Element extends Event {
 
     this.__element = null;
     this.__parent = null;
+    this.__top = null;
     this.__style = null;
     this.__dom = false;
 
@@ -50,6 +51,18 @@ class Element extends Event {
   }
   get $parent() {
     return this.__parent;
+  }
+  get $top() {
+    return this.__top || (this.__top = function(self) {
+        var p = self.$parent;
+        while(p) {
+          if(p instanceof migi.Component) {
+            return p;
+          }
+          p = p.$parent;
+        }
+        return null;
+      }(this));
   }
   get $uid() {
     return this.__uid;

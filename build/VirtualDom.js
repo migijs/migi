@@ -355,14 +355,14 @@ var SPECIAL_PROP = {
       else if(child instanceof Obj) {
         child = child.v;
         if(Array.isArray(child)) {
-          this.__findAll(name, child, res, first);
+          res = this.__findAll(name, child, res, first);
         }
         else if(child instanceof Element) {
           res = this.__findEq(name, child, res, first);
         }
       }
       else if(Array.isArray(child)) {
-        this.__findAll(name, child, res, first);
+        res = this.__findAll(name, child, res, first);
       }
       if(first && res.length) {
         break;
@@ -727,11 +727,7 @@ var SPECIAL_PROP = {
   VirtualDom.prototype.__init = function(name, children) {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
-    children.forEach(function(child) {
-      if(child instanceof Element) {
-        child.__parent = self;
-      }
-    });
+    childParent(children, this);
   }
   //@overwrite
   VirtualDom.prototype.__reset = function(name, props, children) {
@@ -751,6 +747,7 @@ var SPECIAL_PROP = {
     this.__active = false;
     this.__listener = null;
     this.__hasDes = true;
+    this.__top = null;
     return this;
   }
 Object.keys(_12).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_12[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
@@ -774,6 +771,16 @@ function renderChild(child) {
     return res;
   }
   return util.encodeHtml(child.toString());
+}
+function childParent(child, parent) {
+  if(Array.isArray(child)) {
+    child.forEach(function(item) {
+      childParent(item, parent);
+    });
+  }
+  else if(child instanceof Element) {
+    child.__parent = parent;
+  }
 }
 
 exports["default"]=VirtualDom;
