@@ -39,6 +39,24 @@ class Element extends Event {
   __onDom() {
     this.__dom = true;
   }
+  __saveRef() {
+    //ref快速引用
+    if(this.__cache['ref']) {
+      var top = this.$top;
+      if(top) {
+        var exist = top.$ref[this.$name];
+        if(Array.isArray(exist)) {
+          exist.push(this);
+        }
+        else if(exist) {
+          top.$ref[this.$name] = [exist, this];
+        }
+        else {
+          top.$ref[this.$name] = this;
+        }
+      }
+    }
+  }
 
   get $name() {
     return this.__name;
@@ -53,16 +71,15 @@ class Element extends Event {
     return this.__parent;
   }
   get $top() {
-    return this.__top || (this.__top = function(self) {
-        var p = self.$parent;
-        while(p) {
-          if(p instanceof migi.Component) {
-            return p;
-          }
-          p = p.$parent;
-        }
-        return null;
-      }(this));
+    if(!this.__top && this.$parent) {
+      if(this.$parent instanceof migi.Component) {
+        this.__top = this.$parent;
+      }
+      else {
+        this.__top = this.$parent.$top;
+      }
+    }
+    return this.__top;
   }
   get $uid() {
     return this.__uid;

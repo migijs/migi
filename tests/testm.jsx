@@ -421,6 +421,56 @@ describe('Component', function() {
     expect(span.$parent).to.eql(p);
     expect(p.$parent).to.eql(div);
   });
+  it('$parent2', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <div><Component2/></div>;
+      }
+    }
+    class Component2 extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <p><span>1</span></p>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var cp2 = div.$find(Component2);
+    var p = cp2.$virtualDom;
+    var span = p.$find('span');
+    expect(cp2.$parent).to.eql(div);
+    expect(span.$parent).to.eql(p);
+    expect(p.$parent).to.eql(cp2);
+  });
+  it('$parent3', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this._v = [<span></span>];
+      }
+      get v() {
+        return this._v;
+      }
+      set v(v) {
+        this._v = v;
+      }
+      render() {
+        return <div>{this.v}</div>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var span = div.$find('span');
+    expect(div.$parent).to.eql(cmpn);
+    expect(span.$parent).to.eql(div);
+  });
   it('$top', function() {
     class Component extends migi.Component {
       constructor(...data) {
@@ -439,6 +489,56 @@ describe('Component', function() {
     expect(div.$top).to.eql(cmpn);
     expect(span.$top).to.eql(cmpn);
     expect(p.$top).to.eql(cmpn);
+  });
+  it('$top2', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <div><Component2/></div>;
+      }
+    }
+    class Component2 extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      render() {
+        return <p><span>1</span></p>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var cp2 = div.$find(Component2);
+    var p = cp2.$virtualDom;
+    var span = p.$find('span');
+    expect(cp2.$top).to.eql(cmpn);
+    expect(span.$top).to.eql(cp2);
+    expect(p.$top).to.eql(cp2);
+  });
+  it('$top3', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this._v = [<span></span>];
+      }
+      get v() {
+        return this._v;
+      }
+      set v(v) {
+        this._v = v;
+      }
+      render() {
+        return <div>{this.v}</div>;
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    var div = cmpn.$virtualDom;
+    var span = div.$find('span');
+    expect(div.$top).to.eql(cmpn);
+    expect(span.$top).to.eql(cmpn);
   });
 });
 

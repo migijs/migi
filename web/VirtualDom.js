@@ -747,7 +747,11 @@ var SPECIAL_PROP = {
     this.__active = false;
     this.__listener = null;
     this.__hasDes = true;
+    this.__parent = null;
     this.__top = null;
+    this.__dom = false;
+    this.__style = null;
+    this.__element = null;
     return this;
   }
 Object.keys(_12).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_12[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
@@ -780,6 +784,9 @@ function childParent(child, parent) {
   }
   else if(child instanceof Element) {
     child.__parent = parent;
+  }
+  else if(child instanceof Obj) {
+    childParent(child.v, parent);
   }
 }
 

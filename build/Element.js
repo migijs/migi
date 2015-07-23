@@ -39,6 +39,24 @@ function getDom(dom) {
   Element.prototype.__onDom = function() {
     this.__dom = true;
   }
+  Element.prototype.__saveRef = function() {
+    //ref快速引用
+    if(this.__cache['ref']) {
+      var top = this.$top;
+      if(top) {
+        var exist = top.$ref[this.$name];
+        if(Array.isArray(exist)) {
+          exist.push(this);
+        }
+        else if(exist) {
+          top.$ref[this.$name] = [exist, this];
+        }
+        else {
+          top.$ref[this.$name] = this;
+        }
+      }
+    }
+  }
 
   var _3={};_3.$name={};_3.$name.get =function() {
     return this.__name;
@@ -53,16 +71,15 @@ function getDom(dom) {
     return this.__parent;
   }
   _3.$top={};_3.$top.get =function() {
-    return this.__top || (this.__top = function(self) {
-        var p = self.$parent;
-        while(p) {
-          if(p instanceof migi.Component) {
-            return p;
-          }
-          p = p.$parent;
-        }
-        return null;
-      }(this));
+    if(!this.__top && this.$parent) {
+      if(this.$parent instanceof migi.Component) {
+        this.__top = this.$parent;
+      }
+      else {
+        this.__top = this.$parent.$top;
+      }
+    }
+    return this.__top;
   }
   _3.$uid={};_3.$uid.get =function() {
     return this.__uid;

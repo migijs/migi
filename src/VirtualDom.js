@@ -747,7 +747,11 @@ class VirtualDom extends Element {
     this.__active = false;
     this.__listener = null;
     this.__hasDes = true;
+    this.__parent = null;
     this.__top = null;
+    this.__dom = false;
+    this.__style = null;
+    this.__element = null;
     return this;
   }
 }
@@ -780,6 +784,9 @@ function childParent(child, parent) {
   }
   else if(child instanceof Element) {
     child.__parent = parent;
+  }
+  else if(child instanceof Obj) {
+    childParent(child.v, parent);
   }
 }
 
