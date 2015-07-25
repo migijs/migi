@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "0.1.3",
+  "version": "0.2.0-1",
   "description": "A JavaScript MVVM WebComponent on JSX",
   "maintainers": [
     {
@@ -33,7 +33,7 @@
   "dependencies": {
     "es5-shim": "*",
     "es6-shim": "*",
-    "lefty": "~0.1.0",
+    "lefty": "~0.2.0-1",
     "jaw": "~0.1.0"
   },
   "devDependencies": {
@@ -48,7 +48,6 @@
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "~0.0.2",
     "nightwatch": "~0.7.4",
-    "spm": "~3.6.0",
     "through2": "~2.0.0"
   },
   "main": "./index",

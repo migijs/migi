@@ -158,20 +158,19 @@ var util = {
     }
   },
   lie: LIE,
-  version: function() {
-    if(!LIE) {
-      return;
-    }
-    var v = 5;
-    while (NODE.innerHTML = '<!--[if gt IE '+(++v)+']>1<![endif]-->', NODE.innerHTML);
-    return v;
-  }(),
-  joinArray: function(arr, prop) {
+  joinArray(arr, prop) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
       Element = Element['default'];
     }
     return joinArray(arr, prop);
+  },
+  smix(target, ...data) {
+    data.forEach(function(item) {
+      Object.keys(item).forEach(function(k) {
+        target[k] = item[k];
+      });
+    });
   }
 };
 
