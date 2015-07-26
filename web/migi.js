@@ -43,6 +43,6 @@ var migi = {
 
 if(typeof window != 'undefined') {
   window.migi = migi;
-}browser.lie=true;
+}
 
 exports["default"]=migi;});
