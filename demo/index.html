@@ -138,6 +138,10 @@
     <span>虽然用$find方法可以找到若干个组件进行数据联动，但毕竟不方便。migi.eventBus作为事件总线外，还可以用作数据中转站，同样的bridge接口串联2个组件数据</span>
   </li>
   <li>
+    <a href="lie.html" title="bridge">ie8的get/set hack</a>
+    <span>ie8由于浏览器限制，无法为普通js对象提供get/set，故使用了hack手段让组件返回的是个DOM对象。此时判别对象类型和使用引用时会有陷阱，故提供了个兼容的$方法来读取/设置组件get/set属性</span>
+  </li>
+  <li>
     <a href="benchmark.html" title="benchmark">性能测试</a>
     <span><a href="http://leeluolee.github.io/js-repaint-perfs/" target="_blank">http://leeluolee.github.io/js-repaint-perfs/</a></span>
   </li>

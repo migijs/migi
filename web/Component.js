@@ -162,6 +162,18 @@ var bridgeOrigin = {};
   Component.prototype.$bridgeTo = function(target, datas) {
     target.$bridge(this, datas);
   }
+  Component.prototype.$ = function(k, v) {
+    if(browser.lie && this.__migiNode == this) {
+      if(arguments.length > 1) {
+        this.__migiNode[k] = v;
+      }
+      return this.__migiNode[k];
+    }
+    if(arguments.length > 1) {
+      this[k] = v;
+    }
+    return this[k];
+  }
 
   var _7={};_7.$virtualDom={};_7.$virtualDom.get =function() {
     return this.__virtualDom;

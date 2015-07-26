@@ -162,6 +162,18 @@ class Component extends Element {
   $bridgeTo(target, datas) {
     target.$bridge(this, datas);
   }
+  $(k, v) {
+    if(browser.lie && this.__migiNode == this) {
+      if(arguments.length > 1) {
+        this.__migiNode[k] = v;
+      }
+      return this.__migiNode[k];
+    }
+    if(arguments.length > 1) {
+      this[k] = v;
+    }
+    return this[k];
+  }
 
   get $virtualDom() {
     return this.__virtualDom;
