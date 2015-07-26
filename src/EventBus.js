@@ -1,5 +1,6 @@
 import Event from './Event';
 import util from './util';
+import browser from './browser';
 
 class EventBus extends Event {
   constructor() {
@@ -18,15 +19,25 @@ class EventBus extends Event {
         target.__flag = true;
         //同名无需name，直接function作为middleware
         if(util.isFunction(stream)) {
-          target[k] = stream(v);
+          v = stream(v);
+          target[k] = v;
+          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
+            target.__migiNode[k] = v;
+          }
         }
         //只有name说明无需数据处理
         else if(util.isString(stream)) {
           target[stream] = v;
+          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
+            target.__migiNode[stream] = v;
+          }
         }
         else if(stream.name) {
           var v2 = stream.middleware ? stream.middleware.call(this, v) : v;
           target[stream.name] = v2;
+          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
+            target.__migiNode[stream.name] = v;
+          }
         }
         target.__flag = false;
       }

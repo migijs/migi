@@ -1,3 +1,5 @@
+import browser from './browser';
+
 class Event {
   constructor() {
     this.__hash = {};
@@ -16,12 +18,12 @@ class Event {
       //遍历防止此handle被侦听过了
       for(var i = 0, item = self.__hash[id], len = item.length; i < len; i++) {
         if(item[i] === handle) {
-          return this;
+          return self;
         }
       }
       self.__hash[id].push(handle);
     }
-    return this;
+    return self;
   }
   once(id, handle) {
     var self = this;
@@ -32,7 +34,7 @@ class Event {
     }
     else if(handle) {
       self.on(id, function(...data) {
-        handle.apply(self, data);
+        handle.apply(this, data);
         self.off(id, arguments.callee);
       });
     }
@@ -72,7 +74,13 @@ class Event {
       if(self.__hash.hasOwnProperty(id)) {
         var list = self.__hash[id].slice();
         list.forEach(function(item) {
-          item.apply(self, data);
+          //hack ie8，Component有get/set时会返回__migiNode的DOM元素，比较是否等于自己便可判别是否返回的是个DOM元素
+          if(browser.lie && self instanceof migi.Component && self.__migiNode == self && self.__migiCp) {
+            item.apply(self.__migiNode, data);
+          }
+          else {
+            item.apply(self, data);
+          }
         });
       }
     }

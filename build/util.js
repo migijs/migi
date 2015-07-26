@@ -107,7 +107,6 @@ var UL = document.createElement('ul');
 var DL = document.createElement('dl');
 var SELECT = document.createElement('select');
 var MENU = document.createElement('menu');
-var LIE = !+'\v1';
 
 var util = {
   clone:function(obj) {
@@ -157,7 +156,6 @@ var util = {
         return NODE;
     }
   },
-  lie: LIE,
   joinArray:function(arr, prop) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
@@ -167,10 +165,15 @@ var util = {
   },
   smix:function(target, data) {
     data=[].slice.call(arguments, 1);data.forEach(function(item) {
-      Object.keys(item).forEach(function(k) {
-        target[k] = item[k];
-      });
+      util.pmix(target, item, true);
     });
+  },
+  pmix:function(target, data, noProto) {
+    for(var i in data) {
+      if(!noProto || data.hasOwnProperty(i)) {
+        target[i] = data[i];
+      }
+    }
   }
 };
 

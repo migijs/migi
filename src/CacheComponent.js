@@ -1,6 +1,6 @@
 import Event from './Event';
 import Component from './Component';
-import util from './util';
+import browser from './browser';
 
 class CachedComponent extends Component {
   constructor(...data) {
@@ -10,6 +10,11 @@ class CachedComponent extends Component {
     this.__ccb = null;
     this.__bcb = null;
     this.__flag = false;
+
+    //ie8的对象识别hack
+    if(browser.lie) {
+      this.__migiCCp = true;
+    }
   }
 
   //@overwrite

@@ -24,6 +24,7 @@
       self._list = [];
       self.on(migi.Event.DOM, function() {
         self.list = ENV.generateData().toArray();
+        self.__migiNode && (self.__migiNode.list = self.list);
         Monitoring.renderRate.ping();
         setTimeout(arguments.callee, ENV.timeout);
       });

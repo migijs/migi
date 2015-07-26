@@ -1,14 +1,15 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var range=function(){var _6=require('./range');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var match=function(){var _7=require('./match');return _7.hasOwnProperty("default")?_7["default"]:_7}();
-var sort=function(){var _8=require('./sort');return _8.hasOwnProperty("default")?_8["default"]:_8}();
-var domDiff=function(){var _9=require('./domDiff');return _9.hasOwnProperty("default")?_9["default"]:_9}();
-var type=function(){var _10=require('./type');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var util=function(){var _4=require('./util');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var Obj=function(){var _5=require('./Obj');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var Cb=function(){var _6=require('./Cb');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var range=function(){var _7=require('./range');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var match=function(){var _8=require('./match');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var sort=function(){var _9=require('./sort');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var domDiff=function(){var _10=require('./domDiff');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var type=function(){var _11=require('./type');return _11.hasOwnProperty("default")?_11["default"]:_11}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -44,7 +45,7 @@ var SPECIAL_PROP = {
   'nodeType': true
 };
 
-!function(){var _11=Object.create(Element.prototype);_11.constructor=VirtualDom;VirtualDom.prototype=_11}();
+!function(){var _12=Object.create(Element.prototype);_12.constructor=VirtualDom;VirtualDom.prototype=_12}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -55,8 +56,8 @@ var SPECIAL_PROP = {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
     Element.call(this,name, props, children);
+
     var self = this;
-    self.__cache = {}; //缓存计算好的props
     self.__names = null; //从Component根节点到自己的tagName列表，以便css计算
     self.__classes = null; //同上，class列表
     self.__ids = null; //同上，id列表
@@ -104,7 +105,7 @@ var SPECIAL_PROP = {
 
   VirtualDom.prototype.$isFirst = function(children) {
     //本身就是Component的唯一节点
-    if(this.$parent instanceof Component) {
+    if(this.$parent instanceof Component || browser.lie && this.__migiCp) {
       return true;
     }
     children = children || this.$parent.$children;
@@ -129,7 +130,7 @@ var SPECIAL_PROP = {
   }
   VirtualDom.prototype.$isLast = function(children) {
     //本身就是Component的唯一节点
-    if(this.$parent instanceof Component) {
+    if(this.$parent instanceof Component || browser.lie && this.__migiCp) {
       return true;
     }
     children = children || this.$parent.$children;
@@ -159,7 +160,11 @@ var SPECIAL_PROP = {
     var res = '';
     //onXxx侦听处理
     if(/^on[A-Z]/.test(prop)) {
-      self.once(Event.DOM, function() {
+      self.once(Event.DOM, function(fake) {
+        //防止fake未真实添加DOM
+        if(fake) {
+          return;
+        }
         var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
@@ -349,7 +354,7 @@ var SPECIAL_PROP = {
   VirtualDom.prototype.__findAll = function(name, children, res, first) {
     for(var i = 0, len = children.length; i < len; i++) {
       var child = children[i];
-      if(child instanceof Element) {
+      if(child instanceof Element || browser.lie && child && child.__migiElem) {
         res = this.__findEq(name, child, res, first);
       }
       else if(child instanceof Obj) {
@@ -357,7 +362,7 @@ var SPECIAL_PROP = {
         if(Array.isArray(child)) {
           res = this.__findAll(name, child, res, first);
         }
-        else if(child instanceof Element) {
+        else if(child instanceof Element || browser.lie && child && child.__migiElem) {
           res = this.__findEq(name, child, res, first);
         }
       }
@@ -372,7 +377,7 @@ var SPECIAL_PROP = {
   }
   VirtualDom.prototype.__findEq = function(name, child, res, first) {
     //cp不递归
-    if(child instanceof Component) {
+    if(child instanceof Component || browser.lie && child && child.__migiCp) {
       //传入的可能是个class或者string
       if(child.$name == name || util.isFunction(name) && child instanceof name) {
         res.push(child);
@@ -391,10 +396,10 @@ var SPECIAL_PROP = {
     return res;
   }
 
-  var _12={};_12.$names={};_12.$names.get =function() {
+  var _13={};_13.$names={};_13.$names.get =function() {
     return this.__names || (this.__names = []);
   }
-  _12.$style={};_12.$style.set =function(v) {
+  _13.$style={};_13.$style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.$parent instanceof VirtualDom) {
@@ -440,7 +445,8 @@ var SPECIAL_PROP = {
         self.__domChild(item, index, len, option);
       });
     }
-    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)) {
+    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)
+      || browser.lie && child && child.__migiElem && !child.__migiNVCp) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
         self.__insertBlank(option.start);
@@ -461,7 +467,7 @@ var SPECIAL_PROP = {
       self.__domChild(child.v, index, len, option);
     }
     else if(isEmptyText(child)) {
-      if(child instanceof migi.NonVisualComponent) {
+      if(child instanceof migi.NonVisualComponent || browser.lie && child && child.__migiNVCp) {
         child.emit(Event.DOM);
       }
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
@@ -587,7 +593,7 @@ var SPECIAL_PROP = {
       }
     }
     //递归通知，增加索引
-    else if(child instanceof Element) {
+    else if(child instanceof Element || browser.lie && child && child.__migiElem) {
       delete option.t2d;
       delete option.d2t;
       if(child instanceof VirtualDom) {
@@ -681,9 +687,10 @@ var SPECIAL_PROP = {
   }
   VirtualDom.prototype.__match = function(first) {
     this.__inline = this.__cache.style || '';
-    if(this.$parent instanceof VirtualDom) {
-      this.__classes = this.$parent.__classes.slice();
-      this.__ids = this.$parent.__ids.slice();
+    var p = this.$parent;
+    if(p instanceof VirtualDom) {
+      this.__classes = p.__classes.slice();
+      this.__ids = p.__ids.slice();
     }
     else {
       this.__classes = [];
@@ -754,7 +761,7 @@ var SPECIAL_PROP = {
     this.__element = null;
     return this;
   }
-Object.keys(_12).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_12[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
+Object.keys(_13).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_13[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 //静态文本节点，包括空、undefined、null、空数组
 function isEmptyText(item) {
@@ -764,7 +771,7 @@ function renderChild(child) {
   if(child === void 0 || child === null) {
     return '';
   }
-  if(child instanceof Element || child instanceof Obj) {
+  if(child instanceof Element || child instanceof Obj || browser.lie && child.__migiElem) {
     return child.toString();
   }
   if(Array.isArray(child)) {
@@ -782,7 +789,7 @@ function childParent(child, parent) {
       childParent(item, parent);
     });
   }
-  else if(child instanceof Element) {
+  else if(child instanceof Element || browser.lie && child && child.__migiElem) {
     child.__parent = parent;
   }
   else if(child instanceof Obj) {

@@ -2,7 +2,8 @@ define(function(require, exports, module){var Element=function(){var _0=require(
 var VirtualDom=function(){var _1=require('./VirtualDom');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var Obj=function(){var _2=require('./Obj');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var type=function(){var _4=require('./type');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var browser=function(){var _4=require('./browser');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var type=function(){var _5=require('./type');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 function join(index, children, history) {
   var res = '';
@@ -87,14 +88,14 @@ exports.update=update;function update(item, children, elem) {
   if(textNode.nodeType == 1) {
     return;
   }
-  var now = util.lie ? textNode.innerText : textNode.textContent;
+  var now = browser.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
     //ie的innerText会解释html标签，故用临时节点的innerHTML再replace代替
     //有实体字符时也不能用textContent
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      if(util.lie || /&([a-z]+|#\d+);/i.test(res)) {
+      if(browser.lie || /&([a-z]+|#\d+);/i.test(res)) {
         var node = util.NODE;
         node.innerHTML = util.encodeHtml(res);
         elem.replaceChild(node.firstChild, textNode);
@@ -103,7 +104,7 @@ exports.update=update;function update(item, children, elem) {
         textNode.textContent = res;
       }
     }
-    else if(util.lie) {
+    else if(browser.lie) {
       textNode.innerText = '';
     }
     else {

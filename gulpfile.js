@@ -29,8 +29,6 @@ gulp.task('clean-web', function() {
 });
 
 function cb(file, enc, cb) {
-  var target = file.path.replace(path.sep + 'src' + path.sep,  path.sep + 'build' + path.sep);
-  util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
   var content = file.contents.toString('utf-8');
   jsdc.reset();
   content = jsdc.parse(content);
@@ -38,8 +36,6 @@ function cb(file, enc, cb) {
   cb(null, file);
 }
 function cb2(file, enc, cb) {
-  var target = file.path.replace(path.sep + 'build' + path.sep,  path.sep + 'web' + path.sep);
-  util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
   var content = file.contents.toString('utf-8');
   content = 'define(function(require, exports, module){' + content + '});';
   file.contents = new Buffer(content);

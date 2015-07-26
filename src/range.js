@@ -2,6 +2,7 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import Obj from './Obj';
 import util from './util';
+import browser from './browser';
 import type from './type';
 
 function join(index, children, history) {
@@ -87,14 +88,14 @@ export function update(item, children, elem) {
   if(textNode.nodeType == 1) {
     return;
   }
-  var now = util.lie ? textNode.innerText : textNode.textContent;
+  var now = browser.lie ? textNode.innerText : textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
     //ie的innerText会解释html标签，故用临时节点的innerHTML再replace代替
     //有实体字符时也不能用textContent
     //但当为innerHTML空时，没有孩子节点，所以特殊判断
     if(res) {
-      if(util.lie || /&([a-z]+|#\d+);/i.test(res)) {
+      if(browser.lie || /&([a-z]+|#\d+);/i.test(res)) {
         var node = util.NODE;
         node.innerHTML = util.encodeHtml(res);
         elem.replaceChild(node.firstChild, textNode);
@@ -103,7 +104,7 @@ export function update(item, children, elem) {
         textNode.textContent = res;
       }
     }
-    else if(util.lie) {
+    else if(browser.lie) {
       textNode.innerText = '';
     }
     else {

@@ -23,6 +23,7 @@
       });
       setInterval(function() {
         self.txt = 'from a';
+        self.__migiNode && (self.__migiNode.txt = 'from a');
       }, 2000);
     }
     get txt() {
@@ -48,6 +49,7 @@
       setTimeout(function() {
         setInterval(function() {
           self.txt = 'from b';
+          self.__migiNode && (self.__migiNode.txt = 'from b');
         }, 2000);
       }, 1000);
     }

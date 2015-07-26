@@ -2,9 +2,9 @@ import Event from './Event';
 import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
+import browser from './browser';
 import EventBus from './EventBus';
 
-var bindOrigin = {};
 var bridgeOrigin = {};
 
 class Component extends Element {
@@ -14,8 +14,8 @@ class Component extends Element {
     name = /^function\s+([\w$]+)/.exec(name)[1];
     super(name, props, children);
 
-    self.__virtualDom = null;
-    self.__ref = {};
+    self.__virtualDom = null; //根节点vd引用
+    self.__ref = {}; //以ref为attr的vd快速访问引用
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -28,6 +28,14 @@ class Component extends Element {
         });
       }
     });
+
+    //ie8的对象识别hack
+    if(browser.lie) {
+      this.__migiCp = true;
+      this.__migiNode = {
+        __gs: gs
+      };
+    }
 
     self.on(Event.DATA, self.__onData);
   }
@@ -82,60 +90,6 @@ class Component extends Element {
   }
   $findAll(name, first) {
     return this.$virtualDom.$findAll(name, first);
-  }
-  __bicb(target, keys, include, exclude) {
-    //对比来源uid是否出现过，防止闭环死循环
-    if(bindOrigin.hasOwnProperty(target.$uid)) {
-      return;
-    }
-    bindOrigin[target.$uid] = true;
-    //变更时设置对方CacheComponent不更新，防止闭环
-    target.__flag = true;
-    //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
-    if(!Array.isArray(keys)) {
-      keys = [keys];
-    }
-    //不能用foreach，会干扰origin的caller判断
-    for(var i = 0, len = keys.length; i < len; i++) {
-      var k = keys[i];
-      if(!include || include.indexOf(k) > -1) {
-        if(!exclude || exclude.indexOf(k) == -1) {
-          target[k] = this[k];
-        }
-      }
-    }
-    //关闭开关
-    target.__flag = false;
-  }
-  $bind(target, include, exclude) {
-    var self = this;
-    if(target == this) {
-      throw new Error('can not bind self: ' + self.$name);
-    }
-    if(!(target instanceof EventBus) && !(target instanceof Component)) {
-      throw new Error('can only bind to EventBus/Component: ' + self.$name);
-    }
-    //Componenet和CacheComponent公用逻辑，设计有点交叉的味道，功能却正确
-    //CacheComponent有个__handler用以存储缓存数据变更，以此和Componenet区分
-    self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
-      if(origin != self.__bicb) {
-        bindOrigin = {};
-        bindOrigin[self.$uid] = true;
-      }
-      self.__bicb(target, keys, include, exclude);
-    });
-    target.on(target instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是bicb则说明不是由bind触发的，而是真正数据源，记录uid
-      if(origin != target.__bicb) {
-        bindOrigin = {};
-        bindOrigin[target.$uid] = true;
-      }
-      target.__bicb(self, keys, include, exclude);
-    });
-  }
-  $bindTo(target, include, exclude) {
-    target.$bind(this, include, exclude);
   }
   __brcb(target, keys, datas) {
     //对比来源uid是否出现过，防止闭环死循环
@@ -193,7 +147,7 @@ class Component extends Element {
     if(target == this) {
       throw new Error('can not bridge self: ' + self.$name);
     }
-    if(!(target instanceof EventBus) && !(target instanceof Component)) {
+    if(!(target instanceof EventBus) && !(target instanceof Component) && (browser.lie && !target.__migiCp)) {
       throw new Error('can only bridge to EventBus/Component: ' + self.$name);
     }
     self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
@@ -291,5 +245,42 @@ class Component extends Element {
     }
   }
 }
+
+//hack ie8，clone get/set in Element&Component
+var gs = {
+  $element: {
+    get: function() {
+      return this.$virtualDom ? this.$virtualDom.$element : null;
+    }
+  },
+  $style: {
+    get: function() {
+      return this.__style;
+    },
+    set: function(v) {
+      this.__style = v;
+    }
+  },
+  $top: {
+    get: function() {
+      if(!this.__top && this.$parent) {
+        if(this.$parent instanceof migi.Component) {
+          this.__top = this.$parent;
+        }
+        else {
+          this.__top = this.$parent.$top;
+        }
+      }
+      return this.__top;
+    }
+  }
+};
+['name', 'props', 'children', 'ref', 'parent', 'virtualDom', 'uid', 'dom'].forEach(function(item) {
+  gs['$' + item] = {
+    get: function() {
+      return this['__' + item];
+    }
+  };
+});
 
 export default Component;

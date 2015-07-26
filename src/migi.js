@@ -10,6 +10,7 @@ import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
 import util from './util';
+import browser from './browser';
 import sort from './sort';
 
 var migi = {
@@ -36,11 +37,12 @@ var migi = {
   Obj,
   Cb,
   util,
+  browser,
   sort
 };
 
 if(typeof window != 'undefined') {
   window.migi = migi;
-}
+}browser.lie=true;
 
 export default migi;

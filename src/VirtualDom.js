@@ -1,6 +1,7 @@
 import Event from './Event';
 import Element from './Element';
 import Component from './Component';
+import browser from './browser';
 import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
@@ -55,8 +56,8 @@ class VirtualDom extends Element {
       throw new Error('self-close tag can not has chilren nodes: ' + name);
     }
     super(name, props, children);
+
     var self = this;
-    self.__cache = {}; //缓存计算好的props
     self.__names = null; //从Component根节点到自己的tagName列表，以便css计算
     self.__classes = null; //同上，class列表
     self.__ids = null; //同上，id列表
@@ -104,7 +105,7 @@ class VirtualDom extends Element {
 
   $isFirst(children) {
     //本身就是Component的唯一节点
-    if(this.$parent instanceof Component) {
+    if(this.$parent instanceof Component || browser.lie && this.__migiCp) {
       return true;
     }
     children = children || this.$parent.$children;
@@ -129,7 +130,7 @@ class VirtualDom extends Element {
   }
   $isLast(children) {
     //本身就是Component的唯一节点
-    if(this.$parent instanceof Component) {
+    if(this.$parent instanceof Component || browser.lie && this.__migiCp) {
       return true;
     }
     children = children || this.$parent.$children;
@@ -159,7 +160,11 @@ class VirtualDom extends Element {
     var res = '';
     //onXxx侦听处理
     if(/^on[A-Z]/.test(prop)) {
-      self.once(Event.DOM, function() {
+      self.once(Event.DOM, function(fake) {
+        //防止fake未真实添加DOM
+        if(fake) {
+          return;
+        }
         var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
@@ -349,7 +354,7 @@ class VirtualDom extends Element {
   __findAll(name, children, res, first) {
     for(var i = 0, len = children.length; i < len; i++) {
       var child = children[i];
-      if(child instanceof Element) {
+      if(child instanceof Element || browser.lie && child && child.__migiElem) {
         res = this.__findEq(name, child, res, first);
       }
       else if(child instanceof Obj) {
@@ -357,7 +362,7 @@ class VirtualDom extends Element {
         if(Array.isArray(child)) {
           res = this.__findAll(name, child, res, first);
         }
-        else if(child instanceof Element) {
+        else if(child instanceof Element || browser.lie && child && child.__migiElem) {
           res = this.__findEq(name, child, res, first);
         }
       }
@@ -372,7 +377,7 @@ class VirtualDom extends Element {
   }
   __findEq(name, child, res, first) {
     //cp不递归
-    if(child instanceof Component) {
+    if(child instanceof Component || browser.lie && child && child.__migiCp) {
       //传入的可能是个class或者string
       if(child.$name == name || util.isFunction(name) && child instanceof name) {
         res.push(child);
@@ -440,7 +445,8 @@ class VirtualDom extends Element {
         self.__domChild(item, index, len, option);
       });
     }
-    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)) {
+    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)
+      || browser.lie && child && child.__migiElem && !child.__migiNVCp) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
         self.__insertBlank(option.start);
@@ -461,7 +467,7 @@ class VirtualDom extends Element {
       self.__domChild(child.v, index, len, option);
     }
     else if(isEmptyText(child)) {
-      if(child instanceof migi.NonVisualComponent) {
+      if(child instanceof migi.NonVisualComponent || browser.lie && child && child.__migiNVCp) {
         child.emit(Event.DOM);
       }
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
@@ -587,7 +593,7 @@ class VirtualDom extends Element {
       }
     }
     //递归通知，增加索引
-    else if(child instanceof Element) {
+    else if(child instanceof Element || browser.lie && child && child.__migiElem) {
       delete option.t2d;
       delete option.d2t;
       if(child instanceof VirtualDom) {
@@ -681,9 +687,10 @@ class VirtualDom extends Element {
   }
   __match(first) {
     this.__inline = this.__cache.style || '';
-    if(this.$parent instanceof VirtualDom) {
-      this.__classes = this.$parent.__classes.slice();
-      this.__ids = this.$parent.__ids.slice();
+    var p = this.$parent;
+    if(p instanceof VirtualDom) {
+      this.__classes = p.__classes.slice();
+      this.__ids = p.__ids.slice();
     }
     else {
       this.__classes = [];
@@ -764,7 +771,7 @@ function renderChild(child) {
   if(child === void 0 || child === null) {
     return '';
   }
-  if(child instanceof Element || child instanceof Obj) {
+  if(child instanceof Element || child instanceof Obj || browser.lie && child.__migiElem) {
     return child.toString();
   }
   if(Array.isArray(child)) {
@@ -782,7 +789,7 @@ function childParent(child, parent) {
       childParent(item, parent);
     });
   }
-  else if(child instanceof Element) {
+  else if(child instanceof Element || browser.lie && child && child.__migiElem) {
     child.__parent = parent;
   }
   else if(child instanceof Obj) {

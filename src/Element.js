@@ -1,5 +1,6 @@
 import Event from './Event';
 import util from './util';
+import browser from './browser';
 
 var uid = 0;
 
@@ -21,11 +22,17 @@ class Element extends Event {
     this.__props = props;
     this.__children = children;
 
-    this.__element = null;
-    this.__parent = null;
-    this.__top = null;
-    this.__style = null;
-    this.__dom = false;
+    this.__element = null; //真实DOM引用
+    this.__parent = null; //父vd或cp引用
+    this.__top = null; //最近父cp引用
+    this.__style = null; //样式中间生成代码
+    this.__dom = false; //是否被添加到真实DOM标识
+    this.__cache = {}; //缓存计算好的props
+
+    //ie8的对象识别hack
+    if(browser.lie) {
+      this.__migiElem = true;
+    }
 
     this.once(Event.DOM, this.__onDom);
   }

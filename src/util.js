@@ -107,7 +107,6 @@ const UL = document.createElement('ul');
 const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
 const MENU = document.createElement('menu');
-const LIE = !+'\v1';
 
 var util = {
   clone(obj) {
@@ -157,7 +156,6 @@ var util = {
         return NODE;
     }
   },
-  lie: LIE,
   joinArray(arr, prop) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {
@@ -167,10 +165,15 @@ var util = {
   },
   smix(target, ...data) {
     data.forEach(function(item) {
-      Object.keys(item).forEach(function(k) {
-        target[k] = item[k];
-      });
+      util.pmix(target, item, true);
     });
+  },
+  pmix(target, data, noProto) {
+    for(var i in data) {
+      if(!noProto || data.hasOwnProperty(i)) {
+        target[i] = data[i];
+      }
+    }
   }
 };
 

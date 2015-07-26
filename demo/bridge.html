@@ -108,11 +108,13 @@
         if(ajax) {
           ajax.on('success', function(data) {
             self.list = data;
+            self.__migiNode && (self.__migiNode.list = data);
           });
         }
         window.addEventListener('click', function(e) {
           if(e.target != self.$element) {
             self.show = false;
+            self.__migiNode && (self.__migiNode.show = false);
           }
         });
       });
