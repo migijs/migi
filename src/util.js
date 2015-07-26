@@ -1,4 +1,5 @@
 import Element from './Element';
+import browser from './browser';
 
 function clone(obj) {
   if(obj instanceof Element) {
@@ -10,14 +11,15 @@ function clone(obj) {
   var o = Array.isArray(obj) ? [] : {};
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
-      if(obj[i] instanceof Element) {
-        o[i] = obj[i];
+      var item = obj[i];
+      if(item instanceof Element || browser.lie && item && item.__migiElem) {
+        o[i] = item;
       }
-      else if(util.isDate(obj[i])) {
-        o[i] = new Date(obj[i]);
+      else if(util.isDate(item)) {
+        o[i] = new Date(item);
       }
       else {
-        o[i] = util.isObject(obj[i]) ? clone(obj[i]) : obj[i];
+        o[i] = util.isObject(item) ? clone(item) : item;
       }
     }
   }
@@ -36,7 +38,7 @@ function isOrigin(o) {
 }
 function equal(a, b) {
   //vd常量
-  if(a instanceof Element || b instanceof Element) {
+  if(a instanceof Element || b instanceof Element || browser.lie && (a && a.__migiElem || b && b.__migiElem)) {
     return a == b;
   }
   if(isOrigin(a) || isOrigin(b)) {
@@ -86,7 +88,7 @@ function joinArray(arr, prop) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
-    else if(item instanceof Element) {
+    else if(item instanceof Element || browser.lie && item && item.__migiElem) {
       res += item.toString();
     }
     else if(item === void 0 || item === null) {

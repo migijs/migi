@@ -3,9 +3,10 @@ var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("def
 var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var Cb=function(){var _3=require('./Cb');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 var util=function(){var _4=require('./util');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var range=function(){var _5=require('./range');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var cachePool=function(){var _6=require('./cachePool');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var type=function(){var _7=require('./type');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var browser=function(){var _5=require('./browser');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var range=function(){var _6=require('./range');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var cachePool=function(){var _7=require('./cachePool');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var type=function(){var _8=require('./type');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -110,7 +111,8 @@ function add(elem, vd, ranges, option, history, temp, last) {
     }
     history.pop();
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)
+    || browser.lie && vd && vd.__migiElem && !vd.__migiNVCp) {
     if(temp.hasOwnProperty('prev')) {
       if(option.prev == type.TEXT) {
         option.start++;
@@ -213,7 +215,8 @@ function del(elem, vd, ranges, option, temp, last) {
       del(elem, item, ranges, option, temp, last && i == len - 1);
     });
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)
+    || browser.lie && vd && vd.__migiElem && !vd.__migiNVCp) {
     if(temp.hasOwnProperty('prev')) {
       //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
       if(temp.prev == type.TEXT) {
@@ -551,8 +554,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   }
   //都不是数组
   else {
-    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
-    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
+    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent)
+      || browser.lie && ovd && ovd.__migiElem && !ovd.__migiNVCp ? 1 : 0;
+    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent)
+      || browser.lie && nvd && nvd.__migiElem && !nvd.__migiNVCp? 2 : 0;
     //新老值是否为DOM或TEXT分4种情况
     switch(oe + ne) {
       //都是text时，根据上个节点类型和history设置range
@@ -668,8 +673,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
           delete option.t2d;
           delete option.d2t;
         }
-        var ocp = ovd instanceof Component ? 1 : 0;
-        var ncp = nvd instanceof Component ? 2 : 0;
+        var ocp = ovd instanceof Component
+          || browser.lie && ovd && ovd.__migiCp ? 1 : 0;
+        var ncp = nvd instanceof Component
+          || browser.lie && nvd && nvd.__migiCp ? 2 : 0;
         switch(ocp + ncp) {
           //DOM名没变递归diff，否则重绘
           case 0:
@@ -707,7 +714,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
     }
     //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
-    if(nvd instanceof Component) {
+    if(nvd instanceof Component || browser.lie && nvd && nvd.__migiCp) {
       nvd.emit(Event.DOM);
     }
   }
