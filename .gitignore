@@ -214,5 +214,8 @@ pip-log.txt
 covrage.html
 node_modules/
 tests/**/script.js
+tests/**/script-lie.js
+tests/**/*-lie.html
 reports/
 tests/testm.js
+tests/testm-lie.js
