@@ -101,6 +101,13 @@ function jsx2(file, enc, cb) {
 function html(file, enc, cb) {
   var content = file.contents.toString('utf-8');
   content = content.replace('"script.js"', '"script-lie.js"');
+  content += ';migi.browser.lie=true;';
+  file.contents = new Buffer(content);
+  cb(null, file);
+}
+function test(file, enc, cb) {
+  var content = file.contents.toString('utf-8');
+  content = content.replace('index.html', 'index-lie.html');
   file.contents = new Buffer(content);
   cb(null, file);
 }
@@ -112,7 +119,7 @@ gulp.task('build-test', ['clean-jsx'], function() {
       extname:'.js'
     }))
     .pipe(gulp.dest('./tests/'));
-  gulp.src('./tests/**/*.html')
+  gulp.src('./tests/**/index.html')
     .pipe(through2.obj(html))
     .pipe(rename({
       suffix: '-lie'
@@ -123,6 +130,12 @@ gulp.task('build-test', ['clean-jsx'], function() {
     .pipe(rename({
       suffix: '-lie',
       extname:'.js'
+    }))
+    .pipe(gulp.dest('./tests/'));
+  gulp.src('./tests/**/test.js')
+    .pipe(through2.obj(test))
+    .pipe(rename({
+      suffix: '-lie'
     }))
     .pipe(gulp.dest('./tests/'));
 });

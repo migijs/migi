@@ -216,6 +216,7 @@ node_modules/
 tests/**/script.js
 tests/**/script-lie.js
 tests/**/*-lie.html
+tests/**/*-lie.js
 reports/
 tests/testm.js
 tests/testm-lie.js
