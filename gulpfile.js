@@ -101,7 +101,7 @@ function jsx2(file, enc, cb) {
 function html(file, enc, cb) {
   var content = file.contents.toString('utf-8');
   content = content.replace('"script.js"', '"script-lie.js"');
-  content += ';migi.browser.lie=true;';
+  content = 'migi.browser.lie=true;' + content;
   file.contents = new Buffer(content);
   cb(null, file);
 }
