@@ -79,7 +79,7 @@ class Element extends Event {
   }
   get $top() {
     if(!this.__top && this.$parent) {
-      if(this.$parent instanceof migi.Component) {
+      if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCp) {
         this.__top = this.$parent;
       }
       else {

@@ -79,7 +79,7 @@ function getDom(dom) {
   }
   _4.$top={};_4.$top.get =function() {
     if(!this.__top && this.$parent) {
-      if(this.$parent instanceof migi.Component) {
+      if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCp) {
         this.__top = this.$parent;
       }
       else {
