@@ -76,7 +76,6 @@ gulp.task('clean-jsx', function() {
 });
 
 function jsx(file, enc, cb) {
-  var target = file.path.replace('jsx',  'js');
   var content = file.contents.toString('utf-8');
   if(content.indexOf('`') > -1) {
     content = content.replace(/`([^`]+)`/g, function($0, $1) {
@@ -96,6 +95,18 @@ function jsx2(file, enc, cb) {
   }
   content = lefty.parse(content, true, true);
   content = 'migi.browser.lie=true;' + content;
+  file.contents = new Buffer(content);
+  cb(null, file);
+}
+function jsx3(file, enc, cb) {
+  var content = file.contents.toString('utf-8');
+  if(content.indexOf('`') > -1) {
+    content = content.replace(/`([^`]+)`/g, function($0, $1) {
+      return JSON.stringify(jaw.parse($1));
+    });
+  }
+  content = lefty.parse(content, true, true);
+  content = content.replace('describe', 'migi.browser.lie=true;describe');
   file.contents = new Buffer(content);
   cb(null, file);
 }
@@ -125,8 +136,15 @@ gulp.task('build-test', ['clean-jsx'], function() {
       suffix: '-lie'
     }))
     .pipe(gulp.dest('./tests/'));
-  gulp.src('./tests/**/*.jsx')
+  gulp.src(['./tests/**/*.jsx', '!./tests/testm/jsx'])
     .pipe(through2.obj(jsx2))
+    .pipe(rename({
+      suffix: '-lie',
+      extname:'.js'
+    }))
+    .pipe(gulp.dest('./tests/'));
+  gulp.src('./tests/testm.jsx')
+    .pipe(through2.obj(jsx3))
     .pipe(rename({
       suffix: '-lie',
       extname:'.js'
