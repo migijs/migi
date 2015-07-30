@@ -71,7 +71,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('clean-jsx', function() {
-  gulp.src(['./tests/**/script.js'])
+  gulp.src(['./tests/**/script.js', './tests/**/*lie.*'])
     .pipe(rimraf());
 });
 

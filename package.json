@@ -34,7 +34,7 @@
     "es5-shim": "*",
     "es6-shim": "*",
     "lefty": "~0.2.0-2",
-    "jaw": "~0.1.0"
+    "jaw": "~0.2.0-1"
   },
   "devDependencies": {
     "blanket": "~1.1.7",
@@ -47,7 +47,7 @@
     "jsdc": "~0.6.7",
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "~0.0.2",
-    "nightwatch": "~0.7.4",
+    "nightwatch": "~0.7.9",
     "through2": "~2.0.0"
   },
   "main": "./index",
