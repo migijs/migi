@@ -9,25 +9,13 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
       Element = Element['default'];
     }
 
-    this.__k = k;
-    this.__context = context;
-    this.__cb = cb;
-    this.v = cb.call(context);
+    this.k = k;
+    this.context = context;
+    this.cb = cb;
+    this.setV(cb.call(context));
   }
-  var _3={};_3.k={};_3.k.get =function() {
-    return this.__k;
-  }
-  _3.context={};_3.context.get =function() {
-    return this.__context;
-  }
-  _3.v={};_3.v.get =function() {
-    return this.__v;
-  }
-  _3.v.set =function(v) {
-    this.__v = util.clone(v);
-  }
-  _3.cb={};_3.cb.get =function() {
-    return this.__cb;
+  Obj.prototype.setV = function(v) {
+    this.v = util.clone(v);
   }
   Obj.prototype.toString = function(prop) {
     //array调用join包括转码
@@ -47,10 +35,10 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);
     if(!util.equal(ov, nv)) {
-      this.v = nv;
+      this.setV(nv);
       return true;
     }
   }
-Object.keys(_3).forEach(function(k){Object.defineProperty(Obj.prototype,k,_3[k])});
+
 
 exports["default"]=Obj;

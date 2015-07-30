@@ -237,7 +237,7 @@ var SPECIAL_PROP = {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb() {
-              item.v = this.value;
+              item.setV(this.value);
               var key = item.k;
               item.context[key] = this.value;
             }
@@ -276,7 +276,7 @@ var SPECIAL_PROP = {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb() {
-              item.v = this.value;
+              item.setV(this.value);
               var key = item.k;
               item.context[key] = this.value;
             }
@@ -293,7 +293,7 @@ var SPECIAL_PROP = {
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              child.v = this.value;
+              child.setV(this.value);
               var key = child.k;
               child.context[key] = this.value;
             }
@@ -518,7 +518,7 @@ var SPECIAL_PROP = {
           var ov = item.v;
           var nv = item.cb.call(item.context);
           if(ov != nv) {
-            item.v = nv;
+            item.setV(nv);
             self.__updateAttr(key, nv);
           }
         }

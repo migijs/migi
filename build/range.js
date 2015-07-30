@@ -104,11 +104,8 @@ exports.update=update;function update(item, children, elem) {
         textNode.textContent = res;
       }
     }
-    else if(browser.lie) {
-      textNode.innerText = '';
-    }
     else {
-      textNode.textContent = '';
+      textNode.textContent = textNode.innerText = '';
     }
   }
 }

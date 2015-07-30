@@ -9,25 +9,13 @@ class Obj {
       Element = Element['default'];
     }
 
-    this.__k = k;
-    this.__context = context;
-    this.__cb = cb;
-    this.v = cb.call(context);
+    this.k = k;
+    this.context = context;
+    this.cb = cb;
+    this.setV(cb.call(context));
   }
-  get k() {
-    return this.__k;
-  }
-  get context() {
-    return this.__context;
-  }
-  get v() {
-    return this.__v;
-  }
-  set v(v) {
-    this.__v = util.clone(v);
-  }
-  get cb() {
-    return this.__cb;
+  setV(v) {
+    this.v = util.clone(v);
   }
   toString(prop) {
     //array调用join包括转码
@@ -47,7 +35,7 @@ class Obj {
   update(ov) {
     var nv = this.cb.call(this.context);
     if(!util.equal(ov, nv)) {
-      this.v = nv;
+      this.setV(nv);
       return true;
     }
   }
