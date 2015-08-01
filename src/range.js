@@ -88,24 +88,21 @@ export function update(item, children, elem) {
   if(textNode.nodeType == 1) {
     return;
   }
-  var now = browser.lie ? textNode.innerText : textNode.textContent;
+  var now = browser.lie ? textNode.nodeValue : textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
-    //ie的innerText会解释html标签，故用临时节点的innerHTML再replace代替
+    //ie8的用nodeValue替代
     //有实体字符时也不能用textContent
-    //但当为innerHTML空时，没有孩子节点，所以特殊判断
-    if(res) {
-      if(browser.lie || /&([a-z]+|#\d+);/i.test(res)) {
-        var node = util.NODE;
-        node.innerHTML = util.encodeHtml(res);
-        elem.replaceChild(node.firstChild, textNode);
-      }
-      else {
-        textNode.textContent = res;
-      }
+    if(/&([a-z]+|#\d+);/i.test(res)) {
+      var node = util.NODE;
+      node.innerHTML = util.encodeHtml(res);
+      elem.replaceChild(node.firstChild, textNode);
+    }
+    else if(browser.lie) {
+      textNode.nodeValue = res;
     }
     else {
-      textNode.textContent = textNode.innerText = '';
+      textNode.textContent = res;
     }
   }
 }
