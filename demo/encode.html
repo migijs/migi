@@ -46,7 +46,7 @@
   seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
     var code = document.querySelector('pre code');
     var jsx = document.querySelector('script[type="text/jsx"]');
-    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    var source = jsx.textContent || jsx.text;
     source = source.trim().replace(/\n[ ]{2}/g, '\n');
     var text = document.createTextNode(source);
     code.appendChild(text);

@@ -66,13 +66,13 @@
   seajs.use(['jssc', '../init', 'lefty', 'jaw'], function(jssc, migi, lefty) {
     var code = document.querySelector('pre code[class="brush:jsx"]');
     var jsx = document.querySelector('script[type="text/jsx"]');
-    var source = jsx.textContent || jsx.innerText || jsx.firstChild && jsx.firstChild.nodeValue || '';
+    var source = jsx.textContent || jsx.text;
     source = source.trim().replace(/\n[ ]{2}/g, '\n');
     var text = document.createTextNode(source);
     code.appendChild(text);
     var code2 = document.querySelector('pre code[class="brush:css"]');
     var css = document.querySelector('style[type="text/jsx"]');
-    var source2 = css.textContent || css.innerText || css.firstChild && css.firstChild.nodeValue || '';
+    var source2 = css.textContent || css.innerHTML;
     source2 = source2.trim().replace(/\n[ ]{2}/g, '\n');
     var text2 = document.createTextNode(source2);
     code2.appendChild(text2);
