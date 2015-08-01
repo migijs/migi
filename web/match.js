@@ -90,9 +90,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
       var item = style[k];
       //_d记录着深度，没有深度（为0）不记录即不存在_d跳出
       if(i) {
-        if(style._d) {
-          matchSel(i - 1, names, classes, ids, item, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
-        }
+        matchSel(i - 1, names, classes, ids, item, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
         //多层级时需递归所有层级组合，如<div><p><span>对应div span{}的样式时，并非一一对应
         for(var l = i - 2; l >= 0; l--) {
           var key = cur + ',' + l + ':' + j;

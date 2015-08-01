@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "es5-shim": "*",
-    "es6-shim": "*",
-    "lefty": "~0.2.0-4",
+    "es6-shim": "~0.32.0",
+    "lefty": "~0.2.0-5",
     "jaw": "~0.2.0-3"
   },
   "devDependencies": {
