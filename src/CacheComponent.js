@@ -1,5 +1,6 @@
 import Event from './Event';
 import Component from './Component';
+import util from './util';
 import browser from './browser';
 
 class CachedComponent extends Component {
@@ -13,7 +14,8 @@ class CachedComponent extends Component {
 
     //ie8的对象识别hack
     if(browser.lie) {
-      this.__migiCCp = true;
+      this.__migiCC = true;
+      return this.__hackLie(CachedComponent);
     }
   }
 

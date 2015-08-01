@@ -1,5 +1,6 @@
 import Event from './Event';
 import Component from './Component';
+import util from './util';
 import browser from './browser';
 
 class NonVisualComponent extends Component {
@@ -8,7 +9,8 @@ class NonVisualComponent extends Component {
 
     //ie8的对象识别hack
     if(browser.lie) {
-      this.__migiNVCp = true;
+      this.__migiNV = true;
+      return this.__hackLie(NonVisualComponent);
     }
   }
 

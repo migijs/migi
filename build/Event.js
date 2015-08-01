@@ -3,6 +3,9 @@ var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("def
 
   function Event() {
     this.__hash = {};
+    if(browser.lie) {
+      this.__migiEV = this;
+    }
   }
   Event.prototype.on = function(id, handle) {
     var self = this;
@@ -75,7 +78,7 @@ var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("def
         var list = self.__hash[id].slice();
         list.forEach(function(item) {
           //hack ie8，Component有get/set时会返回__migiNode的DOM元素，比较是否等于自己便可判别是否返回的是个DOM元素
-          if(browser.lie && self instanceof migi.Component && self.__migiNode == self && self.__migiCp) {
+          if(browser.lie && self instanceof migi.Component && self.__migiNode == self && self.__migiCP) {
             item.apply(self.__migiNode, data);
           }
           else {

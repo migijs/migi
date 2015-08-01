@@ -27,7 +27,7 @@ function join(index, children, history) {
           break;
         }
       }
-      else if(child.v instanceof Element || browser.lie && child.v && child.v.__migiElem) {
+      else if(child.v instanceof Element || browser.lie && child.v && child.v.__migiEL) {
         history.end = true;
         break;
       }
@@ -35,7 +35,7 @@ function join(index, children, history) {
         res += child.toString();
       }
     }
-    else if(child instanceof Element || browser.lie && child && child.__migiElem) {
+    else if(child instanceof Element || browser.lie && child && child.__migiEL) {
       history.end = true;
       break;
     }
@@ -63,7 +63,7 @@ function joinObj(arr, history) {
     if(Array.isArray(child)) {
       res += joinObj(child, history);
     }
-    else if(child instanceof Element || browser.lie && child && child.__migiElem) {
+    else if(child instanceof Element || browser.lie && child && child.__migiEL) {
       history.end = true;
       break;
     }

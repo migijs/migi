@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     for(var i = 0, len = jsx.length; i < len; i++) {
       var node = jsx[i];
       if(node.getAttribute('type') == 'text/jsx') {
-        var code = node.textContent || node.innerText;
+        var code = node.text;
         node.parentNode.removeChild(node);
         if(!code) {
           continue;
@@ -21,7 +21,7 @@ define(function(require, exports, module) {
           node.setAttribute('crossorigin', crossorigin);
         }
         script.async = true;
-        script.innerHTML = code;
+        script.text = code;
         head.appendChild(script);
       }
     }

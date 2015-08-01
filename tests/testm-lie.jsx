@@ -10,6 +10,7 @@ var lefty = require('lefty');
 var jaw = require('jaw');
 
 global.migi = migi;
+migi.browser.lie = true;
 
 describe('api', function() {
   it('global scope on window', function() {
@@ -257,9 +258,9 @@ describe('VirtualDom', function() {
   });
   it('instanceof', function() {
     var div = <div>123</div>;
-    expect(div).to.be.a(migi.VirtualDom);
-    expect(div).to.be.a(migi.Element);
-    expect(div).to.be.a(migi.Event);
+    expect(div.__migiVD).to.be.a(migi.VirtualDom);
+    expect(div.__migiEL).to.be.a(migi.Element);
+    expect(div.__migiEV).to.be.a(migi.Event);
   });
   it('name', function() {
     var div = <div>123</div>;
@@ -328,9 +329,9 @@ describe('Component', function() {
   });
   it('instanceof', function() {
     var cmpn = new Component();
-    expect(cmpn).to.be.a(migi.Component);
-    expect(cmpn).to.be.a(migi.Element);
-    expect(cmpn).to.be.a(migi.Event);
+    expect(cmpn.__migiCP).to.be.a(migi.Component);
+    expect(cmpn.__migiEL).to.be.a(migi.Element);
+    expect(cmpn.__migiEV).to.be.a(migi.Event);
   });
   it('name', function() {
     var cmpn = new Component();
@@ -344,7 +345,7 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     expect(cmpn.$children.length).to.eql(0);
-    expect(cmpn.$virtualDom).to.be.a(migi.VirtualDom);
+    expect(cmpn.$virtualDom.__migiVD).to.be.a(migi.VirtualDom);
     expect(cmpn.$virtualDom.$name).to.eql('div');
     expect(cmpn.$virtualDom.$children.length).to.eql(1);
   });
@@ -352,7 +353,7 @@ describe('Component', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
     expect(cmpn.$children.length).to.eql(1);
-    expect(cmpn.$children[0]).to.be.a(migi.VirtualDom);
+    expect(cmpn.$children[0].__migiVD).to.be.a(migi.VirtualDom);
     expect(cmpn.$children[0].$name).to.eql('span');
   });
   it('$parent', function() {

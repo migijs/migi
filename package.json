@@ -33,14 +33,14 @@
   "dependencies": {
     "es5-shim": "*",
     "es6-shim": "*",
-    "lefty": "~0.2.0-2",
-    "jaw": "~0.2.0-1"
+    "lefty": "~0.2.0-3",
+    "jaw": "~0.2.0-2"
   },
   "devDependencies": {
     "blanket": "~1.1.7",
     "coveralls": "~2.11.2",
     "expect.js": "~0.3.1",
-    "gulp": "~3.8.11",
+    "gulp": "~3.9.0",
     "gulp-rename": "~1.2.2",
     "gulp-rimraf": "^0.1.1",
     "gulp-util": "~3.0.1",

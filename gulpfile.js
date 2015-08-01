@@ -62,16 +62,22 @@ gulp.task('watch', function() {
       .pipe(through2.obj(cb2))
       .pipe(gulp.dest(to2));
   });
-  gulp.watch('./tests/**/*.jsx', function(file) {
+  gulp.watch(['./tests/**/*.jsx', '!./tests/**/*-lie.jsx'], function(file) {
     gulp.src(file.path)
       .pipe(through2.obj(jsx))
+      .pipe(rename({extname:'.js'}))
+      .pipe(gulp.dest(path.dirname(file.path)));
+  });
+  gulp.watch('./tests/**/*-lie.jsx', function(file) {
+    gulp.src(file.path)
+      .pipe(through2.obj(jsx2))
       .pipe(rename({extname:'.js'}))
       .pipe(gulp.dest(path.dirname(file.path)));
   });
 });
 
 gulp.task('clean-jsx', function() {
-  gulp.src(['./tests/**/script.js', './tests/**/*lie.*'])
+  gulp.src(['./tests/**/script.js', './tests/**/*-lie.*', './tests/test*.js'])
     .pipe(rimraf());
 });
 
@@ -94,19 +100,6 @@ function jsx2(file, enc, cb) {
     });
   }
   content = lefty.parse(content, true, true);
-  content = 'migi.browser.lie=true;' + content;
-  file.contents = new Buffer(content);
-  cb(null, file);
-}
-function jsx3(file, enc, cb) {
-  var content = file.contents.toString('utf-8');
-  if(content.indexOf('`') > -1) {
-    content = content.replace(/`([^`]+)`/g, function($0, $1) {
-      return JSON.stringify(jaw.parse($1));
-    });
-  }
-  content = lefty.parse(content, true, true);
-  content = content.replace('describe', 'migi.browser.lie=true;describe');
   file.contents = new Buffer(content);
   cb(null, file);
 }
@@ -124,8 +117,14 @@ function test(file, enc, cb) {
 }
 
 gulp.task('build-test', ['clean-jsx'], function() {
-  gulp.src('./tests/**/*.jsx')
+  gulp.src(['./tests/**/*.jsx', '!./tests/**/*-lie.jsx'])
     .pipe(through2.obj(jsx))
+    .pipe(rename({
+      extname:'.js'
+    }))
+    .pipe(gulp.dest('./tests/'));
+  gulp.src('./tests/**/*-lie.jsx')
+    .pipe(through2.obj(jsx2))
     .pipe(rename({
       extname:'.js'
     }))
@@ -134,20 +133,6 @@ gulp.task('build-test', ['clean-jsx'], function() {
     .pipe(through2.obj(html))
     .pipe(rename({
       suffix: '-lie'
-    }))
-    .pipe(gulp.dest('./tests/'));
-  gulp.src(['./tests/**/*.jsx', '!./tests/testm/jsx'])
-    .pipe(through2.obj(jsx2))
-    .pipe(rename({
-      suffix: '-lie',
-      extname:'.js'
-    }))
-    .pipe(gulp.dest('./tests/'));
-  gulp.src('./tests/testm.jsx')
-    .pipe(through2.obj(jsx3))
-    .pipe(rename({
-      suffix: '-lie',
-      extname:'.js'
     }))
     .pipe(gulp.dest('./tests/'));
   gulp.src('./tests/**/test.js')

@@ -29,15 +29,13 @@ var bridgeOrigin = {};
       }
     });
 
+    self.on(Event.DATA, self.__onData);
+
     //ie8的对象识别hack
     if(browser.lie) {
-      this.__migiCp = true;
-      this.__migiNode = {
-        __gs: gs
-      };
+      self.__migiCP = this;
+      return self.__hackLie(Component, GS);
     }
-
-    self.on(Event.DATA, self.__onData);
   }
   //需要被子类覆盖
   //@abstract
@@ -60,7 +58,7 @@ var bridgeOrigin = {};
     var res = [];
     for(var i = 0, len = this.$children.length; i < len; i++) {
       var child = this.$children[i];
-      if(child instanceof Element) {
+      if(child instanceof Element || browser.lie && child && child.__migiEL) {
         if(child instanceof Component) {
           if(child.$name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
@@ -147,10 +145,13 @@ var bridgeOrigin = {};
     if(target == this) {
       throw new Error('can not bridge self: ' + self.$name);
     }
-    if(!(target instanceof EventBus) && !(target instanceof Component) && (browser.lie && !target.__migiCp)) {
+    if(!(target instanceof EventBus)
+      && !(target instanceof Component)
+      && (browser.lie && !target.__migiCP)) {
       throw new Error('can only bridge to EventBus/Component: ' + self.$name);
     }
-    self.on(self instanceof migi.CacheComponent ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
+    self.on(self instanceof migi.CacheComponent && browser.lie && self.__migiCC
+      ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
       if(origin != self.__brcb && origin != target.__brcb) {
         bridgeOrigin = {};
@@ -175,22 +176,22 @@ var bridgeOrigin = {};
     return this[k];
   }
 
-  var _7={};_7.$virtualDom={};_7.$virtualDom.get =function() {
-    return this.__virtualDom;
-  }
-  //@overwrite
-  _7.$element={};_7.$element.get =function() {
-    return this.$virtualDom ? this.$virtualDom.$element : null;
-  }
-  _7.$style={};_7.$style.get =function() {
-    return this.__style;
-  }
-  _7.$style.set =function(v) {
-    this.__style = v;
-  }
-  _7.$ref={};_7.$ref.get =function() {
-    return this.__ref;
-  }
+  //get $virtualDom() {
+  //  return this.__virtualDom;
+  //}
+  ////@overwrite
+  //get $element() {
+  //  return this.$virtualDom ? this.$virtualDom.$element : null;
+  //}
+  //get $style() {
+  //  return this.__style;
+  //}
+  //set $style(v) {
+  //  this.__style = v;
+  //}
+  //get $ref() {
+  //  return this.__ref;
+  //}
 
   //@overwrite
   Component.prototype.__onDom = function(fake) {
@@ -220,7 +221,12 @@ var bridgeOrigin = {};
       'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
       'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
       'touchmove', 'touchend'].forEach(function(name) {
-        self.$element.addEventListener(name, stopPropagation);
+        if(browser.lie && self.$element.attachEvent) {
+          self.$element.attachEvent('on' + name, stopPropagation);
+        }
+        else {
+          self.$element.addEventListener(name, stopPropagation);
+        }
       });
   }
   //@overwrite
@@ -229,10 +235,10 @@ var bridgeOrigin = {};
       this.$virtualDom.__onData(k);
     }
     this.$children.forEach(function(child) {
-      if(child instanceof Component) {
+      if(child instanceof Component || browser.lie && child && child.__migiCP) {
         child.emit(Event.DATA, k, caller);
       }
-      else if(child instanceof VirtualDom) {
+      else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
         child.__onData(k);
       }
     });
@@ -249,17 +255,17 @@ var bridgeOrigin = {};
         Component.fakeDom(item);
       });
     }
-    else if(child instanceof Component) {
+    else if(child instanceof Component || browser.lie && child && child.__migiCP) {
       child.emit(Event.DOM, true);
     }
-    else if(child instanceof VirtualDom) {
+    else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
       child.emit(Event.DOM, true);
     }
   }
-Object.keys(_7).forEach(function(k){Object.defineProperty(Component.prototype,k,_7[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
+Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
-//hack ie8，clone get/set in Element&Component
-var gs = {
+//hack ie8，clone get/set in Element
+var GS = {
   $element: {
     get: function() {
       return this.$virtualDom ? this.$virtualDom.$element : null;
@@ -272,27 +278,17 @@ var gs = {
     set: function(v) {
       this.__style = v;
     }
-  },
-  $top: {
-    get: function() {
-      if(!this.__top && this.$parent) {
-        if(this.$parent instanceof migi.Component) {
-          this.__top = this.$parent;
-        }
-        else {
-          this.__top = this.$parent.$top;
-        }
-      }
-      return this.__top;
-    }
   }
 };
-['name', 'props', 'children', 'ref', 'parent', 'virtualDom', 'uid', 'dom'].forEach(function(item) {
-  gs['$' + item] = {
+['virtualDom'].forEach(function(item) {
+  GS['$' + item] = {
     get: function() {
       return this['__' + item];
     }
   };
 });
+if(!browser.lie) {
+  Object.defineProperties(Component.prototype, GS);
+}
 
 exports["default"]=Component;});

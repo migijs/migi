@@ -29,12 +29,13 @@ class Element extends Event {
     this.__dom = false; //是否被添加到真实DOM标识
     this.__cache = {}; //缓存计算好的props
 
+    this.once(Event.DOM, this.__onDom);
+
     //ie8的对象识别hack
     if(browser.lie) {
-      this.__migiElem = true;
+      this.__migiEL = this;
+      this.__migiGS = GS;
     }
-
-    this.once(Event.DOM, this.__onDom);
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
@@ -65,38 +66,49 @@ class Element extends Event {
     }
   }
 
-  get $name() {
-    return this.__name;
-  }
-  get $props() {
-    return this.__props;
-  }
-  get $children() {
-    return this.__children;
-  }
-  get $parent() {
-    return this.__parent;
-  }
-  get $top() {
-    if(!this.__top && this.$parent) {
-      if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCp) {
-        this.__top = this.$parent;
-      }
-      else {
-        this.__top = this.$parent.$top;
-      }
+  __hackLie(cons, GS) {
+    this.__migiGS = util.smix({}, this.__migiGS, GS);
+    if(this.constructor == cons) {
+      var a = document.createElement('a');
+      this.__migiNode = a.__migiNode = a;
+      util.pmix(a, this);
+      Object.defineProperties(a, this.__migiGS);
+      return a;
     }
-    return this.__top;
   }
-  get $uid() {
-    return this.__uid;
-  }
-  get $element() {
-    return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
-  }
-  get $dom() {
-    return this.__dom;
-  }
+
+  //get $name() {
+  //  return this.__name;
+  //}
+  //get $props() {
+  //  return this.__props;
+  //}
+  //get $children() {
+  //  return this.__children;
+  //}
+  //get $parent() {
+  //  return this.__parent;
+  //}
+  //get $top() {
+  //  if(!this.__top && this.$parent) {
+  //    if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCP) {
+  //      this.__top = this.$parent;
+  //    }
+  //    else {
+  //      this.__top = this.$parent.$top;
+  //    }
+  //  }
+  //  return this.__top;
+  //}
+  //get $uid() {
+  //  return this.__uid;
+  //}
+  //get $element() {
+  //  return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
+  //}
+  //get $dom() {
+  //  return this.__dom;
+  //}
 
   $inTo(dom) {
     this.__clean();
@@ -140,9 +152,50 @@ class Element extends Event {
     dom.parentNode.removeChild(dom);
     this.emit(Event.DOM);
   }
+
   static __clean() {
     uid = 0;
   }
+}
+
+var GS = {
+  $top: {
+    get: function() {
+      if(!this.__top && this.$parent) {
+        if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCP) {
+          this.__top = this.$parent;
+        }
+        else {
+          this.__top = this.$parent.$top;
+        }
+      }
+      return this.__top;
+    }
+  },
+  $element: {
+    get: function() {
+      return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
+    }
+  },
+  $parent: {
+    get: function() {
+      var p = this.__parent;
+      if(browser.lie && p) {
+        return p.__migiNode;
+      }
+      return p;
+    }
+  }
+};
+['name', 'props', 'children', 'uid', 'dom'].forEach(function(item) {
+  GS['$' + item] = {
+    get: function() {
+      return this['__' + item];
+    }
+  };
+});
+if(!browser.lie) {
+  Object.defineProperties(Element.prototype, GS);
 }
 
 export default Element;

@@ -12,7 +12,7 @@ function clone(obj) {
   for(var i in obj) {
     if(obj.hasOwnProperty(i)) {
       var item = obj[i];
-      if(item instanceof Element || browser.lie && item && item.__migiElem) {
+      if(item instanceof Element || browser.lie && item && item.__migiEL) {
         o[i] = item;
       }
       else if(util.isDate(item)) {
@@ -38,7 +38,7 @@ function isOrigin(o) {
 }
 function equal(a, b) {
   //vd常量
-  if(a instanceof Element || b instanceof Element || browser.lie && (a && a.__migiElem || b && b.__migiElem)) {
+  if(a instanceof Element || b instanceof Element || browser.lie && (a && a.__migiEL || b && b.__migiEL)) {
     return a == b;
   }
   if(isOrigin(a) || isOrigin(b)) {
@@ -88,7 +88,7 @@ function joinArray(arr, prop) {
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
-    else if(item instanceof Element || browser.lie && item && item.__migiElem) {
+    else if(item instanceof Element || browser.lie && item && item.__migiEL) {
       res += item.toString();
     }
     else if(item === void 0 || item === null) {
@@ -109,6 +109,9 @@ const UL = document.createElement('ul');
 const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
 const MENU = document.createElement('menu');
+const PROTECT = {
+  constructor: true
+};
 
 var util = {
   clone(obj) {
@@ -165,17 +168,23 @@ var util = {
     }
     return joinArray(arr, prop);
   },
+  //不包括原型链mix
   smix(target, ...data) {
     data.forEach(function(item) {
       util.pmix(target, item, true);
     });
+    return target;
   },
+  //包括原型链mix
   pmix(target, data, noProto) {
     for(var i in data) {
-      if(!noProto || data.hasOwnProperty(i)) {
-        target[i] = data[i];
+      if(!PROTECT.hasOwnProperty(i)) {
+        if(!noProto || data.hasOwnProperty(i)) {
+          target[i] = data[i];
+        }
       }
     }
+    return target;
   }
 };
 

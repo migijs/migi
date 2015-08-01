@@ -30,7 +30,7 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
     if(prop) {
       return util.encodeHtml(s, prop);
     }
-    return this.v instanceof Element || browser.lie && this.v && this.v.__migiElem ? s : util.encodeHtml(s, prop);
+    return this.v instanceof Element || browser.lie && this.v && this.v.__migiEL ? s : util.encodeHtml(s, prop);
   }
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);
