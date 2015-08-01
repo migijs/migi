@@ -410,26 +410,6 @@ var SPECIAL_PROP = {
     return res;
   }
 
-  //get $names() {
-  //  return this.__names || (this.__names = []);
-  //}
-  //set $style(v) {
-  //  var self = this;
-  //  self.__style = v;
-  //  if(self.$parent instanceof VirtualDom) {
-  //    self.__names = self.$parent.$names.slice();
-  //  }
-  //  else {
-  //    self.__names = [];
-  //  }
-  //  self.__names.push(self.$name);
-  //  self.$children.forEach(function(child) {
-  //    if(child instanceof VirtualDom) {
-  //      child.$style = v;
-  //    }
-  //  });
-  //}
-
   //@override
   VirtualDom.prototype.__onDom = function(fake) {
     Element.prototype.__onDom.call(this);

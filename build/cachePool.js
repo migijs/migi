@@ -1,10 +1,12 @@
+var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+
 var MAX = 4096;
 var cache = new Array(MAX);
 
 var pool = {
   index: 0,
   add: function(item) {
-    if(!item.__hasDes && this.index < MAX) {
+    if(!browser.lie && !item.__hasDes && this.index < MAX) {
       cache[this.index++] = item;
     }
   },

@@ -77,39 +77,6 @@ class Element extends Event {
     }
   }
 
-  //get $name() {
-  //  return this.__name;
-  //}
-  //get $props() {
-  //  return this.__props;
-  //}
-  //get $children() {
-  //  return this.__children;
-  //}
-  //get $parent() {
-  //  return this.__parent;
-  //}
-  //get $top() {
-  //  if(!this.__top && this.$parent) {
-  //    if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCP) {
-  //      this.__top = this.$parent;
-  //    }
-  //    else {
-  //      this.__top = this.$parent.$top;
-  //    }
-  //  }
-  //  return this.__top;
-  //}
-  //get $uid() {
-  //  return this.__uid;
-  //}
-  //get $element() {
-  //  return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
-  //}
-  //get $dom() {
-  //  return this.__dom;
-  //}
-
   $inTo(dom) {
     this.__clean();
     var s = this.toString();

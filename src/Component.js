@@ -176,23 +176,6 @@ class Component extends Element {
     return this[k];
   }
 
-  //get $virtualDom() {
-  //  return this.__virtualDom;
-  //}
-  ////@overwrite
-  //get $element() {
-  //  return this.$virtualDom ? this.$virtualDom.$element : null;
-  //}
-  //get $style() {
-  //  return this.__style;
-  //}
-  //set $style(v) {
-  //  this.__style = v;
-  //}
-  //get $ref() {
-  //  return this.__ref;
-  //}
-
   //@overwrite
   __onDom(fake) {
     super.__onDom();
@@ -212,7 +195,10 @@ class Component extends Element {
     function stopPropagation(e) {
       e = e || window.event;
       if(e.target != self.$element && e.srcElement != self.$element) {
-        e.stopPropagation();
+        if(browser.lie) {
+          e.cancelBubble = true;
+        }
+        e.stopPropagation && e.stopPropagation();
       }
     }
     //仅考虑用户事件，媒体等忽略
