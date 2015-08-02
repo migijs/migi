@@ -6,6 +6,11 @@ import browser from './browser';
 import EventBus from './EventBus';
 
 var bridgeOrigin = {};
+const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
+  'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
+  'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
+  'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
+  'touchmove', 'touchend'];
 
 class Component extends Element {
   constructor(props = {}, children = []) {
@@ -181,11 +186,12 @@ class Component extends Element {
     super.__onDom();
     var self = this;
     self.$virtualDom.emit(Event.DOM, fake);
-    self.$element.setAttribute('migi-name', this.$name);
+    var elem = self.$element;
+    elem.setAttribute('migi-name', self.$name);
     //无覆盖render时渲染标签的$children；有时渲染render的$children
     //标签的$children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
-    if(!fake && this.$children != this.$virtualDom.$children) {
-      Component.fakeDom(this.$children);
+    if(!fake && self.$children != self.$virtualDom.$children) {
+      Component.fakeDom(self.$children);
     }
     //指定允许冒泡
     if(self.$props.allowPropagation) {
@@ -194,7 +200,7 @@ class Component extends Element {
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
       e = e || window.event;
-      if(e.target != self.$element && e.srcElement != self.$element) {
+      if(e.target != elem && e.srcElement != elem) {
         if(browser.lie) {
           e.cancelBubble = true;
         }
@@ -202,16 +208,12 @@ class Component extends Element {
       }
     }
     //仅考虑用户事件，媒体等忽略
-    ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
-      'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
-      'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
-      'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
-      'touchmove', 'touchend'].forEach(function(name) {
-        if(browser.lie && self.$element.attachEvent) {
-          self.$element.attachEvent('on' + name, stopPropagation);
+    STOP.forEach(function(name) {
+        if(browser.lie && elem.attachEvent) {
+          elem.attachEvent('on' + name, stopPropagation);
         }
         else {
-          self.$element.addEventListener(name, stopPropagation);
+          elem.addEventListener(name, stopPropagation);
         }
       });
   }
@@ -232,6 +234,15 @@ class Component extends Element {
   __destroy() {
     this.emit(Event.DESTROY);
     this.__hash = {};
+    var elem = this.$element;
+    STOP.forEach(function(name) {
+      if(browser.lie && elem.attachEvent) {
+        elem.detachEvent('on' + name, stopPropagation);
+      }
+      else {
+        elem.removeEventListener(name, stopPropagation);
+      }
+    });
     return this.$virtualDom.__destroy();
   }
 

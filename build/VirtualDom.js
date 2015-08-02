@@ -330,26 +330,38 @@ var SPECIAL_PROP = {
       else {
         self.__listener[name] = cb;
       }
-      if(browser.lie && self.$element.attachEvent) {
-        self.$element.attachEvent('on' + name, cb);
+      var elem = self.$element;
+      if(browser.lie && elem.attachEvent) {
+        elem.attachEvent('on' + name, cb);
       }
       else {
-        self.$element.addEventListener(name, cb);
+        elem.addEventListener(name, cb);
       }
     }
   }
   VirtualDom.prototype.__removeListener = function() {
     var self = this;
     if(self.__listener) {
+      var elem = self.$element;
       Object.keys(self.__listener).forEach(function(name) {
         var item = self.__listener[name];
         if(Array.isArray(item)) {
           item.forEach(function(cb) {
-            self.$element.removeEventListener(name, cb);
+            if(browser.lie && elem.attachEvent) {
+              elem.detachEvent('on' + name, cb);
+            }
+            else {
+              elem.removeEventListener(name, cb);
+            }
           });
         }
         else {
-          self.$element.removeEventListener(name, item);
+          if(browser.lie && elem.attachEvent) {
+            elem.detachEvent('on' + name, item);
+          }
+          else {
+            elem.removeEventListener(name, item);
+          }
         }
       });
     }
