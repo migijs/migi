@@ -20,7 +20,7 @@ function replaceWith(elem, cns, index, vd, isText) {
   if(isText) {
     var s = vd === void 0 || vd === null ? '' : vd.toString();
     if(s) {
-      var node = util.NODE;
+      var node = browser.NODE;
       node.innerHTML = util.encodeHtml(s);
       target = node.firstChild;
     }
@@ -49,7 +49,7 @@ function replaceWith(elem, cns, index, vd, isText) {
         elem.removeChild(cns[index]);
       }
       else {
-        var node = util.getParent(vd.$name);
+        var node = browser.getParent(vd.$name);
         node.innerHTML = target;
         elem.replaceChild(node.firstChild, cns[index]);
       }
@@ -63,7 +63,7 @@ function insertAt(elem, cns, index, vd, isText) {
   if(isText) {
     var s = vd === void 0 || vd === null ? '' : vd.toString();
     if(s) {
-      var node = util.NODE;
+      var node = browser.NODE;
       node.innerHTML = util.encodeHtml(s);
       target = node.firstChild;
     }
@@ -90,7 +90,7 @@ function insertAt(elem, cns, index, vd, isText) {
         cns[index].insertAdjacentHTML('beforebegin', target);
       }
       else {
-        var node = util.getParent(vd.$name);
+        var node = browser.getParent(vd.$name);
         node.innerHTML = target;
         elem.insertBefore(node.firstChild, cns[index]);
       }

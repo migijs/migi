@@ -94,7 +94,7 @@ exports.update=update;function update(item, children, elem) {
     //ie8的用nodeValue替代
     //有实体字符时也不能用textContent
     if(/&([a-z]+|#\d+);/i.test(res)) {
-      var node = util.NODE;
+      var node = browser.NODE;
       node.innerHTML = util.encodeHtml(res);
       elem.replaceChild(node.firstChild, textNode);
     }
