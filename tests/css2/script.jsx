@@ -1,4 +1,5 @@
 var $style = `
+  div{margin:0px}
   div:hover[a="1"]{margin:1px}
 `;
 
