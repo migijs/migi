@@ -331,7 +331,36 @@ var SPECIAL_PROP = {
         self.__listener[name] = cb;
       }
       var elem = self.$element;
-      if(browser.lie && elem.attachEvent) {
+      if(name == 'tap') {
+        if(!browser.lie && !elem.attachEvent) {
+          var x1 = 0;
+          var y1 = 0;
+          var x2 = 0;
+          var y2 = 0;
+          self.__addListener('touchstart', function(e) {
+            //多指不视作tap事件
+            if(e.touches.length != 1) {
+              return;
+            }
+            var touch = e.touches[0];
+            x1 = x2 = touch.pageX;
+            y1 = y2 = touch.pageY;
+          });
+          self.__addListener('touchmove', function(e) {
+            var touch = e.touches[0];
+            x2 = touch.pageX;
+            y2 = touch.pageY;
+          });
+          self.__addListener('touchend', function(e) {
+            //>30px不视作tap事件
+            if(x2 && Math.abs(x1 - x2) < 30
+              || y2 && Math.abs(y1 - y2) < 30) {
+              cb(e);
+            }
+          });
+        }
+      }
+      else if(browser.lie && elem.attachEvent) {
         elem.attachEvent('on' + name, cb);
       }
       else {
