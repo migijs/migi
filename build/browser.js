@@ -1,3 +1,4 @@
+var NODE = document.createElement('div');
 var TABLE = document.createElement('table');
 var TBODY = document.createElement('tbody');
 var TR = document.createElement('tr');
@@ -8,7 +9,7 @@ var MENU = document.createElement('menu');
 
 var o = {
   lie: !+'\v1',
-  NODE: document.createElement('div'),
+  NODE: NODE,
   getParent:function(name) {
     switch(name) {
       case 'td':

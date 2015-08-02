@@ -234,15 +234,17 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   Component.prototype.__destroy = function() {
     this.emit(Event.DESTROY);
     this.__hash = {};
-    var elem = this.$element;
-    STOP.forEach(function(name) {
-      if(browser.lie && elem.attachEvent) {
-        elem.detachEvent('on' + name, stopPropagation);
-      }
-      else {
-        elem.removeEventListener(name, stopPropagation);
-      }
-    });
+    if(!this.$props.allowPropagation) {
+      var elem = this.$element;
+      STOP.forEach(function(name) {
+        if(browser.lie && elem.attachEvent) {
+          elem.detachEvent('on' + name, stopPropagation);
+        }
+        else {
+          elem.removeEventListener(name, stopPropagation);
+        }
+      });
+    }
     return this.$virtualDom.__destroy();
   }
 
