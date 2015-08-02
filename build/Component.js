@@ -237,7 +237,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     var self = this;
     self.emit(Event.DESTROY);
     self.__hash = {};
-    if(!self.$props.allowPropagation) {
+    if(self.__stop) {
       var elem = self.$element;
       STOP.forEach(function(name) {
         if(browser.lie && elem.attachEvent) {
