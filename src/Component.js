@@ -21,6 +21,7 @@ class Component extends Element {
 
     self.__virtualDom = null; //根节点vd引用
     self.__ref = {}; //以ref为attr的vd快速访问引用
+    self.__stop = null; //停止冒泡的fn引用
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -207,6 +208,7 @@ class Component extends Element {
         e.stopPropagation && e.stopPropagation();
       }
     }
+    self.__stop = stopPropagation;
     //仅考虑用户事件，媒体等忽略
     STOP.forEach(function(name) {
         if(browser.lie && elem.attachEvent) {
@@ -232,20 +234,21 @@ class Component extends Element {
     });
   }
   __destroy() {
-    this.emit(Event.DESTROY);
-    this.__hash = {};
-    if(!this.$props.allowPropagation) {
-      var elem = this.$element;
+    var self = this;
+    self.emit(Event.DESTROY);
+    self.__hash = {};
+    if(!self.$props.allowPropagation) {
+      var elem = self.$element;
       STOP.forEach(function(name) {
         if(browser.lie && elem.attachEvent) {
-          elem.detachEvent('on' + name, stopPropagation);
+          elem.detachEvent('on' + name, self.__stop);
         }
         else {
-          elem.removeEventListener(name, stopPropagation);
+          elem.removeEventListener(name, self.__stop);
         }
       });
     }
-    return this.$virtualDom.__destroy();
+    return self.$virtualDom.__destroy();
   }
 
   static fakeDom(child) {
