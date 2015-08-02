@@ -30,7 +30,7 @@ function match(names, classes, ids, style, virtualDom, first) {
 //从底部往上匹配，即.a .b这样的选择器是.b->.a逆序对比
 //过程中只要不匹配就跳出，i从最大到0
 function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, first) {
-  history[cur] = true;
+  var item2;history[cur] = true;
   //id、class、name可能单个或组合出现，每种都要匹配
   var combo = [];
   combo.push(names[i]);
@@ -184,121 +184,129 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
           });
         });
       }
-      //有:伪类时，检查是否满足伪类情况，全部满足后追加样式
-      if(item.hasOwnProperty('_:')) {
-        var item2 = item['_:'];
-        item2.forEach(function(pseudoItem) {
-          var pseudos = pseudoItem[0];
-          var isMatch = true;
-          outer:
-          for(var j = 0, len = pseudos.length; j < len; j++) {
-            switch(pseudos[j]) {
-              case 'hover':
-                if(!virtualDom.__hover) {
-                  isMatch = false;
-                  break outer;
+      //:和[可能同时存在，也可能分开
+      if(item.hasOwnProperty('_:') || item.hasOwnProperty('_[')) {!function(){
+        item2;
+        //有:伪类时，检查是否满足伪类情况，全部满足后追加样式
+        if(item.hasOwnProperty('_:')) {
+          item2 = item['_:'];
+          item2.forEach(function(pseudoItem) {
+            var pseudos = pseudoItem[0];
+            var isMatch = true;
+            outer:
+              for(var j = 0, len = pseudos.length; j < len; j++) {
+                switch(pseudos[j]) {
+                  case 'hover':
+                    if(!virtualDom.__hover) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'active':
+                    if(!virtualDom.__active) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'first-child':
+                    if(!virtualDom.$isFirst()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'last-child':
+                    if(!virtualDom.$isLast()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  //TODO:其它伪类
+                  default:
+                    isMatch = false;
+                    break;
                 }
-                break;
-              case 'active':
-                if(!virtualDom.__active) {
-                  isMatch = false;
-                  break outer;
-                }
-                break;
-              case 'first-child':
-                if(!virtualDom.$isFirst()) {
-                  isMatch = false;
-                  break outer;
-                }
-                break;
-              case 'last-child':
-                if(!virtualDom.$isLast()) {
-                  isMatch = false;
-                  break outer;
-                }
-                break;
-              //TODO:其它伪类
-              default:
-                isMatch = false;
-                break;
-            }
-          }
-          if(isMatch) {
-            item2 = pseudoItem[1];
-            //同普通匹配一样
-            if(i) {
-              matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
-            }
-            if(item2.hasOwnProperty('_v')) {
-              dealStyle(res, item2);
-            }
-          }
-        });
-      }
-      //有:[属性时，检查是否满足伪类情况，全部满足后追加样式
-      if(item.hasOwnProperty('_[')) {
-        var item2 = item['_['];
-        item2.forEach(function(attrItem) {
-          var attrs = attrItem[0];
-          var isMatch = true;
-          outer:
-          for(var j = 0, len = attrs.length; j < len; j++) {
-            var attr = attrs[j];
-            //[attr]形式，只要有属性即可
-            if(attr.length == 1) {
-              if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
-                isMatch = false;
-                break;
+              }
+            if(isMatch) {
+              item2 = pseudoItem[1];
+              //同普通匹配一样
+              if(i) {
+                matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
+              }
+              if(item2.hasOwnProperty('_v')) {
+                dealStyle(res, item2);
               }
             }
-            //[attr=xxx]形式，需比较值
-            else {
-              var p = virtualDom.__cache[attr[0]];
-              if(p === void 0) {
-                isMatch = false;
-                break outer;
+          });
+        }
+        //有:[属性时，检查是否满足伪类情况，全部满足后追加样式
+        function inAttr(item) {
+          if(item && item.hasOwnProperty('_[')) {
+            var item2 = item['_['];
+            item2.forEach(function(attrItem) {
+              var attrs = attrItem[0];
+              var isMatch = true;
+              outer:
+                for(var j = 0, len = attrs.length; j < len; j++) {
+                  var attr = attrs[j];
+                  //[attr]形式，只要有属性即可
+                  if(attr.length == 1) {
+                    if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
+                      isMatch = false;
+                      break;
+                    }
+                  }
+                  //[attr=xxx]形式，需比较值
+                  else {
+                    var p = virtualDom.__cache[attr[0]];
+                    if(p === void 0) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    var v = attr[2];
+                    switch(attr[1]) {
+                      case '=':
+                        isMatch = p == v;
+                        break;
+                      case '^=':
+                        isMatch = p.indexOf(v) == 0;
+                        break;
+                      case '$=':
+                        isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
+                        break;
+                      case '~=':
+                        var reg = new RegExp('\\b' + v + '\\b');
+                        isMatch = reg.test(p);
+                        break;
+                      case '*=':
+                        isMatch = p.indexOf(v) > -1;
+                        break;
+                      case '|=':
+                        isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
+                        break;
+                      default:
+                        isMatch = false;
+                        break outer;
+                    }
+                    if(!isMatch) {
+                      break outer;
+                    }
+                  }
+                }
+              if(isMatch) {
+                item2 = attrItem[1];
+                //同普通匹配一样
+                if(i) {
+                  matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
+                }
+                if(item2.hasOwnProperty('_v')) {
+                  dealStyle(res, item2);
+                }
               }
-              var v = attr[2];
-              switch(attr[1]) {
-                case '=':
-                  isMatch = p == v;
-                  break;
-                case '^=':
-                  isMatch = p.indexOf(v) == 0;
-                  break;
-                case '$=':
-                  isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
-                  break;
-                case '~=':
-                  var reg = new RegExp('\\b' + v + '\\b');
-                  isMatch = reg.test(p);
-                  break;
-                case '*=':
-                  isMatch = p.indexOf(v) > -1;
-                  break;
-                case '|=':
-                  isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
-                  break;
-                default:
-                  isMatch = false;
-                  break outer;
-              }
-              if(!isMatch) {
-                break outer;
-              }
-            }
+            });
           }
-          if(isMatch) {
-            item2 = attrItem[1];
-            //同普通匹配一样
-            if(i) {
-              matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
-            }
-            if(item2.hasOwnProperty('_v')) {
-              dealStyle(res, item2);
-            }
-          }
-        });
+        }
+        inAttr(item);
+        inAttr(item2);}();
       }
     }
   }
