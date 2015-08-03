@@ -393,6 +393,10 @@ var SPECIAL_PROP = {
         }
         else {
           if(browser.lie && elem.attachEvent) {
+            //ie8没有input
+            if(name == 'input') {
+              name = 'keyup';
+            }
             elem.detachEvent('on' + name, item);
           }
           else {
