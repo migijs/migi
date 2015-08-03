@@ -241,10 +241,11 @@ var SPECIAL_PROP = {
         var item = self.$props.value;
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
-            function cb() {
-              item.setV(this.value);
+            function cb(e) {
+              var context = browser.lie && this == window ? e.srcElement : this;
+              item.setV(context.value);
               var key = item.k;
-              item.context[key] = this.value;
+              item.context[key] = context.value;
             }
             var type = self.__cache.type;
             if(type === void 0 || type === null) {
@@ -280,10 +281,11 @@ var SPECIAL_PROP = {
         var item = self.$props.value;
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
-            function cb() {
-              item.setV(this.value);
+            function cb(e) {
+              var context = browser.lie && this == window ? e.srcElement : this;
+              item.setV(context.value);
               var key = item.k;
-              item.context[key] = this.value;
+              item.context[key] = context.value;
             }
             self.__addListener('change', cb);
           });
@@ -298,9 +300,10 @@ var SPECIAL_PROP = {
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              child.setV(this.value);
+              var context = browser.lie && this == window ? e.srcElement : this;
+              child.setV(context.value);
               var key = child.k;
-              child.context[key] = this.value;
+              child.context[key] = context.value;
             }
             self.__addListener(['input', 'paste', 'cut'], cb);
           });
@@ -361,6 +364,10 @@ var SPECIAL_PROP = {
         }
       }
       else if(browser.lie && elem.attachEvent) {
+        //ie8没有input
+        if(name == 'input') {
+          name = 'keyup';
+        }
         elem.attachEvent('on' + name, cb);
       }
       else {
