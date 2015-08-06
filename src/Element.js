@@ -66,17 +66,6 @@ class Element extends Event {
     }
   }
 
-  __hackLie(cons, GS) {
-    this.__migiGS = util.smix({}, this.__migiGS, GS);
-    if(this.constructor == cons) {
-      var a = document.createElement('a');
-      this.__migiNode = a.__migiNode = a;
-      util.pmix(a, this);
-      Object.defineProperties(a, this.__migiGS);
-      return a;
-    }
-  }
-
   $inTo(dom) {
     this.__clean();
     var s = this.toString();

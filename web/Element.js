@@ -66,17 +66,6 @@ function getDom(dom) {
     }
   }
 
-  Element.prototype.__hackLie = function(cons, GS) {
-    this.__migiGS = util.smix({}, this.__migiGS, GS);
-    if(this.constructor == cons) {
-      var a = document.createElement('a');
-      this.__migiNode = a.__migiNode = a;
-      util.pmix(a, this);
-      Object.defineProperties(a, this.__migiGS);
-      return a;
-    }
-  }
-
   Element.prototype.$inTo = function(dom) {
     this.__clean();
     var s = this.toString();

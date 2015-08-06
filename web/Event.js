@@ -89,6 +89,18 @@ define(function(require, exports, module){var browser=function(){var _0=require(
     }
     return this;
   }
+
+  Event.prototype.__hackLie = function(cons, GS) {
+    this.__migiGS = util.smix({}, this.__migiGS, GS);
+    if(this.constructor == cons) {
+      var a = document.createElement('a');
+      this.__migiNode = a.__migiNode = a;
+      util.pmix(a, this);
+      Object.defineProperties(a, this.__migiGS);
+      return a;
+    }
+  }
+
   Event.mix=function(obj) {
     obj=[].slice.call(arguments, 0);obj.forEach(function(o) {
       var event = new Event();
