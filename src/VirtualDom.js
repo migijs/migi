@@ -637,6 +637,9 @@ class VirtualDom extends Element {
           domDiff.diff(this.$element, ov, child.v, ranges, option, history);
         }
       }
+      else if(option.first) {
+        range.record(history, option);
+      }
     }
     //递归通知，增加索引
     else if(child instanceof Element || browser.lie && child && child.__migiEL) {
