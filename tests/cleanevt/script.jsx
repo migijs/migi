@@ -13,7 +13,7 @@ class Component extends migi.Component {
     this._a = v;
   }
   click(e) {
-    this.a = <span>222</span>;
+    this.a = <span ref="span">222</span>;
   }
   render() {
     return <div>

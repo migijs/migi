@@ -13,10 +13,8 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'touchmove', 'touchend'];
 
 class Component extends Element {
-  constructor(props = {}, children = []) {
+  constructor(name, props = {}, children = []) {
     var self = this;
-    var name = self.constructor.toString();
-    name = /^function\s+([\w$]+)/.exec(name)[1];
     super(name, props, children);
 
     self.__virtualDom = null; //根节点vd引用

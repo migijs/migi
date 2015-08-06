@@ -20,8 +20,8 @@ var migi = {
     }
     return element;
   },
-  createCp(name, props, children) {
-    return new name(props, children);
+  createCp(name, cp, props, children) {
+    return new cp(name, props, children);
   },
   createVd(name, props, children) {
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
