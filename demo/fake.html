@@ -17,10 +17,10 @@
     constructor(...data) {
       super(...data);
       this.on(migi.Event.DOM, function() {
-        console.log(this.$find('span'));
-        console.log(this.$findAll('span'));
-        console.log(this.$findChild('span'));
-        console.log(this.$findChildren('span'));
+        console.log(this.find('span'));
+        console.log(this.findAll('span'));
+        console.log(this.findChild('span'));
+        console.log(this.findChildren('span'));
       });
     }
     render() {

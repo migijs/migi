@@ -50,8 +50,8 @@
   class Switch extends migi.Component {
     constructor(...data) {
       super(...data);
-      this._state = !!this.$props.state;
-      this.$style = jaw.parse(style);
+      this._state = !!this.props.state;
+      this.style = jaw.parse(style);
     }
     get state() {
       return this._state;

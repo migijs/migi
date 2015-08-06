@@ -90,7 +90,7 @@
     }
     request() {
       var self = this;
-      var url = self.$props.url;
+      var url = self.props.url;
       $.getJSON(url, function(data) {
         self.emit('success', data);
       });
@@ -106,11 +106,11 @@
       self._value = '';
       self._show = false;
       self.on(migi.Event.DOM, function() {
-        self.$findChild('Ajax').on('success', function(data) {
+        self.findChild('Ajax').on('success', function(data) {
           self.list = data;
         });
         window.addEventListener('click', function(e) {
-          if(e.target != self.$element) {
+          if(e.target != self.element) {
             self.show = false;
           }
         });
@@ -134,11 +134,11 @@
     set show(v) {
       this._show = v;
       if(v) {
-        var cur = this.$element.querySelector('.cur');
+        var cur = this.element.querySelector('.cur');
         if(cur) {
           cur.className = '';
         }
-        cur = this.$element.querySelector('li[title="' + this.value + '"]');
+        cur = this.element.querySelector('li[title="' + this.value + '"]');
         if(cur) {
           cur.className = 'cur';
         }
@@ -158,7 +158,7 @@
     }
     handlerOver(e) {
       if(e.target.tagName == 'LI' && e.target.className != 'cur') {
-        var cur = this.$element.querySelector('.cur');
+        var cur = this.element.querySelector('.cur');
         if(cur) {
           cur.className = '';
         }

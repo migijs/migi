@@ -16,7 +16,7 @@
   class Component extends migi.Component {
     constructor(...data) {
       super(...data);
-      this.$('v', 1);
+      this.$.v = 1;
     }
     get v() {
       return this._v;
