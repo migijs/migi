@@ -19,8 +19,8 @@ class Component extends migi.Component {
     this._list = v;
   }
   record() {
-    var strong = this.$element.querySelector('strong');
-    strong.innerHTML = this.$element.querySelector('div').childNodes.length;
+    var strong = this.element.querySelector('strong');
+    strong.innerHTML = this.element.querySelector('div').childNodes.length;
   }
   add() {
     switch(this.i++) {

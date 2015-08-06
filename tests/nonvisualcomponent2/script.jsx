@@ -7,7 +7,7 @@ class MyComponent extends migi.Component {
   constructor(...data) {
     super(...data);
     this.on(migi.Event.DOM, function() {
-      this.$element.querySelector('p').innerHTML = this.$element.childNodes.length;
+      this.element.querySelector('p').innerHTML = this.element.childNodes.length;
     });
   }
   render() {

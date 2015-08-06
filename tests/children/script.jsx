@@ -6,7 +6,7 @@ class NotesList extends migi.Component {
     return <ol>
       <li>first</li>
       {
-        this.$children.map(function(child) {
+        this.children.map(function(child) {
           return <li>{child}</li>;
         })
       }

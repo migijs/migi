@@ -3,7 +3,7 @@ class MyComponent extends migi.Component {
     super(...data);
   }
   handleClick() {
-    this.$element.querySelector('[ref]').value = '1';
+    this.element.querySelector('[ref]').value = '1';
   }
   render() {
     return (

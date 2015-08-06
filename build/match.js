@@ -91,12 +91,12 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
       var item = style[k];
       //_d记录着深度，没有深度（为0）不记录即不存在_d跳出
       if(i) {
-        matchSel(i - 1, names, classes, ids, item, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
+        matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
         //多层级时需递归所有层级组合，如<div><p><span>对应div span{}的样式时，并非一一对应
         for(var l = i - 2; l >= 0; l--) {
           var key = cur + ',' + l + ':' + j;
           if(!history.hasOwnProperty(key)) {
-            matchSel(l, names, classes, ids, item, virtualDom.$parent, res, key, history);
+            matchSel(l, names, classes, ids, item, virtualDom.parent, res, key, history);
           }
         }
       }
@@ -108,26 +108,26 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
       if(first && item.hasOwnProperty('_:')) {
         item['_:'].forEach(function(pseudoItem) {
           pseudoItem[0].forEach(function(pseudo) {
-            var $elem = virtualDom.$element;
+            var elem = virtualDom.element;
             switch(pseudo) {
               case 'hover':
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && $elem.attachEvent) {
-                    virtualDom.$element.attachEvent('onmouseenter', function(e) {
+                  if(browser.lie && elem.attachEvent) {
+                    virtualDom.element.attachEvent('onmouseenter', function(e) {
                       virtualDom.__hover = true;
                       virtualDom.__updateStyle();
                     });
-                    virtualDom.$element.attachEvent('onmouseleave', function(e) {
+                    virtualDom.element.attachEvent('onmouseleave', function(e) {
                       virtualDom.__hover = false;
                       virtualDom.__updateStyle();
                     });
                   }
                   else {
-                    virtualDom.$element.addEventListener('mouseenter', function(e) {
+                    virtualDom.element.addEventListener('mouseenter', function(e) {
                       virtualDom.__hover = true;
                       virtualDom.__updateStyle();
                     });
-                    virtualDom.$element.addEventListener('mouseleave', function(e) {
+                    virtualDom.element.addEventListener('mouseleave', function(e) {
                       virtualDom.__hover = false;
                       virtualDom.__updateStyle();
                     });
@@ -136,8 +136,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                 break;
               case 'active':
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && $elem.attachEvent) {
-                    virtualDom.$element.attachEvent('onmousedown', function(e) {
+                  if(browser.lie && elem.attachEvent) {
+                    virtualDom.element.attachEvent('onmousedown', function(e) {
                       virtualDom.__active = true;
                       virtualDom.__updateStyle();
                     });
@@ -158,7 +158,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                     });
                   }
                   else {
-                    virtualDom.$element.addEventListener('mousedown', function(e) {
+                    virtualDom.element.addEventListener('mousedown', function(e) {
                       virtualDom.__active = true;
                       virtualDom.__updateStyle();
                     });
@@ -209,13 +209,13 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                     }
                     break;
                   case 'first-child':
-                    if(!virtualDom.$isFirst()) {
+                    if(!virtualDom.isFirst()) {
                       isMatch = false;
                       break outer;
                     }
                     break;
                   case 'last-child':
-                    if(!virtualDom.$isLast()) {
+                    if(!virtualDom.isLast()) {
                       isMatch = false;
                       break outer;
                     }
@@ -230,7 +230,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
               item2 = pseudoItem[1];
               //同普通匹配一样
               if(i) {
-                matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
+                matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
               }
               if(item2.hasOwnProperty('_v')) {
                 dealStyle(res, item2);
@@ -296,7 +296,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                 item2 = attrItem[1];
                 //同普通匹配一样
                 if(i) {
-                  matchSel(i - 1, names, classes, ids, item2, virtualDom.$parent, res, cur + ',' + (i - 1) + ':' + j, history);
+                  matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, cur + ',' + (i - 1) + ':' + j, history);
                 }
                 if(item2.hasOwnProperty('_v')) {
                   dealStyle(res, item2);

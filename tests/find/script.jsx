@@ -6,9 +6,9 @@ var vd = migi.render(
   '#test'
 );
 
-var spans = vd.$findAll('span');
+var spans = vd.findAll('span');
 
-document.querySelector('#resvd').innerHTML = spans[0] == vd.$find('span');
+document.querySelector('#resvd').innerHTML = spans[0] == vd.find('span');
 document.querySelector('#res1').innerHTML = spans[0].toString();
 document.querySelector('#res2').innerHTML = spans[1].toString();
 
@@ -29,8 +29,8 @@ var component = migi.render(
   '#test2'
 );
 
-var ps = component.$findAll('p');
+var ps = component.findAll('p');
 
-document.querySelector('#rescp').innerHTML = ps[0] == component.$find('p');
+document.querySelector('#rescp').innerHTML = ps[0] == component.find('p');
 document.querySelector('#res3').innerHTML = ps[0].toString();
 document.querySelector('#res4').innerHTML = ps[1].toString();

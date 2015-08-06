@@ -24,7 +24,7 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
   //@overwrite
   NonVisualComponent.prototype.__onDom = function() {
     this.__dom = true;
-    Component.fakeDom(this.$children);
+    Component.fakeDom(this.children);
   }
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 

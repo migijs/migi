@@ -11,10 +11,10 @@ class Component extends migi.Component {
     this._data = v;
   }
   record() {
-    this.$element.querySelector('[ref]').innerHTML = '^'
-      + this.$element.querySelector('div').innerHTML.replace(/</g, '&lt;')
+    this.element.querySelector('[ref]').innerHTML = '^'
+      + this.element.querySelector('div').innerHTML.replace(/</g, '&lt;')
       + '$'
-      + this.$element.querySelector('div').childNodes.length;
+      + this.element.querySelector('div').childNodes.length;
   }
   click() {
     switch(this.i++) {

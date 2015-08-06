@@ -14,8 +14,8 @@ class Component extends migi.Component {
     this._list = _list;
   }
   record() {
-    var strong = this.$element.querySelector('strong');
-    var lis = this.$element.querySelectorAll('li');
+    var strong = this.element.querySelector('strong');
+    var lis = this.element.querySelectorAll('li');
     var s = '';
     for(var i = 0, len = lis.length; i < len; i++) {
       s += lis[i].childNodes.length + ',';

@@ -10,7 +10,7 @@ class NV extends migi.NonVisualComponent {
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.$findChild(NV).on('dom', function(fake) {
+    this.findChild(NV).on('dom', function(fake) {
       var div = document.createElement('div');
       div.id = 'fake1';
       div.innerHTML = fake;
@@ -29,7 +29,7 @@ migi.render(
 class Component2 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.$findChild(NV).on('dom', function(fake) {
+    this.findChild(NV).on('dom', function(fake) {
       var div = document.createElement('div');
       div.id = 'fake2';
       div.innerHTML = fake;

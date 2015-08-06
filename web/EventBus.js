@@ -43,7 +43,7 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
       }
     }
   }
-  EventBus.prototype.$bridge = function(target, datas) {
+  EventBus.prototype.bridge = function(target, datas) {
     var self = this;
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
@@ -53,8 +53,8 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
       });
     });
   }
-  EventBus.prototype.$bridgeTo = function(target, datas) {
-    target.$bridge(this, datas);
+  EventBus.prototype.bridgeTo = function(target, datas) {
+    target.bridge(this, datas);
   }
 Object.keys(Event).forEach(function(k){EventBus[k]=Event[k]});
 

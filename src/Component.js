@@ -44,27 +44,27 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom('div', this.$props, this.$children);
+    return new VirtualDom('div', this.children, this.children);
   }
   //@override
   toString() {
     this.__virtualDom = this.render();
-    this.$virtualDom.__parent = this;
+    this.virtualDom.__parent = this;
     if(this.__style) {
-      this.$virtualDom.$style = this.__style;
+      this.virtualDom.style = this.__style;
     }
-    return this.$virtualDom.toString();
+    return this.virtualDom.toString();
   }
-  $findChild(name) {
-    return this.$findChildren(name, true)[0];
+  findChild(name) {
+    return this.findChildren(name, true)[0];
   }
-  $findChildren(name, first) {
+  findChildren(name, first) {
     var res = [];
-    for(var i = 0, len = this.$children.length; i < len; i++) {
-      var child = this.$children[i];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
       if(child instanceof Element || browser.lie && child && child.__migiEL) {
         if(child instanceof Component) {
-          if(child.$name == name || util.isFunction(name) && child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
@@ -72,13 +72,13 @@ class Component extends Element {
           }
         }
         else {
-          if(child.$name == name || util.isFunction(name) && child instanceof name) {
+          if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
             if(first) {
               break;
             }
           }
-          res = res.concat(child.$findAll(name));
+          res = res.concat(child.findAll(name));
           if(first && res.length) {
             break;
           }
@@ -87,18 +87,18 @@ class Component extends Element {
     }
     return res;
   }
-  $find(name) {
-    return this.$findAll(name, true)[0];
+  find(name) {
+    return this.findAll(name, true)[0];
   }
-  $findAll(name, first) {
-    return this.$virtualDom.$findAll(name, first);
+  findAll(name, first) {
+    return this.virtualDom.findAll(name, first);
   }
   __brcb(target, keys, datas) {
     //对比来源uid是否出现过，防止闭环死循环
-    if(bridgeOrigin.hasOwnProperty(target.$uid)) {
+    if(bridgeOrigin.hasOwnProperty(target.uid)) {
       return;
     }
-    bridgeOrigin[target.$uid] = true;
+    bridgeOrigin[target.uid] = true;
     //变更时设置对方CacheComponent不更新，防止闭环
     target.__flag = true;
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
@@ -144,56 +144,44 @@ class Component extends Element {
     //打开开关
     target.__flag = false;
   }
-  $bridge(target, datas) {
+  bridge(target, datas) {
     var self = this;
     if(target == this) {
-      throw new Error('can not bridge self: ' + self.$name);
+      throw new Error('can not bridge self: ' + self.name);
     }
     if(!(target instanceof EventBus)
       && !(target instanceof Component)
       && (browser.lie && !target.__migiCP)) {
-      throw new Error('can only bridge to EventBus/Component: ' + self.$name);
+      throw new Error('can only bridge to EventBus/Component: ' + self.name);
     }
     self.on(self instanceof migi.CacheComponent && browser.lie && self.__migiCC
       ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
       //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
       if(origin != self.__brcb && origin != target.__brcb) {
         bridgeOrigin = {};
-        bridgeOrigin[self.$uid] = true;
+        bridgeOrigin[self.uid] = true;
       }
       self.__brcb(target, keys, datas);
     });
   }
-  $bridgeTo(target, datas) {
-    target.$bridge(this, datas);
-  }
-  $(k, v) {
-    if(browser.lie && this.__migiNode == this) {
-      if(arguments.length > 1) {
-        this.__migiNode[k] = v;
-      }
-      return this.__migiNode[k];
-    }
-    if(arguments.length > 1) {
-      this[k] = v;
-    }
-    return this[k];
+  bridgeTo(target, datas) {
+    target.bridge(this, datas);
   }
 
   //@overwrite
   __onDom(fake) {
     super.__onDom();
     var self = this;
-    self.$virtualDom.emit(Event.DOM, fake);
-    var elem = self.$element;
-    elem.setAttribute('migi-name', self.$name);
-    //无覆盖render时渲染标签的$children；有时渲染render的$children
-    //标签的$children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
-    if(!fake && self.$children != self.$virtualDom.$children) {
-      Component.fakeDom(self.$children);
+    self.virtualDom.emit(Event.DOM, fake);
+    var elem = self.element;
+    elem.setAttribute('migi-name', self.name);
+    //无覆盖render时渲染标签的children；有时渲染render的children
+    //标签的children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
+    if(!fake && self.children != self.virtualDom.children) {
+      Component.fakeDom(self.children);
     }
     //指定允许冒泡
-    if(self.$props.allowPropagation) {
+    if(self.props.allowPropagation) {
       return;
     }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -219,10 +207,10 @@ class Component extends Element {
   }
   //@overwrite
   __onData(k, caller) {
-    if(this.$virtualDom) {
-      this.$virtualDom.__onData(k);
+    if(this.virtualDom) {
+      this.virtualDom.__onData(k);
     }
-    this.$children.forEach(function(child) {
+    this.children.forEach(function(child) {
       if(child instanceof Component || browser.lie && child && child.__migiCP) {
         child.emit(Event.DATA, k, caller);
       }
@@ -236,7 +224,7 @@ class Component extends Element {
     self.emit(Event.DESTROY);
     self.__hash = {};
     if(self.__stop) {
-      var elem = self.$element;
+      var elem = self.element;
       STOP.forEach(function(name) {
         if(browser.lie && elem.attachEvent) {
           elem.detachEvent('on' + name, self.__stop);
@@ -246,7 +234,7 @@ class Component extends Element {
         }
       });
     }
-    return self.$virtualDom.__destroy();
+    return self.virtualDom.__destroy();
   }
 
   static fakeDom(child) {
@@ -266,22 +254,30 @@ class Component extends Element {
 
 //hack ie8，clone get/set in Element
 var GS = {
-  $element: {
+  element: {
     get: function() {
-      return this.$virtualDom ? this.$virtualDom.$element : null;
+      return this.virtualDom ? this.virtualDom.element : null;
     }
   },
-  $style: {
+  style: {
     get: function() {
       return this.__style;
     },
     set: function(v) {
       this.__style = v;
     }
+  },
+  $: {
+    get: function() {
+      if(browser.lie) {
+        return this.__migiCP;
+      }
+      return this;
+    }
   }
 };
 ['virtualDom'].forEach(function(item) {
-  GS['$' + item] = {
+  GS[item] = {
     get: function() {
       return this['__' + item];
     }

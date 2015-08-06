@@ -16,7 +16,7 @@ import sort from './sort';
 var migi = {
   render(element, dom) {
     if(dom) {
-      element.$inTo(dom);
+      element.inTo(dom);
     }
     return element;
   },

@@ -49,7 +49,7 @@ function replaceWith(elem, cns, index, vd, isText) {
         elem.removeChild(cns[index]);
       }
       else {
-        var node = browser.getParent(vd.$name);
+        var node = browser.getParent(vd.name);
         node.innerHTML = target;
         elem.replaceChild(node.firstChild, cns[index]);
       }
@@ -90,7 +90,7 @@ function insertAt(elem, cns, index, vd, isText) {
         cns[index].insertAdjacentHTML('beforebegin', target);
       }
       else {
-        var node = browser.getParent(vd.$name);
+        var node = browser.getParent(vd.name);
         node.innerHTML = target;
         elem.insertBefore(node.firstChild, cns[index]);
       }
@@ -357,12 +357,12 @@ function diffVd(ovd, nvd) {
     return;
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
-  var elem = ovd.$element;
-  nvd.__uid = ovd.$uid;
+  var elem = ovd.element;
+  nvd.__uid = ovd.uid;
   nvd.__element = elem;
   //删除老参数，添加新参数
-  var ok = Object.keys(ovd.$props);
-  var nk = Object.keys(nvd.$props);
+  var ok = Object.keys(ovd.props);
+  var nk = Object.keys(nvd.props);
   //记录对比过的prop
   var hash = {};
   ok.forEach(function(prop) {
@@ -370,8 +370,8 @@ function diffVd(ovd, nvd) {
     if(!/^on[A-Z]/.test(prop)) {
       hash[prop] = true;
       //对比老属性，相同无需更新
-      var v = ovd.$props[prop];
-      var n = nvd.$props[prop];
+      var v = ovd.props[prop];
+      var n = nvd.props[prop];
       if(v !== n) {
         ovd.__updateAttr(prop, n);
       }
@@ -382,11 +382,11 @@ function diffVd(ovd, nvd) {
   //添加新vd的属性
   nk.forEach(function(prop) {
     if(/^on[A-Z]/.test(prop)) {
-      var $name = prop.slice(2).replace(/[A-Z]/g, function(up) {
+      var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
         return up.toLowerCase();
       });
-      nvd.__addListener($name, function(event) {
-        var item = nvd.$props[prop];
+      nvd.__addListener(name, function(event) {
+        var item = nvd.props[prop];
         if(item instanceof Cb) {
           item.cb.call(item.context, event);
         }
@@ -396,19 +396,19 @@ function diffVd(ovd, nvd) {
       });
     }
     else if(!hash.hasOwnProperty(prop)) {
-      nvd.__updateAttr(prop, nvd.$props[prop]);
+      nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
-  var ol = ovd.$children.length;
-  var nl = nvd.$children.length;
+  var ol = ovd.children.length;
+  var nl = nvd.children.length;
   //渲染children
   var ranges = [];
   var option = { start: 0, record: [], first: true };
   var history;
   //遍历孩子，长度取新老vd最小值
   for(var i = 0, len = Math.min(ol, nl); i < len; i++) {
-    var oc = ovd.$children[i];
-    var nc = nvd.$children[i];
+    var oc = ovd.children[i];
+    var nc = nvd.children[i];
     //history记录着当前child索引，可能它是个数组，递归记录
     history = [i];
     //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
@@ -418,24 +418,24 @@ function diffVd(ovd, nvd) {
   //老的多余的删除
   if(i < ol) {
     for(;i < ol; i++) {
-      del(elem, ovd.$children[i], ranges, option, temp, i == ol - 1);
+      del(elem, ovd.children[i], ranges, option, temp, i == ol - 1);
     }
   }
   //新的多余的插入
   else if(i < nl) {
     for(;i < nl; i++) {
       history[history.length - 1] = i;
-      add(elem, nvd.$children[i], ranges, option, history, temp, i == nl - 1);
+      add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1);
     }
   }
   if(ranges.length) {
     //textarea特殊判断
-    if(nvd.$name == 'textarea') {
-      nvd.__updateAttr('value', range.value(ranges[0], nvd.$children));
+    if(nvd.name == 'textarea') {
+      nvd.__updateAttr('value', range.value(ranges[0], nvd.children));
       return;
     }
     ranges.forEach(function(item) {
-      range.update(item, nvd.$children, elem);
+      range.update(item, nvd.children, elem);
     });
   }
   //缓存对象池
@@ -680,7 +680,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         switch(ocp + ncp) {
           //DOM名没变递归diff，否则重绘
           case 0:
-            if(ovd.$name == nvd.$name) {
+            if(ovd.name == nvd.name) {
               diffVd(ovd, nvd);
             }
             else {
@@ -690,16 +690,16 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             break;
           //Component和VirtualDom变化则直接重绘
           case 1:
-            diffVd(ovd.$virtualDom, nvd);
+            diffVd(ovd.virtualDom, nvd);
             break;
           case 2:
-            diffVd(ovd, nvd.$virtualDom);
+            diffVd(ovd, nvd.virtualDom);
             break;
           //Component的class类型没变则diff，否则重绘
           case 3:
             if(ovd.constructor == nvd.constructor) {
               nvd.toString();
-              diffVd(ovd.$virtualDom, nvd.$virtualDom);
+              diffVd(ovd.virtualDom, nvd.virtualDom);
             }
             else {
               elem.innerHTML = nvd.toString();

@@ -39,8 +39,8 @@ class Element extends Event {
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
-    if(this.$dom) {
-      this.$element.parentNode.removeChild(this.$element);
+    if(this.dom) {
+      this.element.parentNode.removeChild(this.element);
     }
   }
 
@@ -50,57 +50,57 @@ class Element extends Event {
   __saveRef() {
     //ref快速引用
     if(this.__cache['ref']) {
-      var top = this.$top;
+      var top = this.top;
       if(top) {
-        var exist = top.$ref[this.$name];
+        var exist = top.ref[this.name];
         if(Array.isArray(exist)) {
           exist.push(this);
         }
         else if(exist) {
-          top.$ref[this.$name] = [exist, this];
+          top.ref[this.name] = [exist, this];
         }
         else {
-          top.$ref[this.$name] = this;
+          top.ref[this.name] = this;
         }
       }
     }
   }
 
-  $inTo(dom) {
+  inTo(dom) {
     this.__clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
-  $appendTo(dom) {
+  appendTo(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforeend', s);
     this.emit(Event.DOM);
   }
-  $prependTo(dom) {
+  prependTo(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterbegin', s);
     this.emit(Event.DOM);
   }
-  $before(dom) {
+  before(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforebegin', s);
     this.emit(Event.DOM);
   }
-  $after(dom) {
+  after(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
     this.emit(Event.DOM);
   }
-  $replace(dom) {
+  replace(dom) {
     this.__clean();
     var s = this.toString();
     dom = getDom(dom);
@@ -115,25 +115,25 @@ class Element extends Event {
 }
 
 var GS = {
-  $top: {
+  top: {
     get: function() {
-      if(!this.__top && this.$parent) {
-        if(this.$parent instanceof migi.Component || this.$parent && this.$parent.__migiCP) {
-          this.__top = this.$parent;
+      if(!this.__top && this.parent) {
+        if(this.parent instanceof migi.Component || this.parent && this.parent.__migiCP) {
+          this.__top = this.parent;
         }
         else {
-          this.__top = this.$parent.$top;
+          this.__top = this.parent.top;
         }
       }
       return this.__top;
     }
   },
-  $element: {
+  element: {
     get: function() {
-      return this.__element || (this.__element = document.querySelector(this.$name + '[migi-uid="' + this.$uid + '"]'));
+      return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
     }
   },
-  $parent: {
+  parent: {
     get: function() {
       var p = this.__parent;
       if(browser.lie && p) {
@@ -144,7 +144,7 @@ var GS = {
   }
 };
 ['name', 'props', 'children', 'uid', 'dom'].forEach(function(item) {
-  GS['$' + item] = {
+  GS[item] = {
     get: function() {
       return this['__' + item];
     }

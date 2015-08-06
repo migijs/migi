@@ -263,21 +263,21 @@ describe('VirtualDom', function() {
   });
   it('name', function() {
     var div = <div>123</div>;
-    expect(div.$name).to.eql('div');
+    expect(div.name).to.eql('div');
   });
   it('selfClose', function() {
     var img = <img src=""/>;
-    expect(img.$name).to.eql('img');
+    expect(img.name).to.eql('img');
     var div = <div/>;
-    expect(div.$name).to.eql('div');
+    expect(div.name).to.eql('div');
   });
   it('toString()', function() {
     var div = <div>123</div>;
     expect(div.toString()).to.eql('<div migi-uid="0">123</div>');
   });
-  it('$children', function() {
+  it('children', function() {
     var div = <div><span></span><span></span></div>;
-    expect(div.$children.length).to.eql(2);
+    expect(div.children.length).to.eql(2);
   });
   it('variable', function() {
     var a = 1;
@@ -294,18 +294,18 @@ describe('VirtualDom', function() {
     var div = <div className="a">123</div>;
     expect(div.toString()).to.eql('<div class="a" migi-uid="0">123</div>');
   });
-  it('$parent', function() {
+  it('parent', function() {
     var div = <div><span></span></div>;
-    expect(div.$children[0].$parent).to.eql(div);
+    expect(div.children[0].parent).to.eql(div);
   });
-  it('$find', function() {
+  it('find', function() {
     var div = <div><span></span></div>;
-    expect(div.$find('span')).to.eql(div.$children[0]);
+    expect(div.find('span')).to.eql(div.children[0]);
   });
-  it('$find All', function() {
+  it('find All', function() {
     var div = <div><span></span></div>;
-    expect(div.$findAll('span').length).to.eql(1);
-    expect(div.$findAll('span')[0]).to.eql(div.$children[0]);
+    expect(div.findAll('span').length).to.eql(1);
+    expect(div.findAll('span')[0]).to.eql(div.children[0]);
   });
   it('special prop', function() {
     var udf;
@@ -334,31 +334,31 @@ describe('Component', function() {
   });
   it('name', function() {
     var cmpn = new Component();
-    expect(cmpn.$name).to.eql('Component');
+    expect(cmpn.name).to.eql('Component');
   });
   it('toString()', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="1">123</span></div>');
   });
-  it('$virtualDom', function() {
+  it('virtualDom', function() {
     var cmpn = new Component();
     cmpn.toString();
-    expect(cmpn.$children.length).to.eql(0);
-    expect(cmpn.$virtualDom).to.be.a(migi.VirtualDom);
-    expect(cmpn.$virtualDom.$name).to.eql('div');
-    expect(cmpn.$virtualDom.$children.length).to.eql(1);
+    expect(cmpn.children.length).to.eql(0);
+    expect(cmpn.virtualDom).to.be.a(migi.VirtualDom);
+    expect(cmpn.virtualDom.name).to.eql('div');
+    expect(cmpn.virtualDom.children.length).to.eql(1);
   });
-  it('$children', function() {
+  it('children', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
-    expect(cmpn.$children.length).to.eql(1);
-    expect(cmpn.$children[0]).to.be.a(migi.VirtualDom);
-    expect(cmpn.$children[0].$name).to.eql('span');
+    expect(cmpn.children.length).to.eql(1);
+    expect(cmpn.children[0]).to.be.a(migi.VirtualDom);
+    expect(cmpn.children[0].name).to.eql('span');
   });
-  it('$parent', function() {
+  it('parent', function() {
     var cmpn = new Component();
     cmpn.toString();
-    expect(cmpn.$virtualDom.$parent).to.eql(cmpn);
+    expect(cmpn.virtualDom.parent).to.eql(cmpn);
   });
   it('no overwrite render', function() {
     class Component extends migi.Component {
@@ -369,25 +369,25 @@ describe('Component', function() {
     var cmpn = new Component({}, [<span></span>]);
     expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="0"></span></div>');
   });
-  it('$find', function() {
+  it('find', function() {
     var cmpn = new Component();
     cmpn.toString();
-    expect(cmpn.$find('span')).to.eql(cmpn.$virtualDom.$children[0]);
+    expect(cmpn.find('span')).to.eql(cmpn.virtualDom.children[0]);
   });
-  it('$find All', function() {
+  it('find All', function() {
     var cmpn = new Component();
     cmpn.toString();
-    expect(cmpn.$findAll('span')).to.eql([cmpn.$virtualDom.$children[0]]);
+    expect(cmpn.findAll('span')).to.eql([cmpn.virtualDom.children[0]]);
   });
   it('findChild', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
-    expect(cmpn.$findChild('span')).to.eql(cmpn.$children[0]);
+    expect(cmpn.findChild('span')).to.eql(cmpn.children[0]);
   });
   it('findChildren', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
-    expect(cmpn.$findChildren('span')).to.eql([cmpn.$children[0]]);
+    expect(cmpn.findChildren('span')).to.eql([cmpn.children[0]]);
   });
   it('special prop', function() {
     var udf;
@@ -402,7 +402,7 @@ describe('Component', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<input value="" name="" migi-uid="1"/>');
   });
-  it('$parent2', function() {
+  it('parent2', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -413,15 +413,15 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var p = div.$find('p');
-    var span = p.$find('span');
-    expect(cmpn.$parent).to.eql(null);
-    expect(div.$parent).to.eql(cmpn);
-    expect(span.$parent).to.eql(p);
-    expect(p.$parent).to.eql(div);
+    var div = cmpn.virtualDom;
+    var p = div.find('p');
+    var span = p.find('span');
+    expect(cmpn.parent).to.eql(null);
+    expect(div.parent).to.eql(cmpn);
+    expect(span.parent).to.eql(p);
+    expect(p.parent).to.eql(div);
   });
-  it('$parent3', function() {
+  it('parent3', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -440,15 +440,15 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var cp2 = div.$find(Component2);
-    var p = cp2.$virtualDom;
-    var span = p.$find('span');
-    expect(cp2.$parent).to.eql(div);
-    expect(span.$parent).to.eql(p);
-    expect(p.$parent).to.eql(cp2);
+    var div = cmpn.virtualDom;
+    var cp2 = div.find(Component2);
+    var p = cp2.virtualDom;
+    var span = p.find('span');
+    expect(cp2.parent).to.eql(div);
+    expect(span.parent).to.eql(p);
+    expect(p.parent).to.eql(cp2);
   });
-  it('$parent4', function() {
+  it('parent4', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -466,12 +466,12 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var span = div.$find('span');
-    expect(div.$parent).to.eql(cmpn);
-    expect(span.$parent).to.eql(div);
+    var div = cmpn.virtualDom;
+    var span = div.find('span');
+    expect(div.parent).to.eql(cmpn);
+    expect(span.parent).to.eql(div);
   });
-  it('$top', function() {
+  it('top', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -482,15 +482,15 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var p = div.$find('p');
-    var span = p.$find('span');
-    expect(cmpn.$top).to.eql(null);
-    expect(div.$top).to.eql(cmpn);
-    expect(span.$top).to.eql(cmpn);
-    expect(p.$top).to.eql(cmpn);
+    var div = cmpn.virtualDom;
+    var p = div.find('p');
+    var span = p.find('span');
+    expect(cmpn.top).to.eql(null);
+    expect(div.top).to.eql(cmpn);
+    expect(span.top).to.eql(cmpn);
+    expect(p.top).to.eql(cmpn);
   });
-  it('$top2', function() {
+  it('top2', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -509,15 +509,15 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var cp2 = div.$find(Component2);
-    var p = cp2.$virtualDom;
-    var span = p.$find('span');
-    expect(cp2.$top).to.eql(cmpn);
-    expect(span.$top).to.eql(cp2);
-    expect(p.$top).to.eql(cp2);
+    var div = cmpn.virtualDom;
+    var cp2 = div.find(Component2);
+    var p = cp2.virtualDom;
+    var span = p.find('span');
+    expect(cp2.top).to.eql(cmpn);
+    expect(span.top).to.eql(cp2);
+    expect(p.top).to.eql(cp2);
   });
-  it('$top3', function() {
+  it('top3', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -535,10 +535,10 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    var div = cmpn.$virtualDom;
-    var span = div.$find('span');
-    expect(div.$top).to.eql(cmpn);
-    expect(span.$top).to.eql(cmpn);
+    var div = cmpn.virtualDom;
+    var span = div.find('span');
+    expect(div.top).to.eql(cmpn);
+    expect(span.top).to.eql(cmpn);
   });
   it('$', function() {
     class Component extends migi.Component {
@@ -564,7 +564,7 @@ describe('Component', function() {
 });
 
 describe('css', function() {
-  var $style = `
+  var style = `
     div{margin:0}
     div p{margin:1px}
     div p span{padding:0}
@@ -586,7 +586,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div>123</div>;
@@ -599,7 +599,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div class="toggle">123</div>;
@@ -612,7 +612,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div><p>123</p></div>;
@@ -625,7 +625,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div class="toggle"><p>123</p></div>;
@@ -638,7 +638,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div><p><span>123</span></p></div>;
@@ -651,7 +651,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div><p><span class="txt">123</span></p></div>;
@@ -664,7 +664,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div class="toggle"><p><span>123</span></p></div>;
@@ -677,7 +677,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <ol><li><h3><span class="txt">123</span></h3></li></ol>;
@@ -690,7 +690,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `span{margin:0}h3 span{padding:0}ol span{color:#FFF}ol p span{line-height:2}`;
+        this.style = `span{margin:0}h3 span{padding:0}ol span{color:#FFF}ol p span{line-height:2}`;
       }
       render() {
         return <ol><li><h3><div><p><span>123</span></p></div></h3></li></ol>;
@@ -703,7 +703,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `.txt{margin:0}.a .txt{padding:0}.a .b .txt{color:#FFF}`;
+        this.style = `.txt{margin:0}.a .txt{padding:0}.a .b .txt{color:#FFF}`;
       }
       render() {
         return <span class="txt">123</span>;
@@ -716,7 +716,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `span{margin:0}p span{padding:0}div p span{color:#FFF}`;
+        this.style = `span{margin:0}p span{padding:0}div p span{color:#FFF}`;
       }
       render() {
         return <div><p><span>123</span></p></div>;
@@ -729,7 +729,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `.txt{margin:0}p span{padding:0}div p span{color:#FFF}`;
+        this.style = `.txt{margin:0}p span{padding:0}div p span{color:#FFF}`;
       }
       render() {
         return <div><p><span class="txt">123</span></p></div>;
@@ -742,7 +742,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `#sp{margin:0}p .txt{padding:0}`;
+        this.style = `#sp{margin:0}p .txt{padding:0}`;
       }
       render() {
         return <p><span id="sp" class="txt">123</span></p>;
@@ -755,7 +755,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = $style;
+        this.style = style;
       }
       render() {
         return <div><span>123</span></div>;
@@ -768,7 +768,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div span{margin:0}`;
+        this.style = `div span{margin:0}`;
       }
       render() {
         return <div><p><span>123</span></p></div>;
@@ -781,7 +781,7 @@ describe('css', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div.d1#d2{margin:0}p#p2.p1{margin:1}span.s1#s2{margin:2}`;
+        this.style = `div.d1#d2{margin:0}p#p2.p1{margin:1}span.s1#s2{margin:2}`;
       }
       render() {
         return <div class="d1" id="d2"><p class="p1" id="p2"><span class="s1" id="s2">123</span></p></div>;
@@ -795,7 +795,7 @@ describe('css', function() {
       constructor(...data) {
         super(...data);
         this._cn = '';
-        this.$style = $style;
+        this.style = style;
       }
       get cn() {
         return this._cn;
@@ -827,7 +827,7 @@ describe('css', function() {
       constructor(...data) {
         super(...data);
         this._cn = 'toggle';
-        this.$style = $style;
+        this.style = style;
       }
       get cn() {
         return this._cn;
@@ -864,7 +864,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div:first-child{color:#FFF}span:first-child{margin:0}div span:first-child{padding:0}.a:first-child{font-size:0}`;
+        this.style = `div:first-child{color:#FFF}span:first-child{margin:0}div span:first-child{padding:0}.a:first-child{font-size:0}`;
       }
       render() {
         return <div><span class="a">1</span><span>2</span><span>3</span></div>;
@@ -877,7 +877,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div:last-child{color:#FFF}span:last-child{margin:0}div span:last-child{padding:0}.a:last-child{font-size:0}`;
+        this.style = `div:last-child{color:#FFF}span:last-child{margin:0}div span:last-child{padding:0}.a:last-child{font-size:0}`;
       }
       render() {
         return <div><span>1</span><span>2</span><span class="a">3</span></div>;
@@ -890,7 +890,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `*{margin:0}`;
+        this.style = `*{margin:0}`;
       }
       render() {
         return <div><p><span>123</span></p></div>;
@@ -903,7 +903,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `*.a{margin:0}`;
+        this.style = `*.a{margin:0}`;
       }
       render() {
         return <div class="a"><p><span class="b">123</span></p></div>;
@@ -916,7 +916,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `*#a{margin:0}`;
+        this.style = `*#a{margin:0}`;
       }
       render() {
         return <div id="a"><p id="b"><span class="a">123</span></p></div>;
@@ -929,7 +929,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div *{margin:0}div * span{padding:0}* p span{color:#F00}`;
+        this.style = `div *{margin:0}div * span{padding:0}* p span{color:#F00}`;
       }
       render() {
         return <div><p><span>123</span></p></div>;
@@ -942,7 +942,7 @@ describe('pseudo', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div.undefined{margin:0}div#undefined{padding:0}`;
+        this.style = `div.undefined{margin:0}div#undefined{padding:0}`;
       }
       render() {
         return <div>123</div>;
@@ -961,7 +961,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title]{margin:0}`;
+        this.style = `div[title]{margin:0}`;
       }
       render() {
         return <div title="abc">1</div>;
@@ -974,7 +974,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title="abc"]{margin:0}div[title="abd"]{padding:0}`;
+        this.style = `div[title="abc"]{margin:0}div[title="abd"]{padding:0}`;
       }
       render() {
         return <div title="abc">1</div>;
@@ -987,7 +987,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title^="abc"]{margin:0}div[title^="ab"]{padding:0}div[title^="ac"]{font-size:0}`;
+        this.style = `div[title^="abc"]{margin:0}div[title^="ab"]{padding:0}div[title^="ac"]{font-size:0}`;
       }
       render() {
         return <div title="abc">1</div>;
@@ -1000,7 +1000,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title$="abc"]{margin:0}div[title$="bc"]{padding:0}div[title$="ab"]{font-size:0}`;
+        this.style = `div[title$="abc"]{margin:0}div[title$="bc"]{padding:0}div[title$="ab"]{font-size:0}`;
       }
       render() {
         return <div title="abc">1</div>;
@@ -1013,7 +1013,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title~="abc"]{margin:0}div[title~="ab"]{padding:0}div[title~="abcd"]{font-size:0}`;
+        this.style = `div[title~="abc"]{margin:0}div[title~="ab"]{padding:0}div[title~="abcd"]{font-size:0}`;
       }
       render() {
         return <div title="abc d">1</div>;
@@ -1026,7 +1026,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title*="b"]{margin:0}div[title*="ab"]{padding:0}div[title*="ac"]{font-size:0}`;
+        this.style = `div[title*="b"]{margin:0}div[title*="ab"]{padding:0}div[title*="ac"]{font-size:0}`;
       }
       render() {
         return <div title="abc">1</div>;
@@ -1039,7 +1039,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div[title|="bc"]{margin:0}div[title|="abc"]{padding:0}div[title|="f"]{font-size:0}`;
+        this.style = `div[title|="bc"]{margin:0}div[title|="abc"]{padding:0}div[title|="f"]{font-size:0}`;
       }
       render() {
         return <div title="abc-f">1</div>;
@@ -1052,7 +1052,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div p span[title]{margin:0}`;
+        this.style = `div p span[title]{margin:0}`;
       }
       render() {
         return <div><p><span title="a">1</span></p></div>;
@@ -1065,7 +1065,7 @@ describe('attr', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.$style = `div:first-child{margin:0}div[title]{padding:0}`;
+        this.style = `div:first-child{margin:0}div[title]{padding:0}`;
       }
       render() {
         return <div title="a">1</div>;

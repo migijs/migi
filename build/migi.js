@@ -16,7 +16,7 @@ var sort=function(){var _13=require('./sort');return _13.hasOwnProperty("default
 var migi = {
   render:function(element, dom) {
     if(dom) {
-      element.$inTo(dom);
+      element.inTo(dom);
     }
     return element;
   },

@@ -82,8 +82,8 @@ class Component extends migi.Component {
     this.record();
   }
   record() {
-    var ps = this.$element.querySelectorAll('p');
-    var lis = this.$element.querySelectorAll('li');
+    var ps = this.element.querySelectorAll('p');
+    var lis = this.element.querySelectorAll('li');
     var s = '';
     var s2 = '';
     for(var i = 0, len = lis.length; i < len; i++) {
