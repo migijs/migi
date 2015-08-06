@@ -266,14 +266,6 @@ var GS = {
     set: function(v) {
       this.__style = v;
     }
-  },
-  $: {
-    get: function() {
-      if(browser.lie) {
-        return this.__migiCP;
-      }
-      return this;
-    }
   }
 };
 ['virtualDom'].forEach(function(item) {

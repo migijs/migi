@@ -141,6 +141,14 @@ var GS = {
       }
       return p;
     }
+  },
+  $: {
+    get: function() {
+      if(browser.lie && this.__migiEL) {
+        return this.__migiEL;
+      }
+      return this;
+    }
   }
 };
 ['name', 'props', 'children', 'uid', 'dom'].forEach(function(item) {
