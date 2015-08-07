@@ -45,7 +45,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom('div', this.children, this.children);
+    return new VirtualDom('div', this.props, this.children);
   }
   //@override
   toString() {

@@ -45,7 +45,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   //需要被子类覆盖
   //@abstract
   Component.prototype.render = function() {
-    return new VirtualDom('div', this.children, this.children);
+    return new VirtualDom('div', this.props, this.children);
   }
   //@override
   Component.prototype.toString = function() {
