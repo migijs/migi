@@ -1,4 +1,5 @@
 var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
 
   function Event() {
@@ -91,11 +92,11 @@ var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("def
   }
 
   Event.prototype.__hackLie = function(cons, GS) {
-    this.__migiGS = util.smix({}, this.__migiGS, GS);
+    this.__migiGS = mix.s({}, this.__migiGS, GS);
     if(this.constructor == cons) {
       var a = document.createElement('a');
       this.__migiNode = a.__migiNode = a;
-      util.pmix(a, this);
+      mix.p(a, this);
       Object.defineProperties(a, this.__migiGS);
       return a;
     }

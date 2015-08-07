@@ -1,4 +1,5 @@
 import browser from './browser';
+import mix from './mix';
 
 class Event {
   constructor() {
@@ -91,11 +92,11 @@ class Event {
   }
 
   __hackLie(cons, GS) {
-    this.__migiGS = util.smix({}, this.__migiGS, GS);
+    this.__migiGS = mix.s({}, this.__migiGS, GS);
     if(this.constructor == cons) {
       var a = document.createElement('a');
       this.__migiNode = a.__migiNode = a;
-      util.pmix(a, this);
+      mix.p(a, this);
       Object.defineProperties(a, this.__migiGS);
       return a;
     }

@@ -7,7 +7,7 @@ var DL = document.createElement('dl');
 var SELECT = document.createElement('select');
 var MENU = document.createElement('menu');
 
-var o = {
+exports["default"]={
   lie: !+'\v1',
   NODE: NODE,
   getParent:function(name) {
@@ -33,6 +33,4 @@ var o = {
         return NODE;
     }
   }
-};
-
-exports["default"]=o;});
+};});

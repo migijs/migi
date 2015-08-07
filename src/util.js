@@ -101,10 +101,6 @@ function joinArray(arr, prop) {
   return res;
 }
 
-const PROTECT = {
-  constructor: true
-};
-
 var util = {
   clone(obj) {
     //fix循环依赖
@@ -135,24 +131,6 @@ var util = {
       Element = Element['default'];
     }
     return joinArray(arr, prop);
-  },
-  //不包括原型链mix
-  smix(target, ...data) {
-    data.forEach(function(item) {
-      util.pmix(target, item, true);
-    });
-    return target;
-  },
-  //包括原型链mix
-  pmix(target, data, noProto) {
-    for(var i in data) {
-      if(!PROTECT.hasOwnProperty(i)) {
-        if(!noProto || data.hasOwnProperty(i)) {
-          target[i] = data[i];
-        }
-      }
-    }
-    return target;
   }
 };
 

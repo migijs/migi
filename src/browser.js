@@ -7,7 +7,7 @@ const DL = document.createElement('dl');
 const SELECT = document.createElement('select');
 const MENU = document.createElement('menu');
 
-var o = {
+export default {
   lie: !+'\v1',
   NODE: NODE,
   getParent(name) {
@@ -34,5 +34,3 @@ var o = {
     }
   }
 };
-
-export default o;
