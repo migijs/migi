@@ -558,9 +558,9 @@ describe('Component', function() {
     }
     var cmpn = new Component();
     cmpn.toString();
-    expect(cmpn.$('v')).to.eql(undefined);
-    cmpn.$('v', 1);
-    expect(cmpn.$('v')).to.eql(1);
+    expect(cmpn.$.v).to.eql(undefined);
+    cmpn.$.v = 1;
+    expect(cmpn.$.v).to.eql(1);
   });
 });
 

@@ -9,15 +9,16 @@ module.exports = {
       .assert.elementPresent('#test p')
       .assert.elementPresent('#test [ref="span"]')
       .assert.elementPresent('#test2')
-      .click('#test [ref="span"]')
+      .click('#test [ref="span"] span')
+      .pause(1000)
       .assert.containsText('#test2', '0')
-      .click('#test [ref="span"]')
+      .click('#test [ref="span"] span')
       .assert.containsText('#test2', '1')
   },
   'clean': function(browser) {
     browser
       .click('#test p')
-      .click('#test [ref="span"]')
+      .click('#test [ref="span"] span')
       .assert.containsText('#test2', '1')
       .end();
   }
