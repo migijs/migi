@@ -690,12 +690,11 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             break;
           //Component和VirtualDom变化则直接重绘
           case 1:
-            diffVd(ovd.virtualDom, nvd);
-            break;
           case 2:
-            diffVd(ovd, nvd.virtualDom);
+            elem.insertAdjacentHTML('afterend', nvd.toString());
+            elem.parentNode.removeChild(elem);
             break;
-          //Component的class类型没变则diff，否则重绘
+          //Component的类型没变则diff，否则重绘
           case 3:
             if(ovd.constructor == nvd.constructor) {
               nvd.toString();
