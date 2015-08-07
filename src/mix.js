@@ -2,11 +2,11 @@ const PROTECT = {
   constructor: true
 };
 
-export default {
+var mix = {
   //不包括原型链mix
   s(target, ...data) {
     data.forEach(function(item) {
-      util.pmix(target, item, true);
+      mix.p(target, item, true);
     });
     return target;
   },
@@ -22,3 +22,5 @@ export default {
     return target;
   }
 };
+
+export default mix;
