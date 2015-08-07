@@ -13,8 +13,9 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'touchmove', 'touchend'];
 
 class Component extends Element {
-  constructor(name, props = {}, children = []) {
+  constructor(props = {}, children = []) {
     var self = this;
+    var name = self.constructor.__migiName;
     super(name, props, children);
 
     self.__virtualDom = null; //根节点vd引用

@@ -13,8 +13,9 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   'touchmove', 'touchend'];
 
 !function(){var _6=Object.create(Element.prototype);_6.constructor=Component;Component.prototype=_6}();
-  function Component(name, props, children) {
+  function Component(props, children) {
     if(props===void 0)props={};if(children===void 0)children=[];var self = this;
+    var name = self.constructor.__migiName;
     Element.call(this,name, props, children);
 
     self.__virtualDom = null; //根节点vd引用
