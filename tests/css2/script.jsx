@@ -1,4 +1,4 @@
-var $style = `
+var style = `
   div{margin:0px}
   div:hover[a="1"]{margin:1px}
 `;
@@ -6,7 +6,7 @@ var $style = `
 class Test extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.$style = $style;
+    this.style = style;
   }
   render() {
     return (

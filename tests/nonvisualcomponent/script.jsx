@@ -11,7 +11,7 @@ class MyComponent extends migi.Component {
     super(...data);
     var self = this;
     self._text = '';
-    self.$findChild('NV').on('success', function(data) {
+    self.findChild('NV').on('success', function(data) {
       self.txt = data.name;
     }).request();
   }

@@ -21,12 +21,12 @@ var vd = migi.render(
   '#test'
 );
 
-var cps = vd.$findAll(Component);
+var cps = vd.findAll(Component);
 
-cps[0].$bridge(cps[1], {
+cps[0].bridge(cps[1], {
   'txt': 'txt'
 });
-cps[0].$bridgeTo(cps[1], {
+cps[0].bridgeTo(cps[1], {
   'txt': 'txt'
 });
 

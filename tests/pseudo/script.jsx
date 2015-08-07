@@ -1,7 +1,7 @@
 class Test extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.$style = `a{margin:0}a span{margin:0}a:hover{margin:1px}a:hover span{margin:2px}a:active{margin:3px}a:active span{margin:4px}`;
+    this.style = `a{margin:0}a span{margin:0}a:hover{margin:1px}a:hover span{margin:2px}a:active{margin:3px}a:active span{margin:4px}`;
   }
   render() {
     return <div>

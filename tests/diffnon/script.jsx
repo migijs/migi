@@ -28,8 +28,8 @@ class Component extends migi.Component {
   }
   ajax() {
     var self = this;
-    self.$find(Ajax).on('test', function(v) {
-      self.$element.querySelector('div').innerHTML = v;
+    self.find(Ajax).on('test', function(v) {
+      self.element.querySelector('div').innerHTML = v;
     });
   }
   render() {

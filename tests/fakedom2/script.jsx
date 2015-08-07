@@ -12,21 +12,21 @@ class NV2 extends migi.NonVisualComponent {
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
-    var nv = this.$findChild(NV);
+    var nv = this.findChild(NV);
     nv.on(migi.Event.DOM, function(fake) {
       var div = document.createElement('div');
       div.id = 'fake1';
       div.innerHTML = fake;
       document.body.appendChild(div);
     });
-    var nv2 = nv.$findChild(NV2);
+    var nv2 = nv.findChild(NV2);
     nv2.on(migi.Event.DOM, function(fake) {
       var div = document.createElement('div');
       div.id = 'fake2';
       div.innerHTML = fake;
       document.body.appendChild(div);
     });
-    var span = nv2.$findChild('span');
+    var span = nv2.findChild('span');
     span.on(migi.Event.DOM, function(fake) {
       var div = document.createElement('div');
       div.id = 'fake3';

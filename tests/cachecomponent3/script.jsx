@@ -29,9 +29,9 @@ class Cache extends migi.CacheComponent {
 
 var cache = new Cache();
 var count = 0;
-cache.$inTo('#test');
-var __onData = cache.$virtualDom.__onData;
-cache.$virtualDom.__onData = function(data) {
+cache.inTo('#test');
+var __onData = cache.virtualDom.__onData;
+cache.virtualDom.__onData = function(data) {
   __onData.call(this, data);
   document.querySelector('#test2').innerHTML = ++count;
   document.querySelector('#test3').innerHTML = data;
