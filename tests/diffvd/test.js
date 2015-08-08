@@ -25,7 +25,6 @@ module.exports = {
       .click('#test>div>p')
       .assert.elementPresent('#test div b')
       .assert.containsText('#test div b', '3')
-      .end()
   },
   'click4': function(browser) {
     browser
@@ -33,7 +32,6 @@ module.exports = {
       .assert.elementPresent('#test div div')
       .assert.elementPresent('#test div div span')
       .assert.containsText('#test div div span', '4')
-      .end()
   },
   'click5': function(browser) {
     browser
