@@ -684,6 +684,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               diffVd(ovd, nvd);
             }
             else {
+              elem = ovd.element;
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
             }
@@ -691,6 +692,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
           //Component和VirtualDom变化则直接重绘
           case 1:
           case 2:
+            elem = ovd.element;
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
             break;
