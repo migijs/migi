@@ -1,15 +1,17 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var Component=function(){var _3=require('./Component');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var bridgeStream=function(){var _4=require('./bridgeStream');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var EventBus=function(){var _1=require('./EventBus');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var Component=function(){var _4=require('./Component');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var bridgeStream=function(){var _5=require('./bridgeStream');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 var uid = 0;
 
-!function(){var _5=Object.create(Event.prototype);_5.constructor=Model;Model.prototype=_5}();
+!function(){var _6=Object.create(Event.prototype);_6.constructor=Model;Model.prototype=_6}();
   function Model() {
     Event.call(this);
     this.__uid = 'm' + uid++;
+    this.__name = this.constructor.__migiName;
     this.__ref = [];
     this.on(Event.DATA, this.__onData);
 
@@ -130,7 +132,7 @@ var uid = 0;
 Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
 
 var GS = {};
-['uid'].forEach(function(item) {
+['name', 'uid'].forEach(function(item) {
   GS[item] = {
     get: function() {
       return this['__' + item];

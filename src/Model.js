@@ -1,4 +1,5 @@
 import Event from './Event';
+import EventBus from './EventBus';
 import util from './util';
 import browser from './browser';
 import Component from './Component';
@@ -10,6 +11,7 @@ class Model extends Event {
   constructor() {
     super();
     this.__uid = 'm' + uid++;
+    this.__name = this.constructor.__migiName;
     this.__ref = [];
     this.on(Event.DATA, this.__onData);
 
@@ -130,7 +132,7 @@ class Model extends Event {
 }
 
 var GS = {};
-['uid'].forEach(function(item) {
+['name', 'uid'].forEach(function(item) {
   GS[item] = {
     get: function() {
       return this['__' + item];
