@@ -1,10 +1,11 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var bridgeStream=function(){var _3=require('./bridgeStream');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 
 var uid = 0;
 
-!function(){var _3=Object.create(Event.prototype);_3.constructor=EventBus;EventBus.prototype=_3}();
+!function(){var _4=Object.create(Event.prototype);_4.constructor=EventBus;EventBus.prototype=_4}();
   function EventBus() {
     Event.call(this);
     this.uid = 'e' + uid++; //为数据流历史记录hack
@@ -55,6 +56,9 @@ var uid = 0;
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to Component/Model: ' + self);
     }
+    //记录桥接单向数据流关系
+    bridgeStream.record(self, target, datas);
+    //数据流以事件形式流经自己，存储好两个对象的引用
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
       self.__listener[k].push({

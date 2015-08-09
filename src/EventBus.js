@@ -1,6 +1,7 @@
 import Event from './Event';
 import util from './util';
 import browser from './browser';
+import bridgeStream from './bridgeStream';
 
 var uid = 0;
 
@@ -55,6 +56,9 @@ class EventBus extends Event {
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to Component/Model: ' + self);
     }
+    //记录桥接单向数据流关系
+    bridgeStream.record(self, target, datas);
+    //数据流以事件形式流经自己，存储好两个对象的引用
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
       self.__listener[k].push({

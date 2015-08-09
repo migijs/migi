@@ -74,6 +74,8 @@ export default {
       return false;
     }
     var history = hash[k];
-    return history.hasOwnProperty(k);
+    var res = history.hasOwnProperty(k);
+    history[k] = true;
+    return res;
   }
 };
