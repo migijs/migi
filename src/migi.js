@@ -1,6 +1,7 @@
 import Event from './Event';
 import Element from './Element';
 import EventBus from './EventBus';
+import Model from './Model';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
@@ -12,6 +13,7 @@ import cachePool from './cachePool';
 import util from './util';
 import browser from './browser';
 import sort from './sort';
+import mix from './mix';
 
 var migi = {
   render(element, dom) {
@@ -24,9 +26,13 @@ var migi = {
     return new cp(props, children);
   },
   createVd(name, props, children) {
+    if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
+      throw new Error('can not create style/script VirtualDom: ' + name);
+    }
     return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
   },
   Event,
+  Model,
   EventBus,
   eventBus: new EventBus,
   Element,
@@ -38,7 +44,8 @@ var migi = {
   Cb,
   util,
   browser,
-  sort
+  sort,
+  mix
 };
 
 if(typeof window != 'undefined') {

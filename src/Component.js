@@ -4,8 +4,9 @@ import VirtualDom from './VirtualDom';
 import util from './util';
 import browser from './browser';
 import EventBus from './EventBus';
+import Model from './Model';
+import bridgeStream from './bridgeStream';
 
-var bridgeOrigin = {};
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
   'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
@@ -14,6 +15,11 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
 
 class Component extends Element {
   constructor(props = {}, children = []) {
+    //fix循环依赖
+    if(Model.hasOwnProperty('default')) {
+      Model = Model['default'];
+    }
+
     var self = this;
     var name = self.constructor.__migiName;
     super(name, props, children);
@@ -21,6 +27,7 @@ class Component extends Element {
     self.__virtualDom = null; //根节点vd引用
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
+    self.__model = null; //数据模型引用
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -31,6 +38,9 @@ class Component extends Element {
         self.on(name, function(...data) {
           cb(...data);
         });
+      }
+      else if(k == 'model') {
+        self.model = props[k];
       }
     });
 
@@ -95,13 +105,15 @@ class Component extends Element {
     return this.virtualDom.findAll(name, first);
   }
   __brcb(target, keys, datas) {
-    //对比来源uid是否出现过，防止闭环死循环
-    if(bridgeOrigin.hasOwnProperty(target.uid)) {
-      return;
+    ////对比来源uid是否出现过，防止闭环死循环
+    //if(bridgeStream.hasOwnProperty(target.uid)) {
+    //  return;
+    //}
+    //bridgeStream[target.uid] = true;
+    ////变更时设置对方CacheComponent不更新，防止闭环
+    if(target.hasOwnProperty('__flag')) {
+      target.__flag = true;
     }
-    bridgeOrigin[target.uid] = true;
-    //变更时设置对方CacheComponent不更新，防止闭环
-    target.__flag = true;
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
     if(!Array.isArray(keys)) {
       keys = [keys];
@@ -115,52 +127,69 @@ class Component extends Element {
         if(target instanceof EventBus) {
           //同名无需name，直接function作为middleware
           if(util.isFunction(stream)) {
-            target.emit(Event.DATA, k, stream(this[k]));
+            if(!bridgeStream.pass(target, k)) {
+              target.emit(Event.DATA, k, stream(this[k]));
+            }
           }
           //只有name说明无需数据处理
           else if(util.isString(stream)) {
-            target.emit(Event.DATA, stream, this[k]);
+            if(!bridgeStream.pass(target, stream)) {
+              target.emit(Event.DATA, stream, this[k]);
+            }
           }
-          else if(stream.name) {
-            var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-            target.emit(Event.DATA, stream.name, v);
+          else if(stream && stream.name) {
+            if(!bridgeStream.pass(target, stream.name)) {
+              var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+              target.emit(Event.DATA, stream.name, v);
+            }
           }
         }
         else {
           //同名无需name，直接function作为middleware
           if(util.isFunction(stream)) {
-            target[k] = stream(this[k]);
+            if(!bridgeStream.pass(target, k)) {
+              target[k] = stream(this[k]);
+            }
           }
           //只有name说明无需数据处理
           else if(util.isString(stream)) {
-            target[stream] = this[k];
+            if(!bridgeStream.pass(target, stream)) {
+              target[stream] = this[k];
+            }
           }
-          else if(stream.name) {
-            var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-            target[stream.name] = v;
+          else if(stream && stream.name) {
+            if(!bridgeStream.pass(target, stream.name)) {
+              var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
+              target[stream.name] = v;
+            }
           }
         }
       }
     }
-    //打开开关
-    target.__flag = false;
+    //关闭开关
+    if(target.hasOwnProperty('__flag')) {
+      target.__flag = false;
+    }
   }
   bridge(target, datas) {
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
     }
-    if(!(target instanceof EventBus)
-      && !(target instanceof Component)
-      && (browser.lie && !target.__migiCP)) {
-      throw new Error('can only bridge to EventBus/Component: ' + self.name);
+    if(!target
+      || !(target instanceof EventBus)
+        && !(target instanceof Component)
+        && (browser.lie && !target.__migiCP && !target.__migiMD)) {
+      throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
     }
-    self.on(self instanceof migi.CacheComponent && browser.lie && self.__migiCC
+    //记录桥接单向数据流关系
+    bridgeStream.record(self, target, datas);
+    //发生数据变更时，判断来源，从关系记录中判别闭环
+    self.on(self instanceof migi.CacheComponent || browser.lie && self.__migiCC
       ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，记录uid
+      //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，生成一个新的记录数据流的对象
       if(origin != self.__brcb && origin != target.__brcb) {
-        bridgeOrigin = {};
-        bridgeOrigin[self.uid] = true;
+        bridgeStream.gen(self.uid, keys);
       }
       self.__brcb(target, keys, datas);
     });
@@ -235,6 +264,9 @@ class Component extends Element {
         }
       });
     }
+    if(self.__model) {
+      self.__model.__del(self);
+    }
     return self.virtualDom.__destroy();
   }
 
@@ -266,6 +298,18 @@ var GS = {
     },
     set: function(v) {
       this.__style = v;
+    }
+  },
+  model: {
+    get: function() {
+      return this.__model;
+    },
+    set: function(v) {
+      if(!(v instanceof Model) || browser.lie && !v.__migiMD) {
+        throw new Error('can not set model to a non Model: ' + v);
+      }
+      this.__model = v;
+      v.__add(this);
     }
   }
 };

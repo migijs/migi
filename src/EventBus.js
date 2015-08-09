@@ -2,10 +2,12 @@ import Event from './Event';
 import util from './util';
 import browser from './browser';
 
+var uid = 0;
+
 class EventBus extends Event {
   constructor() {
     super();
-    this.uid = -1; //为数据流历史记录hack
+    this.uid = 'e' + uid++; //为数据流历史记录hack
     this.__listener = {};
     this.on(Event.DATA, this.__brcb);
   }
@@ -45,6 +47,14 @@ class EventBus extends Event {
   }
   bridge(target, datas) {
     var self = this;
+    if(target == this) {
+      throw new Error('can not bridge self: ' + self);
+    }
+    if(!target
+      || !(target instanceof Component)
+        && (browser.lie && !target.__migiCP && !target.__migiMD)) {
+      throw new Error('can only bridge to Component/Model: ' + self);
+    }
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
       self.__listener[k].push({

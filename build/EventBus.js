@@ -2,10 +2,12 @@ var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default
 var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 
+var uid = 0;
+
 !function(){var _3=Object.create(Event.prototype);_3.constructor=EventBus;EventBus.prototype=_3}();
   function EventBus() {
     Event.call(this);
-    this.uid = -1; //为数据流历史记录hack
+    this.uid = 'e' + uid++; //为数据流历史记录hack
     this.__listener = {};
     this.on(Event.DATA, this.__brcb);
   }
@@ -45,6 +47,14 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
   }
   EventBus.prototype.bridge = function(target, datas) {
     var self = this;
+    if(target == this) {
+      throw new Error('can not bridge self: ' + self);
+    }
+    if(!target
+      || !(target instanceof Component)
+        && (browser.lie && !target.__migiCP && !target.__migiMD)) {
+      throw new Error('can only bridge to Component/Model: ' + self);
+    }
     Object.keys(datas).forEach(function(k) {
       self.__listener[k] = self.__listener[k] || [];
       self.__listener[k].push({
