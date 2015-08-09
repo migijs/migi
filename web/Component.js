@@ -105,11 +105,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     return this.virtualDom.findAll(name, first);
   }
   Component.prototype.__brcb = function(target, keys, datas) {
-    ////对比来源uid是否出现过，防止闭环死循环
-    //if(bridgeStream.hasOwnProperty(target.uid)) {
-    //  return;
-    //}
-    //bridgeStream[target.uid] = true;
     ////变更时设置对方CacheComponent不更新，防止闭环
     if(target.hasOwnProperty('__flag')) {
       target.__flag = true;

@@ -52,7 +52,8 @@ var uid = 0;
       throw new Error('can not bridge self: ' + self);
     }
     if(!target
-      || !(target instanceof Component)
+      || !(target instanceof migi.Component)
+        && !(target instanceof migi.Model)
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to Component/Model: ' + self);
     }
