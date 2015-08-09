@@ -6,7 +6,7 @@ module.exports = {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
-      .assert.containsText('#test p[migi-name="Component1"]', '1')
+      .assert.containsText('#test p[migi-name="Component"]', '1')
       .assert.containsText('#test p[migi-name="Component2"]', '2')
       .end()
   }
