@@ -259,8 +259,8 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
         }
       });
     }
-    if(self.__model) {
-      self.__model.__del(self);
+    if(self.model) {
+      self.model.__del(self);
       bridgeStream.del(self.uid);
     }
     return self.virtualDom.__destroy();

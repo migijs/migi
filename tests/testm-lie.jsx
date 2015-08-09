@@ -562,6 +562,27 @@ describe('Component', function() {
     cmpn.$.v = 1;
     expect(cmpn.$.v).to.eql(1);
   });
+  it('$$', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+      }
+      get v() {
+        return this._v;
+      }
+      set v(v) {
+        this._v = v;
+      }
+      render() {
+        return '';
+      }
+    }
+    var cmpn = new Component();
+    cmpn.toString();
+    expect(cmpn.$$.v).to.eql(undefined);
+    cmpn.$.v = 1;
+    expect(cmpn.$$.v).to.eql(undefined);
+  });
 });
 
 describe('css', function() {

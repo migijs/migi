@@ -149,6 +149,14 @@ var GS = {
   },
   $: {
     get: function() {
+      if(browser.lie && this.__migiNode) {
+        return this.__migiNode;
+      }
+      return this;
+    }
+  },
+  $$: {
+    get: function() {
       if(browser.lie && this.__migiEL) {
         return this.__migiEL;
       }
