@@ -40,27 +40,32 @@ function getDom(dom) {
   //防止多次插入后重复，清除上次，永远只存在一个实例
   Element.prototype.__clean = function() {
     if(this.dom) {
-      this.element.parentNode.removeChild(this.element);
+      var elem = this.element;
+      if(elem) {
+        elem.parentNode.removeChild(elem);
+      }
     }
   }
 
   Element.prototype.__onDom = function() {
     this.__dom = true;
+    this.__saveRef();
   }
   Element.prototype.__saveRef = function() {
     //ref快速引用
     if(this.__cache['ref']) {
       var top = this.top;
       if(top) {
-        var exist = top.ref[this.name];
+        var k = this.__cache['ref'];
+        var exist = top.ref[k];
         if(Array.isArray(exist)) {
           exist.push(this);
         }
         else if(exist) {
-          top.ref[this.name] = [exist, this];
+          top.ref[k] = [exist, this];
         }
         else {
-          top.ref[this.name] = this;
+          top.ref[k] = this;
         }
       }
     }

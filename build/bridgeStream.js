@@ -77,5 +77,21 @@ exports["default"]={
     var res = history.hasOwnProperty(k);
     history[k] = true;
     return res;
+  },
+  del: function(uid) {
+    var k = uid + ',';
+    Object.keys(relations).forEach(function(k1) {
+      if(k1.indexOf(k) == 0) {
+        delete relations[k1];
+      }
+      else {
+        var item = relations[k1];
+        Object.keys(item).forEach(function(k2) {
+          if(k2.indexOf(k) == 0) {
+            delete item[k2];
+          }
+        });
+      }
+    });
   }
 };

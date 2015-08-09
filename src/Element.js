@@ -40,27 +40,32 @@ class Element extends Event {
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
     if(this.dom) {
-      this.element.parentNode.removeChild(this.element);
+      var elem = this.element;
+      if(elem) {
+        elem.parentNode.removeChild(elem);
+      }
     }
   }
 
   __onDom() {
     this.__dom = true;
+    this.__saveRef();
   }
   __saveRef() {
     //ref快速引用
     if(this.__cache['ref']) {
       var top = this.top;
       if(top) {
-        var exist = top.ref[this.name];
+        var k = this.__cache['ref'];
+        var exist = top.ref[k];
         if(Array.isArray(exist)) {
           exist.push(this);
         }
         else if(exist) {
-          top.ref[this.name] = [exist, this];
+          top.ref[k] = [exist, this];
         }
         else {
-          top.ref[this.name] = this;
+          top.ref[k] = this;
         }
       }
     }

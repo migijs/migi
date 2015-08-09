@@ -261,6 +261,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     }
     if(self.__model) {
       self.__model.__del(self);
+      bridgeStream.del(self.uid);
     }
     return self.virtualDom.__destroy();
   }
@@ -308,7 +309,7 @@ var GS = {
     }
   }
 };
-['virtualDom'].forEach(function(item) {
+['virtualDom', 'ref'].forEach(function(item) {
   GS[item] = {
     get: function() {
       return this['__' + item];
