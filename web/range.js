@@ -120,4 +120,25 @@ exports.record=record;function record(history, option) {
   if(option.first || option.prev == type.DOM) {
     option.record = history.slice();
   }
+}
+
+exports.recordObj=recordObj;function recordObj(v, history, option) {
+  if(Array.isArray(v)) {
+    history.push(0);
+    v.forEach(function(item, i) {
+      history[history.length - 1] = i;
+      recordObj(item, history, option);
+    });
+    history.pop();
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    delete option.t2d;
+    delete option.d2t;
+    option.start++;
+    //前面的文本再加一次
+    if(!option.first && option.prev == type.TEXT) {
+      option.start++;
+    }
+    option.prev = type.DOM;
+  }
 }});

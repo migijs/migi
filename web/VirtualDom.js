@@ -583,7 +583,7 @@ var SPECIAL_PROP = {
       var child = children[index];
       //history记录着当前child索引，可能它是个数组，递归记录
       history = [index];
-      self.__checkObj(k, child, index, len, ranges, option, history);
+      self.__checkObj(k, child, ranges, option, history);
     }
     if(ranges.length) {
       //textarea特殊判断
@@ -597,7 +597,7 @@ var SPECIAL_PROP = {
     }
   }
   //first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  VirtualDom.prototype.__checkObj = function(k, child, index, len, ranges, option, history) {
+  VirtualDom.prototype.__checkObj = function(k, child, ranges, option, history) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -637,8 +637,8 @@ var SPECIAL_PROP = {
           domDiff.diff(this.element, ov, child.v, ranges, option, history);
         }
       }
-      else if(option.first) {
-        range.record(history, option);
+      else {
+        self.__checkObj(k, child.v, ranges, option, history);
       }
     }
     //递归通知，增加索引
@@ -662,7 +662,7 @@ var SPECIAL_PROP = {
         child.forEach(function(item, i) {
           history[history.length - 1] = i;
           //第1个同时作为children的第1个要特殊处理
-          self.__checkObj(k, item, index, len, ranges, option, history);
+          self.__checkObj(k, item, ranges, option, history);
         });
         history.pop();
       }
