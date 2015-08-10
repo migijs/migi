@@ -10,6 +10,7 @@ import match from './match';
 import sort from './sort';
 import domDiff from './domDiff';
 import type from './type';
+import fixEvent from './fixEvent';
 
 const SELF_CLOSE = {
   'img': true,
@@ -176,9 +177,8 @@ class VirtualDom extends Element {
         self.__addListener(name, function(event) {
           var item = self.props[prop];
           if(item instanceof Cb) {
-            if(item.cb) {
-              item.cb.call(item.context, event);
-            }
+            fixEvent(event);
+            item.cb.call(item.context, event);
           }
           else {
             item(event);
@@ -244,10 +244,11 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              var context = browser.lie && this == window ? e.srcElement : this;
-              item.setV(context.value);
+              fixEvent(e);
+              var v = e.target.value;
+              item.setV(v);
               var key = item.k;
-              item.context[key] = context.value;
+              item.context[key] = v;
             }
             var type = self.__cache.type;
             if(type === void 0 || type === null) {
@@ -284,10 +285,11 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              var context = browser.lie && this == window ? e.srcElement : this;
-              item.setV(context.value);
+              fixEvent(e);
+              var v = e.target.value;
+              item.setV(v);
               var key = item.k;
-              item.context[key] = context.value;
+              item.context[key] = v;
             }
             self.__addListener('change', cb);
           });
@@ -302,10 +304,11 @@ class VirtualDom extends Element {
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              var context = browser.lie && this == window ? e.srcElement : this;
-              child.setV(context.value);
+              fixEvent(e);
+              var v = e.target.value;
+              child.setV(v);
               var key = child.k;
-              child.context[key] = context.value;
+              child.context[key] = v;
             }
             self.__addListener(['input', 'paste', 'cut'], cb);
           });
