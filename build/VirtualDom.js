@@ -635,7 +635,7 @@ var SPECIAL_PROP = {
       if(change) {
         var ov = child.v;
         //对比是否真正发生变更
-        if(child.update(ov)) {
+        if(child.update(ov)) {console.log(k, ov[0], child.v[0])
           domDiff.diff(this.element, ov, child.v, ranges, option, history);
         }
       }

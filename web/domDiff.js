@@ -702,13 +702,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             break;
           //Component的类型没变则diff，否则重绘
           case 3:
-            if(ovd.constructor == nvd.constructor) {
-              nvd.toString();
-              diffVd(ovd.virtualDom, nvd.virtualDom);
-            }
-            else {
-              elem.innerHTML = nvd.toString();
-            }
+            elem.innerHTML = nvd.toString();
             break;
         }
         option.state = DOM_TO_DOM;
