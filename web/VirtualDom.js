@@ -176,7 +176,9 @@ var SPECIAL_PROP = {
         self.__addListener(name, function(event) {
           var item = self.props[prop];
           if(item instanceof Cb) {
-            item.cb.call(item.context, event);
+            if(item.cb) {
+              item.cb.call(item.context, event);
+            }
           }
           else {
             item(event);

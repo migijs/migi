@@ -360,6 +360,10 @@ function diffVd(ovd, nvd) {
   var elem = ovd.element;
   nvd.__uid = ovd.uid;
   nvd.__element = elem;
+  nvd.__parent = ovd.__parent;
+  nvd.__top = ovd.__top;
+  nvd.__style = ovd.__style;
+  nvd.__dom = ovd.__dom;
   //删除老参数，添加新参数
   var ok = Object.keys(ovd.props);
   var nk = Object.keys(nvd.props);
