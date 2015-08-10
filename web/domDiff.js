@@ -694,15 +694,13 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             }
             break;
           //Component和VirtualDom变化则直接重绘
+          //Component变化直接重绘
           case 1:
           case 2:
+          case 3:
             elem = ovd.element;
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
-            break;
-          //Component的类型没变则diff，否则重绘
-          case 3:
-            elem.innerHTML = nvd.toString();
             break;
         }
         option.state = DOM_TO_DOM;
@@ -713,7 +711,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
     }
     //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
-    if(nvd instanceof Component || browser.lie && nvd && nvd.__migiCP) {
+    if(nvd instanceof Element || browser.lie && nvd && nvd.__migiEL) {
       nvd.emit(Event.DOM);
     }
   }
