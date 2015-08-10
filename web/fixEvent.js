@@ -1,4 +1,4 @@
-define(function(require, exports, module){exports["default"]=function(event) {event.preventDefault()
+define(function(require, exports, module){exports["default"]=function(event) {
   //IE8
   if(!event.target) {
     event.target = event.srcElement || document;

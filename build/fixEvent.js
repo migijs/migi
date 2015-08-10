@@ -1,4 +1,4 @@
-exports["default"]=function(event) {event.preventDefault()
+exports["default"]=function(event) {
   //IE8
   if(!event.target) {
     event.target = event.srcElement || document;
