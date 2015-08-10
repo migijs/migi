@@ -691,6 +691,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               elem = ovd.element;
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
+              nvd.emit(Event.DOM);
             }
             break;
           //Component和VirtualDom变化则直接重绘
@@ -701,6 +702,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             elem = ovd.element;
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
+            nvd.emit(Event.DOM);
             break;
         }
         option.state = DOM_TO_DOM;
@@ -709,10 +711,6 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         //缓存对象池
         cachePool.add(ovd.__destroy());
         break;
-    }
-    //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
-    if(nvd instanceof Element || browser.lie && nvd && nvd.__migiEL) {
-      nvd.emit(Event.DOM);
     }
   }
   option.first = false;
