@@ -22,4 +22,4 @@ var cp = <Component list={data}/>;
 
 cp.appendTo('#test');
 
-cp.list = <List list={[<p>3</p>, <p>2</p>]}/>;
+cp.list = <Component list={[<p>3</p>, <p>2</p>]}/>;
