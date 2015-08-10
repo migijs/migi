@@ -29,6 +29,7 @@ gulp.task('clean-web', function() {
 });
 
 function cb(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   jsdc.reset();
   content = jsdc.parse(content);
@@ -36,6 +37,7 @@ function cb(file, enc, cb) {
   cb(null, file);
 }
 function cb2(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   content = 'define(function(require, exports, module){' + content + '});';
   file.contents = new Buffer(content);
@@ -88,6 +90,7 @@ gulp.task('clean-jsx', function() {
 });
 
 function jsx(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   if(content.indexOf('`') > -1) {
     content = content.replace(/`([^`]+)`/g, function($0, $1) {
@@ -99,6 +102,7 @@ function jsx(file, enc, cb) {
   cb(null, file);
 }
 function jsxLie(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   if(content.indexOf('`') > -1) {
     content = content.replace(/`([^`]+)`/g, function($0, $1) {
@@ -111,6 +115,7 @@ function jsxLie(file, enc, cb) {
   cb(null, file);
 }
 function jsx2(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   if(content.indexOf('`') > -1) {
     content = content.replace(/`([^`]+)`/g, function($0, $1) {
@@ -122,12 +127,14 @@ function jsx2(file, enc, cb) {
   cb(null, file);
 }
 function html(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   content = content.replace('"script.js"', '"script-lie.js"');
   file.contents = new Buffer(content);
   cb(null, file);
 }
 function test(file, enc, cb) {
+  util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   content = content.replace('index.html', 'index-lie.html');
   file.contents = new Buffer(content);
