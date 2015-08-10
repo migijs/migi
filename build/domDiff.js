@@ -712,6 +712,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         cachePool.add(ovd.__destroy());
         break;
     }
+    //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
+    if(nvd instanceof migi.NonVisualComponent || browser.lie && nvd && nvd.__migiNV) {
+      nvd.emit(Event.DOM);
+    }
   }
   option.first = false;
 }

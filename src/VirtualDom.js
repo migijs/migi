@@ -175,9 +175,9 @@ class VirtualDom extends Element {
           return up.toLowerCase();
         });
         self.__addListener(name, function(event) {
+          fixEvent(event);
           var item = self.props[prop];
           if(item instanceof Cb) {
-            fixEvent(event);
             item.cb.call(item.context, event);
           }
           else {
