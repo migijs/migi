@@ -20,7 +20,7 @@ function addStream(k1, temp, history) {
 }
 
 export default {
-  gen: function(uid, keys) {
+  gen(uid, keys) {
     var history = {
       sid: sid++
     };
@@ -40,7 +40,7 @@ export default {
     }
   },
   //记录a的uid+a的key -> {b的uid+b的key: true}
-  record: function(a, b, datas) {
+  record(a, b, datas) {
     var aid = a.uid;
     var bid = b.uid;
     Object.keys(datas).forEach(function(k1) {
@@ -67,7 +67,15 @@ export default {
       }
     });
   },
-  pass: function(obj, key) {
+  sid(obj, key) {
+    var k = obj.uid + ',' + key;
+    if(!hash.hasOwnProperty(k)) {
+      return;
+    }
+    var history = hash[k];
+    return history.sid;
+  },
+  pass(obj, key) {
     var k = obj.uid + ',' + key;
     //只被桥接没有桥接别人的话不存在
     if(!hash.hasOwnProperty(k)) {
@@ -78,7 +86,7 @@ export default {
     history[k] = true;
     return res;
   },
-  del: function(uid) {
+  del(uid) {
     var k = uid + ',';
     Object.keys(relations).forEach(function(k1) {
       if(k1.indexOf(k) == 0) {
