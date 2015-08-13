@@ -6,11 +6,12 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
 !function(){var _4=Object.create(Component.prototype);_4.constructor=CachedComponent;CachedComponent.prototype=_4}();
   function CachedComponent(data) {
     data=[].slice.call(arguments, 0);Component.apply(this,[].concat(Array.from(data)));
-    this.__handler = {};
-    this.__bridgeHandler = {};
-    this.__ccb = null;
-    this.__bcb = null;
-    this.__flag = false;
+    this.__handler = {}; //普通状态下缓存data key的hash
+    this.__bridgeHandler = {}; //flag为true时的hash
+    this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
+    this.__bcb = false; //flag为true时的缓存时间内状态标识
+    this.__flag = false; //被数据流桥接的数据分发到时，标识true，不走普通逻辑，进入另外一个缓存时间逻辑
+    this.__stream = {}; //存储数据流中一个key对应的流sid
 
     //ie8的对象识别hack
     if(browser.lie) {
@@ -30,12 +31,14 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
       return;
     }
     self.__handler[k] = true;
+    //被桥接的数据缓存作废
+    delete self.__bridgeHandler[k];
     if(!self.__ccb) {
       self.__ccb = true;
       setTimeout(function() {
         var keys = Object.keys(self.__handler);
         self.__handler = {};
-        self.__ccb = null;
+        self.__ccb = false;
         keys = keys.length > 1 ? keys : keys[0];
         Component.prototype.__onData.call(_5,keys);
         self.emit(Event.CACHE_DATA, keys);
@@ -48,12 +51,13 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
       return;
     }
     self.__bridgeHandler[k] = true;
+    //之前非桥接的数据缓存作废
+    delete self.__handler[k];
     if(!self.__bcb) {
       self.__bcb = true;
       setTimeout(function() {
         var keys = Object.keys(self.__bridgeHandler);
-        self.__handler = {};
-        self.__bcb = null;
+        self.__bcb = false;
         keys = keys.length > 1 ? keys : keys[0];
         Component.prototype.__onData.call(_6,keys);
       }, 1);
