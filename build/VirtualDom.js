@@ -43,7 +43,8 @@ var SPECIAL_PROP = {
   'async': true,
   'tagName': true,
   'nodeName': true,
-  'nodeType': true
+  'nodeType': true,
+  'value': true
 };
 
 !function(){var _13=Object.create(Element.prototype);_13.constructor=VirtualDom;VirtualDom.prototype=_13}();

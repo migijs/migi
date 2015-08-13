@@ -43,7 +43,8 @@ const SPECIAL_PROP = {
   'async': true,
   'tagName': true,
   'nodeName': true,
-  'nodeType': true
+  'nodeType': true,
+  'value': true
 };
 
 class VirtualDom extends Element {
