@@ -11,6 +11,7 @@ import sort from './sort';
 import domDiff from './domDiff';
 import type from './type';
 import fixEvent from './fixEvent';
+import setAttr from './setAttr';
 
 const SELF_CLOSE = {
   'img': true,
@@ -30,21 +31,6 @@ const SELF_CLOSE = {
   'source': true,
   'track': true,
   'wbr': true
-};
-
-const SPECIAL_PROP = {
-  'checked': true,
-  'selected': true,
-  'selectedIndex': true,
-  'readOnly': true,
-  'multiple': true,
-  'defaultValue': true,
-  'autofocus': true,
-  'async': true,
-  'tagName': true,
-  'nodeName': true,
-  'nodeType': true,
-  'value': true
 };
 
 class VirtualDom extends Element {
@@ -198,9 +184,7 @@ class VirtualDom extends Element {
         return '';
       }
       self.__cache[prop] = s;
-      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v.v) {
-        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
-      }
+      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     else {
       var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
@@ -214,9 +198,7 @@ class VirtualDom extends Element {
         prop = 'class';
       }
       self.__cache[prop] = s;
-      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v) {
-        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
-      }
+      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
     if(self.__style) {
@@ -568,10 +550,8 @@ class VirtualDom extends Element {
         }
         if(change) {
           var ov = item.v;
-          var nv = item.cb.call(item.context);
-          if(ov != nv) {
-            item.setV(nv);
-            self.__updateAttr(key, nv);
+          if(item.update(ov)) {
+            self.__updateAttr(key, item.v);
           }
         }
       }
@@ -692,48 +672,13 @@ class VirtualDom extends Element {
   //但是setAttribute会保留实体字符形式
   __updateAttr(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
-      this.element.innerHTML = v || '';
+      if(v === null || v === void 0) {
+        v = '';
+      }
+      this.element.innerHTML = v.toString() || '';
       return;
     }
-    switch(k) {
-      case 'value':
-        this.element[k] = v || '';
-        break;
-      case 'checked':
-      case 'selected':
-      case 'selectedIndex':
-      case 'readOnly':
-      case 'multiple':
-      case 'defaultValue':
-      case 'autofocus':
-      case 'async':
-      case 'tagName':
-      case 'nodeName':
-      case 'nodeType':
-        this.element[k] = v || false;
-        break;
-      case 'className':
-        k = 'class';
-      case 'id':
-      case 'class':
-        if(this.__style) {
-          if(v === null || v === void 0) {
-            this.element.removeAttribute('migi-' + k);
-          }
-          else {
-            this.element.setAttribute('migi-' + k, v);
-          }
-          break;
-        }
-      default:
-        if(v === null || v === void 0) {
-          this.element.removeAttribute(k);
-        }
-        else {
-          this.element.setAttribute(k, v);
-        }
-        break;
-    }
+    setAttr(this.element, k, v);
     this.__cache[k] = v;
     //使用了jaw内联解析css
     if(this.__style) {

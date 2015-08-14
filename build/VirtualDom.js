@@ -11,6 +11,7 @@ var sort=function(){var _9=require('./sort');return _9.hasOwnProperty("default")
 var domDiff=function(){var _10=require('./domDiff');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 var type=function(){var _11=require('./type');return _11.hasOwnProperty("default")?_11["default"]:_11}();
 var fixEvent=function(){var _12=require('./fixEvent');return _12.hasOwnProperty("default")?_12["default"]:_12}();
+var setAttr=function(){var _13=require('./setAttr');return _13.hasOwnProperty("default")?_13["default"]:_13}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -32,22 +33,7 @@ var SELF_CLOSE = {
   'wbr': true
 };
 
-var SPECIAL_PROP = {
-  'checked': true,
-  'selected': true,
-  'selectedIndex': true,
-  'readOnly': true,
-  'multiple': true,
-  'defaultValue': true,
-  'autofocus': true,
-  'async': true,
-  'tagName': true,
-  'nodeName': true,
-  'nodeType': true,
-  'value': true
-};
-
-!function(){var _13=Object.create(Element.prototype);_13.constructor=VirtualDom;VirtualDom.prototype=_13}();
+!function(){var _14=Object.create(Element.prototype);_14.constructor=VirtualDom;VirtualDom.prototype=_14}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -198,9 +184,7 @@ var SPECIAL_PROP = {
         return '';
       }
       self.__cache[prop] = s;
-      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v.v) {
-        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
-      }
+      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     else {
       var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
@@ -214,9 +198,7 @@ var SPECIAL_PROP = {
         prop = 'class';
       }
       self.__cache[prop] = s;
-      if(!SPECIAL_PROP.hasOwnProperty(prop) || !!v) {
-        res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
-      }
+      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
     if(self.__style) {
@@ -568,10 +550,8 @@ var SPECIAL_PROP = {
         }
         if(change) {
           var ov = item.v;
-          var nv = item.cb.call(item.context);
-          if(ov != nv) {
-            item.setV(nv);
-            self.__updateAttr(key, nv);
+          if(item.update(ov)) {
+            self.__updateAttr(key, item.v);
           }
         }
       }
@@ -692,48 +672,13 @@ var SPECIAL_PROP = {
   //但是setAttribute会保留实体字符形式
   VirtualDom.prototype.__updateAttr = function(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
-      this.element.innerHTML = v || '';
+      if(v === null || v === void 0) {
+        v = '';
+      }
+      this.element.innerHTML = v.toString() || '';
       return;
     }
-    switch(k) {
-      case 'value':
-        this.element[k] = v || '';
-        break;
-      case 'checked':
-      case 'selected':
-      case 'selectedIndex':
-      case 'readOnly':
-      case 'multiple':
-      case 'defaultValue':
-      case 'autofocus':
-      case 'async':
-      case 'tagName':
-      case 'nodeName':
-      case 'nodeType':
-        this.element[k] = v || false;
-        break;
-      case 'className':
-        k = 'class';
-      case 'id':
-      case 'class':
-        if(this.__style) {
-          if(v === null || v === void 0) {
-            this.element.removeAttribute('migi-' + k);
-          }
-          else {
-            this.element.setAttribute('migi-' + k, v);
-          }
-          break;
-        }
-      default:
-        if(v === null || v === void 0) {
-          this.element.removeAttribute(k);
-        }
-        else {
-          this.element.setAttribute(k, v);
-        }
-        break;
-    }
+    setAttr(this.element, k, v);
     this.__cache[k] = v;
     //使用了jaw内联解析css
     if(this.__style) {
