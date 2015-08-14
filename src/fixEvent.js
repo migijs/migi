@@ -1,5 +1,4 @@
 export default function(e) {
-  e = e || window.event;
   //IE8
   if(!e.target) {
     e.target = e.srcElement || document;

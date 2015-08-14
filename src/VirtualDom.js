@@ -161,14 +161,15 @@ class VirtualDom extends Element {
         var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
-        self.__addListener(name, function(event) {
-          fixEvent(event);
+        self.__addListener(name, function(e) {
+          e = e || window.event;
+          fixEvent(e);
           var item = self.props[prop];
           if(item instanceof Cb) {
-            item.cb.call(item.context, event);
+            item.cb.call(item.context, e);
           }
           else {
-            item(event);
+            item(e);
           }
         });
       });
@@ -227,6 +228,7 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
+              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               item.setV(v);
@@ -268,6 +270,7 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
+              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               item.setV(v);
@@ -287,6 +290,7 @@ class VirtualDom extends Element {
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
+              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               child.setV(v);
