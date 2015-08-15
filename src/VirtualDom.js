@@ -268,6 +268,9 @@ class VirtualDom extends Element {
               item.context[key] = v;
             }
             var type = self.__cache.type;
+            if(type === void 0 || type === null) {
+              type = '';
+            }
             switch(type.toLowerCase()) {
               //一些无需联动
               //case 'button':

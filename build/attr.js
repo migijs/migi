@@ -65,13 +65,15 @@ var SETS = {
     autofocus: BOOL,
     disabled: BOOL,
     required: BOOL,
-    selectedIndex: NUM
+    selectedIndex: NUM,
+    value: STR
   },
   textarea: {
     autofocus: BOOL,
     disabled: BOOL,
     readOnly: BOOL,
-    required: BOOL
+    required: BOOL,
+    value: STR
   }
 };
 
