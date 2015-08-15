@@ -92,10 +92,10 @@ function joinArray(arr, prop) {
       res += item.toString();
     }
     else {
-      res += encodeHtml(stringify(item), prop);
+      res += stringify(item);
     }
   });
-  return res;
+  return prop ? encodeHtml(res, prop) : res;
 }
 
 function stringify(s) {

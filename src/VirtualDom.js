@@ -220,7 +220,7 @@ class VirtualDom extends Element {
       switch(special) {
         case attr.RENDER_EXIST:
           if(v) {
-            res = ' ' + prop + '="' + s + '"';
+            res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
           }
           break;
         case attr.RENDER_DOM:
@@ -229,7 +229,7 @@ class VirtualDom extends Element {
           });
           break;
         default:
-          res = ' ' + prop + '="' + s + '"';
+          res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
           break;
       }
     }

@@ -59,7 +59,8 @@ var SETS = {
   },
   option: {
     disabled: BOOL,
-    selected: BOOL
+    selected: BOOL,
+    text: STR
   },
   select: {
     autofocus: BOOL,
@@ -89,11 +90,7 @@ exports["default"]={
     }
   },
   update:function(name, element, k, v) {
-    //option的text特殊对待
-    if(name == 'option' && k == 'text') {
-      element.text = util.stringify(v);
-      return;
-    }
+    //特殊对待的prop，用js赋值
     if(SETS.hasOwnProperty(name)) {
       var o = SETS[name];
       if(o.hasOwnProperty(k)) {
@@ -115,11 +112,13 @@ exports["default"]={
         return;
       }
     }
+    //普通的setAttribute
     switch(k) {
       case 'className':
         k = 'class';
       case 'id':
       case 'class':
+        //jaw导入style时改写migi-前缀
         if(this.__style) {
           k = 'migi-' + k;
         }
