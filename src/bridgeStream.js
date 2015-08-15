@@ -40,32 +40,15 @@ export default {
     }
   },
   //记录a的uid+a的key -> {b的uid+b的key: true}
-  record(a, b, datas) {
-    var aid = a.uid;
-    var bid = b.uid;
-    Object.keys(datas).forEach(function(k1) {
-      var item = datas[k1];
-      var k2;
-      if(util.isFunction(item)) {
-        k2 = k1;
-      }
-      else if(util.isString(item)) {
-        k2 = item;
-      }
-      else if(item && item.name) {
-        k2 = item.name;
-      }
-      if(k2) {
-        var ka = aid + ',' + k1;
-        var kb = bid + ',' + k2;
-        relations[ka] = relations[ka] || {};
-        var o = relations[ka];
-        if(o.hasOwnProperty(kb)) {
-          throw new Error('can not bridge duplicate: ' + a.name + '.' + a.uid + '.' + k1 + ' -> ' + b.name + '.' + b.uid + '.' + k2);
-        }
-        o[kb] = true;
-      }
-    });
+  record(aid, bid, k1, k2) {
+    var ka = aid + ',' + k1;
+    var kb = bid + ',' + k2;
+    relations[ka] = relations[ka] || {};
+    var o = relations[ka];
+    if(o.hasOwnProperty(kb)) {
+      throw new Error('can not bridge duplicate: ' + a.name + '.' + a.uid + '.' + k1 + ' -> ' + b.name + '.' + b.uid + '.' + k2);
+    }
+    o[kb] = true;
   },
   sid(obj, key) {
     var k = obj.uid + ',' + key;

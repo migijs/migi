@@ -28,6 +28,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
+    self.__bridgeHash = null; //桥接记录
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -104,11 +105,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   Component.prototype.findAll = function(name, first) {
     return this.virtualDom.findAll(name, first);
   }
-  Component.prototype.__brcb = function(target, keys, datas) {
-    ////变更时设置对方CacheComponent不更新，防止闭环
-    if(target.hasOwnProperty('__flag')) {
-      target.__flag = true;
-    }
+  Component.prototype.__brcb = function(keys) {
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
     if(!Array.isArray(keys)) {
       keys = [keys];
@@ -116,57 +113,54 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     //遍历变更数据项
     for(var i = 0, len = keys.length; i < len; i++) {
       var k = keys[i];
-      if(datas.hasOwnProperty(k)) {
-        var stream = datas[k];
-        //eventBus作为中间数据透传
-        if(target instanceof EventBus) {
-          //同名无需name，直接function作为middleware
-          if(util.isFunction(stream)) {
-            if(!bridgeStream.pass(target, k)) {
-              target.emit(Event.DATA, k, stream(this[k]));
+      if(this.__bridgeHash.hasOwnProperty(k)) {
+        var arr = this.__bridgeHash[k];
+        for(var j = 0, len2 = arr.length; j < len2; j++) {
+          var stream = arr[j];
+          var target = stream.target;
+          var name = stream.name;
+          var middleware = stream.middleware;
+          if(!bridgeStream.pass(target, name)) {
+            //eventBus作为中间数据透传
+            if(target instanceof EventBus) {
+              target.emit(Event.DATA, name, middleware ? middleware.call(this, this[k]) : this[k]);
             }
-          }
-          //只有name说明无需数据处理
-          else if(util.isString(stream)) {
-            if(!bridgeStream.pass(target, stream)) {
-              target.emit(Event.DATA, stream, this[k]);
-            }
-          }
-          else if(stream && stream.name) {
-            if(!bridgeStream.pass(target, stream.name)) {
-              var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-              target.emit(Event.DATA, stream.name, v);
-            }
-          }
-        }
-        else {
-          //同名无需name，直接function作为middleware
-          if(util.isFunction(stream)) {
-            if(!bridgeStream.pass(target, k)) {
-              target[k] = stream(this[k]);
-            }
-          }
-          //只有name说明无需数据处理
-          else if(util.isString(stream)) {
-            if(!bridgeStream.pass(target, stream)) {
-              target[stream] = this[k];
-            }
-          }
-          else if(stream && stream.name) {
-            if(!bridgeStream.pass(target, stream.name)) {
-              var v = stream.middleware ? stream.middleware.call(this, this[k]) : this[k];
-              target[stream.name] = v;
+            //Model和Component数据模型
+            else {
+              //变更时设置对方CacheComponent不更新，防止闭环
+              if (target.hasOwnProperty('__flag')) {
+                target.__flag = true;
+              }
+              target.$[name] = middleware ? middleware.call(this, this[k]) : this[k];
+              //关闭开关
+              if (target.hasOwnProperty('__flag')) {
+                target.__flag = false;
+              }
             }
           }
         }
       }
     }
-    //关闭开关
-    if(target.hasOwnProperty('__flag')) {
-      target.__flag = false;
-    }
   }
-  Component.prototype.bridge = function(target, datas) {
+  Component.prototype.__record = function(target, src, name, middleware) {
+    //记录桥接单向数据流关系
+    bridgeStream.record(this.uid, target.uid, src, name);
+    this.__bridgeHash = this.__bridgeHash || {};
+    this.__bridgeHash[src] = this.__bridgeHash[src] || [];
+    this.__bridgeHash[src].push({
+      target:target,
+      name:name,
+      middleware:middleware
+    });
+  }
+  //bridge(target, String, String, Function)
+  //bridge(target, String, Function)
+  //bridge(target, String, String)
+  //bridge(target, String)
+  //bridge(target, Object<String:String>)
+  //bridge(target, Object<String:Function>)
+  //bridge(target, Object<String:Object<name:String,middleware:Function>>)
+  Component.prototype.bridge = function(target, src, name, middleware) {
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
@@ -174,23 +168,57 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     if(!target
       || !(target instanceof EventBus)
         && !(target instanceof Component)
+        && !(target instanceof migi.Model)
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
     }
-    //记录桥接单向数据流关系
-    bridgeStream.record(self, target, datas);
-    //发生数据变更时，判断来源，从关系记录中判别闭环
-    self.on(self instanceof migi.CacheComponent || browser.lie && self.__migiCC
-      ? Event.CACHE_DATA : Event.DATA, function(keys, origin) {
-      //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，生成一个新的记录数据流的对象
-      if(origin != self.__brcb && origin != target.__brcb) {
-        bridgeStream.gen(self.uid, keys);
+    var first = !this.__bridgeHash;
+    //重载
+    if(arguments.length == 2) {
+      if(util.isString(src)) {
+        self.__record(target, src, src);
       }
-      self.__brcb(target, keys, datas);
-    });
+      else {
+        Object.keys(src).forEach(function(k) {
+          var o = src[k];
+          if(util.isString(o)) {
+            self.__record(target, k, o);
+          }
+          else if(util.isFunction(o)) {
+            self.__record(target, k, k, o);
+          }
+          else if(o.name) {
+            self.__record(target, k, o.name, o.middleware);
+          }
+        });
+      }
+    }
+    else if(arguments.length == 3) {
+      if(util.isString(name)) {
+        self.__record(target, src, name);
+      }
+      else {
+        middleware = name;
+        self.__record(target, src, src, middleware);
+      }
+    }
+    else if(arguments.length == 4) {
+      self.__record(target, src, name, middleware);
+    }
+    //发生数据变更时，判断来源，从关系记录中判别闭环
+    if(first) {
+      self.on(self instanceof migi.CacheComponent || browser.lie && self.__migiCC
+        ? Event.CACHE_DATA : Event.DATA, function (keys, origin) {
+        //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，生成一个新的记录数据流的对象
+        if(origin != self.__brcb && origin != target.__brcb) {
+          bridgeStream.gen(self.uid, keys);
+        }
+        self.__brcb(keys);
+      });
+    }
   }
   Component.prototype.bridgeTo = function(target, datas) {
-    target.bridge(this, datas);
+    datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
   }
 
   //@overwrite

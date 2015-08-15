@@ -14,39 +14,35 @@ class EventBus extends Event {
   }
   __brcb(k, v) {
     if(this.__listener.hasOwnProperty(k)) {
-      var item = this.__listener[k];
-      for(var i = 0, len = item.length; i < len; i++) {
-        var value = item[i];
-        var target = value.target;
-        var stream = value.v;
-        target.__flag = true;
-        //同名无需name，直接function作为middleware
-        if(util.isFunction(stream)) {
-          v = stream(v);
-          target[k] = v;
-          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
-            target.__migiNode[k] = v;
+      var arr = this.__listener[k];
+      for(var i = 0, len = arr.length; i < len; i++) {
+        var stream = arr[i];
+        var target = stream.target;
+        var name = stream.name;
+        var middleware = stream.middleware;
+        if(!bridgeStream.pass(target, name)) {
+          if(target.hasOwnProperty('__flag')) {
+            target.__flag = true;
+          }
+          target.$[name] = middleware ? middleware.call(target, v) : v;
+          if(target.hasOwnProperty('__flag')) {
+            target.__flag = false;
           }
         }
-        //只有name说明无需数据处理
-        else if(util.isString(stream)) {
-          target[stream] = v;
-          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
-            target.__migiNode[stream] = v;
-          }
-        }
-        else if(stream.name) {
-          var v2 = stream.middleware ? stream.middleware.call(this, v) : v;
-          target[stream.name] = v2;
-          if(browser.lie && target.__migiNode && target.__migiNode.nodeName) {
-            target.__migiNode[stream.name] = v;
-          }
-        }
-        target.__flag = false;
       }
     }
   }
-  bridge(target, datas) {
+  __record(target, src, name, middleware) {
+    //记录桥接单向数据流关系
+    bridgeStream.record(this.uid, target.uid, src, name);
+    this.__listener[src] = this.__listener[src] || [];
+    this.__listener[src].push({
+      target,
+      name,
+      middleware
+    });
+  }
+  bridge(target, src, name, middleware) {
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self);
@@ -57,19 +53,38 @@ class EventBus extends Event {
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to Component/Model: ' + self);
     }
-    //记录桥接单向数据流关系
-    bridgeStream.record(self, target, datas);
-    //数据流以事件形式流经自己，存储好两个对象的引用
-    Object.keys(datas).forEach(function(k) {
-      self.__listener[k] = self.__listener[k] || [];
-      self.__listener[k].push({
-        target,
-        v: datas[k]
-      });
-    });
+    //重载
+    if(arguments.length == 2) {
+      if(util.isString(src)) {
+        self.__record(target, src, src);
+      }
+      else {
+        Object.keys(src).forEach(function(k) {
+          var o = src[k];
+          if(util.isString(o)) {
+            self.__record(target, k, o);
+          }
+          else if(o.name) {
+            self.__record(target, k, o.name, o.middleware);
+          }
+        });
+      }
+    }
+    else if(arguments.length == 3) {
+      if(util.isString(name)) {
+        self.__record(target, src, name);
+      }
+      else {
+        middleware = name;
+        self.__record(target, src, src, middleware);
+      }
+    }
+    else if(arguments.length == 4) {
+      self.__record(target, src, name, middleware);
+    }
   }
-  bridgeTo(target, datas) {
-    target.bridge(this, datas);
+  bridgeTo(target, ...datas) {
+    target.bridge(this, ...datas);
   }
 }
 
