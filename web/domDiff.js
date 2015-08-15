@@ -18,7 +18,7 @@ function replaceWith(elem, cns, index, vd, isText) {
   //因此DOM使用insertAdjacentHTML，text则用textNode
   var target;
   if(isText) {
-    var s = vd === void 0 || vd === null ? '' : vd.toString();
+    var s = util.stringify(vd);
     if(s) {
       var node = browser.NODE;
       node.innerHTML = util.encodeHtml(s);
@@ -61,7 +61,7 @@ function replaceWith(elem, cns, index, vd, isText) {
 function insertAt(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
-    var s = vd === void 0 || vd === null ? '' : vd.toString();
+    var s = util.stringify(vd);
     if(s) {
       var node = browser.NODE;
       node.innerHTML = util.encodeHtml(s);

@@ -91,14 +91,22 @@ function joinArray(arr, prop) {
     else if(item instanceof Element || browser.lie && item && item.__migiEL) {
       res += item.toString();
     }
-    else if(item === void 0 || item === null) {
-      res += '';
-    }
     else {
-      res += util.encodeHtml(item.toString(), prop);
+      res += encodeHtml(stringify(item), prop);
     }
   });
   return res;
+}
+
+function stringify(s) {
+  if(s === null || s === void 0) {
+    return '';
+  }
+  return s.toString();
+}
+
+function encodeHtml(s, prop) {
+  return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
 }
 
 var util = {
@@ -122,9 +130,8 @@ var util = {
     }
     return equal(a, b);
   },
-  encodeHtml:function(s, prop) {
-    return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
-  },
+  stringify:stringify,
+  encodeHtml:encodeHtml,
   joinArray:function(arr, prop) {
     //fix循环依赖
     if(Element.hasOwnProperty('default')) {

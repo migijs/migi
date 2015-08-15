@@ -47,7 +47,7 @@ function join(index, children, history) {
       }
     }
     else {
-      res += child === void 0 || child === null ? '' : child.toString();
+      res += util.stringify(child);
     }
   }
   return res;
@@ -68,7 +68,7 @@ function joinObj(arr, history) {
       break;
     }
     else {
-      res += child === void 0 || child === null ? '' : child.toString();
+      res += util.stringify(child);
     }
   }
   return res;

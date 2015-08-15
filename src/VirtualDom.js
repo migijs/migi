@@ -11,7 +11,7 @@ import sort from './sort';
 import domDiff from './domDiff';
 import type from './type';
 import fixEvent from './fixEvent';
-import setAttr from './setAttr';
+import attr from './attr';
 
 const SELF_CLOSE = {
   'img': true,
@@ -83,7 +83,7 @@ class VirtualDom extends Element {
       }
     }
     res += ' migi-uid="' + self.uid + '"';
-    //input和select这种:input要侦听数据绑定
+    //:input要侦听数据绑定
     self.__checkListener();
     //自闭合标签特殊处理
     if(self.__selfClose) {
@@ -185,10 +185,26 @@ class VirtualDom extends Element {
         return '';
       }
       self.__cache[prop] = s;
-      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      //特殊属性根据类型输出或是在DOM后设置prop
+      var special = attr.special(self.name, prop);
+      switch(special) {
+        case attr.RENDER_EXIST:
+          if(v.v) {
+            res = ' ' + prop + '="' + s + '"';
+          }
+          break;
+        case attr.RENDER_DOM:
+          self.once(Event.DOM, function() {
+            self.__updateAttr(prop, v);
+          });
+          break;
+        default:
+          res = ' ' + prop + '="' + s + '"';
+          break;
+      }
     }
     else {
-      var s = Array.isArray(v) ? util.joinArray(v) : (v === void 0 || v === null ? '' : v.toString());
+      var s = Array.isArray(v) ? util.joinArray(v) : util.stringify(v);
       if(prop == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
           self.element.innerHTML = s;
@@ -199,7 +215,23 @@ class VirtualDom extends Element {
         prop = 'class';
       }
       self.__cache[prop] = s;
-      res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+      //特殊属性根据类型输出或是在DOM后设置prop
+      var special = attr.special(self.name, prop);
+      switch(special) {
+        case attr.RENDER_EXIST:
+          if(v) {
+            res = ' ' + prop + '="' + s + '"';
+          }
+          break;
+        case attr.RENDER_DOM:
+          self.once(Event.DOM, function() {
+            self.__updateAttr(prop, v);
+          });
+          break;
+        default:
+          res = ' ' + prop + '="' + s + '"';
+          break;
+      }
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
     if(self.__style) {
@@ -236,18 +268,15 @@ class VirtualDom extends Element {
               item.context[key] = v;
             }
             var type = self.__cache.type;
-            if(type === void 0 || type === null) {
-              type = '';
-            }
             switch(type.toLowerCase()) {
               //一些无需联动
-              case 'button':
-              case 'hidden':
-              case 'image':
-              case 'file':
-              case 'reset':
-              case 'submit':
-                break;
+              //case 'button':
+              //case 'hidden':
+              //case 'image':
+              //case 'file':
+              //case 'reset':
+              //case 'submit':
+              //  break;
               //只需侦听change
               case 'checkbox':
               case 'radio':
@@ -679,10 +708,10 @@ class VirtualDom extends Element {
       if(v === null || v === void 0) {
         v = '';
       }
-      this.element.innerHTML = v.toString() || '';
+      this.element.innerHTML = util.stringify(v);
       return;
     }
-    setAttr(this.element, k, v);
+    attr.update(this.name, this.element, k, v);
     this.__cache[k] = v;
     //使用了jaw内联解析css
     if(this.__style) {
