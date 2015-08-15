@@ -89,7 +89,7 @@ function joinArray(arr, prop) {
       res += joinArray(item);
     }
     else if(item instanceof Element || browser.lie && item && item.__migiEL) {
-      res += item.toString();
+      res += prop ? encodeHtml(item.toString(), prop) : item.toString();
     }
     else {
       res += encodeHtml(stringify(item), prop);
