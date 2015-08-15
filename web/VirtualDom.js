@@ -836,9 +836,6 @@ function isEmptyText(item) {
   return item === void 0 || item === null || !item.toString();
 }
 function renderChild(child) {
-  if(child === void 0 || child === null) {
-    return '';
-  }
   if(child instanceof Element || child instanceof Obj || browser.lie && child.__migiEL) {
     return child.toString();
   }
@@ -849,7 +846,7 @@ function renderChild(child) {
     });
     return res;
   }
-  return util.encodeHtml(child.toString());
+  return util.encodeHtml(util.stringify(child));
 }
 function childParent(child, parent) {
   if(Array.isArray(child)) {
