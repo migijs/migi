@@ -45,7 +45,8 @@
 </style>
 <script type="text/jsx">
   import jaw from 'jaw';
-  var style = document.querySelector('style[type="text/jsx"]').textContent;
+  var style = document.querySelector('style[type="text/jsx"]');
+  style = style.textContent || style.innerHTML;
 
   class Switch extends migi.Component {
     constructor(...data) {

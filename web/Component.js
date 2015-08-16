@@ -60,6 +60,11 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   }
   //@override
   Component.prototype.toString = function() {
+    //lie下构造器中设置style无法触发get/set，特殊hack
+    if(browser.lie && this.$$.style && this.$$.style != this.$$.__style) {
+      this.$$.__style = this.$$.style;
+    }
+
     this.__virtualDom = this.render();
     this.__virtualDom.__parent = this;
     if(this.__style) {
