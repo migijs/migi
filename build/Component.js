@@ -61,19 +61,19 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   //@override
   Component.prototype.toString = function() {
     this.__virtualDom = this.render();
-    this.virtualDom.__parent = this;
+    this.__virtualDom.__parent = this;
     if(this.__style) {
-      this.virtualDom.style = this.__style;
+      this.__virtualDom.style = this.__style;
     }
-    return this.virtualDom.toString();
+    return this.__virtualDom.toString();
   }
   Component.prototype.findChild = function(name) {
     return this.findChildren(name, true)[0];
   }
   Component.prototype.findChildren = function(name, first) {
     var res = [];
-    for(var i = 0, len = this.children.length; i < len; i++) {
-      var child = this.children[i];
+    for(var i = 0, len = this.__children.length; i < len; i++) {
+      var child = this.__children[i];
       if(child instanceof Element || browser.lie && child && child.__migiEL) {
         if(child instanceof Component) {
           if(child.name == name || util.isFunction(name) && child instanceof name) {
@@ -103,7 +103,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     return this.findAll(name, true)[0];
   }
   Component.prototype.findAll = function(name, first) {
-    return this.virtualDom.findAll(name, first);
+    return this.__virtualDom ? this.__virtualDom.findAll(name, first) : [];
   }
   Component.prototype.__brcb = function(keys) {
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑

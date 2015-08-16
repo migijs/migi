@@ -61,19 +61,19 @@ class Component extends Element {
   //@override
   toString() {
     this.__virtualDom = this.render();
-    this.virtualDom.__parent = this;
+    this.__virtualDom.__parent = this;
     if(this.__style) {
-      this.virtualDom.style = this.__style;
+      this.__virtualDom.style = this.__style;
     }
-    return this.virtualDom.toString();
+    return this.__virtualDom.toString();
   }
   findChild(name) {
     return this.findChildren(name, true)[0];
   }
   findChildren(name, first) {
     var res = [];
-    for(var i = 0, len = this.children.length; i < len; i++) {
-      var child = this.children[i];
+    for(var i = 0, len = this.__children.length; i < len; i++) {
+      var child = this.__children[i];
       if(child instanceof Element || browser.lie && child && child.__migiEL) {
         if(child instanceof Component) {
           if(child.name == name || util.isFunction(name) && child instanceof name) {
@@ -103,7 +103,7 @@ class Component extends Element {
     return this.findAll(name, true)[0];
   }
   findAll(name, first) {
-    return this.virtualDom.findAll(name, first);
+    return this.__virtualDom ? this.__virtualDom.findAll(name, first) : [];
   }
   __brcb(keys) {
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
