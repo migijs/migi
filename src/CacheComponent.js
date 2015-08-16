@@ -68,6 +68,8 @@ class CachedComponent extends Component {
         }
         keys = keys.length > 1 ? keys : keys[0];
         super.__onData(keys);
+        //fake来源，来自于桥接bridge
+        self.emit(Event.CACHE_DATA, keys, self.__brcb);
       }, 1);
     }
   }
