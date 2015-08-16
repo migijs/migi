@@ -9,7 +9,7 @@ module.exports = {
       .assert.elementPresent('#test span')
       .assert.elementPresent('#test strong')
       .assert.containsText('#test span', '0')
-      .assert.containsText('#test strong', '0')
+      .assert.containsText('#test strong', '1')
       .end();
   }
 };

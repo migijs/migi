@@ -8,8 +8,8 @@ module.exports = {
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test p')
       .assert.elementPresent('#test span')
+      .assert.containsText('#test p', '1')
       .assert.containsText('#test span', '1')
-      .assert.containsText('#test strong', '1')
       .end();
   }
 };
