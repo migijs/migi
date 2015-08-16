@@ -2,7 +2,6 @@ var util=function(){var _0=require('./util');return _0.hasOwnProperty("default")
 
 var relations = {};
 var hash = {};
-var sid = 0;
 
 function addStream(k1, temp, history) {
   //temp用来记录uid+key只出现在数据流中一次
@@ -21,9 +20,7 @@ function addStream(k1, temp, history) {
 
 exports["default"]={
   gen:function(uid, keys) {
-    var history = {
-      sid: sid++
-    };
+    var history = {};
     var temp = {};
     //根据record记录的关系hash，将此次数据流所相关的全部对象的源引用，设置为唯一的一个记录，以此防止闭环
     if(Array.isArray(keys)) {
@@ -50,14 +47,6 @@ exports["default"]={
     }
     o[kb] = true;
   },
-  sid:function(obj, key) {
-    var k = obj.uid + ',' + key;
-    if(!hash.hasOwnProperty(k)) {
-      return;
-    }
-    var history = hash[k];
-    return history.sid;
-  },
   pass:function(obj, key) {
     var k = obj.uid + ',' + key;
     //只被桥接没有桥接别人的话不存在
@@ -82,6 +71,12 @@ exports["default"]={
             delete item[k2];
           }
         });
+      }
+    });
+    var k2 = ',' + uid;
+    Object.keys(hash).forEach(function(k1) {
+      if(k1.indexOf(k) == 0 || k1.indexOf(k2) > 0) {
+        delete hash[k1];
       }
     });
   }
