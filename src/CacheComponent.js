@@ -21,7 +21,7 @@ class CachedComponent extends Component {
   }
 
   //@overwrite
-  __onData(k) {
+  __onData(k, caller) {
     var self = this;
     if(self.__flag) {
       self.__bridgeData(k);
@@ -45,7 +45,7 @@ class CachedComponent extends Component {
         }
         keys = keys.length > 1 ? keys : keys[0];
         super.__onData(keys);
-        self.emit(Event.CACHE_DATA, keys);
+        self.emit(Event.CACHE_DATA, keys, caller);
       }, 1);
     }
   }

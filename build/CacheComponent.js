@@ -21,7 +21,7 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
   }
 
   //@overwrite
-  CachedComponent.prototype.__onData = function(k) {
+  CachedComponent.prototype.__onData = function(k, caller) {
     var _5=this;var self = this;
     if(self.__flag) {
       self.__bridgeData(k);
@@ -45,7 +45,7 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
         }
         keys = keys.length > 1 ? keys : keys[0];
         Component.prototype.__onData.call(_5,keys);
-        self.emit(Event.CACHE_DATA, keys);
+        self.emit(Event.CACHE_DATA, keys, caller);
       }, 1);
     }
   }

@@ -128,12 +128,12 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
             //Model和Component数据模型
             else {
               //变更时设置对方CacheComponent不更新，防止闭环
-              if (target.hasOwnProperty('__flag')) {
+              if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
                 target.__flag = true;
               }
               target.$[name] = middleware ? middleware.call(this, this[k]) : this[k];
               //关闭开关
-              if (target.hasOwnProperty('__flag')) {
+              if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
                 target.__flag = false;
               }
             }
