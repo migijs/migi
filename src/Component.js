@@ -64,6 +64,10 @@ class Component extends Element {
     if(browser.lie && this.$$.style && this.$$.style != this.$$.__style) {
       this.$$.__style = this.$$.style;
     }
+    //还有model
+    if(browser.lie && this.$$.model && this.$$.model != this.$$.__model) {
+      this.$.model = this.$$.__model = this.$$.model;
+    }
 
     this.__virtualDom = this.render();
     this.__virtualDom.__parent = this;
@@ -338,7 +342,7 @@ var GS = {
       return this.__model;
     },
     set: function(v) {
-      if(!(v instanceof Model) || browser.lie && !v.__migiMD) {
+      if(!(v instanceof Model) && browser.lie && !v.__migiMD) {
         throw new Error('can not set model to a non Model: ' + v);
       }
       this.__model = v;

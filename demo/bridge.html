@@ -112,11 +112,21 @@
             self.$.list = data;
           });
         }
-        window.addEventListener('click', function(e) {
-          if(e.target != self.element) {
-            self.$.show = false;
-          }
-        });
+        if(migi.browser.lie && document.body.attachEvent) {
+          document.body.attachEvent('onclick', function(e) {
+            e = e || window.event;
+            if(e.srcElement != self.$.element) {
+              self.$.show = false;
+            }
+          });
+        }
+        else {
+          document.body.addEventListener('click', function(e) {
+            if(e.target != self.element) {
+              self.$.show = false;
+            }
+          });
+        }
       });
     }
     get list() {

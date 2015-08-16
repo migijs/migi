@@ -1,10 +1,13 @@
 var PROTECT = {
-  constructor: true
+  constructor: true,
+  style: true
 };
 
 var REFS = {
-  '$': true,
-  '$$': true
+  $: true,
+  $$: true,
+  model: true,
+  style: true
 };
 
 var mix = {
