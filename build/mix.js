@@ -2,6 +2,11 @@ var PROTECT = {
   constructor: true
 };
 
+var REFS = {
+  '$': true,
+  '$$': true
+};
+
 var mix = {
   //__migiGS使用的混入
   gs:function(target, data) {
@@ -17,7 +22,7 @@ var mix = {
   //lie返回的dom对象包裹
   ref:function(target, dom, gs) {
     for(var i in target) {
-      if(target.hasOwnProperty(i)) {
+      if(target.hasOwnProperty(i) && !REFS.hasOwnProperty(i)) {
         !function(k) {
           gs[k] = {
             get: function() {

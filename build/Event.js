@@ -4,6 +4,7 @@ var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_
 
   function Event() {
     this.__hash = {};
+    this.$ = this.$$ = this;
     if(browser.lie) {
       this.__migiEV = this;
     }
@@ -96,6 +97,7 @@ var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_
     if(this.constructor == cons) {
       var a = document.createElement('a');
       this.__migiNode = a.__migiNode = a;
+      this.$ = a;
       mix.ref(this, a, this.__migiGS);
       Object.defineProperties(a, this.__migiGS);
       return a;

@@ -49,24 +49,7 @@ Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
   Model.prototype[k] = Component.prototype[k];
 });
 
-var GS = {
-  $: {
-    get: function() {
-      if(browser.lie && this.__migiNode) {
-        return this.__migiNode;
-      }
-      return this;
-    }
-  },
-  $$: {
-    get: function() {
-      if(browser.lie && this.__migiMD) {
-        return this.__migiMD;
-      }
-      return this;
-    }
-  }
-};
+var GS = {};
 ['name', 'uid'].forEach(function(item) {
   GS[item] = {
     get: function() {
