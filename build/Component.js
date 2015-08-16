@@ -161,6 +161,10 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   //bridge(target, Object<String:Function>)
   //bridge(target, Object<String:Object<name:String,middleware:Function>>)
   Component.prototype.bridge = function(target, src, name, middleware) {
+    //fix循环依赖
+    if(Model.hasOwnProperty('default')) {
+      Model = Model['default'];
+    }
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);
@@ -168,7 +172,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     if(!target
       || !(target instanceof EventBus)
         && !(target instanceof Component)
-        && !(target instanceof migi.Model)
+        && !(target instanceof Model)
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
     }
