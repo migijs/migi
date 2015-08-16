@@ -131,7 +131,7 @@ class Component extends Element {
               if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
                 target.__flag = true;
               }
-              target.$[name] = middleware ? middleware.call(this, this[k]) : this[k];
+              target[name] = middleware ? middleware.call(this, this[k]) : this[k];
               //关闭开关
               if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
                 target.__flag = false;

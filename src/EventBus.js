@@ -24,7 +24,7 @@ class EventBus extends Event {
           if(target.hasOwnProperty('__flag')) {
             target.__flag = true;
           }
-          target.$[name] = middleware ? middleware.call(target, v) : v;
+          target[name] = middleware ? middleware.call(target, v) : v;
           if(target.hasOwnProperty('__flag')) {
             target.__flag = false;
           }

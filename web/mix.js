@@ -3,22 +3,41 @@ define(function(require, exports, module){var PROTECT = {
 };
 
 var mix = {
-  //不包括原型链mix
-  s:function(target, data) {
+  //__migiGS使用的混入
+  gs:function(target, data) {
     data=[].slice.call(arguments, 1);data.forEach(function(item) {
-      mix.p(target, item, true);
+      if(item) {
+        Object.keys(item).forEach(function(k) {
+          target[k] = item[k];
+        });
+      }
     });
     return target;
   },
-  //包括原型链mix
-  p:function(target, data, noProto) {
-    for(var i in data) {
-      if(!PROTECT.hasOwnProperty(i)) {
-        if(!noProto || data.hasOwnProperty(i)) {
-          target[i] = data[i];
-        }
+  //lie返回的dom对象包裹
+  ref:function(target, dom, gs) {
+    for(var i in target) {
+      if(target.hasOwnProperty(i)) {
+        !function(k) {
+          gs[k] = {
+            get: function() {
+              return target[k];
+            },
+            set: function(v) {
+              target[k] = v;
+            }
+          };
+        }(i);
+      }
+      else if(!PROTECT.hasOwnProperty(i)) {
+        dom[i] = target[i];
       }
     }
+    gs.constructor = {
+      get: function() {
+        return target.constructor;
+      }
+    };
     return target;
   }
 };
