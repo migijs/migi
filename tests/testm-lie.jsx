@@ -1097,3 +1097,278 @@ describe('attr', function() {
     expect(cmpn.toString()).to.eql('<div title="a" style="margin:0;padding:0;" migi-uid="1">1</div>');
   });
 });
+
+describe('bridge', function() {
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    get a() {
+      return this._a;
+    }
+    set a(v) {
+      this._a = v;
+    }
+    render() {
+      return <div>{this.a}</div>;
+    }
+  }
+  it('(target, name)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, name)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, 'a', 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, function)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, 'a', function(v) {
+      return v + 1;
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, name, name, function)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, 'a', 'a', function(v) {
+      return v + 1;
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:String>)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, {
+      a: 'a'
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, object<String:Function>)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, {
+      a: function(v) {
+        return v + 1;
+      }
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:Object<name:String,middleware:Function>>)', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, {
+      a: {
+        name: 'a',
+        middleware: function(v) {
+          return v + 1;
+        }
+      }
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('duplicate', function() {
+    var c1 = new Component();
+    var c2 = new Component();
+    c1.bridge(c2, 'a');
+    expect(function() {
+      c1.bridge(c2, 'a');
+    }).to.throwError();
+  });
+});
+
+describe('model bridge', function() {
+  class Model extends migi.Model {
+    constructor(...data) {
+      super(...data);
+    }
+    get a() {
+      return this._a;
+    }
+    set a(v) {
+      this._a = v;
+    }
+  }
+  it('(target, name)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, name)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, 'a', 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, function)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, 'a', function(v) {
+      return v + 1;
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, name, name, function)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, 'a', 'a', function(v) {
+      return v + 1;
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:String>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, {
+      a: 'a'
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, object<String:Function>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, {
+      a: function(v) {
+        return v + 1;
+      }
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:Object<name:String,middleware:Function>>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, {
+      a: {
+        name: 'a',
+        middleware: function(v) {
+          return v + 1;
+        }
+      }
+    });
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('duplicate', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(c2, 'a');
+    expect(function() {
+      c1.bridge(c2, 'a');
+    }).to.throwError();
+  });
+});
+
+describe('model bridge event', function() {
+  class Model extends migi.Model {
+    constructor(...data) {
+      super(...data);
+    }
+    get a() {
+      return this._a;
+    }
+    set a(v) {
+      this._a = v;
+    }
+  }
+  var eventBus = new migi.EventBus();
+  it('(target, name)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, 'a');
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, name)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, 'a', 'a');
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, name, function)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, 'a', function(v) {
+      return v + 1;
+    });
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, name, name, function)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, 'a', 'a', function(v) {
+      return v + 1;
+    });
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:String>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, {
+      a: 'a'
+    });
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(1);
+  });
+  it('(target, object<String:Function>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, {
+      a: function(v) {
+        return v + 1;
+      }
+    });
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('(target, object<String:Object<name:String,middleware:Function>>)', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, {
+      a: {
+        name: 'a',
+        middleware: function(v) {
+          return v + 1;
+        }
+      }
+    });
+    c2.bridgeTo(eventBus, 'a');
+    c1.a = 1;
+    expect(c2.a).to.eql(2);
+  });
+  it('duplicate', function() {
+    var c1 = new Model();
+    var c2 = new Model();
+    c1.bridge(eventBus, 'a');
+    expect(function() {
+      c1.bridge(eventBus, 'a');
+    }).to.throwError();
+  });
+});

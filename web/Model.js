@@ -20,6 +20,7 @@ var uid = 0;
     //ie8的对象识别hack
     if(browser.lie) {
       this.__migiMD = this;
+      this.__migiGS = GS;
       return this.__hackLie(Model, GS);
     }
   }
