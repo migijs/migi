@@ -27,18 +27,22 @@ class CachedComponent extends Component {
       self.__bridgeData(k);
       return;
     }
+    //被桥接的数据缓存作废
+    delete self.__bridgeHandler[k];
     if(self.__handler.hasOwnProperty(k)) {
       return;
     }
     self.__handler[k] = true;
-    //被桥接的数据缓存作废
-    delete self.__bridgeHandler[k];
     if(!self.__ccb) {
       self.__ccb = true;
       setTimeout(function() {
         var keys = Object.keys(self.__handler);
         self.__handler = {};
         self.__ccb = false;
+        //可能被清空
+        if(!keys.length) {
+          return;
+        }
         keys = keys.length > 1 ? keys : keys[0];
         super.__onData(keys);
         self.emit(Event.CACHE_DATA, keys);
@@ -47,17 +51,21 @@ class CachedComponent extends Component {
   }
   __bridgeData(k) {
     var self = this;
+    //之前非桥接的数据缓存作废
+    delete self.__handler[k];
     if(self.__bridgeHandler.hasOwnProperty(k)) {
       return;
     }
     self.__bridgeHandler[k] = true;
-    //之前非桥接的数据缓存作废
-    delete self.__handler[k];
     if(!self.__bcb) {
       self.__bcb = true;
       setTimeout(function() {
         var keys = Object.keys(self.__bridgeHandler);
         self.__bcb = false;
+        //可能被清空
+        if(!keys.length) {
+          return;
+        }
         keys = keys.length > 1 ? keys : keys[0];
         super.__onData(keys);
       }, 1);
