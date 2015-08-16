@@ -184,6 +184,9 @@ var SELF_CLOSE = {
         });
         return '';
       }
+      if(prop == 'className') {
+        prop = 'class';
+      }
       self.__cache[prop] = s;
       //特殊属性根据类型输出或是在DOM后设置prop
       var special = attr.special(self.name, prop);

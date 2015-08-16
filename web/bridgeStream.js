@@ -43,7 +43,7 @@ exports["default"]={
     relations[ka] = relations[ka] || {};
     var o = relations[ka];
     if(o.hasOwnProperty(kb)) {
-      throw new Error('can not bridge duplicate: ' + a.name + '.' + a.uid + '.' + k1 + ' -> ' + b.name + '.' + b.uid + '.' + k2);
+      throw new Error('can not bridge duplicate: ' + ka + ' -> ' + kb);
     }
     o[kb] = true;
   },
