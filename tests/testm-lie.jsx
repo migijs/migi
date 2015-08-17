@@ -260,7 +260,6 @@ describe('VirtualDom', function() {
     var div = <div>123</div>;
     expect(div.__migiVD).to.be.a(migi.VirtualDom);
     expect(div.__migiEL).to.be.a(migi.Element);
-    expect(div.__migiEV).to.be.a(migi.Event);
   });
   it('name', function() {
     var div = <div>123</div>;
@@ -331,7 +330,6 @@ describe('Component', function() {
     var cmpn = new Component();
     expect(cmpn.__migiCP).to.be.a(migi.Component);
     expect(cmpn.__migiEL).to.be.a(migi.Element);
-    expect(cmpn.__migiEV).to.be.a(migi.Event);
   });
   it('name', function() {
     var cmpn = new Component();
