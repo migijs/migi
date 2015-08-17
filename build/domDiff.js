@@ -358,7 +358,7 @@ function diffVd(ovd, nvd) {
   }
   //特殊的uid，以及将真实DOM引用赋给新vd
   var elem = ovd.element;
-  nvd.__uid = ovd.uid;
+  nvd.uid = ovd.uid;
   nvd.__element = elem;
   nvd.__parent = ovd.__parent;
   nvd.__top = ovd.__top;

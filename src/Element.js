@@ -15,7 +15,7 @@ class Element extends Event {
   constructor(name, props, children) {
     super();
     this.$ = this.$$ = this;
-    this.__uid = uid++;
+    this.uid = uid++;
     this.__reset(name, props, children);
   }
   __reset(name, props, children) {
@@ -150,7 +150,7 @@ var GS = {
     }
   }
 };
-['name', 'uid', 'dom'].forEach(function(item) {
+['name', 'dom'].forEach(function(item) {
   GS[item] = {
     get: function() {
       return this['__' + item];
