@@ -292,7 +292,7 @@ class VirtualDom extends Element {
                 break;
               //其它无需change，但input等
               default:
-                self.__addListener(['input', 'paste', 'cut'], cb);
+                self.__addListener(['input', 'paste', 'cut', 'change'], cb);
                 break;
             }
           });
@@ -332,7 +332,7 @@ class VirtualDom extends Element {
               var key = child.k;
               child.context[key] = v;
             }
-            self.__addListener(['input', 'paste', 'cut'], cb);
+            self.__addListener(['input', 'paste', 'cut', 'change'], cb);
           });
         }
       }
