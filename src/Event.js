@@ -4,10 +4,6 @@ import mix from './mix';
 class Event {
   constructor() {
     this.__hash = {};
-    this.$ = this.$$ = this;
-    if(browser.lie) {
-      this.__migiEV = this;
-    }
   }
   on(id, handle) {
     var self = this;

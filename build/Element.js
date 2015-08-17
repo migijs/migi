@@ -14,6 +14,7 @@ function getDom(dom) {
 !function(){var _3=Object.create(Event.prototype);_3.constructor=Element;Element.prototype=_3}();
   function Element(name, props, children) {
     Event.call(this);
+    this.$ = this.$$ = this;
     this.__uid = uid++;
     this.__reset(name, props, children);
   }

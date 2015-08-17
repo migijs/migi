@@ -10,6 +10,7 @@ var uid = 0;
 class Model extends Event {
   constructor() {
     super();
+    this.$ = this.$$ = this;
     this.__uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = [];
