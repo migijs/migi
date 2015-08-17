@@ -21,7 +21,7 @@ class Element extends Event {
   __reset(name, props, children) {
     this.__name = name;
     this.props = props;
-    this.__children = children;
+    this.children = children;
 
     this.__element = null; //真实DOM引用
     this.__parent = null; //父vd或cp引用
@@ -40,7 +40,8 @@ class Element extends Event {
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   __clean() {
-    if(this.dom) {
+    if(this.__dom) {
+      this.__dom = false;
       var elem = this.element;
       if(elem) {
         elem.parentNode.removeChild(elem);
@@ -149,7 +150,7 @@ var GS = {
     }
   }
 };
-['name', 'children', 'uid', 'dom'].forEach(function(item) {
+['name', 'uid', 'dom'].forEach(function(item) {
   GS[item] = {
     get: function() {
       return this['__' + item];

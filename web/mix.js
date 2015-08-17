@@ -1,13 +1,15 @@
 define(function(require, exports, module){var PROTECT = {
   constructor: true,
-  style: true
+  style: true,
+  children: true
 };
 
 var REFS = {
   $: true,
   $$: true,
   model: true,
-  style: true
+  style: true,
+  children: true
 };
 
 var mix = {
@@ -41,11 +43,19 @@ var mix = {
         dom[i] = target[i];
       }
     }
+    //特殊的属性，constructor/children不能赋给DOM对象，只能设置get
     gs.constructor = {
       get: function() {
         return target.constructor;
       }
     };
+    if(target.hasOwnProperty('children')) {
+      gs.children = {
+        get: function() {
+          return target.children;
+        }
+      };
+    }
     return target;
   }
 };

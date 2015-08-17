@@ -81,8 +81,8 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   }
   Component.prototype.findChildren = function(name, first) {
     var res = [];
-    for(var i = 0, len = this.__children.length; i < len; i++) {
-      var child = this.__children[i];
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
       if(child instanceof Element || browser.lie && child && child.__migiEL) {
         if(child instanceof Component) {
           if(child.name == name || util.isFunction(name) && child instanceof name) {
