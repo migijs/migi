@@ -1,7 +1,7 @@
 class Model extends migi.Model {
-  constructor(i) {
+  constructor() {
     super();
-    this.count = i || 0;
+    this._i = 0;
   }
   set count(v) {
     this._i = v;
