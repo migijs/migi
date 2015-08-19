@@ -364,6 +364,7 @@ function diffVd(ovd, nvd) {
   nvd.__top = ovd.__top;
   nvd.__style = ovd.__style;
   nvd.__dom = ovd.__dom;
+  nvd.__names = ovd.__names;
   //删除老参数，添加新参数
   var ok = Object.keys(ovd.props);
   var nk = Object.keys(nvd.props);
@@ -696,9 +697,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
             break;
           //Component和VirtualDom变化则直接重绘
           //Component变化直接重绘
-          case 1:
-          case 2:
-          case 3:
+          default:
             elem = ovd.element;
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
