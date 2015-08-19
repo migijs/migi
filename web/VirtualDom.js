@@ -823,9 +823,7 @@ var GS = {
       }
       self.__names.push(self.name);
       self.children.forEach(function(child) {
-        if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
-          child.style = v;
-        }
+        childStyle(child, v);
       });
     }
   }
@@ -862,6 +860,19 @@ function childParent(child, parent) {
   }
   else if(child instanceof Obj) {
     childParent(child.v, parent);
+  }
+}
+function childStyle(child, style) {
+  if(Array.isArray(child)) {
+    child.forEach(function(item) {
+      childStyle(item, style);
+    });
+  }
+  else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+    child.style = style;
+  }
+  else if(child instanceof Obj) {
+    childStyle(child.v, style);
   }
 }
 
