@@ -717,7 +717,7 @@ var SELF_CLOSE = {
       this.element.innerHTML = util.stringify(v);
       return;
     }
-    attr.update(this.name, this.element, k, v);
+    attr.update(this.name, this.element, k, v, this.__style);
     this.__cache[k] = v;
     //使用了jaw内联解析css
     if(this.__style) {

@@ -14,16 +14,22 @@ const SPECIALS = {
   input: {
     autofocus: RENDER_EXIST,
     checked: RENDER_EXIST,
+    defaultChecked: RENDER_DOM,
+    defaultchecked: RENDER_DOM,
     defaultValue: RENDER_DOM,
+    defaultvalue: RENDER_DOM,
     disabled: RENDER_EXIST,
     multiple: RENDER_EXIST,
     readOnly: RENDER_EXIST,
+    readonly: RENDER_EXIST,
     required: RENDER_EXIST
   },
   link: {
     disabled: RENDER_EXIST
   },
   option: {
+    defaultSelected: RENDER_DOM,
+    defaultselected: RENDER_DOM,
     disabled: RENDER_EXIST,
     selected: RENDER_EXIST,
     text: RENDER_DOM
@@ -32,12 +38,16 @@ const SPECIALS = {
     autofocus: RENDER_EXIST,
     disabled: RENDER_EXIST,
     multiple: RENDER_EXIST,
-    selectedIndex: RENDER_DOM
+    selectedIndex: RENDER_DOM,
+    selectedindex: RENDER_DOM
   },
   textarea: {
     autofocus: RENDER_EXIST,
+    defaultValue: RENDER_DOM,
+    defaultvalue: RENDER_DOM,
     disabled: RENDER_EXIST,
-    readOnly: RENDER_EXIST
+    readOnly: RENDER_EXIST,
+    readonly: RENDER_EXIST
   }
 };
 
@@ -48,9 +58,13 @@ const SETS = {
   input: {
     autofocus: BOOL,
     checked: BOOL,
+    defaultChecked: BOOL,
+    defaultchecked: BOOL,
     defaultValue: STR,
+    defaultvalue: STR,
     disabled: BOOL,
     readOnly: BOOL,
+    readonly: BOOL,
     required: BOOL,
     value: STR
   },
@@ -58,6 +72,8 @@ const SETS = {
     checked: BOOL
   },
   option: {
+    defaultSelected: BOOL,
+    defaultselected: BOOL,
     disabled: BOOL,
     selected: BOOL,
     text: STR
@@ -67,12 +83,16 @@ const SETS = {
     disabled: BOOL,
     required: BOOL,
     selectedIndex: NUM,
+    selectedindex: NUM,
     value: STR
   },
   textarea: {
     autofocus: BOOL,
+    defaultValue: STR,
+    defaultvalue: STR,
     disabled: BOOL,
     readOnly: BOOL,
+    readonly: BOOL,
     required: BOOL,
     value: STR
   }
@@ -89,7 +109,7 @@ export default {
       }
     }
   },
-  update(name, element, k, v) {
+  update(name, element, k, v, jaw) {
     //特殊对待的prop，用js赋值
     if(SETS.hasOwnProperty(name)) {
       var o = SETS[name];
@@ -119,7 +139,7 @@ export default {
       case 'id':
       case 'class':
         //jaw导入style时改写migi-前缀
-        if(this.__style) {
+        if(jaw) {
           k = 'migi-' + k;
         }
       default:
