@@ -98,6 +98,14 @@ var SETS = {
   }
 };
 
+var lowerCase = {
+  defaultchecked: 'defaultChecked',
+  defaultselected: 'defaultSelected',
+  defaultvalue: 'defautlValue',
+  readonly: 'readOnly',
+  selectindex: 'selectIndex'
+};
+
 exports["default"]={
   RENDER_EXIST:RENDER_EXIST,
   RENDER_DOM:RENDER_DOM,
@@ -115,6 +123,7 @@ exports["default"]={
       var o = SETS[name];
       if(o.hasOwnProperty(k)) {
         o = o[k];
+        k = lowerCase[k] || k;
         switch(o) {
           case NUM:
             v = parseInt(v);
