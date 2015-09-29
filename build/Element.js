@@ -8,6 +8,9 @@ function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
   }
+  else if(dom instanceof Element || browser.lie && dom && dom.__migiEL) {
+    return dom.element;
+  }
   return dom;
 }
 
