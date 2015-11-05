@@ -661,6 +661,9 @@ class VirtualDom extends Element {
         if(child.update(ov)) {
           domDiff.diff(this.element, ov, child.v, ranges, option, history);
         }
+        else {
+          self.__checkObj(k, child.v, ranges, option, history);
+        }
       }
       else {
         self.__checkObj(k, child.v, ranges, option, history);

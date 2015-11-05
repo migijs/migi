@@ -461,7 +461,7 @@ export function diff(elem, ov, nv, ranges, option, history) {
       option.state = DOM_TO_DOM;
     }
   }
-  diffChild(elem, ov, nv, ranges, option, history, true);
+  diffChild(elem, ov, nv, ranges, option, history);
   //当最后一次对比是类型变换时记录，因为随后的text可能要更新
   if(!option.t2d && !option.d2t) {
     if(option.state == TEXT_TO_DOM) {

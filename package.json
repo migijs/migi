@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "A JavaScript MVVM WebComponent on JSX",
   "maintainers": [
     {
