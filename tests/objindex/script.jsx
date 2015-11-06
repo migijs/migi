@@ -23,7 +23,7 @@ class Component extends migi.Component {
   render() {
     return <div onClick={this.click}>
       <p class="a"></p>
-      <p class="b">></p>
+      <p class="b"></p>
       <div>
         { this.index ? '' : '' }
         {
