@@ -18,10 +18,10 @@ function getDom(dom) {
   function Element(name, props, children) {
     Event.call(this);
     this.$ = this.$$ = this;
-    this.uid = uid++;
     this.__reset(name, props, children);
   }
   Element.prototype.__reset = function(name, props, children) {
+    this.uid = uid++;
     this.__name = name;
     this.props = props;
     this.children = children;

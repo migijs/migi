@@ -18,10 +18,10 @@ class Element extends Event {
   constructor(name, props, children) {
     super();
     this.$ = this.$$ = this;
-    this.uid = uid++;
     this.__reset(name, props, children);
   }
   __reset(name, props, children) {
+    this.uid = uid++;
     this.__name = name;
     this.props = props;
     this.children = children;
