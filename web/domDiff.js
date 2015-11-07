@@ -693,22 +693,23 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
               nvd.emit(Event.DOM);
+              //缓存对象池
+              cachePool.add(ovd.__destroy());
             }
             break;
           //Component和VirtualDom变化则直接重绘
-          //Component变化直接重绘
           default:
             elem = ovd.element;
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
             nvd.emit(Event.DOM);
+            //缓存对象池
+            cachePool.add(ovd.__destroy());
             break;
         }
         option.state = DOM_TO_DOM;
         option.prev = type.DOM;
         option.start++;
-        //缓存对象池
-        cachePool.add(ovd.__destroy());
         break;
     }
     //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件

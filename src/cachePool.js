@@ -8,6 +8,7 @@ var pool = {
   add: function(item) {
     if(!browser.lie && !item.__hasDes && this.index < MAX) {
       cache[this.index++] = item;
+      item.__hasDes = true;
     }
   },
   get: function() {

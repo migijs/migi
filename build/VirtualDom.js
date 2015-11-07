@@ -769,7 +769,6 @@ var SELF_CLOSE = {
     this.__hover = false;
     this.__active = false;
     this.__listener = null;
-    this.__hasDes = true;
     this.__parent = null;
     this.__top = null;
     this.__dom = false;
