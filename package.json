@@ -34,7 +34,7 @@
     "es5-shim": "*",
     "es6-shim": "~0.32.0",
     "lefty": "~0.3.5",
-    "jaw": "~0.2.0"
+    "jaw": "~0.5.0"
   },
   "devDependencies": {
     "blanket": "~1.1.7",
@@ -52,7 +52,7 @@
   },
   "main": "./index",
   "engines": {
-    "node": ">= 0.12.0"
+    "node": ">= 0.4.2"
   },
   "spm": {
     "main": "./index.js",
