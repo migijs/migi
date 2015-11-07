@@ -21,7 +21,7 @@ module.exports = {
   'click add2': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '^12<b migi-uid="5">3</b><b migi-uid="6">4</b>$3')
+      .assert.containsText('#test [ref]', '^12<b migi-uid="6">3</b><b migi-uid="7">4</b>$3')
   },
   'click del2': function(browser) {
     browser
@@ -31,7 +31,7 @@ module.exports = {
   'click add3': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '^12<b migi-uid="6">3</b><b migi-uid="5">4</b>5$4')
+      .assert.containsText('#test [ref]', '^12<b migi-uid="8">3</b><b migi-uid="9">4</b>5$4')
   },
   'click del3': function(browser) {
     browser
@@ -41,7 +41,7 @@ module.exports = {
   'click add4': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref]', '^12<b migi-uid="5">3</b><b migi-uid="6">4</b>5<b migi-uid="7">6</b>7<b migi-uid="8">8</b>$7')
+      .assert.containsText('#test [ref]', '^12<b migi-uid="10">3</b><b migi-uid="11">4</b>5<b migi-uid="12">6</b>7<b migi-uid="13">8</b>$7')
   },
   'click del4': function(browser) {
     browser

@@ -6,7 +6,7 @@ var cache = new Array(MAX);
 var pool = {
   index: 0,
   add: function(item) {
-    if(!item.__hasDes && this.index < MAX) {
+    if(!browser.lie && !item.__hasDes && this.index < MAX) {
       cache[this.index++] = item;
       item.__hasDes = true;
     }
