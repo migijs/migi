@@ -16,10 +16,20 @@ function match(names, classes, ids, style, virtualDom, first) {
   var history = {};
   matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, String(names.length - 1), history, first);
   sort(res, function(a, b) {
-    if(a[2] == b[2]) {
+    var pa = a[2];
+    var pb = b[2];
+    //引用相等
+    if(pa == pb) {
       return a[0] > b[0];
     }
-    return a[2] > b[2];
+    //优先级内容不相等
+    for(var i = 0; i < 2; i++) {
+      if(pa[i] !== pb[i]) {
+        return pa[i] > pb[i];
+      }
+    }
+    //优先级相等比较出现顺序
+    return a[0] > b[0];
   });
   var s = '';
   res.forEach(function(item) {
