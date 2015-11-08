@@ -12,6 +12,7 @@ import domDiff from './domDiff';
 import type from './type';
 import fixEvent from './fixEvent';
 import attr from './attr';
+import hash from './hash';
 
 const SELF_CLOSE = {
   'img': true,
@@ -408,59 +409,31 @@ class VirtualDom extends Element {
     }
   }
 
-  find(name) {
-    return this.findAll(name, true)[0];
+  find(selector) {
+    if(this.element) {
+      var node = this.element.querySelector(this.__cvtSel(selector));
+      var uid = node.getAttribute('migi-uid');
+      return hash[uid] || null;
+    }
+    return null;
   }
-  findAll(name, first) {
-    return this.__findAll(name, this.children, [], first);
-  }
-  __findAll(name, children, res, first) {
-    for(var i = 0, len = children.length; i < len; i++) {
-      var child = children[i];
-      if(child instanceof Element || browser.lie && child && child.__migiEL) {
-        res = this.__findEq(name, child, res, first);
-      }
-      else if(child instanceof Obj) {
-        child = child.v;
-        if(Array.isArray(child)) {
-          res = this.__findAll(name, child, res, first);
+  findAll(selector) {
+    var res = [];
+    if(this.element) {
+      var nodes = this.element.querySelectorAll(this.__cvtSel(selector));
+      Array.from(nodes).forEach(function(node) {
+        if(node) {
+          var uid = node.getAttribute('migi-uid');
+          if(hash[uid]) {
+            res.push(hash[uid]);
+          }
         }
-        else if(child instanceof Element || browser.lie && child && child.__migiEL) {
-          res = this.__findEq(name, child, res, first);
-        }
-      }
-      else if(Array.isArray(child)) {
-        res = this.__findAll(name, child, res, first);
-      }
-      if(first && res.length) {
-        break;
-      }
+      });
     }
     return res;
   }
-  __findEq(name, child, res, first) {
-    //cp不递归
-    if(child instanceof Component || browser.lie && child && child.__migiCP) {
-      //传入的可能是个class或者string
-      if(child.name == name
-        || util.isFunction(name) && child instanceof name
-        || browser.lie && child.__migiCP && util.isFunction(name) && child.__migiCP instanceof name) {
-        res.push(child);
-      }
-    }
-    //vd递归
-    else {
-      if(child.name == name
-        || util.isFunction(name) && child instanceof name
-        || browser.lie && child.__migiVD && util.isFunction(name) && child.__migiVD instanceof name) {
-        res.push(child);
-        if(first) {
-          return res;
-        }
-      }
-      res = res.concat(child.findAll(name, first));
-    }
-    return res;
+  __cvtSel(selector) {
+    return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
   }
 
   //@override

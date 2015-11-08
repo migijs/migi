@@ -108,11 +108,11 @@ class Component extends Element {
     }
     return res;
   }
-  find(name) {
-    return this.findAll(name, true)[0];
+  find(selector) {
+    return this.__virtualDom ? this.__virtualDom.find(selector) : null;
   }
-  findAll(name, first) {
-    return this.__virtualDom ? this.__virtualDom.findAll(name, first) : [];
+  findAll(selector) {
+    return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
   __brcb(keys) {
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑

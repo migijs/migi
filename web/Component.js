@@ -108,11 +108,11 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     }
     return res;
   }
-  Component.prototype.find = function(name) {
-    return this.findAll(name, true)[0];
+  Component.prototype.find = function(selector) {
+    return this.__virtualDom ? this.__virtualDom.find(selector) : null;
   }
-  Component.prototype.findAll = function(name, first) {
-    return this.__virtualDom ? this.__virtualDom.findAll(name, first) : [];
+  Component.prototype.findAll = function(selector) {
+    return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
   Component.prototype.__brcb = function(keys) {
     //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑

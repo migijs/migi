@@ -14,6 +14,7 @@ import util from './util';
 import browser from './browser';
 import sort from './sort';
 import mix from './mix';
+import hash from './hash';
 
 var migi = {
   render(element, dom) {
@@ -23,13 +24,13 @@ var migi = {
     return element;
   },
   createCp(cp, props, children) {
-    return new cp(props, children);
+    return hash.set(new cp(props, children));
   },
   createVd(name, props, children) {
     if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
       throw new Error('can not create style/script VirtualDom: ' + name);
     }
-    return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
+    return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
   },
   Event,
   Model,

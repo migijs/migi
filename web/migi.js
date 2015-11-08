@@ -14,6 +14,7 @@ var util=function(){var _12=require('./util');return _12.hasOwnProperty("default
 var browser=function(){var _13=require('./browser');return _13.hasOwnProperty("default")?_13["default"]:_13}();
 var sort=function(){var _14=require('./sort');return _14.hasOwnProperty("default")?_14["default"]:_14}();
 var mix=function(){var _15=require('./mix');return _15.hasOwnProperty("default")?_15["default"]:_15}();
+var hash=function(){var _16=require('./hash');return _16.hasOwnProperty("default")?_16["default"]:_16}();
 
 var migi = {
   render:function(element, dom) {
@@ -23,13 +24,13 @@ var migi = {
     return element;
   },
   createCp:function(cp, props, children) {
-    return new cp(props, children);
+    return hash.set(new cp(props, children));
   },
   createVd:function(name, props, children) {
     if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
       throw new Error('can not create style/script VirtualDom: ' + name);
     }
-    return cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children);
+    return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
   },
   Event:Event,
   Model:Model,
