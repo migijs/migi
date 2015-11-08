@@ -34,19 +34,63 @@ const SELF_CLOSE = {
   'wbr': true
 };
 
-var findCp = false;
-
 function convertSelector(selector) {
-  findCp = false;
-  if(util.isFunction(selector)) {
-    selector = convertSelector(selector.__migiName);
-    findCp = true;
-    return selector;
-  }
   if(selector instanceof Element || browser.lie && selector && selector.__migiEL) {
     return selector.name + '[migi-uid="' + selector.uid + '"]';
   }
   return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
+}
+
+function find(name, children) {
+  return findAll(name, true)[0];
+}
+function findAll(name, children, first) {
+  return __findAll(name, children, [], first);
+}
+function __findAll(name, children, res, first) {
+  for(var i = 0, len = children.length; i < len; i++) {
+    var child = children[i];
+    if(child instanceof Element || browser.lie && child && child.__migiEL) {
+      res = __findEq(name, child, res, first);
+    }
+    else if(child instanceof Obj) {
+      child = child.v;
+      if(Array.isArray(child)) {
+        res = __findAll(name, child, res, first);
+      }
+      else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+        res = __findEq(name, child, res, first);
+      }
+    }
+    else if(Array.isArray(child)) {
+      res = __findAll(name, child, res, first);
+    }
+    if(first && res.length) {
+      break;
+    }
+  }
+  return res;
+}
+function __findEq(name, child, res, first) {
+  //cp不递归
+  if(child instanceof Component || browser.lie && child && child.__migiCP) {
+    if(child instanceof name
+      || browser.lie && child.__migiCP && child.__migiCP instanceof name) {
+      res.push(child);
+    }
+  }
+  //vd递归
+  else {
+    if(child instanceof name
+      || browser.lie && child.__migiVD && child.__migiVD instanceof name) {
+      res.push(child);
+      if(first) {
+        return res;
+      }
+    }
+    res = res.concat(child.findAll(name, first));
+  }
+  return res;
 }
 
 class VirtualDom extends Element {
@@ -425,6 +469,9 @@ class VirtualDom extends Element {
   }
 
   find(selector) {
+    if(util.isFunction(selector)) {
+      return find(selector, this.children);
+    }
     if(this.element) {
       var node = this.element.querySelector(convertSelector(selector));
       var uid = node.getAttribute('migi-uid');
@@ -437,6 +484,9 @@ class VirtualDom extends Element {
     return null;
   }
   findAll(selector) {
+    if(util.isFunction(selector)) {
+      return findAll(selector, this.children);
+    }
     var res = [];
     if(this.element) {
       var nodes = this.element.querySelectorAll(convertSelector(selector));
