@@ -34,6 +34,21 @@ const SELF_CLOSE = {
   'wbr': true
 };
 
+var findCp = false;
+
+function convertSelector(selector) {
+  findCp = false;
+  if(util.isFunction(selector)) {
+    selector = convertSelector(selector.__migiName);
+    findCp = true;
+    return selector;
+  }
+  if(selector instanceof Element || browser.lie && selector && selector.__migiEL) {
+    return selector.name + '[migi-uid="' + selector.uid + '"]';
+  }
+  return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
+}
+
 class VirtualDom extends Element {
   constructor(name, props = {}, children = []) {
     //fix循环依赖
@@ -411,29 +426,36 @@ class VirtualDom extends Element {
 
   find(selector) {
     if(this.element) {
-      var node = this.element.querySelector(this.__cvtSel(selector));
+      var node = this.element.querySelector(convertSelector(selector));
       var uid = node.getAttribute('migi-uid');
-      return hash[uid] || null;
+      var vd = hash.get(uid) || null;
+      if(findCp && vd) {
+        return vd.top;
+      }
+      return vd;
     }
     return null;
   }
   findAll(selector) {
     var res = [];
     if(this.element) {
-      var nodes = this.element.querySelectorAll(this.__cvtSel(selector));
+      var nodes = this.element.querySelectorAll(convertSelector(selector));
       Array.from(nodes).forEach(function(node) {
         if(node) {
           var uid = node.getAttribute('migi-uid');
-          if(hash[uid]) {
-            res.push(hash[uid]);
+          var vd = hash.get(uid) || null;
+          if(vd) {
+            if(findCp) {
+              res.push(vd.top);
+            }
+            else {
+              res.push(vd);
+            }
           }
         }
       });
     }
     return res;
-  }
-  __cvtSel(selector) {
-    return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
   }
 
   //@override

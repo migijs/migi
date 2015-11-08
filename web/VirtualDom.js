@@ -34,6 +34,21 @@ var SELF_CLOSE = {
   'wbr': true
 };
 
+var findCp = false;
+
+function convertSelector(selector) {
+  findCp = false;
+  if(util.isFunction(selector)) {
+    selector = convertSelector(selector.__migiName);
+    findCp = true;
+    return selector;
+  }
+  if(selector instanceof Element || browser.lie && selector && selector.__migiEL) {
+    return selector.name + '[migi-uid="' + selector.uid + '"]';
+  }
+  return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
+}
+
 !function(){var _15=Object.create(Element.prototype);_15.constructor=VirtualDom;VirtualDom.prototype=_15}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
@@ -411,29 +426,36 @@ var SELF_CLOSE = {
 
   VirtualDom.prototype.find = function(selector) {
     if(this.element) {
-      var node = this.element.querySelector(this.__cvtSel(selector));
+      var node = this.element.querySelector(convertSelector(selector));
       var uid = node.getAttribute('migi-uid');
-      return hash[uid] || null;
+      var vd = hash.get(uid) || null;
+      if(findCp && vd) {
+        return vd.top;
+      }
+      return vd;
     }
     return null;
   }
   VirtualDom.prototype.findAll = function(selector) {
     var res = [];
     if(this.element) {
-      var nodes = this.element.querySelectorAll(this.__cvtSel(selector));
+      var nodes = this.element.querySelectorAll(convertSelector(selector));
       Array.from(nodes).forEach(function(node) {
         if(node) {
           var uid = node.getAttribute('migi-uid');
-          if(hash[uid]) {
-            res.push(hash[uid]);
+          var vd = hash.get(uid) || null;
+          if(vd) {
+            if(findCp) {
+              res.push(vd.top);
+            }
+            else {
+              res.push(vd);
+            }
           }
         }
       });
     }
     return res;
-  }
-  VirtualDom.prototype.__cvtSel = function(selector) {
-    return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
   }
 
   //@override
