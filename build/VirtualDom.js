@@ -475,11 +475,7 @@ function __findEq(name, child, res, first) {
     if(this.element) {
       var node = this.element.querySelector(convertSelector(selector));
       var uid = node.getAttribute('migi-uid');
-      var vd = hash.get(uid) || null;
-      if(findCp && vd) {
-        return vd.top;
-      }
-      return vd;
+      return hash.get(uid) || null;
     }
     return null;
   }
@@ -495,12 +491,7 @@ function __findEq(name, child, res, first) {
           var uid = node.getAttribute('migi-uid');
           var vd = hash.get(uid) || null;
           if(vd) {
-            if(findCp) {
-              res.push(vd.top);
-            }
-            else {
-              res.push(vd);
-            }
+            res.push(vd);
           }
         }
       });
