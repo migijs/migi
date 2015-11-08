@@ -298,15 +298,6 @@ describe('VirtualDom', function() {
     var div = <div><span></span></div>;
     expect(div.children[0].parent).to.eql(div);
   });
-  it('find', function() {
-    var div = <div><span></span></div>;
-    expect(div.find('span')).to.eql(div.children[0]);
-  });
-  it('find All', function() {
-    var div = <div><span></span></div>;
-    expect(div.findAll('span').length).to.eql(1);
-    expect(div.findAll('span')[0]).to.eql(div.children[0]);
-  });
   it('special prop', function() {
     var udf;
     var input = <input value={udf} checked={udf}/>;
@@ -369,16 +360,6 @@ describe('Component', function() {
     var cmpn = new Component({}, [<span></span>]);
     expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="0"></span></div>');
   });
-  it('find', function() {
-    var cmpn = new Component();
-    cmpn.toString();
-    expect(cmpn.find('span')).to.eql(cmpn.virtualDom.children[0]);
-  });
-  it('find All', function() {
-    var cmpn = new Component();
-    cmpn.toString();
-    expect(cmpn.findAll('span')).to.eql([cmpn.virtualDom.children[0]]);
-  });
   it('findChild', function() {
     var cmpn = new Component({}, [<span></span>]);
     cmpn.toString();
@@ -414,8 +395,8 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var p = div.find('p');
-    var span = p.find('span');
+    var p = div.children[0];
+    var span = p.children[0];
     expect(cmpn.parent).to.eql(null);
     expect(div.parent).to.eql(cmpn);
     expect(span.parent).to.eql(p);
@@ -441,9 +422,9 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var cp2 = div.find(Component2);
+    var cp2 = div.children[0];
     var p = cp2.virtualDom;
-    var span = p.find('span');
+    var span = p.children[0];
     expect(cp2.parent).to.eql(div);
     expect(span.parent).to.eql(p);
     expect(p.parent).to.eql(cp2);
@@ -467,7 +448,7 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var span = div.find('span');
+    var span = div.children[0].v[0];
     expect(div.parent).to.eql(cmpn);
     expect(span.parent).to.eql(div);
   });
@@ -483,8 +464,8 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var p = div.find('p');
-    var span = p.find('span');
+    var p = div.children[0];
+    var span = p.children[0];
     expect(cmpn.top).to.eql(null);
     expect(div.top).to.eql(cmpn);
     expect(span.top).to.eql(cmpn);
@@ -510,9 +491,9 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var cp2 = div.find(Component2);
+    var cp2 = div.children[0];
     var p = cp2.virtualDom;
-    var span = p.find('span');
+    var span = p.children[0];
     expect(cp2.top).to.eql(cmpn);
     expect(span.top).to.eql(cp2);
     expect(p.top).to.eql(cp2);
@@ -536,7 +517,7 @@ describe('Component', function() {
     var cmpn = new Component();
     cmpn.toString();
     var div = cmpn.virtualDom;
-    var span = div.find('span');
+    var span = div.children[0].v[0];
     expect(div.top).to.eql(cmpn);
     expect(span.top).to.eql(cmpn);
   });
