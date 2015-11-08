@@ -42,7 +42,7 @@ function convertSelector(selector) {
 }
 
 function find(name, children) {
-  return findAll(name, true)[0] || null;
+  return findAll(name, children, true)[0] || null;
 }
 function findAll(name, children, first) {
   return __findAll(name, children, [], first);
