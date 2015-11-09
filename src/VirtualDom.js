@@ -38,7 +38,7 @@ function convertSelector(selector) {
   if(selector instanceof Element || browser.lie && selector && selector.__migiEL) {
     return selector.name + '[migi-uid="' + selector.uid + '"]';
   }
-  return selector.replace(/\b([A-Z][\w$]*)\b/, '[migi-name="$1"]');
+  return selector.replace(/(^|\s|,|])([A-Z][\w$]*)\b/, '$1[migi-name="$2"]');
 }
 
 function find(name, children) {
