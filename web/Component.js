@@ -274,7 +274,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   }
   Component.prototype.__destroy = function() {
     var self = this;
-    self.__hash = {};
     if(self.__stop) {
       var elem = self.element;
       STOP.forEach(function(name) {
@@ -291,6 +290,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     }
     var vd = self.virtualDom.__destroy();
     self.emit(Event.DESTROY);
+    self.__hash = {};
     return vd;
   }
 

@@ -274,7 +274,6 @@ class Component extends Element {
   }
   __destroy() {
     var self = this;
-    self.__hash = {};
     if(self.__stop) {
       var elem = self.element;
       STOP.forEach(function(name) {
@@ -291,6 +290,7 @@ class Component extends Element {
     }
     var vd = self.virtualDom.__destroy();
     self.emit(Event.DESTROY);
+    self.__hash = {};
     return vd;
   }
 
