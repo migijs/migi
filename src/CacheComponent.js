@@ -2,6 +2,7 @@ import Event from './Event';
 import Component from './Component';
 import util from './util';
 import browser from './browser';
+import EventBus from './EventBus';
 import Stream from './Stream';
 
 class CachedComponent extends Component {
@@ -62,13 +63,14 @@ class CachedComponent extends Component {
         //可能被清空
         if(keys.length) {
           self.emit(Event.DATA, keys.length > 1 ? keys : keys[0]);
+          var stream;
           keys.forEach(function(key) {
             var stream = self.__handler[key];
+            //被桥接触发记录的是stream
             if(stream instanceof Stream) {
-              //被桥接触发记录的是stream
-              Object.keys(self.__bridgeHash).forEach(function(k) {
-                var arr = self.__bridgeHash[k];
-                arr.forEach(function(item) {
+              var bridge = self.__bridgeHash[key];
+              if(bridge) {
+                bridge.forEach(function(item) {
                   var target = item.target;
                   var name = item.name;
                   var middleware = item.middleware;
@@ -80,7 +82,29 @@ class CachedComponent extends Component {
                     target.__stream = null;
                   }
                 });
-              });
+              }
+            }
+            else {
+              var bridge = self.__bridgeHash[key];
+              if(bridge) {
+                stream = new Stream(self.uid);
+                bridge.forEach(function(item) {
+                  var target = item.target;
+                  var name = item.name;
+                  var middleware = item.middleware;
+                  //作为主动发起数据变更方，第一位无需检查重复
+                  stream.add(target.uid);
+                  if(target instanceof EventBus) {
+                    target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+                  }
+                  //先设置桥接对象数据为桥接模式，修改数据后再恢复
+                  else {
+                    target.__stream = stream;
+                    target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+                    target.__stream = null;
+                  }
+                });
+              }
             }
           });
         }
@@ -89,63 +113,6 @@ class CachedComponent extends Component {
       }, 1);
     }
   }
-  //@overwrite
-  //__onData(k, caller) {
-  //  var self = this;
-  //  if(self.__flag) {
-  //    self.__bridgeData(k);
-  //    return;
-  //  }
-  //  //被桥接的数据缓存作废
-  //  delete self.__bridgeHandler[k];
-  //  if(self.__handler.hasOwnProperty(k)) {
-  //    return;
-  //  }
-  //  self.__handler[k] = true;
-  //  if(!self.__ccb) {
-  //    self.__ccb = true;
-  //    setTimeout(function() {
-  //      var keys = Object.keys(self.__handler);
-  //      self.__handler = {};
-  //      self.__ccb = false;
-  //      //可能被清空
-  //      if(!keys.length) {
-  //        return;
-  //      }
-  //      keys = keys.length > 1 ? keys : keys[0];
-  //      super.__onData(keys);
-  //      self.emit(Event.CACHE_DATA, keys, caller);
-  //    }, 1);
-  //  }
-  //}
-  __bridgeData(k) {
-    var self = this;
-    //之前非桥接的数据缓存作废
-    delete self.__handler[k];
-    if(self.__bridgeHandler.hasOwnProperty(k)) {
-      return;
-    }
-    self.__bridgeHandler[k] = true;
-    if(!self.__bcb) {
-      self.__bcb = true;
-      setTimeout(function() {
-        var keys = Object.keys(self.__bridgeHandler);
-        self.__bcb = false;
-        //可能被清空
-        if(!keys.length) {
-          return;
-        }
-        keys = keys.length > 1 ? keys : keys[0];
-        super.__onData(keys);
-        //fake来源，来自于桥接bridge
-        self.emit(Event.CACHE_DATA, keys, self.__brcb);
-      }, 1);
-    }
-  }
-
-  //逻辑和Component复用，代码有点交叉的味道
-  //bind{}
-  //bridge{}
 }
 
 export default CachedComponent;

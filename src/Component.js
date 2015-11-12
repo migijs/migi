@@ -236,10 +236,10 @@ class Component extends Element {
   __data(k) {
     var self = this;
     self.emit(Event.DATA, k);
-    var stream = self.__stream || new Stream(self.uid);
-    self.__bridgeHash && Object.keys(self.__bridgeHash).forEach(function(k) {
-      var arr = self.__bridgeHash[k];
-      arr.forEach(function(item) {
+    var bridge = self.__bridgeHash[k];
+    if(bridge) {
+      var stream = self.__stream || new Stream(self.uid);
+      bridge.forEach(function(item) {
         var target = item.target;
         var name = item.name;
         var middleware = item.middleware;
@@ -256,7 +256,7 @@ class Component extends Element {
           }
         }
       });
-    });
+    }
   }
   //@overwrite
   __onData(k) {
