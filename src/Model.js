@@ -3,7 +3,7 @@ import EventBus from './EventBus';
 import util from './util';
 import browser from './browser';
 import Component from './Component';
-import bridgeStream from './bridgeStream';
+import Stream from './Stream';
 
 var uid = 0;
 
@@ -14,7 +14,7 @@ class Model extends Event {
     this.uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = [];
-    this.__bridgeHash = null;
+    this.__bridgeHash = {};
 
     this.on(Event.DATA, this.__onData);
 
@@ -25,6 +25,31 @@ class Model extends Event {
     }
   }
 
+  __data(k) {
+    var self = this;
+    self.emit(Event.DATA, k);
+    var stream = self.__stream || new Stream(self.uid);
+    self.__bridgeHash && Object.keys(self.__bridgeHash).forEach(function(k) {
+      var arr = self.__bridgeHash[k];
+      arr.forEach(function(item) {
+        var target = item.target;
+        var name = item.name;
+        var middleware = item.middleware;
+        if(!stream.has(target.uid)) {
+          stream.add(target.uid);
+          if(target instanceof EventBus) {
+            target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+          }
+          //先设置桥接对象数据为桥接模式，修改数据后再恢复
+          else {
+            target.__stream = stream;
+            target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+            target.__stream = null;
+          }
+        }
+      });
+    });
+  }
   __onData(k, caller) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {

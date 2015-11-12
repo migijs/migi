@@ -5,7 +5,7 @@ import util from './util';
 import browser from './browser';
 import EventBus from './EventBus';
 import Model from './Model';
-import bridgeStream from './bridgeStream';
+import Stream from './Stream';
 
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -28,7 +28,8 @@ class Component extends Element {
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
-    self.__bridgeHash = null; //桥接记录
+    self.__bridgeHash = {}; //桥接记录
+    self.__stream = null; //桥接过程中传递的stream对象
 
     Object.keys(props).forEach(function(k) {
       if(/^on[A-Z]/.test(k)) {
@@ -114,61 +115,31 @@ class Component extends Element {
   findAll(selector) {
     return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
-  __brcb(keys) {
-    //CacheComponent可能会一次性变更多个数据，Component则只会一个，统一逻辑
-    if(!Array.isArray(keys)) {
-      keys = [keys];
-    }
-    //遍历变更数据项
-    for(var i = 0, len = keys.length; i < len; i++) {
-      var k = keys[i];
-      if(this.__bridgeHash.hasOwnProperty(k)) {
-        var arr = this.__bridgeHash[k];
-        for(var j = 0, len2 = arr.length; j < len2; j++) {
-          var stream = arr[j];
-          var target = stream.target;
-          var name = stream.name;
-          var middleware = stream.middleware;
-          if(!bridgeStream.pass(target, name)) {
-            //eventBus作为中间数据透传
-            if(target instanceof EventBus) {
-              target.emit(Event.DATA, name, middleware ? middleware.call(this, this[k]) : this[k]);
-            }
-            //Model和Component数据模型
-            else {
-              //变更时设置对方CacheComponent不更新，防止闭环
-              if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
-                target.__flag = true;
-              }
-              target[name] = middleware ? middleware.call(this, this[k]) : this[k];
-              //关闭开关
-              if(target instanceof migi.CacheComponent || browser.lie && target.__migiCC) {
-                target.__flag = false;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
   __record(target, src, name, middleware) {
+    var self = this;
+    var arr = self.__bridgeHash[src] = self.__bridgeHash[src] || [];
+    //防止重复桥接
+    arr.forEach(function(item) {
+      if(item.target == target && item.name == name) {
+        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
+      }
+    });
     //记录桥接单向数据流关系
-    bridgeStream.record(this.uid, target.uid, src, name);
-    this.__bridgeHash = this.__bridgeHash || {};
-    this.__bridgeHash[src] = this.__bridgeHash[src] || [];
-    this.__bridgeHash[src].push({
+    arr.push({
       target,
       name,
       middleware
     });
   }
-  //bridge(target, String, String, Function)
-  //bridge(target, String, Function)
-  //bridge(target, String, String)
-  //bridge(target, String)
-  //bridge(target, Object<String:String>)
-  //bridge(target, Object<String:Function>)
-  //bridge(target, Object<String:Object<name:String,middleware:Function>>)
+  /*
+   * bridge(target, String, String, Function)
+   * bridge(target, String, Function)
+   * bridge(target, String, String)
+   * bridge(target, String)
+   * bridge(target, Object<String:String>)
+   * bridge(target, Object<String:Function>)
+   * bridge(target, Object<String:Object<name:String,middleware:Function>>)
+  */
   bridge(target, src, name, middleware) {
     //fix循环依赖
     if(Model.hasOwnProperty('default')) {
@@ -185,7 +156,6 @@ class Component extends Element {
         && (browser.lie && !target.__migiCP && !target.__migiMD)) {
       throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
     }
-    var first = !this.__bridgeHash;
     //重载
     if(arguments.length == 2) {
       if(util.isString(src)) {
@@ -218,21 +188,13 @@ class Component extends Element {
     else if(arguments.length == 4) {
       self.__record(target, src, name, middleware);
     }
-    //发生数据变更时，判断来源，从关系记录中判别闭环
-    if(first) {
-      self.on(self instanceof migi.CacheComponent || browser.lie && self.__migiCC
-        ? Event.CACHE_DATA : Event.DATA, function (keys, origin) {
-        //来源不是__brcb则说明不是由bridge触发的，而是真正数据源，生成一个新的记录数据流的对象
-        if(origin != self.__brcb && origin != target.__brcb) {
-          bridgeStream.gen(self.uid, keys);
-        }
-        self.__brcb(keys);
-      });
-    }
   }
   bridgeTo(target, ...datas) {
     target.bridge(this, ...datas);
   }
+  //TODO:
+  unBridge() {}
+  unBridgeTo() {}
 
   //@overwrite
   __onDom(fake) {
@@ -271,14 +233,39 @@ class Component extends Element {
         }
       });
   }
+  __data(k) {
+    var self = this;
+    self.emit(Event.DATA, k);
+    var stream = self.__stream || new Stream(self.uid);
+    self.__bridgeHash && Object.keys(self.__bridgeHash).forEach(function(k) {
+      var arr = self.__bridgeHash[k];
+      arr.forEach(function(item) {
+        var target = item.target;
+        var name = item.name;
+        var middleware = item.middleware;
+        if(!stream.has(target.uid)) {
+          stream.add(target.uid);
+          if(target instanceof EventBus) {
+            target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+          }
+          //先设置桥接对象数据为桥接模式，修改数据后再恢复
+          else {
+            target.__stream = stream;
+            target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+            target.__stream = null;
+          }
+        }
+      });
+    });
+  }
   //@overwrite
-  __onData(k, caller) {
+  __onData(k) {
     if(this.virtualDom) {
       this.virtualDom.__onData(k);
     }
     this.children.forEach(function(child) {
       if(child instanceof Component || browser.lie && child && child.__migiCP) {
-        child.emit(Event.DATA, k, caller);
+        child.emit(Event.DATA, k);
       }
       else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
         child.__onData(k);
@@ -287,7 +274,6 @@ class Component extends Element {
   }
   __destroy() {
     var self = this;
-    self.emit(Event.DESTROY);
     self.__hash = {};
     if(self.__stop) {
       var elem = self.element;
@@ -302,9 +288,10 @@ class Component extends Element {
     }
     if(self.model) {
       self.model.__del(self);
-      bridgeStream.del(self.uid);
     }
-    return self.virtualDom.__destroy();
+    var vd = self.virtualDom.__destroy();
+    self.emit(Event.DESTROY);
+    return vd;
   }
 
   static fakeDom(child) {

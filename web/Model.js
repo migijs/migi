@@ -3,7 +3,7 @@ var EventBus=function(){var _1=require('./EventBus');return _1.hasOwnProperty("d
 var util=function(){var _2=require('./util');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 var Component=function(){var _4=require('./Component');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var bridgeStream=function(){var _5=require('./bridgeStream');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 var uid = 0;
 
@@ -14,7 +14,7 @@ var uid = 0;
     this.uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = [];
-    this.__bridgeHash = null;
+    this.__bridgeHash = {};
 
     this.on(Event.DATA, this.__onData);
 
@@ -25,6 +25,31 @@ var uid = 0;
     }
   }
 
+  Model.prototype.__data = function(k) {
+    var self = this;
+    self.emit(Event.DATA, k);
+    var stream = self.__stream || new Stream(self.uid);
+    self.__bridgeHash && Object.keys(self.__bridgeHash).forEach(function(k) {
+      var arr = self.__bridgeHash[k];
+      arr.forEach(function(item) {
+        var target = item.target;
+        var name = item.name;
+        var middleware = item.middleware;
+        if(!stream.has(target.uid)) {
+          stream.add(target.uid);
+          if(target instanceof EventBus) {
+            target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+          }
+          //先设置桥接对象数据为桥接模式，修改数据后再恢复
+          else {
+            target.__stream = stream;
+            target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+            target.__stream = null;
+          }
+        }
+      });
+    });
+  }
   Model.prototype.__onData = function(k, caller) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {

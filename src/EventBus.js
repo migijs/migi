@@ -1,7 +1,6 @@
 import Event from './Event';
 import util from './util';
 import browser from './browser';
-import bridgeStream from './bridgeStream';
 
 var uid = 0;
 
@@ -12,31 +11,34 @@ class EventBus extends Event {
     this.__listener = {};
     this.on(Event.DATA, this.__brcb);
   }
-  __brcb(k, v) {
+  __brcb(k, v, stream) {
     if(this.__listener.hasOwnProperty(k)) {
       var arr = this.__listener[k];
       for(var i = 0, len = arr.length; i < len; i++) {
-        var stream = arr[i];
-        var target = stream.target;
-        var name = stream.name;
-        var middleware = stream.middleware;
-        if(!bridgeStream.pass(target, name)) {
-          if(target.hasOwnProperty('__flag')) {
-            target.__flag = true;
-          }
+        var item = arr[i];
+        var target = item.target;
+        var name = item.name;
+        var middleware = item.middleware;
+        if(!stream.has(target.uid)) {
+          stream.add(target.uid);
+          target.__stream = stream;
           target[name] = middleware ? middleware.call(target, v) : v;
-          if(target.hasOwnProperty('__flag')) {
-            target.__flag = false;
-          }
+          target.__stream = null;
         }
       }
     }
   }
   __record(target, src, name, middleware) {
+    var self = this;
+    var arr = this.__listener[src] = this.__listener[src] || [];
+    //防止重复桥接
+    arr.forEach(function(item) {
+      if(item.target == target && item.name == name) {
+        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
+      }
+    });
     //记录桥接单向数据流关系
-    bridgeStream.record(this.uid, target.uid, src, name);
-    this.__listener[src] = this.__listener[src] || [];
-    this.__listener[src].push({
+    arr.push({
       target,
       name,
       middleware

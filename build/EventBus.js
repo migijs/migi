@@ -1,42 +1,44 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var bridgeStream=function(){var _3=require('./bridgeStream');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 
 var uid = 0;
 
-!function(){var _4=Object.create(Event.prototype);_4.constructor=EventBus;EventBus.prototype=_4}();
+!function(){var _3=Object.create(Event.prototype);_3.constructor=EventBus;EventBus.prototype=_3}();
   function EventBus() {
     Event.call(this);
     this.uid = 'e' + uid++; //为数据流历史记录hack
     this.__listener = {};
     this.on(Event.DATA, this.__brcb);
   }
-  EventBus.prototype.__brcb = function(k, v) {
+  EventBus.prototype.__brcb = function(k, v, stream) {
     if(this.__listener.hasOwnProperty(k)) {
       var arr = this.__listener[k];
       for(var i = 0, len = arr.length; i < len; i++) {
-        var stream = arr[i];
-        var target = stream.target;
-        var name = stream.name;
-        var middleware = stream.middleware;
-        if(!bridgeStream.pass(target, name)) {
-          if(target.hasOwnProperty('__flag')) {
-            target.__flag = true;
-          }
+        var item = arr[i];
+        var target = item.target;
+        var name = item.name;
+        var middleware = item.middleware;
+        if(!stream.has(target.uid)) {
+          stream.add(target.uid);
+          target.__stream = stream;
           target[name] = middleware ? middleware.call(target, v) : v;
-          if(target.hasOwnProperty('__flag')) {
-            target.__flag = false;
-          }
+          target.__stream = null;
         }
       }
     }
   }
   EventBus.prototype.__record = function(target, src, name, middleware) {
+    var self = this;
+    var arr = this.__listener[src] = this.__listener[src] || [];
+    //防止重复桥接
+    arr.forEach(function(item) {
+      if(item.target == target && item.name == name) {
+        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
+      }
+    });
     //记录桥接单向数据流关系
-    bridgeStream.record(this.uid, target.uid, src, name);
-    this.__listener[src] = this.__listener[src] || [];
-    this.__listener[src].push({
+    arr.push({
       target:target,
       name:name,
       middleware:middleware
