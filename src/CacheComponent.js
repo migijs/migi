@@ -9,10 +9,7 @@ class CachedComponent extends Component {
   constructor(...data) {
     super(...data);
     this.__handler = {}; //普通状态下缓存data key的hash
-    this.__bridgeHandler = {}; //flag为true时的hash
     this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
-    this.__bcb = false; //flag为true时的缓存时间内状态标识
-    this.__flag = false; //被数据流桥接的数据分发到时，标识true，不走普通逻辑，进入另外一个缓存时间逻辑
 
     //ie8的对象识别hack
     if(browser.lie) {
