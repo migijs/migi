@@ -59,13 +59,15 @@ class CachedComponent extends Component {
       self.__ccb = true;
       //1ms后触发数据变更并重设状态
       setTimeout(function() {
-        var keys = Object.keys(self.__handler);
+        self.__ccb = false;
+        var temp = self.__handler;
+        var keys = Object.keys(temp);
+        self.__handler = {};
         //可能被清空
         if(keys.length) {
           self.emit(Event.DATA, keys.length > 1 ? keys : keys[0]);
-          var stream;
           keys.forEach(function(key) {
-            var stream = self.__handler[key];
+            var stream = temp[key];
             //被桥接触发记录的是stream
             if(stream instanceof Stream) {
               var bridge = self.__bridgeHash[key];
@@ -108,8 +110,6 @@ class CachedComponent extends Component {
             }
           });
         }
-        self.__ccb = false;
-        self.__handler = {};
       }, 1);
     }
   }

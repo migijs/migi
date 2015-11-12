@@ -2,7 +2,7 @@ class Component extends migi.CacheComponent {
   constructor(...data) {
     super(...data);
     this._count = 0;
-    this.on(migi.Event.CACHE_DATA, function(k) {
+    this.on(migi.Event.DATA, function(k) {
       if(k == 'txt') {
         this.count++;
       }
