@@ -16,6 +16,8 @@ class CacheModel extends Model {
 
   //@overwrite
   __data(k) {
-    Component.prototype.__data.call(this, k);
+    CacheComponent.prototype.__data.call(this, k);
   }
 }
+
+CacheModel.prototype.__data = CacheComponent.prototype.__data;
