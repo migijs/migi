@@ -4,8 +4,9 @@ import util from './util';
 import browser from './browser';
 import EventBus from './EventBus';
 import Stream from './Stream';
+import CacheModel from './CacheModel';
 
-class CachedComponent extends Component {
+class CacheComponent extends Component {
   constructor(...data) {
     super(...data);
     this.__handler = {}; //缓存data key的hash
@@ -15,7 +16,7 @@ class CachedComponent extends Component {
     //ie8的对象识别hack
     if(browser.lie) {
       this.__migiCC = true;
-      return this.__hackLie(CachedComponent);
+      return this.__hackLie(CacheComponent);
     }
   }
 
@@ -82,8 +83,7 @@ class CachedComponent extends Component {
                   if(!stream.has(target.uid)) {
                     stream.add(target.uid);
                     //必须大于桥接对象的sid才生效
-                    var tItem = target.__handler[name] || target.__handler2[name] || 0;
-                    tItem = tItem.sid || tItem;
+                    var tItem = CacheComponent.getSid(target);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -109,8 +109,7 @@ class CachedComponent extends Component {
                   }
                   else {
                     //必须大于桥接对象的sid才生效
-                    var tItem = target.__handler[name] || target.__handler2[name] || 0;
-                    tItem = tItem.sid || tItem;
+                    var tItem = CacheComponent.getSid(target);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -126,6 +125,16 @@ class CachedComponent extends Component {
       }, 1);
     }
   }
+
+  static getSid(target) {
+    if(target instanceof CacheComponent
+      || browser.lie && target.__migiCC
+      || target instanceof CacheModel) {
+      var tItem = target.__handler[name] || target.__handler2[name] || 0;
+      return tItem.sid || tItem;
+    }
+    return 0;
+  }
 }
 
-export default CachedComponent;
+export default CacheComponent;
