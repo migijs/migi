@@ -7,6 +7,7 @@ var CacheComponent=function(){var _2=require('./CacheComponent');return _2.hasOw
     Model.call(this);
     this.__handler = {}; //普通状态下缓存data key的hash
     this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
+    this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
 
     //ie8的对象识别hack
     if(browser.lie) {
@@ -20,4 +21,6 @@ var CacheComponent=function(){var _2=require('./CacheComponent');return _2.hasOw
   }
 Object.keys(Model).forEach(function(k){CacheModel[k]=Model[k]});
 
-CacheModel.prototype.__data = CacheComponent.prototype.__data;});
+CacheModel.prototype.__data = CacheComponent.prototype.__data;
+
+exports["default"]=CacheModel;});

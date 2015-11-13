@@ -115,6 +115,5 @@ var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_
 Event.DOM = '__0';
 Event.DESTROY = '__1';
 Event.DATA = '__2';
-Event.CACHE_DATA = '__3';
 
 exports["default"]=Event;});

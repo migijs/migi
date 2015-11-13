@@ -192,9 +192,55 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   Component.prototype.bridgeTo = function(target, datas) {
     datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
   }
-  //TODO:
-  Component.prototype.unBridge = function() {}
-  Component.prototype.unBridgeTo = function() {}
+  Component.prototype.__unRecord = function(target, src, name) {
+    var self = this;
+    var arr = self.__bridgeHash[src] || [];
+    for(var i = 0, len = arr.length; i < len; i++) {
+      var item = arr[i];
+      if(item.target == target && item.name == name) {
+        arr.splice(i, 1);
+        return;
+      }
+    }
+  }
+  Component.prototype.unBridge = function(target, src, name) {
+    var self = this;
+    //重载
+    if(arguments.length == 2) {
+      if(util.isString(src)) {
+        self.__unRecord(target, src, src);
+      }
+      else {
+        Object.keys(src).forEach(function(k) {
+          var o = src[k];
+          if(util.isString(o)) {
+            self.__unRecord(target, k, o);
+          }
+          else if(util.isFunction(o)) {
+            self.__unRecord(target, k, k, o);
+          }
+          else if(o.name) {
+            self.__unRecord(target, k, o.name, o.middleware);
+          }
+        });
+      }
+    }
+    else if(arguments.length == 3) {
+      if(util.isString(name)) {
+        self.__unRecord(target, src, name);
+      }
+      else {
+        middleware = name;
+        self.__unRecord(target, src, src);
+      }
+    }
+    else if(arguments.length == 4) {
+      self.__unRecord(target, src, name);
+    }
+  }
+  Component.prototype.unBridgeTo = function(target, datas) {
+    datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
+  }
 
   //@overwrite
   Component.prototype.__onDom = function(fake) {

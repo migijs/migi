@@ -8,8 +8,9 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
 !function(){var _6=Object.create(Component.prototype);_6.constructor=CachedComponent;CachedComponent.prototype=_6}();
   function CachedComponent(data) {
     data=[].slice.call(arguments, 0);Component.apply(this,[].concat(Array.from(data)));
-    this.__handler = {}; //普通状态下缓存data key的hash
+    this.__handler = {}; //缓存data key的hash
     this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
+    this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
 
     //ie8的对象识别hack
     if(browser.lie) {
@@ -60,6 +61,11 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
         var temp = self.__handler;
         var keys = Object.keys(temp);
         self.__handler = {};
+        //赋值更新状态的sid到缓存
+        keys.forEach(function(key) {
+          var item = temp[key];
+          self.__handler2[key] = item.sid || item;
+        });
         //可能被清空
         if(keys.length) {
           self.emit(Event.DATA, keys.length > 1 ? keys : keys[0]);
@@ -86,7 +92,7 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
             else {
               var bridge = self.__bridgeHash[key];
               if(bridge) {
-                stream = new Stream(self.uid);
+                stream = new Stream(self.uid, temp[key]);
                 bridge.forEach(function(item) {
                   var target = item.target;
                   var name = item.name;
@@ -96,11 +102,16 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
                   if(target instanceof EventBus) {
                     target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
                   }
-                  //先设置桥接对象数据为桥接模式，修改数据后再恢复
                   else {
-                    target.__stream = stream;
-                    target[name] = middleware ? middleware.call(self, self[k]) : self[k];
-                    target.__stream = null;
+                    //必须大于桥接对象的sid也生效
+                    var tItem = target.__handler[name] || target.__handler2[name];
+                    tItem = tItem.sid || tItem;
+                    if(stream.sid > tItem) {
+                      //先设置桥接对象数据为桥接模式，修改数据后再恢复
+                      target.__stream = stream;
+                      target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+                      target.__stream = null;
+                    }
                   }
                 });
               }

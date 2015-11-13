@@ -45,7 +45,7 @@ var uid = 0;
   }
 Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
 //完全一样的桥接数据流方法，复用
-['__data', '__record', 'bridge', 'bridgeTo', '__brcb', 'unBridge', 'unBridgeTo'].forEach(function(k) {
+['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo'].forEach(function(k) {
   Model.prototype[k] = Component.prototype[k];
 });
 

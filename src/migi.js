@@ -2,6 +2,7 @@ import Event from './Event';
 import Element from './Element';
 import EventBus from './EventBus';
 import Model from './Model';
+import CacheModel from './CacheModel';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
@@ -27,13 +28,14 @@ var migi = {
     return hash.set(new cp(props, children));
   },
   createVd(name, props, children) {
-    if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
-      throw new Error('can not create style/script VirtualDom: ' + name);
+    if({ script: true, style: true, canvas: true, svg: true }.hasOwnProperty(name.toLowerCase())) {
+      throw new Error('can not create VirtualDom of: ' + name);
     }
     return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
   },
   Event,
   Model,
+  CacheModel,
   EventBus,
   eventBus: new EventBus,
   Element,

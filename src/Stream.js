@@ -1,8 +1,8 @@
-var sid = 0;
+var sid = 1;
 
 class Stream {
-  constructor(cid) {
-    this.sid = sid++;
+  constructor(cid, iid) {
+    this.sid = iid === undefined ? sid++ : iid;
     this.hash = {};
     this.hash[cid] = true;
   }
