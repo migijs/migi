@@ -81,10 +81,15 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
                   var middleware = item.middleware;
                   if(!stream.has(target.uid)) {
                     stream.add(target.uid);
-                    //先设置桥接对象数据为桥接模式，修改数据后再恢复
-                    target.__stream = stream;
-                    target[name] = middleware ? middleware.call(self, self[k]) : self[k];
-                    target.__stream = null;
+                    //必须大于桥接对象的sid才生效
+                    var tItem = target.__handler[name] || target.__handler2[name] || 0;
+                    tItem = tItem.sid || tItem;
+                    if(stream.sid > tItem) {
+                      //先设置桥接对象数据为桥接模式，修改数据后再恢复
+                      target.__stream = stream;
+                      target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+                      target.__stream = null;
+                    }
                   }
                 });
               }
@@ -103,8 +108,8 @@ var Stream=function(){var _5=require('./Stream');return _5.hasOwnProperty("defau
                     target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
                   }
                   else {
-                    //必须大于桥接对象的sid也生效
-                    var tItem = target.__handler[name] || target.__handler2[name];
+                    //必须大于桥接对象的sid才生效
+                    var tItem = target.__handler[name] || target.__handler2[name] || 0;
                     tItem = tItem.sid || tItem;
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
