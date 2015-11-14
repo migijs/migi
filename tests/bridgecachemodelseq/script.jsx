@@ -32,8 +32,8 @@ var vd = migi.render(
 
 var cp = vd.findAll(Component);
 
-cp[0].bridge(cp[1], 'count');
-cp[2].bridge(cp[3], 'count');
+cp[0].model.bridge(cp[1].model, 'count');
+cp[2].model.bridge(cp[3].model, 'count');
 
 cp[0].model.count = 1;
 cp[1].model.count = 2;
