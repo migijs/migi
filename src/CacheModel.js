@@ -14,11 +14,6 @@ class CacheModel extends Model {
       return this.__hackLie(CacheModel);
     }
   }
-
-  //@overwrite
-  __data(k) {
-    CacheComponent.prototype.__data.call(this, k);
-  }
 }
 
 CacheModel.prototype.__data = CacheComponent.prototype.__data;

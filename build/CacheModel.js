@@ -14,11 +14,6 @@ var CacheComponent=function(){var _2=require('./CacheComponent');return _2.hasOw
       return this.__hackLie(CacheModel);
     }
   }
-
-  //@overwrite
-  CacheModel.prototype.__data = function(k) {
-    CacheComponent.prototype.__data.call(this, k);
-  }
 Object.keys(Model).forEach(function(k){CacheModel[k]=Model[k]});
 
 CacheModel.prototype.__data = CacheComponent.prototype.__data;

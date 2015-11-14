@@ -83,7 +83,7 @@ class CacheComponent extends Component {
                   if(!stream.has(target.uid)) {
                     stream.add(target.uid);
                     //必须大于桥接对象的sid才生效
-                    var tItem = CacheComponent.getSid(target);
+                    var tItem = CacheComponent.getSid(target, name);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -109,7 +109,7 @@ class CacheComponent extends Component {
                   }
                   else {
                     //必须大于桥接对象的sid才生效
-                    var tItem = CacheComponent.getSid(target);
+                    var tItem = CacheComponent.getSid(target, name);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -126,7 +126,7 @@ class CacheComponent extends Component {
     }
   }
 
-  static getSid(target) {
+  static getSid(target, name) {
     if(CacheModel.hasOwnProperty('default')) {
       CacheModel = CacheModel['default'];
     }
