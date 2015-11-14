@@ -127,6 +127,9 @@ class CacheComponent extends Component {
   }
 
   static getSid(target) {
+    if(CacheModel.hasOwnProperty('default')) {
+      CacheModel = CacheModel['default'];
+    }
     if(target instanceof CacheComponent
       || browser.lie && target.__migiCC
       || target instanceof CacheModel) {

@@ -127,6 +127,9 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
   }
 
   CacheComponent.getSid=function(target) {
+    if(CacheModel.hasOwnProperty('default')) {
+      CacheModel = CacheModel['default'];
+    }
     if(target instanceof CacheComponent
       || browser.lie && target.__migiCC
       || target instanceof CacheModel) {
