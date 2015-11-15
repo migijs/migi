@@ -8,12 +8,12 @@ class EventBus extends Event {
   constructor() {
     super();
     this.uid = 'e' + uid++; //为数据流历史记录hack
-    this.__listener = {};
+    this.__bridgeHash = {};
     this.on(Event.DATA, this.__brcb);
   }
   __brcb(k, v, stream) {
-    if(this.__listener.hasOwnProperty(k)) {
-      var arr = this.__listener[k];
+    if(this.__bridgeHash.hasOwnProperty(k)) {
+      var arr = this.__bridgeHash[k];
       for(var i = 0, len = arr.length; i < len; i++) {
         var item = arr[i];
         var target = item.target;
@@ -35,11 +35,11 @@ class EventBus extends Event {
   }
   __record(target, src, name, middleware) {
     var self = this;
-    var arr = this.__listener[src] = this.__listener[src] || [];
+    var arr = this.__bridgeHash[src] = this.__bridgeHash[src] || [];
     //防止重复桥接
     arr.forEach(function(item) {
       if(item.target == target && item.name == name) {
-        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
+        throw new Error('duplicate bridge: ' + self + '.' + src + ' -> ' + target + '.' + name);
       }
     });
     //记录桥接单向数据流关系
@@ -48,6 +48,17 @@ class EventBus extends Event {
       name,
       middleware
     });
+  }
+  __unRecord(target, src, name) {
+    var self = this;
+    var arr = self.__bridgeHash[src] || [];
+    for(var i = 0, len = arr.length; i < len; i++) {
+      var item = arr[i];
+      if(item.target == target && item.name == name) {
+        arr.splice(i, 1);
+        return;
+      }
+    }
   }
   bridge(target, src, name, middleware) {
     var self = this;
@@ -92,6 +103,12 @@ class EventBus extends Event {
   }
   bridgeTo(target, ...datas) {
     target.bridge(this, ...datas);
+  }
+  unBridge() {
+    //TODO:
+  }
+  unBridgeTo(target, ...datas) {
+    target.unBridge(this, ...datas);
   }
 }
 

@@ -115,22 +115,6 @@ class Component extends Element {
   findAll(selector) {
     return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
-  __record(target, src, name, middleware) {
-    var self = this;
-    var arr = self.__bridgeHash[src] = self.__bridgeHash[src] || [];
-    //防止重复桥接
-    arr.forEach(function(item) {
-      if(item.target == target && item.name == name) {
-        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
-      }
-    });
-    //记录桥接单向数据流关系
-    arr.push({
-      target,
-      name,
-      middleware
-    });
-  }
   /*
    * bridge(target, String, String, Function)
    * bridge(target, String, Function)
@@ -189,20 +173,6 @@ class Component extends Element {
       self.__record(target, src, name, middleware);
     }
   }
-  bridgeTo(target, ...datas) {
-    target.bridge(this, ...datas);
-  }
-  __unRecord(target, src, name) {
-    var self = this;
-    var arr = self.__bridgeHash[src] || [];
-    for(var i = 0, len = arr.length; i < len; i++) {
-      var item = arr[i];
-      if(item.target == target && item.name == name) {
-        arr.splice(i, 1);
-        return;
-      }
-    }
-  }
   unBridge(target, src, name) {
     var self = this;
     //重载
@@ -237,9 +207,6 @@ class Component extends Element {
     else if(arguments.length == 4) {
       self.__unRecord(target, src, name);
     }
-  }
-  unBridgeTo(target, ...datas) {
-    target.bridge(this, ...datas);
   }
 
   //@overwrite
@@ -383,6 +350,10 @@ var GS = {
     }
   }
 };
+//完全一样的桥接数据流方法，复用
+['__record', '__unRecord', 'bridgeTo', 'unBridgeTo'].forEach(function(k) {
+  Component.prototype[k] = EventBus.prototype[k];
+});
 ['virtualDom', 'ref'].forEach(function(item) {
   GS[item] = {
     get: function() {

@@ -115,22 +115,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   Component.prototype.findAll = function(selector) {
     return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
-  Component.prototype.__record = function(target, src, name, middleware) {
-    var self = this;
-    var arr = self.__bridgeHash[src] = self.__bridgeHash[src] || [];
-    //防止重复桥接
-    arr.forEach(function(item) {
-      if(item.target == target && item.name == name) {
-        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
-      }
-    });
-    //记录桥接单向数据流关系
-    arr.push({
-      target:target,
-      name:name,
-      middleware:middleware
-    });
-  }
   /*
    * bridge(target, String, String, Function)
    * bridge(target, String, Function)
@@ -189,20 +173,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       self.__record(target, src, name, middleware);
     }
   }
-  Component.prototype.bridgeTo = function(target, datas) {
-    datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
-  }
-  Component.prototype.__unRecord = function(target, src, name) {
-    var self = this;
-    var arr = self.__bridgeHash[src] || [];
-    for(var i = 0, len = arr.length; i < len; i++) {
-      var item = arr[i];
-      if(item.target == target && item.name == name) {
-        arr.splice(i, 1);
-        return;
-      }
-    }
-  }
   Component.prototype.unBridge = function(target, src, name) {
     var self = this;
     //重载
@@ -237,9 +207,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     else if(arguments.length == 4) {
       self.__unRecord(target, src, name);
     }
-  }
-  Component.prototype.unBridgeTo = function(target, datas) {
-    datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
   }
 
   //@overwrite
@@ -383,6 +350,10 @@ var GS = {
     }
   }
 };
+//完全一样的桥接数据流方法，复用
+['__record', '__unRecord', 'bridgeTo', 'unBridgeTo'].forEach(function(k) {
+  Component.prototype[k] = EventBus.prototype[k];
+});
 ['virtualDom', 'ref'].forEach(function(item) {
   GS[item] = {
     get: function() {

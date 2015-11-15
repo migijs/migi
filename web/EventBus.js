@@ -8,12 +8,12 @@ var uid = 0;
   function EventBus() {
     Event.call(this);
     this.uid = 'e' + uid++; //为数据流历史记录hack
-    this.__listener = {};
+    this.__bridgeHash = {};
     this.on(Event.DATA, this.__brcb);
   }
   EventBus.prototype.__brcb = function(k, v, stream) {
-    if(this.__listener.hasOwnProperty(k)) {
-      var arr = this.__listener[k];
+    if(this.__bridgeHash.hasOwnProperty(k)) {
+      var arr = this.__bridgeHash[k];
       for(var i = 0, len = arr.length; i < len; i++) {
         var item = arr[i];
         var target = item.target;
@@ -35,11 +35,11 @@ var uid = 0;
   }
   EventBus.prototype.__record = function(target, src, name, middleware) {
     var self = this;
-    var arr = this.__listener[src] = this.__listener[src] || [];
+    var arr = this.__bridgeHash[src] = this.__bridgeHash[src] || [];
     //防止重复桥接
     arr.forEach(function(item) {
       if(item.target == target && item.name == name) {
-        throw new Error('duplicate bridge: ' + self.name + '.' + src + ' -> ' + target.name + '.' + name);
+        throw new Error('duplicate bridge: ' + self + '.' + src + ' -> ' + target + '.' + name);
       }
     });
     //记录桥接单向数据流关系
@@ -48,6 +48,17 @@ var uid = 0;
       name:name,
       middleware:middleware
     });
+  }
+  EventBus.prototype.__unRecord = function(target, src, name) {
+    var self = this;
+    var arr = self.__bridgeHash[src] || [];
+    for(var i = 0, len = arr.length; i < len; i++) {
+      var item = arr[i];
+      if(item.target == target && item.name == name) {
+        arr.splice(i, 1);
+        return;
+      }
+    }
   }
   EventBus.prototype.bridge = function(target, src, name, middleware) {
     var self = this;
@@ -92,6 +103,12 @@ var uid = 0;
   }
   EventBus.prototype.bridgeTo = function(target, datas) {
     datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
+  }
+  EventBus.prototype.unBridge = function() {
+    //TODO:
+  }
+  EventBus.prototype.unBridgeTo = function(target, datas) {
+    datas=[].slice.call(arguments, 1);target.unBridge.apply(target,[this].concat(Array.from(datas)));
   }
 Object.keys(Event).forEach(function(k){EventBus[k]=Event[k]});
 
