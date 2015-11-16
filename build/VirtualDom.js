@@ -156,7 +156,11 @@ function __findEq(name, child, res, first) {
     return res;
   }
 
+  //DOM之前看vd的缓存props属性，之后看真实的prop
   VirtualDom.prototype.isFirst = function(children) {
+    if(this.element) {
+      return !this.element.previousSibling;
+    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -182,6 +186,9 @@ function __findEq(name, child, res, first) {
     }
   }
   VirtualDom.prototype.isLast = function(children) {
+    if(this.element) {
+      return !this.element.nextSibling;
+    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -205,6 +212,21 @@ function __findEq(name, child, res, first) {
         }
       }
     }
+  }
+  VirtualDom.prototype.isEmpty = function() {
+    if(this.element) {
+      return !this.element.childNodes[0];
+    }
+    return this.children.length == 0;
+  }
+  VirtualDom.prototype.isEnabled = function() {
+    return !(this.element || this.__cache).disabled;
+  }
+  VirtualDom.prototype.isDisabled = function() {
+    return (this.element || this.__cache).disabled;
+  }
+  VirtualDom.prototype.isChecked = function() {
+    return (this.element || this.__cache).checked;
   }
 
   VirtualDom.prototype.__renderProp = function(prop) {

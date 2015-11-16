@@ -156,7 +156,11 @@ class VirtualDom extends Element {
     return res;
   }
 
+  //DOM之前看vd的缓存props属性，之后看真实的prop
   isFirst(children) {
+    if(this.element) {
+      return !this.element.previousSibling;
+    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -182,6 +186,9 @@ class VirtualDom extends Element {
     }
   }
   isLast(children) {
+    if(this.element) {
+      return !this.element.nextSibling;
+    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -205,6 +212,21 @@ class VirtualDom extends Element {
         }
       }
     }
+  }
+  isEmpty() {
+    if(this.element) {
+      return !this.element.childNodes[0];
+    }
+    return this.children.length == 0;
+  }
+  isEnabled() {
+    return !(this.element || this.__cache).disabled;
+  }
+  isDisabled() {
+    return (this.element || this.__cache).disabled;
+  }
+  isChecked() {
+    return (this.element || this.__cache).checked;
   }
 
   __renderProp(prop) {

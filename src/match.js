@@ -230,6 +230,30 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                       break outer;
                     }
                     break;
+                  case 'empty':
+                    if(!virtualDom.isEmpty()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'enabled':
+                    if(!virtualDom.isEnabled()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'disabled':
+                    if(!virtualDom.isDisabled()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
+                  case 'checked':
+                    if(!virtualDom.isChecked()) {
+                      isMatch = false;
+                      break outer;
+                    }
+                    break;
                   //TODO:其它伪类
                   default:
                     isMatch = false;
