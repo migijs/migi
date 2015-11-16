@@ -10,6 +10,8 @@ var jaw = require('jaw');
 var fs = require('fs');
 var path = require('path');
 
+var package = require('./package.json');
+
 function mkdir(dir) {
   if(!fs.existsSync(dir)) {
     var parent = path.dirname(dir);
@@ -173,4 +175,9 @@ gulp.task('build-test', ['clean-jsx'], function() {
       suffix: '-lie'
     }))
     .pipe(gulp.dest('./tests/'));
+});
+
+gulp.task('spm', function() {
+  gulp.src('./dist/migi/' + package.version + '/index.js')
+    .pipe(gulp.dest('./dist'))
 });

@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A JavaScript MVVM WebComponent on JSX",
   "maintainers": [
     {
@@ -58,8 +58,7 @@
     "main": "./index.js",
     "output": [
       "./index.js"
-    ],
-    "buildArgs": "--standalone"
+    ]
   },
   "readmeFilename": "README.md"
 }
