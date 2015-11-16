@@ -6,10 +6,10 @@ module.exports = {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
-      .assert.cssProperty('#test p', 'width', '20px')
-      .assert.cssProperty('#test #i1', 'width', '100px')
-      .assert.cssProperty('#test #i2', 'width', '101px')
-      .assert.cssProperty('#test #i3', 'width', '102px')
+      .assert.cssProperty('#test p', 'margin', '20px')
+      .assert.cssProperty('#test #i1', 'margin', '100px')
+      .assert.cssProperty('#test #i2', 'margin', '101px')
+      .assert.cssProperty('#test #i3', 'margin', '102px')
       .end();
   }
 };
