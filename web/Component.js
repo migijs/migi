@@ -173,41 +173,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       self.__record(target, src, name, middleware);
     }
   }
-  Component.prototype.unBridge = function(target, src, name) {
-    var self = this;
-    //重载
-    if(arguments.length == 2) {
-      if(util.isString(src)) {
-        self.__unRecord(target, src, src);
-      }
-      else {
-        Object.keys(src).forEach(function(k) {
-          var o = src[k];
-          if(util.isString(o)) {
-            self.__unRecord(target, k, o);
-          }
-          else if(util.isFunction(o)) {
-            self.__unRecord(target, k, k, o);
-          }
-          else if(o.name) {
-            self.__unRecord(target, k, o.name, o.middleware);
-          }
-        });
-      }
-    }
-    else if(arguments.length == 3) {
-      if(util.isString(name)) {
-        self.__unRecord(target, src, name);
-      }
-      else {
-        middleware = name;
-        self.__unRecord(target, src, src);
-      }
-    }
-    else if(arguments.length == 4) {
-      self.__unRecord(target, src, name);
-    }
-  }
 
   //@overwrite
   Component.prototype.__onDom = function(fake) {
@@ -351,7 +316,7 @@ var GS = {
   }
 };
 //完全一样的桥接数据流方法，复用
-['__record', '__unRecord', 'bridgeTo', 'unBridgeTo'].forEach(function(k) {
+['__record', '__unRecord', 'bridgeTo', 'unBridge', 'unBridgeTo'].forEach(function(k) {
   Component.prototype[k] = EventBus.prototype[k];
 });
 ['virtualDom', 'ref'].forEach(function(item) {

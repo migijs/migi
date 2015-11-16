@@ -104,8 +104,31 @@ var uid = 0;
   EventBus.prototype.bridgeTo = function(target, datas) {
     datas=[].slice.call(arguments, 1);target.bridge.apply(target,[this].concat(Array.from(datas)));
   }
-  EventBus.prototype.unBridge = function() {
-    //TODO:
+  EventBus.prototype.unBridge = function(target, src, name) {
+    var self = this;
+    //重载
+    if(arguments.length == 2) {
+      if(util.isString(src)) {
+        self.__unRecord(target, src, src);
+      }
+      else {
+        Object.keys(src).forEach(function(k) {
+          var o = src[k];
+          if(util.isString(o)) {
+            self.__unRecord(target, k, o);
+          }
+          else if(util.isFunction(o)) {
+            self.__unRecord(target, k, k);
+          }
+          else if(o.name) {
+            self.__unRecord(target, k, o.name);
+          }
+        });
+      }
+    }
+    else {
+      self.__unRecord(target, src, name);
+    }
   }
   EventBus.prototype.unBridgeTo = function(target, datas) {
     datas=[].slice.call(arguments, 1);target.unBridge.apply(target,[this].concat(Array.from(datas)));

@@ -104,8 +104,31 @@ class EventBus extends Event {
   bridgeTo(target, ...datas) {
     target.bridge(this, ...datas);
   }
-  unBridge() {
-    //TODO:
+  unBridge(target, src, name) {
+    var self = this;
+    //重载
+    if(arguments.length == 2) {
+      if(util.isString(src)) {
+        self.__unRecord(target, src, src);
+      }
+      else {
+        Object.keys(src).forEach(function(k) {
+          var o = src[k];
+          if(util.isString(o)) {
+            self.__unRecord(target, k, o);
+          }
+          else if(util.isFunction(o)) {
+            self.__unRecord(target, k, k);
+          }
+          else if(o.name) {
+            self.__unRecord(target, k, o.name);
+          }
+        });
+      }
+    }
+    else {
+      self.__unRecord(target, src, name);
+    }
   }
   unBridgeTo(target, ...datas) {
     target.unBridge(this, ...datas);
