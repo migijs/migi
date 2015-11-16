@@ -83,7 +83,7 @@ class CacheComponent extends Component {
                   if(!stream.has(target.uid)) {
                     stream.add(target.uid);
                     //必须大于桥接对象的sid才生效
-                    var tItem = getSid(target, name);
+                    var tItem = CacheComponent.getSid(target, name);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -109,7 +109,7 @@ class CacheComponent extends Component {
                   }
                   else {
                     //必须大于桥接对象的sid才生效
-                    var tItem = getSid(target, name);
+                    var tItem = CacheComponent.getSid(target, name);
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
@@ -125,19 +125,19 @@ class CacheComponent extends Component {
       }, 1);
     }
   }
-}
 
-function getSid(target, name) {
-  if(CacheModel.hasOwnProperty('default')) {
-    CacheModel = CacheModel['default'];
+  static getSid(target, name) {
+    if(CacheModel.hasOwnProperty('default')) {
+      CacheModel = CacheModel['default'];
+    }
+    if(target instanceof CacheComponent
+      || browser.lie && target.__migiCC
+      || target instanceof CacheModel) {
+      var tItem = target.__handler[name] || target.__handler2[name] || 0;
+      return tItem.sid || tItem;
+    }
+    return 0;
   }
-  if(target instanceof CacheComponent
-    || browser.lie && target.__migiCC
-    || target instanceof CacheModel) {
-    var tItem = target.__handler[name] || target.__handler2[name] || 0;
-    return tItem.sid || tItem;
-  }
-  return 0;
 }
 
 export default CacheComponent;
