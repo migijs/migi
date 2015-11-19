@@ -613,11 +613,30 @@ class VirtualDom extends Element {
       var item = self.props[key];
       if(item instanceof Obj) {
         var change = false;
-        if(Array.isArray(item.k)) {
-          change = item.k.indexOf(k) > -1;
-        }
-        else if(k == item.k) {
-          change = true;
+        var vk = Array.isArray(k) ? 1: 0;
+        var ok = Array.isArray(item.k) ? 2 : 0;
+        switch(vk + ok) {
+          case 0:
+            change = k == item.k;
+            break;
+          case 1:
+            change = k.indexOf(item.k) > -1;
+            break;
+          case 2:
+            change = item.k.indexOf(k) > -1;
+            break;
+          case 3:
+            var hash = {};
+            k.forEach(function(item) {
+              hash[item] = true;
+            });
+            for(var temp = item.k, i = 0, len = temp.length; i < len; i++) {
+              if(hash.hasOwnProperty(temp[i])) {
+                change = true;
+                break;
+              }
+            }
+            break;
         }
         if(change) {
           var ov = item.v;
