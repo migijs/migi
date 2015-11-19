@@ -433,7 +433,7 @@ function diffVd(ovd, nvd) {
   else if(i < nl) {
     for(;i < nl; i++) {
       history[history.length - 1] = i;
-      add(elem, nc, ranges, option, history, temp, i == nl - 1, nvd);
+      add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1, nvd);
     }
   }
   if(ranges.length) {
