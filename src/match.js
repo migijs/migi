@@ -145,7 +145,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                       virtualDom.__updateStyle();
                     });
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    document.body.attachEvent('onmouseup', function(e) {
+                    window.attachEvent('onmouseup', function(e) {
                       virtualDom.__active = false;
                       virtualDom.__updateStyle();
                     }, true);
@@ -166,17 +166,17 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                       virtualDom.__updateStyle();
                     });
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    document.body.addEventListener('mouseup', function(e) {
+                    window.addEventListener('mouseup', function(e) {
                       virtualDom.__active = false;
                       virtualDom.__updateStyle();
                     }, true);
                     //touchend也失焦
-                    document.body.addEventListener('touchend', function(e) {
+                    window.addEventListener('touchend', function(e) {
                       virtualDom.__active = false;
                       virtualDom.__updateStyle();
                     }, true);
                     //touchcancel也失焦
-                    document.body.addEventListener('touchcancel', function(e) {
+                    window.addEventListener('touchcancel', function(e) {
                       virtualDom.__active = false;
                       virtualDom.__updateStyle();
                     }, true);
