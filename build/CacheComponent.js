@@ -87,7 +87,7 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
-                      target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+                      target[name] = middleware ? middleware.call(self, self[key]) : self[key];
                       target.__stream = null;
                     }
                   }
@@ -105,7 +105,7 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
                   //作为主动发起数据变更方，第一位无需检查重复
                   stream.add(target.uid);
                   if(target instanceof EventBus) {
-                    target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+                    target.emit(Event.DATA, name, middleware ? middleware.call(self, self[key]) : self[key], stream);
                   }
                   else {
                     //必须大于桥接对象的sid才生效
@@ -113,7 +113,7 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
                     if(stream.sid > tItem) {
                       //先设置桥接对象数据为桥接模式，修改数据后再恢复
                       target.__stream = stream;
-                      target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+                      target[name] = middleware ? middleware.call(self, self[key]) : self[key];
                       target.__stream = null;
                     }
                   }
