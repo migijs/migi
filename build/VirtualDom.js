@@ -710,7 +710,7 @@ function __findEq(name, child, res, first) {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff.diff(this.element, ov, child.v, ranges, option, history);
+          domDiff.diff(this.element, ov, child.v, ranges, option, history, this);
         }
         else {
           self.__checkObj(k, child.v, ranges, option, history);

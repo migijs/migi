@@ -100,19 +100,22 @@ function insertAt(elem, cns, index, vd, isText) {
   }
 }
 
-function add(elem, vd, ranges, option, history, temp, last) {
+function add(elem, vd, ranges, option, history, temp, last, parent) {
   if(Array.isArray(vd)) {
     history.push(0);
     //防止空数组跳过的情况
     for(var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
       var item = vd[i];
       history[history.length - 1] = i;
-      add(elem, item, ranges, option, history, temp, last && i == len - 1);
+      add(elem, item, ranges, option, history, temp, last && i == len - 1, parent);
     }
     history.pop();
   }
   else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)
     || browser.lie && vd && vd.__migiEL && !vd.__migiNV) {
+    vd.__parent = parent;
+    vd.__top = parent.top;
+    vd.style = parent.style;
     if(temp.hasOwnProperty('prev')) {
       if(option.prev == type.TEXT) {
         option.start++;
@@ -417,7 +420,7 @@ function diffVd(ovd, nvd) {
     //history记录着当前child索引，可能它是个数组，递归记录
     history = [i];
     //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
-    diffChild(elem, oc, nc, ranges, option, history);
+    diffChild(elem, oc, nc, ranges, option, history, nvd);
   }
   var temp = {};
   //老的多余的删除
@@ -430,7 +433,7 @@ function diffVd(ovd, nvd) {
   else if(i < nl) {
     for(;i < nl; i++) {
       history[history.length - 1] = i;
-      add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1);
+      add(elem, nc, ranges, option, history, temp, i == nl - 1, nvd);
     }
   }
   if(ranges.length) {
@@ -447,7 +450,7 @@ function diffVd(ovd, nvd) {
   cachePool.add(ovd.__destroy());
 }
 
-exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
+exports.diff=diff;function diff(elem, ov, nv, ranges, option, history, parent) {
   //fix循环依赖
   if(Component.hasOwnProperty('default')) {
     Component = Component['default'];
@@ -461,7 +464,7 @@ exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
       option.state = DOM_TO_DOM;
     }
   }
-  diffChild(elem, ov, nv, ranges, option, history);
+  diffChild(elem, ov, nv, ranges, option, history, parent);
   //当最后一次对比是类型变换时记录，因为随后的text可能要更新
   if(!option.t2d && !option.d2t) {
     if(option.state == TEXT_TO_DOM) {
@@ -473,7 +476,7 @@ exports.diff=diff;function diff(elem, ov, nv, ranges, option, history) {
   }
 }
 
-function diffChild(elem, ovd, nvd, ranges, option, history) {
+function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
   //新老值是否是数组处理方式不同
   var oa = Array.isArray(ovd);
   var na = Array.isArray(nvd);
@@ -495,7 +498,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
       //有内容的数组变为空数组
       case 1:
-        diffChild(elem, ovd[0], nvd[0], ranges, option, history);
+        diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
         var temp = {};
         for(var i = 1; i < ol; i++) {
           del(elem, ovd[i], ranges, option, temp, i == ol - 1);
@@ -503,18 +506,18 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
       //空数组变为有内容
       case 2:
-        diffChild(elem, ovd[0], nvd[0], ranges, option, history);
+        diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
         var temp = {};
         for(var i = 1; i < nl; i++) {
           history[history.length - 1] = i;
-          add(elem, nvd[i], ranges, option, history, temp, i == nl - 1);
+          add(elem, nvd[i], ranges, option, history, temp, i == nl - 1, parent);
         }
         break;
       //都有内容
       case 3:
         for(var i = 0, len = Math.min(ol, nl); i < len; i++) {
           history[history.length - 1] = i;
-          diffChild(elem, ovd[i], nvd[i], ranges, option, history);
+          diffChild(elem, ovd[i], nvd[i], ranges, option, history, parent);
         }
         var temp = {};
         //老的多余的删除
@@ -527,7 +530,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         else if(i < nl) {
           for(;i < nl; i++) {
             history[history.length - 1] = i;
-            add(elem, nvd[i], ranges, option, history, temp, i == nl - 1);
+            add(elem, nvd[i], ranges, option, history, temp, i == nl - 1, parent);
           }
         }
         break;
@@ -537,7 +540,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   //老的是数组新的不是
   else if(oa) {
     //将老的第1个和新的相比，注意老的第一个可能还是个数组，递归下去
-    diffChild(elem, ovd[0], nvd, ranges, option, history);
+    diffChild(elem, ovd[0], nvd, ranges, option, history, parent);
     //移除剩余的老的
     var temp = {};
     for(var i = 1, len = ovd.length; i < len; i++) {
@@ -548,12 +551,12 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
   else if(na) {
     history.push(0);
     //将新的第1个和老的相比，注意新的第一个可能还是个数组，递归下去
-    diffChild(elem, ovd, nvd[0], ranges, option, history);
+    diffChild(elem, ovd, nvd[0], ranges, option, history, parent);
     var temp = {};
     //增加剩余的新的
     for(var i = 1, len = nvd.length; i < len; i++) {
       history[history.length - 1] = i;
-      add(elem, nvd[i], ranges, option, history, temp, i == len - 1);
+      add(elem, nvd[i], ranges, option, history, temp, i == len - 1, parent);
     }
     history.pop();
   }
@@ -642,6 +645,10 @@ function diffChild(elem, ovd, nvd, ranges, option, history) {
         break;
       //TEXT变DOM
       case 2:
+        //这种情况下相当于add新vd，无parent和style引用
+        nvd.__parent = parent;
+        vd.__top = parent.top;
+        nvd.style = parent.style;
         var cns = elem.childNodes;
         if(option.first) {
           replaceWith(elem, cns, option.start++, nvd);
