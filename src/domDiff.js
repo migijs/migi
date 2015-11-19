@@ -647,7 +647,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
       case 2:
         //这种情况下相当于add新vd，无parent和style引用
         nvd.__parent = parent;
-        vd.__top = parent.top;
+        nvd.__top = parent.top;
         nvd.style = parent.style;
         var cns = elem.childNodes;
         if(option.first) {
