@@ -774,9 +774,9 @@ function __findEq(name, child, res, first) {
     if(klass) {
       klass = klass.split(/\s+/);
       sort(klass, function(a, b) {
-        return a < b;
+        return a > b;
       });
-      this.__classes.push('.' + klass.join('.'));
+      this.__classes.push(klass);
     }
     else {
       this.__classes.push('');
