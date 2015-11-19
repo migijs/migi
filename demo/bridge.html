@@ -98,7 +98,7 @@
   }
 </script>
 <script type="text/jsx" jssc="true">
-  class Select extends migi.Component {
+  class Select extends migi.CacheComponent {
     constructor(...data) {
       super(...data);
       var self = this;
@@ -229,12 +229,6 @@
         return [];
       }
     }
-  });
-  selects[0].on('show', function() {
-    selects[1].show = false;
-  });
-  selects[1].on('show', function() {
-    selects[0].show = false;
   });
   //反过来也是一样
   //selects[1].bridgeTo(selects[0]);
