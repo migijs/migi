@@ -170,6 +170,16 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                       virtualDom.__active = false;
                       virtualDom.__updateStyle();
                     }, true);
+                    //touchend也失焦
+                    document.body.addEventListener('touchend', function(e) {
+                      virtualDom.__active = false;
+                      virtualDom.__updateStyle();
+                    }, true);
+                    //touchcancel也失焦
+                    document.body.addEventListener('touchcancel', function(e) {
+                      virtualDom.__active = false;
+                      virtualDom.__updateStyle();
+                    }, true);
                     //window失焦时也需判断
                     window.addEventListener('blur', function(e) {
                       virtualDom.__active = false;
