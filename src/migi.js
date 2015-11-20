@@ -48,7 +48,8 @@ var migi = {
   util,
   browser,
   sort,
-  mix
+  mix,
+  hash
 };
 
 if(typeof window != 'undefined') {
