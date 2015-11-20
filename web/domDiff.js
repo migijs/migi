@@ -7,6 +7,7 @@ var browser=function(){var _5=require('./browser');return _5.hasOwnProperty("def
 var range=function(){var _6=require('./range');return _6.hasOwnProperty("default")?_6["default"]:_6}();
 var cachePool=function(){var _7=require('./cachePool');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var type=function(){var _8=require('./type');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var hash=function(){var _9=require('./hash');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -116,6 +117,7 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
     vd.__parent = parent;
     vd.__top = parent.top;
     vd.style = parent.style;
+    hash.set(vd);
     if(temp.hasOwnProperty('prev')) {
       if(option.prev == type.TEXT) {
         option.start++;
@@ -368,15 +370,16 @@ function diffVd(ovd, nvd) {
   nvd.__style = ovd.__style;
   nvd.__dom = ovd.__dom;
   nvd.__names = ovd.__names;
+  hash.set(nvd);
   //删除老参数，添加新参数
   var ok = Object.keys(ovd.props);
   var nk = Object.keys(nvd.props);
   //记录对比过的prop
-  var hash = {};
+  var temp = {};
   ok.forEach(function(prop) {
     //onXXX事件由__listener中的引用移除
     if(!/^on[A-Z]/.test(prop)) {
-      hash[prop] = true;
+      temp[prop] = true;
       //对比老属性，相同无需更新
       var v = ovd.props[prop];
       var n = nvd.props[prop];
@@ -403,7 +406,7 @@ function diffVd(ovd, nvd) {
         }
       });
     }
-    else if(!hash.hasOwnProperty(prop)) {
+    else if(!temp.hasOwnProperty(prop)) {
       nvd.__updateAttr(prop, nvd.props[prop]);
     }
   });
@@ -422,7 +425,7 @@ function diffVd(ovd, nvd) {
     //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
     diffChild(elem, oc, nc, ranges, option, history, nvd);
   }
-  var temp = {};
+  temp = {};
   //老的多余的删除
   if(i < ol) {
     for(;i < ol; i++) {
@@ -649,6 +652,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
         nvd.__parent = parent;
         nvd.__top = parent.top;
         nvd.style = parent.style;
+        hash.set(nvd);
         var cns = elem.childNodes;
         if(option.first) {
           replaceWith(elem, cns, option.start++, nvd);

@@ -2,6 +2,7 @@ import VirtualDom from './VirtualDom';
 import Event from './Event';
 import sort from './sort';
 import browser from './browser';
+import hash from './hash';
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
@@ -111,85 +112,64 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
       if(first && item.hasOwnProperty('_:')) {
         item['_:'].forEach(function(pseudoItem) {
           pseudoItem[0].forEach(function(pseudo) {
-            var elem = virtualDom.element;
+            var uid = virtualDom.uid;
             switch(pseudo) {
               case 'hover':
+                function onHover() {
+                  //因为vd可能destroy导致被回收，所以每次动态从hash中取当前的vd
+                  hash.get(uid).__hover = true;
+                  hash.get(uid).__updateStyle();
+                }
+                function outHover() {
+                  hash.get(uid).__hover = false;
+                  hash.get(uid).__updateStyle();
+                }
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && elem.attachEvent) {
-                    virtualDom.element.attachEvent('onmouseenter', function(e) {
-                      virtualDom.__hover = true;
-                      virtualDom.__updateStyle();
-                    });
-                    virtualDom.element.attachEvent('onmouseleave', function(e) {
-                      virtualDom.__hover = false;
-                      virtualDom.__updateStyle();
-                    });
+                  if(browser.lie && virtualDom.element.attachEvent) {
+                    virtualDom.element.attachEvent('onmouseenter', onHover);
+                    virtualDom.element.attachEvent('onmouseleave', outHover);
                   }
                   else {
-                    virtualDom.element.addEventListener('mouseenter', function(e) {
-                      virtualDom.__hover = true;
-                      virtualDom.__updateStyle();
-                    });
-                    virtualDom.element.addEventListener('mouseleave', function(e) {
-                      virtualDom.__hover = false;
-                      virtualDom.__updateStyle();
-                    });
+                    virtualDom.element.addEventListener('mouseenter', onHover);
+                    virtualDom.element.addEventListener('mouseleave', outHover);
                   }
                 });
+                //记录缓存当destryo时移除
+                virtualDom.__onHover = onHover;
+                virtualDom.__outHover = outHover;
                 break;
               case 'active':
+                function onActive() {
+                  //因为vd可能destroy导致被回收，所以每次动态从hash中取当前的vd
+                  hash.get(uid).__active = true;
+                  hash.get(uid).__updateStyle();
+                }
+                function outActive() {
+                  hash.get(uid).__active = false;
+                  hash.get(uid).__updateStyle();
+                }
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && elem.attachEvent) {
-                    virtualDom.element.attachEvent('onmousedown', function(e) {
-                      virtualDom.__active = true;
-                      virtualDom.__updateStyle();
-                    });
+                  if(browser.lie && virtualDom.element.attachEvent) {
+                    virtualDom.element.attachEvent('onmousedown', onActive);
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    window.attachEvent('onmouseup', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    }, true);
+                    window.attachEvent('onmouseup', outActive, true);
                     //window失焦时也需判断
-                    window.attachEvent('onblur', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    });
+                    window.attachEvent('onblur', outActive);
                     //drag结束时也需判断
-                    window.attachEvent('ondragend', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    });
+                    window.attachEvent('ondragend', outActive);
                   }
                   else {
-                    virtualDom.element.addEventListener('mousedown', function(e) {
-                      virtualDom.__active = true;
-                      virtualDom.__updateStyle();
-                    });
+                    virtualDom.element.addEventListener('mousedown', onActive);
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    window.addEventListener('mouseup', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    }, true);
+                    window.addEventListener('mouseup', outActive, true);
                     //touchend也失焦
-                    window.addEventListener('touchend', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    }, true);
+                    window.addEventListener('touchend', outActive, true);
                     //touchcancel也失焦
-                    window.addEventListener('touchcancel', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    }, true);
+                    window.addEventListener('touchcancel', outActive, true);
                     //window失焦时也需判断
-                    window.addEventListener('blur', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    });
+                    window.addEventListener('blur', outActive);
                     //drag结束时也需判断
-                    window.addEventListener('dragend', function(e) {
-                      virtualDom.__active = false;
-                      virtualDom.__updateStyle();
-                    });
+                    window.addEventListener('dragend', outActive);
                   }
                 });
                 break;
