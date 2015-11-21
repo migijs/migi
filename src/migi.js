@@ -20,7 +20,7 @@ import hash from './hash';
 var migi = {
   render(element, dom) {
     if(dom) {
-      element.inTo(dom);
+      element.appendTo(dom);
     }
     return element;
   },
