@@ -75,6 +75,9 @@ class Component extends Element {
     }
 
     this.__virtualDom = this.render();
+    if(!this.__virtualDom) {
+      throw new Error('render must return a VirtualDom: ' + this.name);
+    }
     this.__virtualDom.__parent = this;
     if(this.__style) {
       this.__virtualDom.style = this.__style;

@@ -3,6 +3,7 @@ import Event from './Event';
 import sort from './sort';
 import browser from './browser';
 import hash from './hash';
+import matchHash from './matchHash';
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
@@ -172,6 +173,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                     window.addEventListener('dragend', outActive);
                   }
                 });
+                //对window的侦听需要在destroy后移除，先记录下来
+                matchHash.add(uid, outActive);
                 break;
             }
           });

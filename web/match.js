@@ -3,6 +3,7 @@ var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("default
 var sort=function(){var _2=require('./sort');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
 var hash=function(){var _4=require('./hash');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var matchHash=function(){var _5=require('./matchHash');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
@@ -172,6 +173,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, cur, history, 
                     window.addEventListener('dragend', outActive);
                   }
                 });
+                //对window的侦听需要在destroy后移除，先记录下来
+                matchHash.add(uid, outActive);
                 break;
             }
           });

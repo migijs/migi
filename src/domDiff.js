@@ -8,6 +8,7 @@ import range from './range';
 import cachePool from './cachePool';
 import type from './type';
 import hash from './hash';
+import matchHash from './matchHash';
 
 const DOM_TO_TEXT = 0;
 const DOM_TO_DOM = 1;
@@ -720,6 +721,13 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
             nvd.emit(Event.DOM);
+            //match中为模拟style的:active伪类注册了window的一些事件，需检查移除
+            if(ncp) {
+              matchHash.del(ovd.virtualDom.uid);
+            }
+            else {
+              matchHash.del(ovd.uid);
+            }
             //缓存对象池
             cachePool.add(ovd.__destroy());
             break;

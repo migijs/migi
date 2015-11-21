@@ -8,6 +8,7 @@ var range=function(){var _6=require('./range');return _6.hasOwnProperty("default
 var cachePool=function(){var _7=require('./cachePool');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 var type=function(){var _8=require('./type');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var hash=function(){var _9=require('./hash');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var matchHash=function(){var _10=require('./matchHash');return _10.hasOwnProperty("default")?_10["default"]:_10}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -720,6 +721,13 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
             elem.insertAdjacentHTML('afterend', nvd.toString());
             elem.parentNode.removeChild(elem);
             nvd.emit(Event.DOM);
+            //match中为模拟style的:active伪类注册了window的一些事件，需检查移除
+            if(ncp) {
+              matchHash.del(ovd.virtualDom.uid);
+            }
+            else {
+              matchHash.del(ovd.uid);
+            }
             //缓存对象池
             cachePool.add(ovd.__destroy());
             break;
