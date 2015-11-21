@@ -532,7 +532,7 @@ describe('Component', function() {
         this._v = v;
       }
       render() {
-        return '';
+        return <div/>;
       }
     }
     var cmpn = new Component();
@@ -553,7 +553,7 @@ describe('Component', function() {
         this._v = v;
       }
       render() {
-        return '';
+        return <div/>;
       }
     }
     var cmpn = new Component();
