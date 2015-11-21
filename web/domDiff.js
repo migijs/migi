@@ -370,44 +370,50 @@ function diffVd(ovd, nvd) {
   nvd.__style = ovd.__style;
   nvd.__dom = ovd.__dom;
   nvd.__names = ovd.__names;
+  //vd记录更新uid引用
   hash.set(nvd);
-  //删除老参数，添加新参数
-  var ok = Object.keys(ovd.props);
-  var nk = Object.keys(nvd.props);
   //记录对比过的prop
   var temp = {};
-  ok.forEach(function(prop) {
-    //onXXX事件由__listener中的引用移除
-    if(!/^on[A-Z]/.test(prop)) {
-      temp[prop] = true;
-      //对比老属性，相同无需更新
-      var v = ovd.props[prop];
-      var n = nvd.props[prop];
-      if(v !== n) {
-        ovd.__updateAttr(prop, n);
+  ovd.__props.forEach(function(item) {
+    var k = item[0];
+    var v = item[1];
+    //只检查普通属性，onXXX事件由__listener中的引用移除
+    if(!/^on[A-Z]/.test(k)) {
+      temp[k] = true;
+      //对比老属性，多余删除，相同无需更新
+      if(nvd.props.hasOwnProperty(k)) {
+        var nv = nvd.props[k];
+        if(nv !== v) {
+          nvd.__updateAttr(k, nv);
+        }
+      }
+      else {
+        nvd.__updateAttr(k, null);
       }
     }
   });
   //移除__listener记录的引用
   ovd.__removeListener();
   //添加新vd的属性
-  nk.forEach(function(prop) {
-    if(/^on[A-Z]/.test(prop)) {
-      var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
+  nvd.__props.forEach(function(item) {
+    var k = item[0];
+    var v = item[1];
+    //事件和属性区分对待
+    if(/^on[A-Z]/.test(k)) {
+      var name = k.slice(2).replace(/[A-Z]/g, function(up) {
         return up.toLowerCase();
       });
       nvd.__addListener(name, function(event) {
-        var item = nvd.props[prop];
-        if(item instanceof Cb) {
-          item.cb.call(item.context, event);
+        if(v instanceof Cb) {
+          v.cb.call(v.context, event);
         }
         else {
-          item(event);
+          v(event);
         }
       });
     }
-    else if(!temp.hasOwnProperty(prop)) {
-      nvd.__updateAttr(prop, nvd.props[prop]);
+    else if(!temp.hasOwnProperty(k)) {
+      nvd.__updateAttr(k, v);
     }
   });
   var ol = ovd.children.length;

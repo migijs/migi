@@ -14,7 +14,7 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'touchmove', 'touchend'];
 
 class Component extends Element {
-  constructor(props = {}, children = []) {
+  constructor(props = [], children = []) {
     //fix循环依赖
     if(Model.hasOwnProperty('default')) {
       Model = Model['default'];
@@ -31,19 +31,10 @@ class Component extends Element {
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
 
-    Object.keys(props).forEach(function(k) {
-      if(/^on[A-Z]/.test(k)) {
-        var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
-          return Up.toLowerCase();
-        });
-        var cb = props[k];
-        self.on(name, function(...data) {
-          cb(...data);
-        });
-      }
-      else if(k == 'model') {
-        self.model = props[k];
-      }
+    self.__props.forEach(function(item) {
+      var k = item[0];
+      var v = item[1];
+      self.__init(k, v);
     });
 
     self.on(Event.DATA, self.__onData);
@@ -52,6 +43,19 @@ class Component extends Element {
     if(browser.lie) {
       self.__migiCP = this;
       return self.__hackLie(Component, GS);
+    }
+  }
+  __init(k, v) {
+    if(/^on[A-Z]/.test(k)) {
+      var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+        return Up.toLowerCase();
+      });
+      this.on(name, function(...data) {
+        v(...data);
+      });
+    }
+    else if(k == 'model') {
+      this.model = v;
     }
   }
   //需要被子类覆盖

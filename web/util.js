@@ -109,6 +109,29 @@ function encodeHtml(s, prop) {
   return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
 }
 
+function arr2hash(arr) {
+  var hash = {};
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      hash[item[0]] = item[1];
+    }
+    else {
+      Object.keys(item).forEach(function(k) {
+        hash[k] = item[k];
+      });
+    }
+  });
+  return hash;
+}
+
+function hash2arr(hash) {
+  var arr = [];
+  Object.keys(hash).forEach(function(k) {
+    arr.push([k, hash[k]]);
+  });
+  return arr;
+}
+
 var util = {
   clone:function(obj) {
     //fix循环依赖
@@ -138,7 +161,9 @@ var util = {
       Element = Element['default'];
     }
     return joinArray(arr, prop);
-  }
+  },
+  arr2hash:arr2hash,
+  hash2arr:hash2arr
 };
 
 exports["default"]=util;});

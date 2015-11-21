@@ -96,12 +96,12 @@ function __findEq(name, child, res, first) {
 !function(){var _15=Object.create(Element.prototype);_15.constructor=VirtualDom;VirtualDom.prototype=_15}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
-    if(props===void 0)props={};if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
+    if(props===void 0)props=[];if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
       Component = Component['default'];
     }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
-      throw new Error('self-close tag can not has chilren nodes: ' + name);
+      throw new Error('self-close tag can not has chilren: ' + name);
     }
     Element.call(this,name, props, children);
 
@@ -126,8 +126,8 @@ function __findEq(name, child, res, first) {
     var self = this;
     var res = '<' + self.name;
     //处理属性
-    Object.keys(self.props).forEach(function(prop) {
-      var s = self.__renderProp(prop);
+    self.__props.forEach(function(item) {
+      var s = self.__renderProp(item[0], item[1]);
       res += s;
     });
     //使用jaw内联css需解析
@@ -229,29 +229,27 @@ function __findEq(name, child, res, first) {
     return (this.element || this.__cache).checked;
   }
 
-  VirtualDom.prototype.__renderProp = function(prop) {
+  VirtualDom.prototype.__renderProp = function(k, v) {
     var self = this;
-    var v = self.props[prop];
     var res = '';
     //onXxx侦听处理
-    if(/^on[A-Z]/.test(prop)) {
+    if(/^on[A-Z]/.test(k)) {
       self.once(Event.DOM, function(fake) {
         //防止fake未真实添加DOM
         if(fake) {
           return;
         }
-        var name = prop.slice(2).replace(/[A-Z]/g, function(up) {
+        var name = k.slice(2).replace(/[A-Z]/g, function(up) {
           return up.toLowerCase();
         });
         self.__addListener(name, function(e) {
           e = e || window.event;
           fixEvent(e);
-          var item = self.props[prop];
-          if(item instanceof Cb) {
-            item.cb.call(item.context, e);
+          if(v instanceof Cb) {
+            v.cb.call(v.context, e);
           }
           else {
-            item(e);
+            v(e);
           }
         });
       });
@@ -260,67 +258,67 @@ function __findEq(name, child, res, first) {
     else if(v instanceof Obj) {
       var s = v.toString(true);
       //特殊html不转义
-      if(prop == 'dangerouslySetInnerHTML') {
+      if(k == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
           self.element.innerHTML = s;
         });
         return '';
       }
-      if(prop == 'className') {
-        prop = 'class';
+      if(k == 'className') {
+        k = 'class';
       }
-      self.__cache[prop] = s;
+      self.__cache[k] = s;
       //特殊属性根据类型输出或是在DOM后设置prop
-      var special = attr.special(self.name, prop);
+      var special = attr.special(self.name, k);
       switch(special) {
         case attr.RENDER_EXIST:
           if(v.v) {
-            res = ' ' + prop + '="' + s + '"';
+            res = ' ' + k + '="' + s + '"';
           }
           break;
         case attr.RENDER_DOM:
           self.once(Event.DOM, function() {
-            self.__updateAttr(prop, v);
+            self.__updateAttr(k, v);
           });
           break;
         default:
-          res = ' ' + prop + '="' + s + '"';
+          res = ' ' + k + '="' + s + '"';
           break;
       }
     }
     else {
       var s = Array.isArray(v) ? util.joinArray(v) : util.stringify(v);
-      if(prop == 'dangerouslySetInnerHTML') {
+      if(k == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
           self.element.innerHTML = s;
         });
         return '';
       }
-      if(prop == 'className') {
-        prop = 'class';
+      if(k == 'className') {
+        k = 'class';
       }
-      self.__cache[prop] = s;
+      self.__cache[k] = s;
       //特殊属性根据类型输出或是在DOM后设置prop
-      var special = attr.special(self.name, prop);
+      var special = attr.special(self.name, k);
       switch(special) {
         case attr.RENDER_EXIST:
           if(v) {
-            res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+            res = ' ' + k + '="' + util.encodeHtml(s, true) + '"';
           }
           break;
         case attr.RENDER_DOM:
           self.once(Event.DOM, function() {
-            self.__updateAttr(prop, v);
+            self.__updateAttr(k, v);
           });
           break;
         default:
-          res = ' ' + prop + '="' + util.encodeHtml(s, true) + '"';
+          res = ' ' + k + '="' + util.encodeHtml(s, true) + '"';
           break;
       }
     }
     //使用jaw导入样式时不输出class和id，以migi-class和migi-id取代之
     if(self.__style) {
-      switch(prop) {
+      switch(k) {
         case 'class':
         case 'id':
           res = ' ' + 'migi-' + res.slice(1);
@@ -609,8 +607,9 @@ function __findEq(name, child, res, first) {
   VirtualDom.prototype.__onData = function(k) {
     var self = this;
     //联动属性值
-    for(var key in self.props) {
-      var item = self.props[key];
+    self.__props.forEach(function(item) {
+      var key = item[0];
+      item = item[1];
       if(item instanceof Obj) {
         var change = false;
         var vk = Array.isArray(k) ? 1: 0;
@@ -645,7 +644,7 @@ function __findEq(name, child, res, first) {
           }
         }
       }
-    }
+    });
     //利用索引更新，子节点可能为文本、Component、VirtualDom，以及数组
     //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
     //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引
@@ -831,7 +830,7 @@ function __findEq(name, child, res, first) {
   }
   //@overwrite
   VirtualDom.prototype.__reset = function(name, props, children) {
-    if(props===void 0)props={};if(children===void 0)children=[];Element.prototype.__reset.call(this,name, props, children);
+    if(props===void 0)props=[];if(children===void 0)children=[];Element.prototype.__reset.call(this,name, props, children);
     this.__init(name, children);
     this.__hasDes = false;
     return this;

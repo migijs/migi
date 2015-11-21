@@ -16,7 +16,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
 !function(){var _8=Object.create(Element.prototype);_8.constructor=Component;Component.prototype=_8}();
   function Component(props, children) {
     //fix循环依赖
-    if(props===void 0)props={};if(children===void 0)children=[];if(Model.hasOwnProperty('default')) {
+    if(props===void 0)props=[];if(children===void 0)children=[];if(Model.hasOwnProperty('default')) {
       Model = Model['default'];
     }
 
@@ -31,19 +31,10 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
 
-    Object.keys(props).forEach(function(k) {
-      if(/^on[A-Z]/.test(k)) {
-        var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
-          return Up.toLowerCase();
-        });
-        var cb = props[k];
-        self.on(name, function(data) {
-          data=[].slice.call(arguments, 0);cb.apply(this,[].concat(Array.from(data)));
-        });
-      }
-      else if(k == 'model') {
-        self.model = props[k];
-      }
+    self.__props.forEach(function(item) {
+      var k = item[0];
+      var v = item[1];
+      self.__init(k, v);
     });
 
     self.on(Event.DATA, self.__onData);
@@ -52,6 +43,19 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     if(browser.lie) {
       self.__migiCP = this;
       return self.__hackLie(Component, GS);
+    }
+  }
+  Component.prototype.__init = function(k, v) {
+    if(/^on[A-Z]/.test(k)) {
+      var name = k.slice(2).replace(/[A-Z]/g, function(Up) {
+        return Up.toLowerCase();
+      });
+      this.on(name, function(data) {
+        data=[].slice.call(arguments, 0);v.apply(this,[].concat(Array.from(data)));
+      });
+    }
+    else if(k == 'model') {
+      this.model = v;
     }
   }
   //需要被子类覆盖

@@ -23,7 +23,15 @@ function getDom(dom) {
   Element.prototype.__reset = function(name, props, children) {
     this.uid = uid++;
     this.__name = name;
-    this.props = props;
+    //构建工具中都是arr，手写可能出现hash情况
+    if(Array.isArray(props)) {
+      this.props = util.arr2hash(props);
+      this.__props = props;
+    }
+    else {
+      this.props = props;
+      this.__props = util.hash2arr(props);
+    }
     this.children = children;
 
     this.__element = null; //真实DOM引用
