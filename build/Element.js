@@ -13,6 +13,40 @@ function getDom(dom) {
   }
   return dom;
 }
+function arr2hash(arr) {
+  var hash = {};
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      hash[item[0]] = item[1];
+    }
+    else {
+      Object.keys(item).forEach(function(k) {
+        hash[k] = item[k];
+      });
+    }
+  });
+  return hash;
+}
+function hash2arr(hash) {
+  var arr = [];
+  Object.keys(hash).forEach(function(k) {
+    arr.push([k, hash[k]]);
+  });
+  return arr;
+}
+function spread(arr) {
+  for(var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
+    if(!Array.isArray(item)) {
+      var temp = [];
+      Object.keys(item).forEach(function(k) {
+        temp.push([k, item[k]]);
+      });
+      arr.splice.apply(arr,[i,1].concat(Array.from(temp)));
+    }
+  }
+  return arr;
+}
 
 !function(){var _3=Object.create(Event.prototype);_3.constructor=Element;Element.prototype=_3}();
   function Element(name, props, children) {
@@ -25,12 +59,12 @@ function getDom(dom) {
     this.__name = name;
     //构建工具中都是arr，手写可能出现hash情况
     if(Array.isArray(props)) {
-      this.props = util.arr2hash(props);
-      this.__props = props;
+      this.props = arr2hash(props);
+      this.__props = spread(props);
     }
     else {
       this.props = props;
-      this.__props = util.hash2arr(props);
+      this.__props = hash2arr(props);
     }
     this.children = children;
 

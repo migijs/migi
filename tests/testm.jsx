@@ -303,6 +303,11 @@ describe('VirtualDom', function() {
     var input = <input value={udf} checked={udf}/>;
     expect(input.toString()).to.eql('<input value="" migi-uid="0"/>');
   });
+  it('rest', function() {
+    var a = {'a':1,'b':2};
+    var div = <div {...a}>123</div>;
+    expect(div.toString()).to.eql('<div a="1" b="2" migi-uid="0">123</div>');
+  });
 });
 
 describe('Component', function() {
