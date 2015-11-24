@@ -6,6 +6,7 @@ import browser from './browser';
 import EventBus from './EventBus';
 import Model from './Model';
 import Stream from './Stream';
+import Fastclick from './Fastclick';
 
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -217,6 +218,8 @@ class Component extends Element {
           elem.addEventListener(name, stopPropagation);
         }
       });
+    //fastclick处理移动点击点透
+    Fastclick.attach(this.element);
   }
   __data(k) {
     var self = this;

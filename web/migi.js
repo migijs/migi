@@ -16,6 +16,7 @@ var browser=function(){var _14=require('./browser');return _14.hasOwnProperty("d
 var sort=function(){var _15=require('./sort');return _15.hasOwnProperty("default")?_15["default"]:_15}();
 var mix=function(){var _16=require('./mix');return _16.hasOwnProperty("default")?_16["default"]:_16}();
 var hash=function(){var _17=require('./hash');return _17.hasOwnProperty("default")?_17["default"]:_17}();
+var Fastclick=function(){var _18=require('./Fastclick');return _18.hasOwnProperty("default")?_18["default"]:_18}();
 
 var migi = {
   render:function(element, dom) {
@@ -49,11 +50,13 @@ var migi = {
   browser:browser,
   sort:sort,
   mix:mix,
-  hash:hash
+  hash:hash,
+  Fastclick:Fastclick
 };
 
 if(typeof window != 'undefined') {
   window.migi = migi;
+  Fastclick.attach(document.body);
 }
 
 exports["default"]=migi;});

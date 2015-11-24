@@ -16,6 +16,7 @@ import browser from './browser';
 import sort from './sort';
 import mix from './mix';
 import hash from './hash';
+import Fastclick from './Fastclick';
 
 var migi = {
   render(element, dom) {
@@ -49,11 +50,13 @@ var migi = {
   browser,
   sort,
   mix,
-  hash
+  hash,
+  Fastclick
 };
 
 if(typeof window != 'undefined') {
   window.migi = migi;
+  Fastclick.attach(document.body);
 }
 
 export default migi;
