@@ -11,8 +11,9 @@ import Fastclick from './Fastclick';
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
   'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
-  'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
-  'touchmove', 'touchend'];
+  'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touchstart',
+  'touchmove', 'touchend', 'MSGestureEnd', 'MSPointerDown', 'pointerdown', 'MSPointerMove', 'pointermove',
+  'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
   constructor(props = [], children = []) {
@@ -202,9 +203,7 @@ class Component extends Element {
     function stopPropagation(e) {
       e = e || window.event;
       if(e.target != elem && e.srcElement != elem) {
-        if(browser.lie) {
-          e.cancelBubble = true;
-        }
+        e.cancelBubble = true;
         e.stopPropagation && e.stopPropagation();
       }
     }

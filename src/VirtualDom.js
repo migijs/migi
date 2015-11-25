@@ -13,6 +13,7 @@ import type from './type';
 import fixEvent from './fixEvent';
 import attr from './attr';
 import hash from './hash';
+import touch from './touch';
 
 const SELF_CLOSE = {
   'img': true,
@@ -32,6 +33,15 @@ const SELF_CLOSE = {
   'source': true,
   'track': true,
   'wbr': true
+};
+
+const TOUCH = {
+  'swipe': true,
+  'swipeleft': true,
+  'swiperight':true,
+  'swipeup': true,
+  'swipedown': true,
+  'longtap': true
 };
 
 function convertSelector(selector) {
@@ -398,7 +408,7 @@ class VirtualDom extends Element {
       }
     }
     //textarea的value在标签的childNodes里，这里只处理单一child情况
-    //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
+    //children有多个其中一个是text有歧义，忽视
     else if(self.name == 'textarea') {
       if(self.children.length == 1) {
         var child = self.children[0];
@@ -428,6 +438,16 @@ class VirtualDom extends Element {
     else {
       //一般没有event，也就不生成对象防止diff比对
       self.__listener = self.__listener || {};
+      if(name == 'tap') {
+        name = 'click';
+      }
+      var elem = self.element;
+      //touch特殊对待
+      if(TOUCH.hasOwnProperty(name)) {
+        touch(this, name, cb, self.__listener);
+        return;
+      }
+      //记录下来留待清除
       if(self.__listener.hasOwnProperty(name)) {
         var temp = self.__listener[name];
         if(Array.isArray(temp)) {
@@ -440,10 +460,7 @@ class VirtualDom extends Element {
       else {
         self.__listener[name] = cb;
       }
-      var elem = self.element;
-      if(name == 'tap') {
-        name = 'click';
-      }
+      //pc注册侦听
       if(browser.lie && elem.attachEvent) {
         //ie8没有input
         if(name == 'input') {

@@ -13,6 +13,7 @@ var type=function(){var _11=require('./type');return _11.hasOwnProperty("default
 var fixEvent=function(){var _12=require('./fixEvent');return _12.hasOwnProperty("default")?_12["default"]:_12}();
 var attr=function(){var _13=require('./attr');return _13.hasOwnProperty("default")?_13["default"]:_13}();
 var hash=function(){var _14=require('./hash');return _14.hasOwnProperty("default")?_14["default"]:_14}();
+var touch=function(){var _15=require('./touch');return _15.hasOwnProperty("default")?_15["default"]:_15}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -32,6 +33,15 @@ var SELF_CLOSE = {
   'source': true,
   'track': true,
   'wbr': true
+};
+
+var TOUCH = {
+  'swipe': true,
+  'swipeleft': true,
+  'swiperight':true,
+  'swipeup': true,
+  'swipedown': true,
+  'longtap': true
 };
 
 function convertSelector(selector) {
@@ -93,7 +103,7 @@ function __findEq(name, child, res, first) {
   return res;
 }
 
-!function(){var _15=Object.create(Element.prototype);_15.constructor=VirtualDom;VirtualDom.prototype=_15}();
+!function(){var _16=Object.create(Element.prototype);_16.constructor=VirtualDom;VirtualDom.prototype=_16}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props=[];if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -398,7 +408,7 @@ function __findEq(name, child, res, first) {
       }
     }
     //textarea的value在标签的childNodes里，这里只处理单一child情况
-    //TODO: textarea的children有多个其中一个是text该怎么办？有歧义
+    //children有多个其中一个是text有歧义，忽视
     else if(self.name == 'textarea') {
       if(self.children.length == 1) {
         var child = self.children[0];
@@ -428,6 +438,16 @@ function __findEq(name, child, res, first) {
     else {
       //一般没有event，也就不生成对象防止diff比对
       self.__listener = self.__listener || {};
+      if(name == 'tap') {
+        name = 'click';
+      }
+      var elem = self.element;
+      //touch特殊对待
+      if(TOUCH.hasOwnProperty(name)) {
+        touch(this, name, cb, self.__listener);
+        return;
+      }
+      //记录下来留待清除
       if(self.__listener.hasOwnProperty(name)) {
         var temp = self.__listener[name];
         if(Array.isArray(temp)) {
@@ -440,10 +460,7 @@ function __findEq(name, child, res, first) {
       else {
         self.__listener[name] = cb;
       }
-      var elem = self.element;
-      if(name == 'tap') {
-        name = 'click';
-      }
+      //pc注册侦听
       if(browser.lie && elem.attachEvent) {
         //ie8没有input
         if(name == 'input') {

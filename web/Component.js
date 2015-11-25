@@ -11,8 +11,9 @@ var Fastclick=function(){var _8=require('./Fastclick');return _8.hasOwnProperty(
 var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
   'DOMFocusOut', 'keydown', 'keypress', 'keyup', 'drag', 'dragstart', 'dragover', 'dragenter', 'dragleave',
-  'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touch', 'touchstart',
-  'touchmove', 'touchend'];
+  'dragend', 'drop', 'formchange', 'forminput', 'input', 'cut', 'paste', 'reset', 'touchstart',
+  'touchmove', 'touchend', 'MSGestureEnd', 'MSPointerDown', 'pointerdown', 'MSPointerMove', 'pointermove',
+  'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 !function(){var _9=Object.create(Element.prototype);_9.constructor=Component;Component.prototype=_9}();
   function Component(props, children) {
@@ -202,9 +203,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     function stopPropagation(e) {
       e = e || window.event;
       if(e.target != elem && e.srcElement != elem) {
-        if(browser.lie) {
-          e.cancelBubble = true;
-        }
+        e.cancelBubble = true;
         e.stopPropagation && e.stopPropagation();
       }
     }
