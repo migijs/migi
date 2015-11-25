@@ -41,7 +41,8 @@ var TOUCH = {
   'swiperight':true,
   'swipeup': true,
   'swipedown': true,
-  'longtap': true
+  'longtap': true,
+  'doubletap': true
 };
 
 function convertSelector(selector) {

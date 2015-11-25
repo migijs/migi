@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>touch</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0" />
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es5-shim.js"></script>
+  <script src="es5-sham.js"></script>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+  <style>
+    #outer{
+      padding:50px 25%;
+      background:#FCC;
+    }
+    #outer span{
+      display:block;
+      padding:20px;
+      height:100px;
+      background:#9CF;
+      text-align:center;
+      font-size:12px;
+    }
+    #test{
+      padding:20px 0;
+      font-size:12px;
+      color:#999;
+    }
+  </style>
+</head>
+<body>
+<div id="example"></div>
+<div id="test"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  var test = document.querySelector('#test');
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    tap() {
+      test.innerHTML += '外层tap ';
+    }
+    doubleTap() {
+      test.innerHTML += '外层doubleTap ';
+    }
+    longTap() {
+      test.innerHTML += '外层longTap ';
+    }
+    swipe() {
+      test.innerHTML += '外层swipe ';
+    }
+    swipeUp() {
+      test.innerHTML += '外层swipeUp ';
+    }
+    swipeRight() {
+      test.innerHTML += '外层swipeRight ';
+    }
+    swipeDown() {
+      test.innerHTML += '外层swipeDown ';
+    }
+    swipeLeft() {
+      test.innerHTML += '外层swipeLeft ';
+    }
+    tap2() {
+      test.innerHTML += '内层tap ';
+    }
+    doubleTap2() {
+      test.innerHTML += '内层doubleTap ';
+    }
+    longTap2() {
+      test.innerHTML += '内层longTap ';
+    }
+    swipe2() {
+      test.innerHTML += '内层swipe ';
+    }
+    swipeUp2() {
+      test.innerHTML += '内层swipeUp ';
+    }
+    swipeRight2() {
+      test.innerHTML += '内层swipeRight ';
+    }
+    swipeDown2() {
+      test.innerHTML += '内层swipeDown ';
+    }
+    swipeLeft2() {
+      test.innerHTML += '内层swipeLeft ';
+    }
+    start(e) {
+      e.preventDefault();
+    }
+    render() {
+      return <div id="outer"
+        onTouchStart={ this.start }
+        onTap={ this.tap }
+        onDoubleTap={ this.doubleTap }
+        onLongTap={ this.longTap }
+        onSwipe={ this.swipe }
+        onSwipeUp={ this.swipeUp }
+        onSwipeRight={ this.swipeRight }
+        onSwipeDown={ this.swipeDown }
+        onSwipeLeft={ this.swipeLeft }>
+        <span
+          onTap={ this.tap2 }
+          onDoubleTap={ this.doubleTap2 }
+          onLongTap={ this.longTap2 }
+          onSwipe={ this.swipe2 }
+          onSwipeUp={ this.swipeUp2 }
+          onSwipeRight={ this.swipeRight2 }
+          onSwipeDown={ this.swipeDown2 }
+          onSwipeLeft={ this.swipeLeft2 }>试试外层和内层单双击和手势</span>
+      </div>;
+    }
+  }
+
+  migi.render(
+    <Component/>,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.text;
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>

@@ -6,10 +6,17 @@
 var touchList = [];
 var touch = {};
 var lastTouch;
+var tapTimeout;
 var swipeTimeout;
-var longTapTimeout;
 var longTapDelay = 750;
+var lastTime = 0;
 var gesture;
+var now;
+var delta;
+var deltaX = 0;
+var deltaY = 0;
+var firstTouch;
+var _isPointerType;
 
 function swipeDirection(x1, x2, y1, y2) {
   return Math.abs(x1 - x2) >= Math.abs(y1 - y2)
@@ -39,19 +46,14 @@ function cancelLongTap() {
 }
 
 function cancelAll() {
-  if(touchTimeout) {
-    clearTimeout(touchTimeout);
-  }
   if(tapTimeout){
     clearTimeout(tapTimeout);
   }
   if(swipeTimeout) {
     clearTimeout(swipeTimeout);
   }
-  if(longTapTimeout) {
-    clearTimeout(longTapTimeout);
-  }
-  touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
+  tapTimeout = swipeTimeout = null;
+  touch = {};
   touchList = [];
 }
 
@@ -64,41 +66,34 @@ function isPointerEventType(e, type){
   return (e.type == 'pointer' + type || e.type.toLowerCase() == 'mspointer' + type);
 }
 
-var now;
-var delta;
-var deltaX = 0;
-var deltaY = 0;
-var firstTouch;
-var _isPointerType;
-
 var hasInitGlobal;
 
 function initGlobal() {
-  document.addEventListener('touchmove', onTouchMove);
-  document.addEventListener('MSPointerMove', onTouchMove);
-  document.addEventListener('pointermove', onTouchMove);
+  document.addEventListener('touchmove', onTouchMove, true);
+  document.addEventListener('MSPointerMove', onTouchMove, true);
+  document.addEventListener('pointermove', onTouchMove, true);
 
-  document.addEventListener('touchend', onTouchEnd);
-  document.addEventListener('MSPointerUp', onTouchEnd);
-  document.addEventListener('pointerup', onTouchEnd);
+  document.addEventListener('touchend', onTouchEnd, true);
+  document.addEventListener('MSPointerUp', onTouchEnd, true);
+  document.addEventListener('pointerup', onTouchEnd, true);
+  document.addEventListener('MSGestureEnd', onGestureEnd, true);
 
-  document.addEventListener('touchcancel', cancelAll);
-  document.addEventListener('MSPointerCancel', cancelAll);
-  document.addEventListener('pointercancel', cancelAll);
+  document.addEventListener('touchcancel', cancelAll, true);
+  document.addEventListener('MSPointerCancel', cancelAll, true);
+  document.addEventListener('pointercancel', cancelAll, true);
 
   window.addEventListener('onscroll', cancelAll);
 }
 
 function onTouchMove(e) {
-  if((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
-    return;
-  }
-  firstTouch = _isPointerType ? e : e.touches[0];
-  cancelLongTap();
-
   if(!touch.vd) {
     return;
   }
+  if((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
+    return;
+  }
+
+  firstTouch = _isPointerType ? e : e.touches[0];
   touch.x2 = firstTouch.pageX;
   touch.y2 = firstTouch.pageY;
 
@@ -106,13 +101,29 @@ function onTouchMove(e) {
   deltaY += Math.abs(touch.y1 - touch.y2);
 }
 
-function onTouchEnd(e) {
-  if((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
+function onGestureEnd(e) {
+  if(!touch.vd) {
     return;
   }
-  cancelLongTap();
 
+  var type = e.velocityX > 1 ? 'right' : e.velocityX < -1 ? 'left' : e.velocityY > 1 ? 'down' : e.velocityY < -1 ? 'up' : null;
+  if(type) {
+    if(touch.name == 'swipe' || touch.name == type) {
+      touch.cb(e);
+    }
+    touchList.forEach(function(touch) {
+      if(touch.name == 'swipe' || touch.name == type) {
+        touch.cb(e);
+      }
+    });
+  }
+}
+
+function onTouchEnd(e) {
   if(!touch.vd) {
+    return;
+  }
+  if((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
     return;
   }
 
@@ -133,33 +144,39 @@ function onTouchEnd(e) {
       touchList = [];
     }, 0);
   }
-  // normal tap
-  else if('last' in touch) {
-    // don't fire tap when delta position changed by more than 30 pixels,
-    // for instance when moving to a point and back to origin
-    if(deltaX < 30 && deltaY < 30) {
-      // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
-      // ('tap' fires before 'scroll')
-      tapTimeout = setTimeout(function() {
-        // trigger double tap immediately
-        if(touch.isDoubleTap && touch.vd == lastTouch.vd) {
+  // don't fire tap when delta position changed by more than 30 pixels,
+  // for instance when moving to a point and back to origin
+  else if(deltaX < 30 && deltaY < 30) {
+    tapTimeout = setTimeout(function() {
+      var isLongTap = (Date.now() - lastTime) > longTapDelay;
+      if(isLongTap) {
+        if(touch.name == 'longtap') {
+          touch.cb(e);
+        }
+        touchList.forEach(function(touch) {
+          if(touch.name == 'longtap') {
+            touch.cb(e);
+          }
+        });
+      }
+      // trigger double tap immediately
+      else if(touch.isDoubleTap && touch.vd == lastTouch.vd) {
+        if(touch.name == 'doubletap') {
+          touch.cb(e);
+        }
+        touchList.forEach(function(touch) {
           if(touch.name == 'doubletap') {
             touch.cb(e);
           }
-          touchList.forEach(function(touch) {
-            if(touch.name == 'doubletap') {
-              touch.cb(e);
-            }
-          });
-          touch = {};
-          touchList = [];
-        }
-      }, 0);
-    }
-    else {
+        });
+      }
       touch = {};
       touchList = [];
-    }
+    }, 0);
+  }
+  else {
+    touch = {};
+    touchList = [];
   }
   deltaX = deltaY = 0;
 }
@@ -197,8 +214,6 @@ exports["default"]=function(vd, name, cb) {
       touch.x2 = undefined;
       touch.y2 = undefined;
     }
-    now = Date.now();
-    delta = now - (touch.last || now);
 
     touch = {
       vd:vd,
@@ -206,17 +221,17 @@ exports["default"]=function(vd, name, cb) {
       cb:cb,
       first: true,
       x1: firstTouch.pageX,
-      y1: firstTouch.pageY,
-      last: now
+      y1: firstTouch.pageY
     };
     lastTouch = touch;
 
-    if(delta > 0 && delta <= 250) {
+    now = Date.now();
+    delta = now - lastTime;
+    lastTime = now;
+    if(delta > 0 && delta < 250) {
       touch.isDoubleTap = true;
     }
-    longTapTimeout = setTimeout(function() {
-      longTap(e);
-    }, longTapDelay);
+
     // adds the current touch contact for IE gesture recognition
     if(gesture && _isPointerType) {
       gesture.addPointer(e.pointerId);
