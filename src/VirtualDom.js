@@ -438,7 +438,7 @@ class VirtualDom extends Element {
     }
     else {
       //一般没有event，也就不生成对象防止diff比对
-      self.__listener = self.__listener || {};
+      self.__listener = self.__listener || [];
       if(name == 'tap') {
         name = 'click';
       }
@@ -449,18 +449,7 @@ class VirtualDom extends Element {
         return;
       }
       //记录下来留待清除
-      if(self.__listener.hasOwnProperty(name)) {
-        var temp = self.__listener[name];
-        if(Array.isArray(temp)) {
-          temp.push(cb);
-        }
-        else {
-          self.__listener[name] = [temp, cb];
-        }
-      }
-      else {
-        self.__listener[name] = cb;
-      }
+      self.__listener.push([name, cb]);
       //pc注册侦听
       if(browser.lie && elem.attachEvent) {
         //ie8没有input
@@ -478,29 +467,12 @@ class VirtualDom extends Element {
     var self = this;
     if(self.__listener) {
       var elem = self.element;
-      Object.keys(self.__listener).forEach(function(name) {
-        var item = self.__listener[name];
-        if(Array.isArray(item)) {
-          item.forEach(function(cb) {
-            if(browser.lie && elem.attachEvent) {
-              elem.detachEvent('on' + name, cb);
-            }
-            else {
-              elem.removeEventListener(name, cb);
-            }
-          });
+      self.__listener.forEach(function(arr) {
+        if(browser.lie && elem.attachEvent) {
+          elem.detachEvent('on' + arr[0], arr[1]);
         }
         else {
-          if(browser.lie && elem.attachEvent) {
-            //ie8没有input
-            if(name == 'input') {
-              name = 'keyup';
-            }
-            elem.detachEvent('on' + name, item);
-          }
-          else {
-            elem.removeEventListener(name, item);
-          }
+          elem.removeEventListener(arr[0], arr[1]);
         }
       });
     }
