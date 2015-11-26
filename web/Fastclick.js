@@ -247,7 +247,7 @@ FastClick.prototype.needsClick = function(target) {
     return true;
   }
 
-  return (/\bneedsclick\b/).test(target.className);
+  return (/\bneedsclick\b/).test(target.className) || (/\bneedsclick\b/).test(target.getAttribute('migi-class'));
 };
 
 
