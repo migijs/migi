@@ -29,7 +29,7 @@ var migi = {
     return hash.set(new cp(props, children));
   },
   createVd:function(name, props, children) {
-    if({ script: true, style: true, canvas: true, svg: true }.hasOwnProperty(name.toLowerCase())) {
+    if({ script: true, style: true, svg: true }.hasOwnProperty(name.toLowerCase())) {
       throw new Error('can not create VirtualDom of: ' + name);
     }
     return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
