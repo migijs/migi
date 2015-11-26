@@ -181,11 +181,14 @@ function onTouchEnd(e) {
   deltaX = deltaY = 0;
 }
 
-exports["default"]=function(vd, name, cb) {
+exports["default"]=function(vd, name, cb, listener) {
   if(!hasInitGlobal) {
     hasInitGlobal = true;
     initGlobal();
   }
+  listener.push('touchstart', onTouchStart);
+  listener.push('MSPointerDown', onTouchStart);
+  listener.push('pointerdown', onTouchStart);
 
   var elem = vd.element;
 
