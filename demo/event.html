@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>event</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es5-shim.js"></script>
+  <script src="es5-sham.js"></script>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+  <style>
+    #example div{
+      padding:20px;
+      background:#CCC;
+    }
+    #example span{
+      display:inline-block;
+      margin-right:20px;
+      padding:20px;
+      background:#F99;
+    }
+  </style>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+
+    click(e) {
+      console.log(this);
+      console.log(e);
+    }
+
+    render() {
+      var self = this;
+      return <div onClick={ this.click }>
+        {
+          [1,2,3].map(function(item) {
+            return <span onClick={ self.click.bind(self) }>{ item }</span>
+          })
+        }
+      </div>;
+    }
+  }
+
+  migi.render(
+    <Component/>,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.text;
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
