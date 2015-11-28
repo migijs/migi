@@ -40,7 +40,7 @@ function match(names, classes, ids, style, virtualDom, first) {
 }
 //从底部往上匹配，即.a .b这样的选择器是.b->.a逆序对比
 //过程中只要不匹配就跳出，i从最大到0
-function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
+function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild) {
   var item2;var hasId = 0;
   var hasClass = 0;
   var name = names[i];
@@ -96,8 +96,10 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
       if(i) {
         matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res);
         //多层级时需递归所有层级组合，如<div><p><span>对应div span{}的样式时，并非一一对应
-        for(var l = i - 2; l >= 0; l--) {
-          matchSel(l, names, classes, ids, item, virtualDom.parent, res);
+        if(!isChild) {
+          for(var l = i - 2; l >= 0; l--) {
+            matchSel(l, names, classes, ids, item, virtualDom.parent, res);
+          }
         }
       }
       //将当前层次的值存入
@@ -322,6 +324,11 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first) {
         }
         inAttr(item);
         inAttr(item2);}();
+      }
+      //父子选择器
+      if(item.hasOwnProperty('_>')) {
+        var item2 = item['_>'];
+        matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, false, isChild);
       }
     }
   }

@@ -960,6 +960,25 @@ describe('pseudo', function() {
   });
 });
 
+describe('relation', function() {
+  beforeEach(function() {
+    migi.Element.__clean();
+  });
+  it('first-child', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div>p{margin:1px}p>span{padding:1px}div>span{color:#F00}div span{color:#0F0}`;
+      }
+      render() {
+        return <div><p><span></span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><p style="margin:1px;" migi-uid="2"><span style="padding:1px;color:#0F0;" migi-uid="1"></span></p></div>');
+  });
+});
+
 describe('attr', function() {
   beforeEach(function() {
     migi.Element.__clean();
