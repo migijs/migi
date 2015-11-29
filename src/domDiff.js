@@ -362,15 +362,11 @@ function diffVd(ovd, nvd) {
   if(ovd === nvd) {
     return;
   }
-  //特殊的uid，以及将真实DOM引用赋给新vd
+  //特殊的uid，以及一些引用赋给新vd
   var elem = ovd.element;
-  nvd.uid = ovd.uid;
-  nvd.__element = elem;
-  nvd.__parent = ovd.__parent;
-  nvd.__top = ovd.__top;
-  nvd.__style = ovd.__style;
-  nvd.__dom = ovd.__dom;
-  nvd.__names = ovd.__names;
+  ['uid', '__element', '__parent', '__top', '__style', '__dom', '__names'].forEach(function(k) {
+    nvd[k] = ovd[k];
+  });
   //vd记录更新uid引用
   hash.set(nvd);
   //记录对比过的prop

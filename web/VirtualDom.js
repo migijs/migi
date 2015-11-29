@@ -167,11 +167,8 @@ function __findEq(name, child, res, first) {
     return res;
   }
 
-  //DOM之前看vd的缓存props属性，之后看真实的prop
+  //始终以缓存的props属性为准，哪怕更改了真实DOM的属性
   VirtualDom.prototype.isFirst = function(children) {
-    if(this.element) {
-      return !this.element.previousSibling;
-    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -197,9 +194,6 @@ function __findEq(name, child, res, first) {
     }
   }
   VirtualDom.prototype.isLast = function(children) {
-    if(this.element) {
-      return !this.element.nextSibling;
-    }
     //本身就是Component的唯一节点
     if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
       return true;
@@ -225,19 +219,21 @@ function __findEq(name, child, res, first) {
     }
   }
   VirtualDom.prototype.isEmpty = function() {
-    if(this.element) {
-      return !this.element.childNodes[0];
-    }
-    return this.children.length == 0;
+    return childEmpty(this.children);
   }
   VirtualDom.prototype.isEnabled = function() {
-    return !(this.element || this.__cache).disabled;
+    return !this.__cache.disabled;
   }
   VirtualDom.prototype.isDisabled = function() {
-    return (this.element || this.__cache).disabled;
+    return this.__cache.disabled;
   }
   VirtualDom.prototype.isChecked = function() {
-    return (this.element || this.__cache).checked;
+    return this.__cache.checked;
+  }
+  VirtualDom.prototype.prev = function() {
+    var res = {};
+    getPrev(this.parent.children, this, res);
+    return res.prev;
   }
 
   VirtualDom.prototype.__renderProp = function(k, v) {
@@ -816,7 +812,7 @@ function __findEq(name, child, res, first) {
   VirtualDom.prototype.__init = function(name, children) {
     var self = this;
     self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
-    childParent(children, this);
+    childParent(children, self);
   }
   //@overwrite
   VirtualDom.prototype.__reset = function(name, props, children) {
@@ -848,6 +844,11 @@ var GS = {
   names: {
     get: function() {
       return this.__names || (this.__names = []);
+    }
+  },
+  element: {
+    get: function() {
+      return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
     }
   },
   style: {
@@ -915,6 +916,47 @@ function childStyle(child, style) {
   }
   else if(child instanceof Obj) {
     childStyle(child.v, style);
+  }
+}
+function childEmpty(child) {
+  var res = true;
+  if(Array.isArray(child)) {
+    for(var i = 0, len = child.length; i < len; i++) {
+      res = childEmpty(child[i]);
+      if(!res) {
+        break;
+      }
+    }
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    res = false;
+  }
+  else if(child instanceof Obj) {
+    res = childEmpty(child.v);
+  }
+  else {
+    res = isEmptyText(child);
+  }
+  return res;
+}
+function getPrev(child, target, res) {
+  if(Array.isArray(child)) {
+    for(var i = 0, len = child.length; i < len; i++) {
+      getPrev(child[i], target, res);
+      if(res.done) {
+        break;
+      }
+    }
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    if(target == child) {
+      res.done = true;
+      return;
+    }
+    res.prev = child;
+  }
+  else if(child instanceof Obj) {
+    getPrev(child.v);
   }
 }
 

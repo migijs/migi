@@ -180,11 +180,6 @@ var GS = {
       return this.__top;
     }
   },
-  element: {
-    get: function() {
-      return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
-    }
-  },
   parent: {
     get: function() {
       var p = this.__parent;
