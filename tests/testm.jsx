@@ -958,13 +958,26 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="1">123</div>');
   });
+  it(':empty', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `p:empty{margin:0}`;
+      }
+      render() {
+        return <div><p></p><p>{[]}</p><p>{}</p><p>1</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="5"><p style="margin:0;" migi-uid="1"></p><p style="margin:0;" migi-uid="2"></p><p style="margin:0;" migi-uid="3"></p><p migi-uid="4">1</p></div>');
+  });
 });
 
 describe('relation', function() {
   beforeEach(function() {
     migi.Element.__clean();
   });
-  it('first-child', function() {
+  it('>', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
@@ -976,6 +989,19 @@ describe('relation', function() {
     }
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="3"><p style="margin:1px;" migi-uid="2"><span style="padding:1px;color:#0F0;" migi-uid="1"></span></p></div>');
+  });
+  it('+', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `p+span{margin:1px}p+p{padding:0}`;
+      }
+      render() {
+        return <div><p><span>1</span></p><span>2</span><p>3</p><p>4</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="6"><p migi-uid="2"><span migi-uid="1">1</span></p><span style="margin:1px;" migi-uid="3">2</span><p migi-uid="4">3</p><p style="padding:0;" migi-uid="5">4</p></div>');
   });
 });
 
