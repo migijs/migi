@@ -232,7 +232,18 @@ function __findEq(name, child, res, first) {
   }
   VirtualDom.prototype.prev = function() {
     var res = {};
-    getPrev(this.parent.children, this, res);
+    getPrev(this.parent.children, this, res, function(child) {
+      res.prev = child;
+    });
+    return res.prev;
+  }
+  VirtualDom.prototype.prevAll = function() {
+    var res = {
+      prev: []
+    };
+    getPrev(this.parent.children, this, res, function(child) {
+      res.prev.push(child);
+    });
     return res.prev;
   }
 
@@ -939,10 +950,10 @@ function childEmpty(child) {
   }
   return res;
 }
-function getPrev(child, target, res) {
+function getPrev(child, target, res, cb) {
   if(Array.isArray(child)) {
     for(var i = 0, len = child.length; i < len; i++) {
-      getPrev(child[i], target, res);
+      getPrev(child[i], target, res, cb);
       if(res.done) {
         break;
       }
@@ -953,10 +964,10 @@ function getPrev(child, target, res) {
       res.done = true;
       return;
     }
-    res.prev = child;
+    cb(child);
   }
   else if(child instanceof Obj) {
-    getPrev(child.v);
+    getPrev(child.v, target, res, cb);
   }
 }
 

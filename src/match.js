@@ -330,7 +330,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
         var item2 = item['_>'];
         matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, false, isChild);
       }
-      //兄弟选择器
+      //相邻兄弟选择器
       if(item.hasOwnProperty('_+')) {
         var item2 = item['_+'];
         var prev = virtualDom.prev();
@@ -358,6 +358,45 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
             }
             matchSel(i - 1, names, classes, ids, item2[k], virtualDom.parent, res, false, isChild);
           });
+        }
+      }
+      //兄弟选择器
+      if(item.hasOwnProperty('_~')) {
+        var item2 = item['_~'];
+        var prevAll = virtualDom.prevAll();
+        if(prevAll.length) {
+          var hasSibiling = false;
+          for(var j = prevAll.length - 1; j >= 0; j--) {
+            var prev = prevAll[j];
+            Object.keys(item2).forEach(function(k) {
+              var nodeName = /^[a-z\d]+/i.exec(k);
+              if(nodeName && nodeName[0].toUpperCase() != prev.__name.toUpperCase()) {
+                return;
+              }
+              var className = k.match(/\.[a-z\d_-]+/ig);
+              if(className) {
+                for(var j = className.length - 1; j >= 0; j--) {
+                  if(!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(prev.__cache.class)) {
+                    return;
+                  }
+                }
+              }
+              var id = /#[a-z\d_-]+/i.exec(k);
+              if(id && id[0].toUpperCase() != prev.__cache.id.toUpperCase()) {
+                return;
+              }
+              //将当前层次的值存入
+              if(item2[k].hasOwnProperty('_v')) {
+                dealStyle(res, item2[k]);
+              }
+              hasSibiling = true;
+              matchSel(i - 1, names, classes, ids, item2[k], virtualDom.parent, res, false, isChild);
+            });
+            //一旦前方出现一次，即说明命中兄弟选择器，可以跳出继续判断下去的循环
+            if(hasSibiling) {
+              break;
+            }
+          }
         }
       }
     }
