@@ -997,6 +997,19 @@ describe('relation', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="6"><p migi-uid="2"><span migi-uid="1">1</span></p><span style="margin:1px;" migi-uid="3">2</span><p migi-uid="4">3</p><p style="padding:0;" migi-uid="5">4</p></div>');
   });
+  it('~', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `p~span{margin:1px}p~p{padding:0}`;
+      }
+      render() {
+        return <div><p><span>1</span></p><span>2</span><p>3</p><p>4</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="6"><p migi-uid="2"><span migi-uid="1">1</span></p><span style="margin:1px;" migi-uid="3">2</span><p style="padding:0;" migi-uid="4">3</p><p style="padding:0;" migi-uid="5">4</p></div>');
+  });
 });
 
 describe('attr', function() {
