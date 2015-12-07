@@ -12,6 +12,8 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
     this.__handler = {}; //缓存data key的hash
     this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
     this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
+    this.__timeout;
+    this.__timecb;
 
     //ie8的对象识别hack
     if(browser.lie) {
@@ -57,7 +59,7 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
     if(!self.__ccb) {
       self.__ccb = true;
       //1ms后触发数据变更并重设状态
-      setTimeout(function() {
+      self.__timeout = setTimeout(self.__timecb = function() {
         self.__ccb = false;
         var temp = self.__handler;
         var keys = Object.keys(temp);
@@ -122,7 +124,14 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
             }
           });
         }
-      }, 1);
+      }, 0);
+    }
+  }
+  CacheComponent.prototype.flush = function() {
+    if(this.__timeout) {
+      clearTimeout(this.__timeout);
+      this.__ccb = false;
+      this.__timecb();
     }
   }
 
