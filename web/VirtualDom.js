@@ -257,9 +257,7 @@ function __findEq(name, child, res, first) {
         if(fake) {
           return;
         }
-        var name = k.slice(2).replace(/[A-Z]/g, function(up) {
-          return up.toLowerCase();
-        });
+        var name = k.slice(2).toLowerCase();
         self.__addListener(name, function(e) {
           e = e || window.event;
           fixEvent(e);
