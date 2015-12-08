@@ -14,6 +14,8 @@ import fixEvent from './fixEvent';
 import attr from './attr';
 import hash from './hash';
 import touch from './touch';
+import delegate from './delegate';
+import matchUtil from './matchUtil';
 
 const SELF_CLOSE = {
   'img': true,
@@ -264,8 +266,22 @@ class VirtualDom extends Element {
           if(v instanceof Cb) {
             v.cb.call(v.context, e);
           }
-          else {
+          else if(util.isFunction(v)) {
             v(e);
+          }
+          else if(Array.isArray(v)) {
+            var top = self.top;
+            v.forEach(function(item) {
+              var cb = item[1];
+              if(delegate(e, item, self)) {
+                if(cb instanceof Cb) {
+                  cb.cb.call(cb.context, e);
+                }
+                else if(util.isFunction(cb)) {
+                  cb(e);
+                }
+              }
+            });
           }
         });
       });
@@ -783,24 +799,9 @@ class VirtualDom extends Element {
       this.__classes = [];
       this.__ids = [];
     }
-    var klass = (this.__cache['class'] || '').trim();
-    if(klass) {
-      klass = klass.split(/\s+/);
-      sort(klass, function(a, b) {
-        return a > b;
-      });
-      this.__classes.push(klass);
-    }
-    else {
-      this.__classes.push('');
-    }
-    var id = (this.__cache.id || '').trim();
-    if(id) {
-      this.__ids.push('#' + id);
-    }
-    else {
-      this.__ids.push('');
-    }
+    //预处理class和id，class分为数组形式，id判断#开头
+    this.__classes.push(matchUtil.splitClass(this.__cache['class']));
+    this.__ids.push(matchUtil.preId(this.__cache.id));
     //TODO: css3伪类
     var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
     //本身的inline最高优先级追加到末尾
