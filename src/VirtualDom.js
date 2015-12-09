@@ -270,10 +270,9 @@ class VirtualDom extends Element {
             v(e);
           }
           else if(Array.isArray(v)) {
-            var top = self.top;
             v.forEach(function(item) {
               var cb = item[1];
-              if(delegate(e, item, self)) {
+              if(delegate(e, item[0], self)) {
                 if(cb instanceof Cb) {
                   cb.cb.call(cb.context, e);
                 }

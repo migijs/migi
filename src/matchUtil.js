@@ -69,6 +69,66 @@ export default {
       }
     }
     return combo;
+  },
+  pseudo: function(pseudos, virtualDom) {
+    var isMatch = true;
+    for(var j = 0, len = pseudos.length; j < len; j++) {
+      switch(pseudos[j]) {
+        case 'hover':
+          if(!virtualDom.__hover) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'active':
+          if(!virtualDom.__active) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'first-child':
+          if(!virtualDom.isFirst()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'last-child':
+          if(!virtualDom.isLast()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'empty':
+          if(!virtualDom.isEmpty()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'enabled':
+          if(!virtualDom.isEnabled()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'disabled':
+          if(!virtualDom.isDisabled()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        case 'checked':
+          if(!virtualDom.isChecked()) {
+            isMatch = false;
+            break;
+          }
+          break;
+        //TODO:其它伪类
+        default:
+          isMatch = false;
+          break;
+      }
+    }
+    return isMatch;
   }
 };
 

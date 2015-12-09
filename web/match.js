@@ -139,65 +139,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
         if(item.hasOwnProperty('_:')) {
           item2 = item['_:'];
           item2.forEach(function(pseudoItem) {
-            var pseudos = pseudoItem[0];
-            var isMatch = true;
-            outer:
-              for(var j = 0, len = pseudos.length; j < len; j++) {
-                switch(pseudos[j]) {
-                  case 'hover':
-                    if(!virtualDom.__hover) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'active':
-                    if(!virtualDom.__active) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'first-child':
-                    if(!virtualDom.isFirst()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'last-child':
-                    if(!virtualDom.isLast()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'empty':
-                    if(!virtualDom.isEmpty()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'enabled':
-                    if(!virtualDom.isEnabled()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'disabled':
-                    if(!virtualDom.isDisabled()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  case 'checked':
-                    if(!virtualDom.isChecked()) {
-                      isMatch = false;
-                      break outer;
-                    }
-                    break;
-                  //TODO:其它伪类
-                  default:
-                    isMatch = false;
-                    break;
-                }
-              }
+            var isMatch = matchUtil.pseudo(pseudoItem[0], virtualDom);
             if(isMatch) {
               item2 = pseudoItem[1];
               //同普通匹配一样
