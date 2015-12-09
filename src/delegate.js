@@ -72,7 +72,6 @@ function matchSel(i, names, classes, ids, json, virtualDom) {
               }
               if(item2.hasOwnProperty('_v')) {
                 res = true;
-                return;
               }
             }
           });
@@ -82,55 +81,7 @@ function matchSel(i, names, classes, ids, json, virtualDom) {
           if(item && item.hasOwnProperty('_[')) {
             var item2 = item['_['];
             item2.forEach(function(attrItem) {
-              var attrs = attrItem[0];
-              var isMatch = true;
-              outer:
-              for(var j = 0, len = attrs.length; j < len; j++) {
-                var attr = attrs[j];
-                //[attr]形式，只要有属性即可
-                if(attr.length == 1) {
-                  if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
-                    isMatch = false;
-                    break;
-                  }
-                }
-                //[attr=xxx]形式，需比较值
-                else {
-                  var p = virtualDom.__cache[attr[0]];
-                  if(p === void 0) {
-                    isMatch = false;
-                    break;
-                  }
-                  var v = attr[2];
-                  switch(attr[1]) {
-                    case '=':
-                      isMatch = p == v;
-                      break;
-                    case '^=':
-                      isMatch = p.indexOf(v) == 0;
-                      break;
-                    case '$=':
-                      isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
-                      break;
-                    case '~=':
-                      var reg = new RegExp('\\b' + v + '\\b');
-                      isMatch = reg.test(p);
-                      break;
-                    case '*=':
-                      isMatch = p.indexOf(v) > -1;
-                      break;
-                    case '|=':
-                      isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
-                      break;
-                    default:
-                      isMatch = false;
-                      break outer;
-                  }
-                  if(!isMatch) {
-                    break;
-                  }
-                }
-              }
+              var isMatch = matchUtil.attr(attrItem[0], virtualDom);
               if(isMatch) {
                 item2 = attrItem[1];
                 //同普通匹配一样
@@ -139,7 +90,6 @@ function matchSel(i, names, classes, ids, json, virtualDom) {
                 }
                 if(item2.hasOwnProperty('_v')) {
                   res = true;
-                  return;
                 }
               }
             });

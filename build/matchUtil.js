@@ -71,61 +71,102 @@ exports["default"]={
     return combo;
   },
   pseudo: function(pseudos, virtualDom) {
-    var isMatch = true;
     for(var j = 0, len = pseudos.length; j < len; j++) {
       switch(pseudos[j]) {
         case 'hover':
           if(!virtualDom.__hover) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'active':
           if(!virtualDom.__active) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'first-child':
           if(!virtualDom.isFirst()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'last-child':
           if(!virtualDom.isLast()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'empty':
           if(!virtualDom.isEmpty()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'enabled':
           if(!virtualDom.isEnabled()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'disabled':
           if(!virtualDom.isDisabled()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         case 'checked':
           if(!virtualDom.isChecked()) {
-            isMatch = false;
-            break;
+            return false;
           }
           break;
         //TODO:其它伪类
         default:
+          return false;
+      }
+    }
+    return true;
+  },
+  attr: function(attrs, virtualDom) {
+    var isMatch = true;
+    outer:
+    for(var j = 0, len = attrs.length; j < len; j++) {
+      var attr = attrs[j];
+      //[attr]形式，只要有属性即可
+      if(attr.length == 1) {
+        if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
           isMatch = false;
           break;
+        }
+      }
+      //[attr=xxx]形式，需比较值
+      else {
+        var p = virtualDom.__cache[attr[0]];
+        if(p === void 0) {
+          isMatch = false;
+          break;
+        }
+        var v = attr[2];
+        switch(attr[1]) {
+          case '=':
+            isMatch = p == v;
+            break;
+          case '^=':
+            isMatch = p.indexOf(v) == 0;
+            break;
+          case '$=':
+            isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
+            break;
+          case '~=':
+            var reg = new RegExp('\\b' + v + '\\b');
+            isMatch = reg.test(p);
+            break;
+          case '*=':
+            isMatch = p.indexOf(v) > -1;
+            break;
+          case '|=':
+            isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
+            break;
+          default:
+            isMatch = false;
+            break outer;
+        }
+        if(!isMatch) {
+          break;
+        }
       }
     }
     return isMatch;
