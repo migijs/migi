@@ -4,6 +4,7 @@ import sort from './sort';
 import browser from './browser';
 import hash from './hash';
 import matchHash from './matchHash';
+import matchUtil from './matchUtil';
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象
@@ -41,53 +42,7 @@ function match(names, classes, ids, style, virtualDom, first) {
 //从底部往上匹配，即.a .b这样的选择器是.b->.a逆序对比
 //过程中只要不匹配就跳出，i从最大到0
 function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild) {
-  var hasId = 0;
-  var hasClass = 0;
-  var name = names[i];
-  var klass = classes[i];
-  var id = ids[i];
-  //class可能有多个，任意个class的组合也要匹配
-  if(klass && klass.length) {
-    var comboClass = comboArr(klass, klass.length);
-    hasClass = 1;
-  }
-  //id、class、name可能单个或组合出现，每种都要匹配
-  var combo = [name];
-  if(id) {
-    hasId = 2;
-  }
-  //各种*的情况标识
-  var hasStarClass = style.hasOwnProperty('_*.');
-  var hasStarId = style.hasOwnProperty('_*#');
-  var hasStarIdClass = style.hasOwnProperty('_*.#');
-  //只有当前有_*时说明有*才匹配
-  if(style.hasOwnProperty('_*')) {
-    combo.push('*');
-  }
-  //将各种可能的组合添加进入combo
-  if(hasClass) {
-    comboClass.forEach(function(klass) {
-      combo.push(klass);
-      combo.push(name + klass);
-      if(hasStarClass) {
-        combo.push('*' + klass);
-      }
-      if(hasId) {
-        combo.push(klass + id);
-        combo.push(name + klass + id);
-        if(hasStarIdClass) {
-          combo.push('*' + klass + id);
-        }
-      }
-    });
-  }
-  if(hasId) {
-    combo.push(id);
-    combo.push(name + id);
-    if(hasStarId) {
-      combo.push('*' + id);
-    }
-  }
+  var combo = matchUtil.combo(classes[i], names[i], ids[i], style);
   for(var j = 0, len = combo.length; j < len; j++) {
     var k = combo[j];
     if(style.hasOwnProperty(k)) {
@@ -408,17 +363,6 @@ function dealStyle(res, item) {
     style[2] = item._p;
     res.push(style);
   });
-}
-
-function comboArr(arr, len, res = [], i = 0) {
-  if(len - i > 1) {
-    comboArr(arr, len, res, i + 1);
-    for(var j = 0, len2 = res.length; j < len2; j++) {
-      res.push(res[j] + '.' + arr[i]);
-    }
-  }
-  res.push('.' + arr[i]);
-  return res;
 }
 
 export default match;
