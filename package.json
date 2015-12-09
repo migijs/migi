@@ -33,7 +33,7 @@
   "dependencies": {
     "es5-shim": "*",
     "es6-shim": "~0.32.0",
-    "lefty": "~0.9.0",
+    "lefty": "~0.9.1",
     "jaw": "~0.6.0"
   },
   "devDependencies": {
