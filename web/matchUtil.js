@@ -170,6 +170,24 @@ exports["default"]={
       }
     }
     return isMatch;
+  },
+  nci: function(s, vd) {
+    var nodeName = /^[a-z\d]+/i.exec(s);
+    if(nodeName && nodeName[0].toUpperCase() != vd.__name.toUpperCase()) {
+      return true;
+    }
+    var className = s.match(/\.[a-z\d_-]+/ig);
+    if(className) {
+      for(var j = className.length - 1; j >= 0; j--) {
+        if(!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(vd.__cache.class)) {
+          return true;
+        }
+      }
+    }
+    var id = /#[a-z\d_-]+/i.exec(s);
+    if(id && id[0].toUpperCase() != vd.__cache.id.toUpperCase()) {
+      return true;
+    }
   }
 };
 

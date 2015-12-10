@@ -185,20 +185,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
         var prev = virtualDom.prev();
         if(prev) {
           Object.keys(item2).forEach(function(k) {
-            var nodeName = /^[a-z\d]+/i.exec(k);
-            if(nodeName && nodeName[0].toUpperCase() != prev.__name.toUpperCase()) {
-              return;
-            }
-            var className = k.match(/\.[a-z\d_-]+/ig);
-            if(className) {
-              for(var j = className.length - 1; j >= 0; j--) {
-                if(!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(prev.__cache.class)) {
-                  return;
-                }
-              }
-            }
-            var id = /#[a-z\d_-]+/i.exec(k);
-            if(id && id[0].toUpperCase() != prev.__cache.id.toUpperCase()) {
+            if(matchUtil.nci(k, prev)) {
               return;
             }
             //将当前层次的值存入
@@ -218,20 +205,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
           for(var j = prevAll.length - 1; j >= 0; j--) {
             var prev = prevAll[j];
             Object.keys(item2).forEach(function(k) {
-              var nodeName = /^[a-z\d]+/i.exec(k);
-              if(nodeName && nodeName[0].toUpperCase() != prev.__name.toUpperCase()) {
-                return;
-              }
-              var className = k.match(/\.[a-z\d_-]+/ig);
-              if(className) {
-                for(var j = className.length - 1; j >= 0; j--) {
-                  if(!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(prev.__cache.class)) {
-                    return;
-                  }
-                }
-              }
-              var id = /#[a-z\d_-]+/i.exec(k);
-              if(id && id[0].toUpperCase() != prev.__cache.id.toUpperCase()) {
+              if(matchUtil.nci(k, prev)) {
                 return;
               }
               //将当前层次的值存入
