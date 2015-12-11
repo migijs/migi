@@ -965,6 +965,19 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="5"><p style="margin:0;" migi-uid="1"></p><p style="margin:0;" migi-uid="2"></p><p style="margin:0;" migi-uid="3"></p><p migi-uid="4">1</p></div>');
   });
+  it(':only-child', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:only-child{margin:0}p span:only-child{padding:0}`;
+      }
+      render() {
+        return <div><p>1<span>2</span></p><p><span>3</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="5"><p migi-uid="2">1<span style="margin:0;padding:0;" migi-uid="1">2</span></p><p migi-uid="4"><span style="margin:0;padding:0;" migi-uid="3">3</span></p></div>');
+  });
 });
 
 describe('relation', function() {

@@ -113,6 +113,11 @@ exports["default"]={
             return false;
           }
           break;
+        case 'only-child':
+          if(!virtualDom.isOnly()) {
+            return false;
+          }
+          break;
         //TODO:其它伪类
         default:
           return false;

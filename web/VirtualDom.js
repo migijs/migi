@@ -248,6 +248,11 @@ function __findEq(name, child, res, first) {
     });
     return res.prev;
   }
+  VirtualDom.prototype.isOnly = function() {
+    var parent = this.parent;
+    var all = allChildren(parent.children);
+    return all.length == 1;
+  }
 
   VirtualDom.prototype.__renderProp = function(k, v) {
     var self = this;
@@ -967,6 +972,20 @@ function getPrev(child, target, res, cb) {
   else if(child instanceof Obj) {
     getPrev(child.v, target, res, cb);
   }
+}
+function allChildren(child, res) {
+  if(res===void 0)res=[];if(Array.isArray(child)) {
+    for(var i = 0, len = child.length; i < len; i++) {
+      allChildren(child[i], res);
+    }
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    res.push(child);
+  }
+  else if(child instanceof Obj) {
+    allChildren(child.v, res);
+  }
+  return res;
 }
 
 exports["default"]=VirtualDom;});

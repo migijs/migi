@@ -248,6 +248,11 @@ class VirtualDom extends Element {
     });
     return res.prev;
   }
+  isOnly() {
+    var parent = this.parent;
+    var all = allChildren(parent.children);
+    return all.length == 1;
+  }
 
   __renderProp(k, v) {
     var self = this;
@@ -967,6 +972,20 @@ function getPrev(child, target, res, cb) {
   else if(child instanceof Obj) {
     getPrev(child.v, target, res, cb);
   }
+}
+function allChildren(child, res = []) {
+  if(Array.isArray(child)) {
+    for(var i = 0, len = child.length; i < len; i++) {
+      allChildren(child[i], res);
+    }
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    res.push(child);
+  }
+  else if(child instanceof Obj) {
+    allChildren(child.v, res);
+  }
+  return res;
 }
 
 export default VirtualDom;
