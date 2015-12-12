@@ -12,57 +12,6 @@ var jaw = require('jaw');
 global.migi = migi;
 migi.browser.lie = true;
 
-describe('api', function() {
-  it('global scope on window', function() {
-    expect(window.migi).to.eql(migi);
-  });
-  it('#render', function() {
-    expect(migi.render).to.be.a(Function);
-  });
-  it('#createCp', function() {
-    expect(migi.createCp).to.be.a(Function);
-  });
-  it('#createVd', function() {
-    expect(migi.createVd).to.be.a(Function);
-  });
-  it('#Event', function() {
-    expect(migi.Event).to.be.a(Function);
-  });
-  it('#EventBus', function() {
-    expect(migi.EventBus).to.be.a(Function);
-  });
-  it('#eventBus', function() {
-    expect(migi.eventBus).to.be.a(Object);
-  });
-  it('#Element', function() {
-    expect(migi.Element).to.be.a(Function);
-  });
-  it('#Component', function() {
-    expect(migi.Component).to.be.a(Function);
-  });
-  it('#NonVisualComponent', function() {
-    expect(migi.NonVisualComponent).to.be.a(Function);
-  });
-  it('#CacheComponent', function() {
-    expect(migi.CacheComponent).to.be.a(Function);
-  });
-  it('#VirtualDom', function() {
-    expect(migi.VirtualDom).to.be.a(Function);
-  });
-  it('#Obj', function() {
-    expect(migi.Obj).to.be.a(Function);
-  });
-  it('#Cb', function() {
-    expect(migi.Cb).to.be.a(Function);
-  });
-  it('#util', function() {
-    expect(migi.util).to.be.a(Object);
-  });
-  it('#sort', function() {
-    expect(migi.sort).to.be.a(Function);
-  });
-});
-
 describe('Event', function() {
   it('on && emit', function() {
     var event = new migi.Event();
@@ -561,6 +510,24 @@ describe('Component', function() {
     expect(cmpn.$$.v).to.eql(undefined);
     cmpn.$.v = 1;
     expect(cmpn.$$.v).to.eql(undefined);
+  });
+  it('on', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.on(migi.Event.DOM, function() {
+          this.emit('test', 1);
+        });
+      }
+      render() {
+        return <div/>;
+      }
+    }
+    var count = 0;
+    var vd = <Component onTest={ function() { count++; } }/>;
+    vd.toString();
+    vd.emit(migi.Event.DOM);
+    expect(count).to.eql(1);
   });
 });
 

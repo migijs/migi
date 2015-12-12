@@ -10,5 +10,10 @@ document = {
   createElement: function(name) {
     return new Dom(name);
   },
-  querySelector: function() {}
+  querySelector: function() {
+    return {
+      setAttribute: function() {},
+      addEventListener: function() {}
+    };
+  }
 };

@@ -60,6 +60,9 @@ describe('api', function() {
   it('#sort', function() {
     expect(migi.sort).to.be.a(Function);
   });
+  it('#hash', function() {
+    expect(migi.hash).to.be.a(Object);
+  });
 });
 
 describe('Event', function() {
@@ -567,6 +570,24 @@ describe('Component', function() {
     expect(cmpn.$.v).to.eql(undefined);
     cmpn.$.v = 1;
     expect(cmpn.$.v).to.eql(1);
+  });
+  it('on', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.on(migi.Event.DOM, function() {
+          this.emit('test', 1);
+        });
+      }
+      render() {
+        return <div/>;
+      }
+    }
+    var count = 0;
+    var vd = <Component onTest={ function() { count++; } }/>;
+    vd.toString();
+    vd.emit(migi.Event.DOM);
+    expect(count).to.eql(1);
   });
 });
 
