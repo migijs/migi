@@ -584,7 +584,7 @@ describe('Component', function() {
       }
     }
     var count = 0;
-    var vd = <Component onTest={ function() { count++; } }/>;
+    var vd = <Component ontest={ function() { count++; } }/>;
     vd.toString();
     vd.emit(migi.Event.DOM);
     expect(count).to.eql(1);

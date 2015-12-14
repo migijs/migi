@@ -13,7 +13,11 @@ document = {
   querySelector: function() {
     return {
       setAttribute: function() {},
-      addEventListener: function() {}
+      addEventListener: function() {},
+      querySelector: function() {},
+      querySelectorAll: function() {
+        return [];
+      }
     };
   }
 };
