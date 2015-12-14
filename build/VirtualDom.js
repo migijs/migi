@@ -258,7 +258,7 @@ function __findEq(name, child, res, first) {
     var self = this;
     var res = '';
     //onXxx侦听处理
-    if(/^on[A-Z]/.test(k)) {
+    if(/^on[a-zA-Z]/.test(k)) {
       self.once(Event.DOM, function(fake) {
         //防止fake未真实添加DOM
         if(fake) {
