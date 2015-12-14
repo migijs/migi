@@ -49,7 +49,7 @@ class Component extends Element {
   }
   __init(k, v) {
     if(/^on[A-Z]/.test(k)) {
-      var name = k.slice(2).toLowerCase();
+      var name = k.slice(2);
       this.on(name, function(...data) {
         v(...data);
       });

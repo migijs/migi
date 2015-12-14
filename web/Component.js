@@ -49,7 +49,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   }
   Component.prototype.__init = function(k, v) {
     if(/^on[A-Z]/.test(k)) {
-      var name = k.slice(2).toLowerCase();
+      var name = k.slice(2);
       this.on(name, function(data) {
         data=[].slice.call(arguments, 0);v.apply(this,[].concat(Array.from(data)));
       });
