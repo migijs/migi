@@ -384,7 +384,12 @@ function __findEq(name, child, res, first) {
               var v = e.target.value;
               item.setV(v);
               var key = item.k;
-              item.context[key] = v;
+              if(key.indexOf('model.') == 0) {
+                item.context.model[key.slice(6)] = v;
+              }
+              else {
+                item.context[key] = v;
+              }
             }
             var type = self.__cache.type;
             if(type === void 0 || type === null) {
@@ -426,7 +431,12 @@ function __findEq(name, child, res, first) {
               var v = e.target.value;
               item.setV(v);
               var key = item.k;
-              item.context[key] = v;
+              if(key.indexOf('model.') == 0) {
+                item.context.model[key.slice(6)] = v;
+              }
+              else {
+                item.context[key] = v;
+              }
             }
             self.__addListener('change', cb);
           });
