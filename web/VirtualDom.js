@@ -248,10 +248,45 @@ function __findEq(name, child, res, first) {
     });
     return res.prev;
   }
+  VirtualDom.prototype.next = function() {
+    var res = {};
+    getNext(this.parent.children, this, res, function(child) {
+      res.next = child;
+      res.done = true;
+    });
+    return res.next;
+  }
+  VirtualDom.prototype.nextAll = function() {
+    var res = {
+      next: []
+    };
+    getNext(this.parent.children, this, res, function(child) {
+      res.next.push(child);
+    });
+    return res.next;
+  }
   VirtualDom.prototype.isOnly = function() {
     var parent = this.parent;
     var all = allChildren(parent.children);
     return all.length == 1;
+  }
+  VirtualDom.prototype.isFirstOfType = function(sel) {
+    var prevAll = this.prevAll();
+    for(var i = 0, len = prevAll.length; i < len; i++) {
+      if(!matchUtil.nci(sel, prevAll[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  VirtualDom.prototype.isLastOfType = function(sel) {
+    var nextAll = this.nextAll();
+    for(var i = 0, len = nextAll.length; i < len; i++) {
+      if(!matchUtil.nci(sel, nextAll[i])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   VirtualDom.prototype.__renderProp = function(k, v) {
@@ -981,6 +1016,27 @@ function getPrev(child, target, res, cb) {
   }
   else if(child instanceof Obj) {
     getPrev(child.v, target, res, cb);
+  }
+}
+function getNext(child, target, res, cb) {
+  if(Array.isArray(child)) {
+    for(var i = 0, len = child.length; i < len; i++) {
+      getNext(child[i], target, res, cb);
+      if(res.done) {
+        break;
+      }
+    }
+  }
+  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    if(target == child) {
+      res.start = true;
+    }
+    else if(res.start) {
+      cb(child);
+    }
+  }
+  else if(child instanceof Obj) {
+    getNext(child.v, target, res, cb);
   }
 }
 function allChildren(child, res) {

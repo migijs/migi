@@ -139,7 +139,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
         if(item.hasOwnProperty('_:')) {
           item2 = item['_:'];
           item2.forEach(function(pseudoItem) {
-            var isMatch = matchUtil.pseudo(pseudoItem[0], virtualDom);
+            var isMatch = matchUtil.pseudo(pseudoItem[0], virtualDom, k);
             if(isMatch) {
               item2 = pseudoItem[1];
               //同普通匹配一样

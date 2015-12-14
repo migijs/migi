@@ -70,7 +70,7 @@ exports["default"]={
     }
     return combo;
   },
-  pseudo: function(pseudos, virtualDom) {
+  pseudo: function(pseudos, virtualDom, sel) {
     for(var j = 0, len = pseudos.length; j < len; j++) {
       switch(pseudos[j]) {
         case 'hover':
@@ -115,6 +115,16 @@ exports["default"]={
           break;
         case 'only-child':
           if(!virtualDom.isOnly()) {
+            return false;
+          }
+          break;
+        case 'first-of-type':
+          if(!virtualDom.isFirstOfType(sel)) {
+            return false;
+          }
+          break;
+        case 'last-of-type':
+          if(!virtualDom.isLastOfType(sel)) {
             return false;
           }
           break;

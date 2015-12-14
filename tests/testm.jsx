@@ -1005,6 +1005,40 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="5"><p migi-uid="2">1<span style="margin:0;padding:0;" migi-uid="1">2</span></p><p migi-uid="4"><span style="margin:0;padding:0;" migi-uid="3">3</span></p></div>');
   });
+  it(':first-of-type', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div span:first-of-type{color:#F00}`;
+      }
+      render() {
+        return <div>
+          <p>0</p>
+          <span>1</span>
+          <span>2</span>
+        </div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><p migi-uid="1">0</p><span style="color:#F00;" migi-uid="2">1</span><span migi-uid="3">2</span></div>');
+  });
+  it(':last-of-type', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `div span:last-of-type{color:#F00}`;
+      }
+      render() {
+        return <div>
+          <span>1</span>
+          <span>2</span>
+          <p>0</p>
+        </div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span migi-uid="1">1</span><span style="color:#F00;" migi-uid="2">2</span><p migi-uid="3">0</p></div>');
+  });
 });
 
 describe('relation', function() {

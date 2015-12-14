@@ -63,7 +63,7 @@ function matchSel(i, names, classes, ids, json, virtualDom) {
         if(item.hasOwnProperty('_:')) {
           item2 = item['_:'];
           item2.forEach(function(pseudoItem) {
-            var isMatch = matchUtil.pseudo(pseudoItem[0], virtualDom);
+            var isMatch = matchUtil.pseudo(pseudoItem[0], virtualDom, k);
             if(isMatch) {
               item2 = pseudoItem[1];
               //同普通匹配一样
