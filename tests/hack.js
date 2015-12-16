@@ -1,12 +1,22 @@
 function Dom(name) {}
 
-window = {};
+window = {
+  screen: {
+    width: 1024,
+    height: 768
+  },
+  innerWidth: 1024,
+  innerHeight: 768,
+  devicePixelRatio: 2
+};
 
 navigator = {
   userAgent: ''
 };
 
 document = {
+  documentElement: {},
+  body: {},
   createElement: function(name) {
     return new Dom(name);
   },

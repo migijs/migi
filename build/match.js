@@ -17,6 +17,183 @@ function match(names, classes, ids, style, virtualDom, first) {
   }
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style.default, virtualDom, res, first);
+  //如果有media query
+  if(style.media) {
+    style.media.forEach(function(media) {
+      var match = false;
+      media.query.forEach(function(qlist) {
+        //中一个即命中不再往下匹配
+        if(match) {
+          return;
+        }
+        for(var i = 0, len = qlist.length; i < len; i++) {
+          var item = qlist[i];
+          //Array/String类型标明是否有值，目前只支持Array
+          if(Array.isArray(item)) {
+            var k = item[0].replace(/^-[a-z]+-/i, '').replace(/^mso-/, '').toLowerCase();
+            var v = item[1];
+            //只支持px单位
+            if(/(px|\d)$/.test(v)) {
+              v = v.replace(/px$/, '');
+              switch(k) {
+                case 'width':
+                case 'height':
+                  var cur = getCur(k);
+                  if(cur == v) {
+                    match = true;
+                    matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                    return;
+                  }
+                  break;
+                case 'min-width':
+                case 'max-width':
+                case 'min-height':
+                case 'max-height':
+                  var cur = getCur(k.slice(4));
+                  if(k.indexOf('min-') == 0) {
+                    if(cur >= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  else {
+                    if(cur <= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  break;
+                case 'device-width':
+                case 'device-height':
+                  var cur = window.screen[k.slice(7)];
+                  if(cur == v) {
+                    match = true;
+                    matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                  }
+                  break;
+                case 'min-device-width':
+                case 'min-device-height':
+                case 'max-device-width':
+                case 'max-device-height':
+                  var cur = window.screen[k.slice(7)];
+                  if(k.indexOf('min-') == 0) {
+                    if(cur >= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  else {
+                    if(cur <= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  break;
+                case 'aspect-ratio':
+                  var w = getCur('width');
+                  var h = getCur('height');
+                  var cur = w / h;
+                  var val = v.split('/');
+                  val = val[0] / val[1];
+                  if(cur == val) {
+                    match = true;
+                    matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                    return;
+                  }
+                  break;
+                case 'min-aspect-radio':
+                case 'max-aspect-radio':
+                  var w = getCur('width');
+                  var h = getCur('height');
+                  var cur = w / h;
+                  var val = v.split('/');
+                  val = val[0] / val[1];
+                  if(k.indexOf('min-') == 0) {
+                    if(cur >= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  else {
+                    if(cur <= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  break;
+                case 'device-aspect-radio':
+                  var w = window.screen.width;
+                  var h = window.screen.height;
+                  var cur = w / h;
+                  var val = v.split('/');
+                  val = val[0] / val[1];
+                  if(cur == val) {
+                    match = true;
+                    matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                    return;
+                  }
+                  break;
+                case 'min-device-aspect-radio':
+                case 'max-device-aspect-radio':
+                  var w = window.screen.width;
+                  var h = window.screen.height;
+                  var cur = w / h;
+                  var val = v.split('/');
+                  val = val[0] / val[1];
+                  if(k.indexOf('min-') == 0) {
+                    if(cur >= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  else {
+                    if(cur <= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  break;
+                case 'device-pixel-ratio':
+                  var cur = window.devicePixelRatio;
+                  if(cur == v) {
+                    match = true;
+                    matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                    return;
+                  }
+                  break;
+                case 'min-device-pixel-ratio':
+                case 'max-device-pixel-ratio':
+                  var cur = window.devicePixelRatio;
+                  if(k.indexOf('min-') == 0) {
+                    if(cur >= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  else {
+                    if(cur <= v) {
+                      match = true;
+                      matchSel(names.length - 1, names, classes, ids, media.style, virtualDom, res, first);
+                      return;
+                    }
+                  }
+                  break;
+              }
+            }
+          }
+        }
+      });
+    });
+  }
   sort(res, function(a, b) {
     var pa = a[2];
     var pb = b[2];
@@ -231,6 +408,13 @@ function dealStyle(res, item) {
     style[2] = item._p;
     res.push(style);
   });
+}
+
+function getCur(k) {
+  var key = k.charAt(0).toUpperCase() + k.slice(1);
+  return window['inner' + key]
+    || document.documentElement['client' + key]
+    || document.body['client' + key];
 }
 
 exports["default"]=match;

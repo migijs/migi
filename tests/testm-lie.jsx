@@ -1026,6 +1026,103 @@ describe('relation', function() {
   });
 });
 
+describe('media query', function() {
+  beforeEach(function() {
+    migi.Element.__clean();
+  });
+  it('width', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(width:1024px){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+  it('min-height', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(min-height:765px){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+  it('-webkit-device-width', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(-webkit-device-width:1024px){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+  it('-webkit-max-device-height', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(-webkit-max-device-height:800px){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="1">1</div>');
+  });
+  it('aspect-ratio', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(aspect-ratio:1024/768){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+  it('device-aspect-radio', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(device-aspect-radio:1024/768){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+  it('device-pixel-ratio', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `@media(device-pixel-ratio:2){div{color:#F00}}`;
+      }
+      render() {
+        return <div>1</div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
+  });
+});
+
 describe('attr', function() {
   beforeEach(function() {
     migi.Element.__clean();
