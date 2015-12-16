@@ -270,6 +270,18 @@ function __findEq(name, child, res, first) {
     var all = allChildren(parent.children);
     return all.length == 1;
   }
+  VirtualDom.prototype.isOnlyOfType = function(sel) {
+    var self = this;
+    var parent = self.parent;
+    var all = allChildren(parent.children);
+    for(var i = 0, len = all.length; i < len; i++) {
+      var item = all[i];
+      if(item != self && !matchUtil.nci(sel, item)) {
+        return false;
+      }
+    }
+    return true;
+  }
   VirtualDom.prototype.isFirstOfType = function(sel) {
     var prevAll = this.prevAll();
     for(var i = 0, len = prevAll.length; i < len; i++) {
@@ -287,6 +299,10 @@ function __findEq(name, child, res, first) {
       }
     }
     return true;
+  }
+  VirtualDom.prototype.siblings = function() {
+    var parent = this.parent;
+    var all = allChildren(parent.children);
   }
 
   VirtualDom.prototype.__renderProp = function(k, v) {

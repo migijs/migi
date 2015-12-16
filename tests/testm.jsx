@@ -1039,6 +1039,19 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="4"><span migi-uid="1">1</span><span style="color:#F00;" migi-uid="2">2</span><p migi-uid="3">0</p></div>');
   });
+  it(':only-of-type', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:only-of-type{margin:0}`;
+      }
+      render() {
+        return <div><p><span>1</span></p><p><span>2</span><span>3</span></p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="6"><p migi-uid="2"><span style="margin:0;" migi-uid="1">1</span></p><p migi-uid="5"><span migi-uid="3">2</span><span migi-uid="4">3</span></p></div>');
+  });
 });
 
 describe('relation', function() {
@@ -1155,11 +1168,11 @@ describe('media query', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div style="color:#F00;" migi-uid="1">1</div>');
   });
-  it('device-aspect-radio', function() {
+  it('device-aspect-ratio', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.style = `@media(device-aspect-radio:1024/768){div{color:#F00}}`;
+        this.style = `@media(device-aspect-ratio:1024/768){div{color:#F00}}`;
       }
       render() {
         return <div>1</div>;

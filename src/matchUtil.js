@@ -118,6 +118,11 @@ export default {
             return false;
           }
           break;
+        case 'only-of-type':
+          if(!virtualDom.isOnlyOfType(sel)) {
+            return false;
+          }
+          break;
         case 'first-of-type':
           if(!virtualDom.isFirstOfType(sel)) {
             return false;
