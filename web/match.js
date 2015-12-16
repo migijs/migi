@@ -16,7 +16,7 @@ function match(names, classes, ids, style, virtualDom, first) {
     VirtualDom = VirtualDom['default'];
   }
   var res = [];
-  matchSel(names.length - 1, names, classes, ids, style, virtualDom, res, first);
+  matchSel(names.length - 1, names, classes, ids, style.default, virtualDom, res, first);
   sort(res, function(a, b) {
     var pa = a[2];
     var pb = b[2];
