@@ -4,7 +4,7 @@ window.onerror = function() {
 class A extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.style = {".a":{"_:":[[["active"],{"_v":[],"_p":[0,1,1]}]]}};
+    this.style = {"default":{".a":{"_:":[[["active"],{"_v":[],"_p":[0,1,1]}]]}}};
   }
   render() {
     return <div class="a">123</div>;
