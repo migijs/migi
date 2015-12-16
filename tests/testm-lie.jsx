@@ -992,6 +992,84 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="6"><p migi-uid="2"><span style="margin:0;" migi-uid="1">1</span></p><p migi-uid="5"><span migi-uid="3">2</span><span migi-uid="4">3</span></p></div>');
   });
+  it(':nth-child(d)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-child(1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span></div>');
+  });
+  it(':nth-child(n)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-child(2n){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span></div>');
+  });
+  it(':nth-child(2n+1)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-child(2n+1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span></div>');
+  });
+  it(':nth-last-child(d)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-child(1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span></div>');
+  });
+  it(':nth-last-child(n)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-child(2n){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span></div>');
+  });
+  it(':nth-last-child(2n+1)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-child(2n+1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="3"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span></div>');
+  });
 });
 
 describe('relation', function() {

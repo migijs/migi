@@ -105,8 +105,8 @@ function match(names, classes, ids, style, virtualDom, first) {
                     return;
                   }
                   break;
-                case 'min-aspect-radio':
-                case 'max-aspect-radio':
+                case 'min-aspect-ratio':
+                case 'max-aspect-ratio':
                   var w = getCur('width');
                   var h = getCur('height');
                   var cur = w / h;
@@ -127,7 +127,7 @@ function match(names, classes, ids, style, virtualDom, first) {
                     }
                   }
                   break;
-                case 'device-aspect-radio':
+                case 'device-aspect-ratio':
                   var w = window.screen.width;
                   var h = window.screen.height;
                   var cur = w / h;
@@ -139,8 +139,8 @@ function match(names, classes, ids, style, virtualDom, first) {
                     return;
                   }
                   break;
-                case 'min-device-aspect-radio':
-                case 'max-device-aspect-radio':
+                case 'min-device-aspect-ratio':
+                case 'max-device-aspect-ratio':
                   var w = window.screen.width;
                   var h = window.screen.height;
                   var cur = w / h;

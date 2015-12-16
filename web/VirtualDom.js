@@ -266,14 +266,11 @@ function __findEq(name, child, res, first) {
     return res.next;
   }
   VirtualDom.prototype.isOnly = function() {
-    var parent = this.parent;
-    var all = allChildren(parent.children);
-    return all.length == 1;
+    return this.siblings().length == 1;
   }
   VirtualDom.prototype.isOnlyOfType = function(sel) {
     var self = this;
-    var parent = self.parent;
-    var all = allChildren(parent.children);
+    var all = self.siblings();
     for(var i = 0, len = all.length; i < len; i++) {
       var item = all[i];
       if(item != self && !matchUtil.nci(sel, item)) {
@@ -303,6 +300,16 @@ function __findEq(name, child, res, first) {
   VirtualDom.prototype.siblings = function() {
     var parent = this.parent;
     var all = allChildren(parent.children);
+    return all;
+  }
+  VirtualDom.prototype.getIdx = function(siblings) {
+    var siblings = siblings || this.siblings();
+    for(var i = 0, len = siblings.length; i < len; i++) {
+      if(siblings[i] == this) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   VirtualDom.prototype.__renderProp = function(k, v) {
