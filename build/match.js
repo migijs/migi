@@ -18,7 +18,7 @@ function match(names, classes, ids, style, virtualDom, first) {
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style.default, virtualDom, res, first);
   //如果有media query
-  if(style.media) {
+  if(style.media) {!function(){
     style.media.forEach(function(media) {
       var match = false;
       media.query.forEach(function(qlist) {
@@ -193,6 +193,17 @@ function match(names, classes, ids, style, virtualDom, first) {
         }
       });
     });
+    //窗口resize时重新匹配@media query
+    function resize() {
+      hash.get(virtualDom.uid).__updateStyle();
+    }
+    if(browser.lie && document.attachEvent) {
+      window.attachEvent('onresize', resize);
+    }
+    else {
+      window.addEventListener('resize', resize);
+    }
+    matchHash.add(virtualDom.uid, resize);}();
   }
   sort(res, function(a, b) {
     var pa = a[2];
@@ -255,7 +266,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__updateStyle();
                 }
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && virtualDom.element.attachEvent) {
+                  if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmouseenter', onHover);
                     virtualDom.element.attachEvent('onmouseleave', outHover);
                   }
@@ -279,7 +290,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__updateStyle();
                 }
                 virtualDom.on(Event.DOM, function() {
-                  if(browser.lie && virtualDom.element.attachEvent) {
+                  if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmousedown', onActive);
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
                     window.attachEvent('onmouseup', outActive, true);
