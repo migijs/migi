@@ -1242,7 +1242,7 @@ describe('media query', function() {
     class Component extends migi.Component {
       constructor(...data) {
         super(...data);
-        this.style = `@media(-webkit-max-device-height:800px){div{color:#F00}}`;
+        this.style = `@media(-webkit-max-device-height:600px){div{color:#F00}}`;
       }
       render() {
         return <div>1</div>;
