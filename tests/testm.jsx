@@ -1130,6 +1130,84 @@ describe('pseudo', function() {
     var cmpn = new Component();
     expect(cmpn.toString()).to.eql('<div migi-uid="3"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span></div>');
   });
+  it(':nth-of-type(d)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-of-type(1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
+  it(':nth-of-type(n)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-of-type(2n){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
+  it(':nth-of-type(2n+1)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-of-type(2n+1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
+  it(':nth-last-of-type(d)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-of-type(1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
+  it(':nth-last-of-type(n)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-of-type(2n){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span style="margin:0;" migi-uid="1">1</span><span migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
+  it(':nth-last-of-type(2n+1)', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.style = `span:nth-last-of-type(2n+1){margin:0}`;
+      }
+      render() {
+        return <div><span>1</span><span>2</span><p>3</p></div>;
+      }
+    }
+    var cmpn = new Component();
+    expect(cmpn.toString()).to.eql('<div migi-uid="4"><span migi-uid="1">1</span><span style="margin:0;" migi-uid="2">2</span><p migi-uid="3">3</p></div>');
+  });
 });
 
 describe('relation', function() {

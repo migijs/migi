@@ -7,7 +7,8 @@ window = {
   },
   innerWidth: 1024,
   innerHeight: 768,
-  devicePixelRatio: 2
+  devicePixelRatio: 2,
+  addEventListener: function() {}
 };
 
 navigator = {

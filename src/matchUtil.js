@@ -170,10 +170,73 @@ export default {
             }
           }
           else if(pseudo.indexOf('nth-last-child') == 0) {
-            var siblings = virtualDom.siblings();
-            var len2 = siblings.length;
-            var idx = virtualDom.getIdx(siblings);
-            idx = len2 - idx - 1;
+            var idx = virtualDom.getIdx(true);
+            var n = /\((.+)\)/.exec(pseudo)[1];
+            if(n == 'n') {}
+            else if(n == 'odd') {
+              if(idx % 2 == 1) {
+                return false;
+              }
+            }
+            else if(n == 'even') {
+              if(idx % 2 == 0) {
+                return false;
+              }
+            }
+            else if(/^\d+$/.test(n)) {
+              if(idx != n - 1) {
+                return false;
+              }
+            }
+            else {
+              var mc = /(\d+)n(?:\+(\d+))?/.exec(n);
+              var res = false;
+              for(var k = 0; k <= Math.ceil(idx / mc[1]); k++) {
+                if(mc[1] * k + (mc[2] || 0) == idx + 1) {
+                  res = true;
+                  break;
+                }
+              }
+              if(!res) {
+                return false;
+              }
+            }
+          }
+          else if(pseudo.indexOf('nth-of-type') == 0) {
+            var idx = virtualDom.getIdxOfType(sel);
+            var n = /\((.+)\)/.exec(pseudo)[1];
+            if(n == 'n') {}
+            else if(n == 'odd') {
+              if(idx % 2 == 1) {
+                return false;
+              }
+            }
+            else if(n == 'even') {
+              if(idx % 2 == 0) {
+                return false;
+              }
+            }
+            else if(/^\d+$/.test(n)) {
+              if(idx != n - 1) {
+                return false;
+              }
+            }
+            else {
+              var mc = /(\d+)n(?:\+(\d+))?/.exec(n);
+              var res = false;
+              for(var k = 0; k <= Math.ceil(idx / mc[1]); k++) {
+                if(mc[1] * k + (mc[2] || 0) == idx + 1) {
+                  res = true;
+                  break;
+                }
+              }
+              if(!res) {
+                return false;
+              }
+            }
+          }
+          else if(pseudo.indexOf('nth-last-of-type') == 0) {
+            var idx = virtualDom.getIdxOfType(sel, true);
             var n = /\((.+)\)/.exec(pseudo)[1];
             if(n == 'n') {}
             else if(n == 'odd') {

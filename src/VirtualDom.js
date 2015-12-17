@@ -239,12 +239,14 @@ class VirtualDom extends Element {
     });
     return res.prev;
   }
-  prevAll() {
+  prevAll(sel) {
     var res = {
       prev: []
     };
     getPrev(this.parent.children, this, res, function(child) {
-      res.prev.push(child);
+      if(sel && !matchUtil.nci(sel, child) || !sel) {
+        res.prev.push(child);
+      }
     });
     return res.prev;
   }
@@ -256,12 +258,14 @@ class VirtualDom extends Element {
     });
     return res.next;
   }
-  nextAll() {
+  nextAll(sel) {
     var res = {
       next: []
     };
     getNext(this.parent.children, this, res, function(child) {
-      res.next.push(child);
+      if(sel && !matchUtil.nci(sel, child) || !sel) {
+        res.next.push(child);
+      }
     });
     return res.next;
   }
@@ -280,7 +284,7 @@ class VirtualDom extends Element {
     return true;
   }
   isFirstOfType(sel) {
-    var prevAll = this.prevAll();
+    var prevAll = this.prevAll(sel);
     for(var i = 0, len = prevAll.length; i < len; i++) {
       if(!matchUtil.nci(sel, prevAll[i])) {
         return false;
@@ -289,7 +293,7 @@ class VirtualDom extends Element {
     return true;
   }
   isLastOfType(sel) {
-    var nextAll = this.nextAll();
+    var nextAll = this.nextAll(sel);
     for(var i = 0, len = nextAll.length; i < len; i++) {
       if(!matchUtil.nci(sel, nextAll[i])) {
         return false;
@@ -302,12 +306,25 @@ class VirtualDom extends Element {
     var all = allChildren(parent.children);
     return all;
   }
-  getIdx(siblings) {
-    var siblings = siblings || this.siblings();
-    for(var i = 0, len = siblings.length; i < len; i++) {
-      if(siblings[i] == this) {
-        return i;
-      }
+  getIdx(reverse) {
+    var siblings = this.siblings();
+    var i = siblings.indexOf(this);
+    if(i > -1) {
+      return reverse ? siblings.length - i - 1 : i;
+    }
+    return -1;
+  }
+  getIdxOfType(sel, reverse) {
+    var siblings = reverse ? this.nextAll(sel) : this.prevAll(sel);
+    if(reverse) {
+      siblings.unshift(this);
+    }
+    else {
+      siblings.push(this);
+    }
+    var i = siblings.indexOf(this);
+    if(i > -1) {
+      return reverse ? siblings.length - i - 1 : i;
     }
     return -1;
   }
