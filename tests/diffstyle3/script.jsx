@@ -1,8 +1,8 @@
 class Component extends migi.CacheComponent {
   constructor(...data) {
     super(...data);
-    this.style = `li{padding:1px}li:hover{padding:2px}`;
-    this._list = [];
+    this.style = `li a{margin:0}li a:hover{margin:1px}li span{padding:0}`;
+    this._list = [<a href="#">1</a>, <span>2</span>];
   }
   get list() {
     return this._list;
@@ -26,4 +26,4 @@ var vd = migi.render(
   '#test'
 );
 
-vd.list = [1];
+vd.list = [<span>3</span>, <a href="#">4</a>];

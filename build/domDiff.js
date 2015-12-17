@@ -413,7 +413,9 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr(k, v);
     }
   });
-  nvd.__initCI();
+  if(nvd.__style) {
+    nvd.__initCI();
+  }
   var ol = ovd.children.length;
   var nl = nvd.children.length;
   //渲染children
