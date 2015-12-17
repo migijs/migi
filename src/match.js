@@ -77,7 +77,7 @@ function match(names, classes, ids, style, virtualDom, first) {
                 case 'min-device-height':
                 case 'max-device-width':
                 case 'max-device-height':
-                  var cur = window.screen[k.slice(7)];
+                  var cur = window.screen[k.slice(11)];
                   if(k.indexOf('min-') == 0) {
                     if(cur >= v) {
                       match = true;

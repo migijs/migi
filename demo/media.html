@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>媒体查询</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es5-shim.js"></script>
+  <script src="es5-sham.js"></script>
+  <script src="es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:css"></code></pre>
+<pre><code class="brush:jsx"></code></pre>
+<style type="text/jsx">
+  @media all and(min-device-width:1000px){
+    span:nth-of-type(odd){color:#F00}
+  }
+  @media all and(min-width:1000px){
+    span:nth-of-type(odd){background:#00F}
+  }
+</style>
+<script type="text/jsx">
+  import jaw from 'jaw';
+  var style = document.querySelector('style[type="text/jsx"]');
+  style = style.textContent || style.innerHTML;
+
+  class Component extends migi.Component {
+    constructor(...data) {
+      super(...data);
+      this.style = jaw.parse(style);
+    }
+    render() {
+      return <div><span>1</span><span>2</span><span>3</span></div>;
+    }
+  }
+
+  migi.render(
+    <Component/>,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init.js', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty', 'jaw'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code[class="brush:jsx"]');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.text;
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    var code2 = document.querySelector('pre code[class="brush:css"]');
+    var css = document.querySelector('style[type="text/jsx"]');
+    var source2 = css.textContent || css.innerHTML;
+    source2 = source2.trim().replace(/\n[ ]{2}/g, '\n');
+    var text2 = document.createTextNode(source2);
+    code2.appendChild(text2);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
