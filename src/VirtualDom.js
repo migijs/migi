@@ -879,6 +879,13 @@ class VirtualDom extends Element {
   }
   __match(first) {
     this.__inline = this.__cache.style || '';
+    //预处理class和id，class分为数组形式，id判断#开头
+    this.__initCI();
+    var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
+    //本身的inline最高优先级追加到末尾
+    return matches + this.__inline;
+  }
+  __initCI() {
     var p = this.parent;
     if(p instanceof VirtualDom || browser.lie && p && p.__migiVD) {
       this.__classes = p.__classes.slice();
@@ -891,9 +898,6 @@ class VirtualDom extends Element {
     //预处理class和id，class分为数组形式，id判断#开头
     this.__classes.push(matchUtil.splitClass(this.__cache['class']));
     this.__ids.push(matchUtil.preId(this.__cache.id));
-    var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
-    //本身的inline最高优先级追加到末尾
-    return matches + this.__inline;
   }
   __updateStyle() {
     var s = this.__match();

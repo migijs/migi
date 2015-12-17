@@ -413,6 +413,7 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr(k, v);
     }
   });
+  nvd.__initCI();
   var ol = ovd.children.length;
   var nl = nvd.children.length;
   //渲染children
@@ -704,6 +705,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
             }
             else {
               elem = ovd.element;
+              nvd.$$.style = ovd.$$.style;
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
               nvd.emit(Event.DOM);
