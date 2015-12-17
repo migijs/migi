@@ -200,9 +200,7 @@ function match(names, classes, ids, style, virtualDom, first) {
         if(timeout) {
           clearTimeout(timeout);
         }
-        console.log(0)
         timeout = setTimeout(function() {
-          console.log(1)
           hash.get(virtualDom.uid).__updateStyle();
         }, 100);
       }
