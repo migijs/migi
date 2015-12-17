@@ -12,13 +12,13 @@ var matchUtil=function(){var _6=require('./matchUtil');return _6.hasOwnProperty(
 //first为初始化时第一次
 function match(names, classes, ids, style, virtualDom, first) {
   //fix循环依赖
-  if(VirtualDom.hasOwnProperty('default')) {
+  var timeout;if(VirtualDom.hasOwnProperty('default')) {
     VirtualDom = VirtualDom['default'];
   }
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style.default, virtualDom, res, first);
   //如果有media query
-  if(style.media) {!function(){
+  if(style.media) {
     style.media.forEach(function(media) {
       var match = false;
       media.query.forEach(function(qlist) {
@@ -194,16 +194,26 @@ function match(names, classes, ids, style, virtualDom, first) {
       });
     });
     //窗口resize时重新匹配@media query
-    function resize() {
-      hash.get(virtualDom.uid).__updateStyle();
+    if(first) {!function(){
+      timeout;
+      function resize() {
+        if(timeout) {
+          clearTimeout(timeout);
+        }
+        console.log(0)
+        timeout = setTimeout(function() {
+          console.log(1)
+          hash.get(virtualDom.uid).__updateStyle();
+        }, 100);
+      }
+      if(browser.lie && document.attachEvent) {
+        window.attachEvent('onresize', resize);
+      }
+      else {
+        window.addEventListener('resize', resize);
+      }
+      matchHash.add(virtualDom.uid, resize);}();
     }
-    if(browser.lie && document.attachEvent) {
-      window.attachEvent('onresize', resize);
-    }
-    else {
-      window.addEventListener('resize', resize);
-    }
-    matchHash.add(virtualDom.uid, resize);}();
   }
   sort(res, function(a, b) {
     var pa = a[2];

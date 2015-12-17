@@ -194,16 +194,26 @@ function match(names, classes, ids, style, virtualDom, first) {
       });
     });
     //窗口resize时重新匹配@media query
-    function resize() {
-      hash.get(virtualDom.uid).__updateStyle();
+    if(first) {
+      var timeout;
+      function resize() {
+        if(timeout) {
+          clearTimeout(timeout);
+        }
+        console.log(0)
+        timeout = setTimeout(function() {
+          console.log(1)
+          hash.get(virtualDom.uid).__updateStyle();
+        }, 100);
+      }
+      if(browser.lie && document.attachEvent) {
+        window.attachEvent('onresize', resize);
+      }
+      else {
+        window.addEventListener('resize', resize);
+      }
+      matchHash.add(virtualDom.uid, resize);
     }
-    if(browser.lie && document.attachEvent) {
-      window.attachEvent('onresize', resize);
-    }
-    else {
-      window.addEventListener('resize', resize);
-    }
-    matchHash.add(virtualDom.uid, resize);
   }
   sort(res, function(a, b) {
     var pa = a[2];
