@@ -34,10 +34,11 @@ class Event {
       });
     }
     else if(handle) {
-      self.on(id, function(...data) {
+      function cb(...data) {
         handle.apply(this, data);
-        self.off(id, arguments.callee);
-      });
+        self.off(id, cb);
+      }
+      self.on(id, cb);
     }
     return this;
   }

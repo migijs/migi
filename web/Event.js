@@ -33,11 +33,12 @@ var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_
         self.once(item, handle);
       });
     }
-    else if(handle) {
-      self.on(id, function(data) {
+    else if(handle) {!function(){
+      function cb(data) {
         data=[].slice.call(arguments, 0);handle.apply(this, data);
-        self.off(id, arguments.callee);
-      });
+        self.off(id, cb);
+      }
+      self.on(id, cb);}();
     }
     return this;
   }
