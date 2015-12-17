@@ -245,11 +245,11 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
       var item = style[k];
       //还未到根节点继续匹配
       if(i) {
-        matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res);
+        matchSel(i - 1, names, classes, ids, item, virtualDom.parent, res, first);
         //多层级时需递归所有层级组合，如<div><p><span>对应div span{}的样式时，并非一一对应
         if(!isChild) {
           for(var l = i - 2; l >= 0; l--) {
-            matchSel(l, names, classes, ids, item, virtualDom.parent, res);
+            matchSel(l, names, classes, ids, item, virtualDom.parent, res, first);
           }
         }
       }
@@ -273,7 +273,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__hover = false;
                   hash.get(uid).__updateStyle();
                 }
-                virtualDom.on(Event.DOM, function() {
+                virtualDom.once(Event.DOM, function() {
                   if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmouseenter', onHover);
                     virtualDom.element.attachEvent('onmouseleave', outHover);
@@ -297,7 +297,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__active = false;
                   hash.get(uid).__updateStyle();
                 }
-                virtualDom.on(Event.DOM, function() {
+                virtualDom.once(Event.DOM, function() {
                   if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmousedown', onActive);
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
@@ -340,7 +340,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
               item2 = pseudoItem[1];
               //同普通匹配一样
               if(i) {
-                matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res);
+                matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, first);
               }
               if(item2.hasOwnProperty('_v')) {
                 dealStyle(res, item2);
@@ -358,7 +358,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                 item2 = attrItem[1];
                 //同普通匹配一样
                 if(i) {
-                  matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res);
+                  matchSel(i - 1, names, classes, ids, item2, virtualDom.parent, res, first);
                 }
                 if(item2.hasOwnProperty('_v')) {
                   dealStyle(res, item2);
