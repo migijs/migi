@@ -891,7 +891,6 @@ function __findEq(name, child, res, first) {
     //预处理class和id，class分为数组形式，id判断#开头
     this.__classes.push(matchUtil.splitClass(this.__cache['class']));
     this.__ids.push(matchUtil.preId(this.__cache.id));
-    //TODO: css3伪类
     var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
@@ -921,6 +920,16 @@ function __findEq(name, child, res, first) {
     return this;
   }
   VirtualDom.prototype.__destroy = function() {
+    if(this.__onHover || this.__outHover) {
+      if(browser.lie && document.attachEvent) {
+        this.element.detachEvent('onmouseenter', this.__onHover);
+        this.element.detachEvent('onmouseleave', this.__outHover);
+      }
+      else {
+        this.element.removeEventListener('mouseenter', this.__onHover);
+        this.element.removeEventListener('mouseleave', this.__outHover);
+      }
+    }
     this.__hash = {};
     this.__cache = {};
     this.__names = null;

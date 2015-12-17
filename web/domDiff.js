@@ -707,6 +707,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
               nvd.emit(Event.DOM);
+              matchHash.del(ovd.uid);
               //缓存对象池
               cachePool.add(ovd.__destroy());
             }
