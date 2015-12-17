@@ -880,7 +880,9 @@ function __findEq(name, child, res, first) {
   VirtualDom.prototype.__match = function(first) {
     this.__inline = this.__cache.style || '';
     //预处理class和id，class分为数组形式，id判断#开头
-    this.__initCI();
+    if(first) {
+      this.__initCI();
+    }
     var matches = match(this.__names, this.__classes, this.__ids, this.__style, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
