@@ -140,6 +140,12 @@
     set list(v) {
       this._list = v;
     }
+    get num() {
+      return this._num;
+    }
+    set num(v) {
+      this._num = v;
+    }
     update() {
       var list = [];
       list.push(<li>{ this.index == 1 ? <span>1</span> : <a href="#">1</a> }</li>);
@@ -167,11 +173,11 @@
     }
     submit(e) {
       e.preventDefault();
-      var input = this.find('input');
-      var index = parseInt(input.element.value) || 1;
+      var index = parseInt(this.num) || 1;
       if(index < 1) {
         index = 1;
       }
+      this.num = index;
       if(index && index != this.index) {
         this.index = index;
         this.emit('page', this.index);
@@ -210,7 +216,7 @@
         </ol>
         <a href="#" class={ this.index == this.total ? 'next dis' : 'next' } onClick={ this.next }>下一页<b></b></a>
         <span>{ this.index }/{ this.total } 页</span>
-        <input type="number" name="page"/>
+        <input type="number" name="page" value={ this.num } min="1"/>
         <input type="submit" value="跳转"/>
       </form>;
     }
