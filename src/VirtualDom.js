@@ -880,9 +880,7 @@ class VirtualDom extends Element {
   __match(first) {
     this.__inline = this.__cache.style || '';
     //预处理class和id，class分为数组形式，id判断#开头
-    if(first) {
-      this.__initCI();
-    }
+    this.__initCI();
     var matches = match(this.__names, this.__classes, this.__ids, this.__style || { default:{} }, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
