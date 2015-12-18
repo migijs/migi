@@ -177,6 +177,9 @@
       if(index < 1) {
         index = 1;
       }
+      else if(index > this.total) {
+        index = total;
+      }
       this.num = index;
       if(index && index != this.index) {
         this.index = index;
@@ -216,7 +219,7 @@
         </ol>
         <a href="#" class={ this.index == this.total ? 'next dis' : 'next' } onClick={ this.next }>下一页<b></b></a>
         <span>{ this.index }/{ this.total } 页</span>
-        <input type="number" name="page" value={ this.num } min="1"/>
+        <input type="number" name="page" value={ this.num } min="1" max={ this.total }/>
         <input type="submit" value="跳转"/>
       </form>;
     }
