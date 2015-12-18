@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="target-densitydpi=device-dpi,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"/>
   <title>翻页组件</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
@@ -177,7 +178,7 @@
       }
     }
     click(e) {
-      e.preventDefault();console.log(e)
+      e.preventDefault();
       var index = e.target.innerHTML;
       if(index && index != this.index) {
         this.index = parseInt(index);
