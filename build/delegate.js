@@ -14,12 +14,12 @@ function delegate(e, json, top) {
   if(vd != top) {
     push(top, names, classes, ids);
   }
-  push(vd, names, classes, ids);
   var temp = vd;
   while(temp.parent && temp.parent != top) {
     temp = temp.parent;
     push(temp, names, classes, ids);
   }
+  push(vd, names, classes, ids);
   res = false;
   matchSel(names.length - 1, names, classes, ids, json, vd);
   return res;
