@@ -361,7 +361,7 @@ function diffVd(ovd, nvd) {
   //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
   if(ovd === nvd) {
     return;
-  }console.log(0,ovd.name, ovd.__classes, ovd.__parent.__classes)
+  }
   //特殊的uid，以及一些引用赋给新vd
   var elem = ovd.element;
   ['uid', '__element', '__parent', '__top', '__style', '__dom', '__names'].forEach(function(k) {
@@ -414,7 +414,7 @@ function diffVd(ovd, nvd) {
     }
   });
   if(nvd.__style) {
-    nvd.__initCI();
+    nvd.__updateStyle(true);
   }
   var ol = ovd.children.length;
   var nl = nvd.children.length;

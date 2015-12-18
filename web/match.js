@@ -273,7 +273,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__hover = false;
                   hash.get(uid).__updateStyle();
                 }
-                virtualDom.once(Event.DOM, function() {
+                function cb() {
                   if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmouseenter', onHover);
                     virtualDom.element.attachEvent('onmouseleave', outHover);
@@ -282,7 +282,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                     virtualDom.element.addEventListener('mouseenter', onHover);
                     virtualDom.element.addEventListener('mouseleave', outHover);
                   }
-                });
+                }
+                //可能由DOMDiff发起，此时已经在DOM上了
+                if(virtualDom.__dom) {
+                  cb();
+                }
+                else {
+                  virtualDom.once(Event.DOM, cb);
+                }
                 //记录缓存当destryo时移除
                 virtualDom.__onHover = onHover;
                 virtualDom.__outHover = outHover;
@@ -297,7 +304,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__active = false;
                   hash.get(uid).__updateStyle();
                 }
-                virtualDom.once(Event.DOM, function() {
+                function cb2() {
                   if(browser.lie && document.attachEvent) {
                     virtualDom.element.attachEvent('onmousedown', onActive);
                     //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
@@ -320,7 +327,14 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                     //drag结束时也需判断
                     window.addEventListener('dragend', outActive);
                   }
-                });
+                }
+                //可能由DOMDiff发起，此时已经在DOM上了
+                if(virtualDom.__dom) {
+                  cb2();
+                }
+                else {
+                  virtualDom.once(Event.DOM, cb2);
+                }
                 //对window的侦听需要在destroy后移除，先记录下来
                 matchHash.add(uid, outActive);
                 break;

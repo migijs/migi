@@ -883,7 +883,7 @@ class VirtualDom extends Element {
     if(first) {
       this.__initCI();
     }
-    var matches = match(this.__names, this.__classes, this.__ids, this.__style || {default:{}}, this, first);
+    var matches = match(this.__names, this.__classes, this.__ids, this.__style || { default:{} }, this, first);
     //本身的inline最高优先级追加到末尾
     return matches + this.__inline;
   }
@@ -901,10 +901,14 @@ class VirtualDom extends Element {
     this.__classes.push(matchUtil.splitClass(this.__cache['class']));
     this.__ids.push(matchUtil.preId(this.__cache.id));
   }
-  __updateStyle() {
-    var s = this.__match();
+  __updateStyle(first) {
+    var s = this.__match(first);
     if(this.element.getAttribute('style') != s) {
       this.element.setAttribute('style', s);
+    }
+    //diff调用初始化nvd时自上而下，忽略children
+    if(first) {
+      return;
     }
     this.children.forEach(function(child) {
       if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
