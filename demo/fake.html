@@ -28,6 +28,12 @@
   class Component extends migi.Component {
     constructor(...data) {
       super(...data);
+      this.on(migi.Event.DOM, function(fake) {
+        var div = document.createElement('div');
+        div.id = 'true';
+        div.innerHTML = fake;
+        document.body.appendChild(div);
+      });
       var nv = this.findChild(NV);
       nv.on(migi.Event.DOM, function(fake) {
         var div = document.createElement('div');
