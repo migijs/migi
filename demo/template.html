@@ -13,6 +13,7 @@
 <body>
 <div id="example"></div>
 <div id="example2"></div>
+<div id="example3"></div>
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
   class HelloMessage extends migi.Component {
@@ -26,6 +27,7 @@
 
   document.querySelector('#example').innerHTML = new HelloMessage();
   document.querySelector('#example2').innerHTML = migi.render('<p>This is a template too.</p>');
+  document.querySelector('#example3').innerHTML = migi.render(<p>This is also a template.</p>);
 </script>
 <script>
   seajs.config({
