@@ -2,20 +2,20 @@ class Component extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  get state() {
+  get states() {
     return this._state;
   }
-  set state(v) {
+  set states(v) {
     this._state = v;
   }
   click() {
-    this.state = !this.state;
+    this.states = !this.states;
   }
   render() {
     return <div>
         <p onClick={this.click}>click</p>
-        <input type="radio" value="123" checked={this.state} ref="0"/>
-        <input type="checkbox" value="123" checked={this.state} ref="1"/>
+        <input type="radio" value="123" checked={this.states} ref="0"/>
+        <input type="checkbox" value="123" checked={this.states} ref="1"/>
       </div>;
   }
 }

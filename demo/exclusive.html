@@ -47,23 +47,23 @@
   class Switch extends migi.Component {
     constructor(...data) {
       super(...data);
-      this._state = !!this.props.state;
+      this._states = !!this.props.states;
     }
-    get state() {
-      return this._state;
+    get states() {
+      return this._states;
     }
-    set state(v) {
-      this._state = v;
+    set states(v) {
+      this._states = v;
     }
     click() {
-      this.state = !this.state;
-      this.emit('change', this.state);
+      this.states = !this.states;
+      this.emit('change', this.states);
     }
     render() {
       return (
-        <span onClick={this.click} class={this.state ? '' : 'off'}>
+        <span onClick={this.click} class={this.states ? '' : 'off'}>
           <i></i>
-          <input type="radio" checked={this.state}/>
+          <input type="radio" checked={this.states}/>
         </span>
       );
     }
@@ -73,7 +73,7 @@
   //示例：外部导入使用
   var swt = new Switch();
   swt.inTo('#example');
-  var swt2 = new Switch({ state: true });
+  var swt2 = new Switch({ states: true });
   swt2.after('#example');
 </script>
 <script>

@@ -52,24 +52,24 @@
   class Switch extends migi.Component {
     constructor(...data) {
       super(...data);
-      this._state = !!this.props.state;
+      this._states = !!this.props.states;
       this.style = jaw.parse(style);
     }
-    get state() {
-      return this._state;
+    get states() {
+      return this._states;
     }
-    set state(v) {
-      this._state = v;
+    set states(v) {
+      this._states = v;
     }
     click() {
-      this.state = !this.state;
-      this.emit('change', this.state);
+      this.states = !this.states;
+      this.emit('change', this.states);
     }
     render() {
       return (
-        <span onClick={this.click} class={this.state ? '' : 'off'}>
+        <span onClick={this.click} class={this.states ? '' : 'off'}>
           <i></i>
-          <input type="radio" checked={this.state}/>
+          <input type="radio" checked={this.states}/>
         </span>
       );
     }
@@ -80,8 +80,8 @@
   }
   migi.render(
     <ol>
-      <li><Switch state={true} onChange={change}/></li>
-      <li><Switch state={false} onChange={change}/></li>
+      <li><Switch states={true} onChange={change}/></li>
+      <li><Switch states={false} onChange={change}/></li>
     </ol>,
     '#example'
   );
