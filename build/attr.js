@@ -143,16 +143,16 @@ exports["default"]={
     }
     //普通的setAttribute
     switch(k) {
+      case 'id':
+      case 'class':
+        //jaw导入style时改写migi-前缀
+        if(jaw) {
+          k = 'migi-' + k;
+        }
       case 'className':
         k = 'class';
       case 'htmlFor':
         k = 'for';
-      case 'id':
-      case 'class':
-        //jaw导入style时改写migi-前缀
-        if(jaw && ['id', 'class'].indexOf(k) > -1) {
-          k = 'migi-' + k;
-        }
       default:
         if(v === null || v === void 0) {
           element.removeAttribute(k);
