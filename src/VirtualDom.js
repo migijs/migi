@@ -378,6 +378,9 @@ class VirtualDom extends Element {
       if(k == 'className') {
         k = 'class';
       }
+      else if(k == 'htmlFor') {
+        k = 'for';
+      }
       self.__cache[k] = s;
       //特殊属性根据类型输出或是在DOM后设置prop
       var special = attr.special(self.name, k);
@@ -407,6 +410,9 @@ class VirtualDom extends Element {
       }
       if(k == 'className') {
         k = 'class';
+      }
+      else if(k == 'htmlFor') {
+        k = 'for';
       }
       self.__cache[k] = s;
       //特殊属性根据类型输出或是在DOM后设置prop

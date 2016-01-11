@@ -145,10 +145,12 @@ export default {
     switch(k) {
       case 'className':
         k = 'class';
+      case 'htmlFor':
+        k = 'for';
       case 'id':
       case 'class':
         //jaw导入style时改写migi-前缀
-        if(jaw) {
+        if(jaw && ['id', 'class'].indexOf(k) > -1) {
           k = 'migi-' + k;
         }
       default:
