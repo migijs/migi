@@ -579,7 +579,7 @@ class VirtualDom extends Element {
       }
     }
   }
-  __removeListener() {console.warn('remove');
+  __removeListener() {
     var self = this;
     if(self.__listener) {
       var elem = self.element;
