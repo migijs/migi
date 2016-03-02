@@ -332,7 +332,7 @@ function __findEq(name, child, res, first) {
   VirtualDom.prototype.__renderProp = function(k, v) {
     var self = this;
     var res = '';
-    //onXxx侦听处理
+    //onxxx侦听处理
     if(/^on[a-zA-Z]/.test(k)) {
       self.once(Event.DOM, function(fake) {
         //防止fake未真实添加DOM
@@ -343,21 +343,24 @@ function __findEq(name, child, res, first) {
         self.__addListener(name, function(e) {
           e = e || window.event;
           fixEvent(e);
+          var target = e.target;
+          var uid = target.getAttribute('migi-uid');
+          var tvd = hash.get(uid);
           if(v instanceof Cb) {
-            v.cb.call(v.context, e);
+            v.cb.call(v.context, e, self, tvd);
           }
           else if(util.isFunction(v)) {
-            v(e);
+            v(e, self, tvd);
           }
           else if(Array.isArray(v)) {
             v.forEach(function(item) {
               var cb = item[1];
               if(delegate(e, item[0], self)) {
                 if(cb instanceof Cb) {
-                  cb.cb.call(cb.context, e);
+                  cb.cb.call(cb.context, e, self, tvd);
                 }
                 else if(util.isFunction(cb)) {
-                  cb(e);
+                  cb(e, self, tvd);
                 }
               }
             });
