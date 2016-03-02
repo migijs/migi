@@ -9,6 +9,8 @@ import cachePool from './cachePool';
 import type from './type';
 import hash from './hash';
 import matchHash from './matchHash';
+import fixEvent from './fixEvent';
+import delegate from './delegate';
 
 const DOM_TO_TEXT = 0;
 const DOM_TO_DOM = 1;
@@ -398,12 +400,30 @@ function diffVd(ovd, nvd) {
     //事件和属性区分对待
     if(/^on[a-zA-Z]/.test(k)) {
       var name = k.slice(2).toLowerCase();
-      nvd.__addListener(name, function(event) {
+      nvd.__addListener(name, function(e) {
+        e = e || window.event;
+        fixEvent(e);
+        var target = e.target;
+        var uid = target.getAttribute('migi-uid');
+        var tvd = hash.get(uid);
         if(v instanceof Cb) {
-          v.cb.call(v.context, event);
+          v.cb.call(v.context, e, nvd, tvd);
         }
-        else {
-          v(event);
+        else if(util.isFunction(v)) {
+          v(e, nvd, tvd);
+        }
+        else if(Array.isArray(v)) {
+          v.forEach(function(item) {
+            var cb = item[1];
+            if(delegate(e, item[0], nvd)) {
+              if(cb instanceof Cb) {
+                cb.cb.call(cb.context, e, nvd, tvd);
+              }
+              else if(util.isFunction(cb)) {
+                cb(e, nvd, tvd);
+              }
+            }
+          });
         }
       });
     }

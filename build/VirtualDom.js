@@ -579,7 +579,7 @@ function __findEq(name, child, res, first) {
       }
     }
   }
-  VirtualDom.prototype.__removeListener = function() {
+  VirtualDom.prototype.__removeListener = function() {console.warn('remove');
     var self = this;
     if(self.__listener) {
       var elem = self.element;

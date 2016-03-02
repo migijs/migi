@@ -9,6 +9,8 @@ var cachePool=function(){var _7=require('./cachePool');return _7.hasOwnProperty(
 var type=function(){var _8=require('./type');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 var hash=function(){var _9=require('./hash');return _9.hasOwnProperty("default")?_9["default"]:_9}();
 var matchHash=function(){var _10=require('./matchHash');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var fixEvent=function(){var _11=require('./fixEvent');return _11.hasOwnProperty("default")?_11["default"]:_11}();
+var delegate=function(){var _12=require('./delegate');return _12.hasOwnProperty("default")?_12["default"]:_12}();
 
 var DOM_TO_TEXT = 0;
 var DOM_TO_DOM = 1;
@@ -398,12 +400,30 @@ function diffVd(ovd, nvd) {
     //事件和属性区分对待
     if(/^on[a-zA-Z]/.test(k)) {
       var name = k.slice(2).toLowerCase();
-      nvd.__addListener(name, function(event) {
+      nvd.__addListener(name, function(e) {
+        e = e || window.event;
+        fixEvent(e);
+        var target = e.target;
+        var uid = target.getAttribute('migi-uid');
+        var tvd = hash.get(uid);
         if(v instanceof Cb) {
-          v.cb.call(v.context, event);
+          v.cb.call(v.context, e, nvd, tvd);
         }
-        else {
-          v(event);
+        else if(util.isFunction(v)) {
+          v(e, nvd, tvd);
+        }
+        else if(Array.isArray(v)) {
+          v.forEach(function(item) {
+            var cb = item[1];
+            if(delegate(e, item[0], nvd)) {
+              if(cb instanceof Cb) {
+                cb.cb.call(cb.context, e, nvd, tvd);
+              }
+              else if(util.isFunction(cb)) {
+                cb(e, nvd, tvd);
+              }
+            }
+          });
         }
       });
     }
