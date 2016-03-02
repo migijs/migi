@@ -186,9 +186,9 @@ export default function(vd, name, cb, listener) {
     hasInitGlobal = true;
     initGlobal();
   }
-  listener.push('touchstart', onTouchStart);
-  listener.push('MSPointerDown', onTouchStart);
-  listener.push('pointerdown', onTouchStart);
+  listener.push(['touchstart', onTouchStart]);
+  listener.push(['MSPointerDown', onTouchStart]);
+  listener.push(['pointerdown', onTouchStart]);
 
   var elem = vd.element;
 

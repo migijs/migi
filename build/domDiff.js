@@ -375,7 +375,7 @@ function diffVd(ovd, nvd) {
     var k = item[0];
     var v = item[1];
     //只检查普通属性，onXXX事件由__listener中的引用移除
-    if(!/^on[A-Z]/.test(k)) {
+    if(!/^on[a-zA-Z]/.test(k)) {
       temp[k] = true;
       //对比老属性，多余删除，相同无需更新
       if(nvd.props.hasOwnProperty(k)) {
@@ -396,10 +396,8 @@ function diffVd(ovd, nvd) {
     var k = item[0];
     var v = item[1];
     //事件和属性区分对待
-    if(/^on[A-Z]/.test(k)) {
-      var name = k.slice(2).replace(/[A-Z]/g, function(up) {
-        return up.toLowerCase();
-      });
+    if(/^on[a-zA-Z]/.test(k)) {
+      var name = k.slice(2).toLowerCase();
       nvd.__addListener(name, function(event) {
         if(v instanceof Cb) {
           v.cb.call(v.context, event);
