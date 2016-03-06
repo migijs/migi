@@ -22,6 +22,14 @@ function delegate(e, json, top) {
   push(vd, names, classes, ids);
   res = false;
   matchSel(names.length - 1, names, classes, ids, json, vd);
+  //不同于样式，事件是冒泡的，所以最里层叶子结点也许是事件产生者，但没侦听，结果冒泡到父层被响应
+  //TODO: 选择器匹配算法重写，delegate和样式完全重用，区别如上，避免全递归搜索，只叶子节点递归，节省性能
+  while(!res && names.length) {
+    names.pop();
+    classes.pop();
+    ids.pop();
+    matchSel(names.length - 1, names, classes, ids, json, vd);
+  }
   return res;
 }
 

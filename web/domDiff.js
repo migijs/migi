@@ -430,7 +430,6 @@ function diffVd(ovd, nvd) {
       });
     }
     else if(!temp.hasOwnProperty(k)) {
-      //TODO: 和vd中逻辑比对是否要处理
       nvd.__updateAttr(k, v);
     }
   });
