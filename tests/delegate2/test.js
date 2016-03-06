@@ -8,7 +8,7 @@ module.exports = {
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test')
       .click('#test a')
-      .assert.containsText('#test2', '1')
+      .assert.containsText('#test2', 'olaspan')
       .end();
   }
 };

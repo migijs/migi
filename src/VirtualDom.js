@@ -355,12 +355,13 @@ class VirtualDom extends Element {
           else if(Array.isArray(v)) {
             v.forEach(function(item) {
               var cb = item[1];
-              if(delegate(e, item[0], self)) {
+              var res = delegate(e, item[0], self);
+              if(res[0]) {
                 if(cb instanceof Cb) {
-                  cb.cb.call(cb.context, e, self, tvd);
+                  cb.cb.call(cb.context, e, self, res[1], tvd);
                 }
                 else if(util.isFunction(cb)) {
-                  cb(e, self, tvd);
+                  cb(e, self, res[1], tvd);
                 }
               }
             });
