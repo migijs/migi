@@ -713,6 +713,10 @@ class VirtualDom extends Element {
   //@override
   __onData(k) {
     var self = this;
+    //尚未添加到dom时无效
+    if(!self.dom) {
+      return;
+    }
     //联动属性值
     self.__props.forEach(function(item) {
       var key = item[0];
@@ -778,7 +782,7 @@ class VirtualDom extends Element {
       });
     }
   }
-  //first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
+  //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
   __checkObj(k, child, ranges, option, history) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
