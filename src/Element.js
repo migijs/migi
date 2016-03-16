@@ -87,6 +87,7 @@ class Element extends Event {
   __clean() {
     if(this.__dom) {
       this.__dom = false;
+      this.once(Event.DOM, this.__onDom);
       var elem = this.element;
       if(elem) {
         elem.parentNode.removeChild(elem);
