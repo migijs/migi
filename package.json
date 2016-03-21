@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "0.12.5",
+  "version": "1.0.0",
   "description": "A JavaScript MVVM WebComponent on JSX",
   "maintainers": [
     {
@@ -61,7 +61,8 @@
     "main": "./index.js",
     "output": [
       "./index.js"
-    ]
+    ],
+    "registry": "http://spm.alipay-inc.com"
   },
   "readmeFilename": "README.md"
 }

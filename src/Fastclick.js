@@ -323,7 +323,7 @@ FastClick.prototype.focus = function(targetElement) {
   var length;
 
   // Issue #160: on iOS 7, some input elements (e.g. date datetime month) throw a vague TypeError on setSelectionRange. These elements don't have an integer value for the selectionStart and selectionEnd properties, but unfortunately that can't be used for detection because accessing the properties also throws a TypeError. Just check the type instead. Filed as Apple bug #15122724.
-  if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time' && targetElement.type !== 'month' && targetElement.type !== 'number') {
+  if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time' && targetElement.type !== 'month' && targetElement.type !== 'number' && targetElement.type !== 'email' && targetElement.type !== 'range') {
     length = targetElement.value.length;
     targetElement.setSelectionRange(length, length);
   } else {
@@ -786,7 +786,7 @@ FastClick.notNeeded = function(layer) {
   }
 
   // IE10 with -ms-touch-action: none or manipulation, which disables double-tap-to-zoom (issue #97)
-  if (layer.style.msTouchAction === 'none' || layer.style.touchAction === 'manipulation') {
+  if (layer.style.msTouchAction === 'none' || layer.style.msTouchAction === 'manipulation') {
     return true;
   }
 
