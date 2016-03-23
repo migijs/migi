@@ -84,7 +84,7 @@ function spread(arr) {
     }
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
-  Element.prototype.__clean = function() {
+  Element.prototype.clean = function() {
     if(this.__dom) {
       this.__dom = false;
       this.once(Event.DOM, this.__onDom);
@@ -120,41 +120,41 @@ function spread(arr) {
   }
 
   Element.prototype.inTo = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
   Element.prototype.appendTo = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforeend', s);
     this.emit(Event.DOM);
   }
   Element.prototype.prependTo = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterbegin', s);
     this.emit(Event.DOM);
   }
   Element.prototype.before = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforebegin', s);
     this.emit(Event.DOM);
   }
   Element.prototype.after = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
     this.emit(Event.DOM);
   }
   Element.prototype.replace = function(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
@@ -162,7 +162,7 @@ function spread(arr) {
     this.emit(Event.DOM);
   }
 
-  Element.__clean=function() {
+  Element.resetUid=function() {
     uid = 0;
   }
 Object.keys(Event).forEach(function(k){Element[k]=Event[k]});

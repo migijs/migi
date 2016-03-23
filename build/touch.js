@@ -82,7 +82,8 @@ function initGlobal() {
   document.addEventListener('MSPointerCancel', cancelAll, true);
   document.addEventListener('pointercancel', cancelAll, true);
 
-  window.addEventListener('onscroll', cancelAll);
+  window.addEventListener('scroll', cancelAll);
+  window.addEventListener('blur', cancelAll);
 }
 
 function onTouchMove(e) {

@@ -84,7 +84,7 @@ class Element extends Event {
     }
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
-  __clean() {
+  clean() {
     if(this.__dom) {
       this.__dom = false;
       this.once(Event.DOM, this.__onDom);
@@ -120,41 +120,41 @@ class Element extends Event {
   }
 
   inTo(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     getDom(dom).innerHTML = s;
     this.emit(Event.DOM);
   }
   appendTo(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforeend', s);
     this.emit(Event.DOM);
   }
   prependTo(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterbegin', s);
     this.emit(Event.DOM);
   }
   before(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('beforebegin', s);
     this.emit(Event.DOM);
   }
   after(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
     this.emit(Event.DOM);
   }
   replace(dom) {
-    this.__clean();
+    this.clean();
     var s = this.toString();
     dom = getDom(dom);
     dom.insertAdjacentHTML('afterend', s);
@@ -162,7 +162,7 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
 
-  static __clean() {
+  static resetUid() {
     uid = 0;
   }
 }
