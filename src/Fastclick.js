@@ -631,6 +631,10 @@ FastClick.prototype.onMouse = function(event) {
     return true;
   }
 
+  if (this.targetElement.nodeName.toLowerCase() == 'canvas') {
+    return true;
+  }
+
   if (event.forwardedTouchEvent) {
     return true;
   }
