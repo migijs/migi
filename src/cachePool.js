@@ -1,5 +1,3 @@
-import browser from './browser';
-
 var MAX = 4096;
 var cache = new Array(MAX);
 

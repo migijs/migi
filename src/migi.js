@@ -7,7 +7,6 @@ import Component from './Component';
 import VirtualDom from './VirtualDom';
 import NonVisualComponent from './NonVisualComponent';
 import CacheComponent from './CacheComponent';
-import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 import cachePool from './cachePool';
@@ -28,7 +27,7 @@ var migi = {
     return hash.set(new cp(props, children));
   },
   createVd(name, props, children) {
-    if({ script: true, style: true, svg: true }.hasOwnProperty(name.toLowerCase())) {
+    if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
       throw new Error('can not create VirtualDom of: ' + name);
     }
     return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));

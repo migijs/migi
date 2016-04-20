@@ -1,6 +1,4 @@
-define(function(require, exports, module){var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-
-var MAX = 4096;
+define(function(require, exports, module){var MAX = 4096;
 var cache = new Array(MAX);
 
 var pool = {

@@ -1,4 +1,3 @@
-import sort from './sort';
 import hash from './hash';
 import matchUtil from './matchUtil';
 

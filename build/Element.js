@@ -1,6 +1,5 @@
 var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 
 var uid = 0;
 
@@ -48,7 +47,7 @@ function spread(arr) {
   return arr;
 }
 
-!function(){var _3=Object.create(Event.prototype);_3.constructor=Element;Element.prototype=_3}();
+!function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
   function Element(name, props, children) {
     Event.call(this);
     this.__reset(name, props, children);
@@ -155,7 +154,7 @@ function spread(arr) {
     this.emit(Event.DOM);
   }
 
-  var _4={};_4.top={};_4.top.get =function() {
+  var _3={};_3.top={};_3.top.get =function() {
     if(!this.__top && this.parent) {
       if(this.parent instanceof migi.Component) {
         this.__top = this.parent;
@@ -166,19 +165,19 @@ function spread(arr) {
     }
     return this.__top;
   }
-  _4.parent={};_4.parent.get =function() {
+  _3.parent={};_3.parent.get =function() {
     return this.__parent;
   }
-  _4.name={};_4.name.get =function() {
+  _3.name={};_3.name.get =function() {
     return this.__name;
   }
-  _4.dom={};_4.dom.get =function() {
+  _3.dom={};_3.dom.get =function() {
     return this.__dom;
   }
 
   Element.resetUid=function() {
     uid = 0;
   }
-Object.keys(_4).forEach(function(k){Object.defineProperty(Element.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
+Object.keys(_3).forEach(function(k){Object.defineProperty(Element.prototype,k,_3[k])});Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
 
 exports["default"]=Element;

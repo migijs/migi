@@ -1,8 +1,7 @@
 define(function(require, exports, module){var Model=function(){var _0=require('./Model');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var browser=function(){var _1=require('./browser');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var CacheComponent=function(){var _2=require('./CacheComponent');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var CacheComponent=function(){var _1=require('./CacheComponent');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
-!function(){var _3=Object.create(Model.prototype);_3.constructor=CacheModel;CacheModel.prototype=_3}();
+!function(){var _2=Object.create(Model.prototype);_2.constructor=CacheModel;CacheModel.prototype=_2}();
   function CacheModel() {
     Model.call(this);
     this.__handler = {}; //普通状态下缓存data key的hash

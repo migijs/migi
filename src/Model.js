@@ -1,9 +1,5 @@
 import Event from './Event';
-import EventBus from './EventBus';
-import util from './util';
-import browser from './browser';
 import Component from './Component';
-import Stream from './Stream';
 
 var uid = 0;
 

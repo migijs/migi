@@ -1,6 +1,5 @@
 import Event from './Event';
 import util from './util';
-import browser from './browser';
 
 var uid = 0;
 

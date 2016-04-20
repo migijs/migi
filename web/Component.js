@@ -2,11 +2,10 @@ define(function(require, exports, module){var Event=function(){var _0=require('.
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var VirtualDom=function(){var _2=require('./VirtualDom');return _2.hasOwnProperty("default")?_2["default"]:_2}();
 var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var browser=function(){var _4=require('./browser');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var EventBus=function(){var _5=require('./EventBus');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var Model=function(){var _6=require('./Model');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var Stream=function(){var _7=require('./Stream');return _7.hasOwnProperty("default")?_7["default"]:_7}();
-var Fastclick=function(){var _8=require('./Fastclick');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var EventBus=function(){var _4=require('./EventBus');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var Model=function(){var _5=require('./Model');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var Stream=function(){var _6=require('./Stream');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var Fastclick=function(){var _7=require('./Fastclick');return _7.hasOwnProperty("default")?_7["default"]:_7}();
 
 var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -15,7 +14,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   'touchmove', 'touchend', 'touchcancel', 'MSGestureEnd', 'MSPointerDown', 'pointerdown', 'MSPointerMove', 'pointermove',
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
-!function(){var _9=Object.create(Element.prototype);_9.constructor=Component;Component.prototype=_9}();
+!function(){var _8=Object.create(Element.prototype);_8.constructor=Component;Component.prototype=_8}();
   function Component(props, children) {
     //fix循环依赖
     if(props===void 0)props=[];if(children===void 0)children=[];if(Model.hasOwnProperty('default')) {
@@ -259,29 +258,29 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     this.__data('state');
   }
 
-  var _10={};_10.element={};_10.element.get =function() {
+  var _9={};_9.element={};_9.element.get =function() {
     return this.virtualDom ? this.virtualDom.element : null;
   }
-  _10.style={};_10.style.get =function() {
+  _9.style={};_9.style.get =function() {
     return this.__style;
   }
-  _10.style.set =function(v) {
+  _9.style.set =function(v) {
     this.__style = v;
   }
-  _10.model={};_10.model.get =function() {
+  _9.model={};_9.model.get =function() {
     return this.__model;
   }
-  _10.model.set =function(v) {
+  _9.model.set =function(v) {
     if(!(v instanceof Model)) {
       throw new Error('can not set model to a non Model: ' + v);
     }
     this.__model = v;
     v.__add(this);
   }
-  _10.virtualDom={};_10.virtualDom.get =function() {
+  _9.virtualDom={};_9.virtualDom.get =function() {
     return this.__virtualDom;
   }
-  _10.ref={};_10.ref.get =function() {
+  _9.ref={};_9.ref.get =function() {
     return this.__ref;
   }
 
@@ -298,7 +297,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       child.emit(Event.DOM, true);
     }
   }
-Object.keys(_10).forEach(function(k){Object.defineProperty(Component.prototype,k,_10[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
+Object.keys(_9).forEach(function(k){Object.defineProperty(Component.prototype,k,_9[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
 //完全一样的桥接数据流方法，复用
 ['__record', '__unRecord', 'bridgeTo', 'unBridge', 'unBridgeTo'].forEach(function(k) {

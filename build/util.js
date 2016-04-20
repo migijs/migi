@@ -1,5 +1,4 @@
 var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var browser=function(){var _1=require('./browser');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
 function clone(obj) {
   if(obj instanceof Element) {

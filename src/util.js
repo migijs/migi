@@ -1,5 +1,4 @@
 import Element from './Element';
-import browser from './browser';
 
 function clone(obj) {
   if(obj instanceof Element) {

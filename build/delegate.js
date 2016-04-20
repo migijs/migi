@@ -1,6 +1,5 @@
-var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var hash=function(){var _1=require('./hash');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var matchUtil=function(){var _2=require('./matchUtil');return _2.hasOwnProperty("default")?_2["default"]:_2}();
+var hash=function(){var _0=require('./hash');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+var matchUtil=function(){var _1=require('./matchUtil');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 
 var res;
 

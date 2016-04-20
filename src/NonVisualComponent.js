@@ -1,7 +1,4 @@
-import Event from './Event';
 import Component from './Component';
-import util from './util';
-import browser from './browser';
 
 class NonVisualComponent extends Component {
   constructor(...data) {

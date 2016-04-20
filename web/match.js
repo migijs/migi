@@ -1,10 +1,9 @@
 define(function(require, exports, module){var VirtualDom=function(){var _0=require('./VirtualDom');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var Event=function(){var _1=require('./Event');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var sort=function(){var _2=require('./sort');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var hash=function(){var _4=require('./hash');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var matchHash=function(){var _5=require('./matchHash');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var matchUtil=function(){var _6=require('./matchUtil');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var hash=function(){var _3=require('./hash');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var matchHash=function(){var _4=require('./matchHash');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var matchUtil=function(){var _5=require('./matchUtil');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 
 //names,classes,ids为从当前节点开始往上的列表
 //style为jaw传入的总样式对象

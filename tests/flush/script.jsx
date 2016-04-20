@@ -6,7 +6,7 @@ class Cache extends migi.CacheComponent {
     self.handler = null;
     self.on(migi.Event.DOM, function() {
       for(var j = 0; j < 100000; j++) {
-        self.$.count++;
+        self.count++;
         if(j == 50000) {
           self.flush();
         }

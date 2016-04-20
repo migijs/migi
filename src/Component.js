@@ -2,7 +2,6 @@ import Event from './Event';
 import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
-import browser from './browser';
 import EventBus from './EventBus';
 import Model from './Model';
 import Stream from './Stream';

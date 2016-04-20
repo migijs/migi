@@ -1,6 +1,5 @@
 import Element from './Element';
 import util from './util';
-import browser from './browser';
 
 class Obj {
   constructor(k, context, cb) {

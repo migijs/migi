@@ -1,6 +1,4 @@
-define(function(require, exports, module){var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-
-var hash = {};
+define(function(require, exports, module){var hash = {};
 
 exports["default"]={
   add: function(uid, cb) {

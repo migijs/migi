@@ -1,7 +1,5 @@
 import Event from './Event';
 import Component from './Component';
-import util from './util';
-import browser from './browser';
 import EventBus from './EventBus';
 import Stream from './Stream';
 import CacheModel from './CacheModel';

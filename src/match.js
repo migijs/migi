@@ -1,7 +1,6 @@
 import VirtualDom from './VirtualDom';
 import Event from './Event';
 import sort from './sort';
-import browser from './browser';
 import hash from './hash';
 import matchHash from './matchHash';
 import matchUtil from './matchUtil';

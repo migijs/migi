@@ -1,5 +1,3 @@
-import browser from './browser';
-
 var hash = {};
 
 export default {

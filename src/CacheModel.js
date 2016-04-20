@@ -1,5 +1,4 @@
 import Model from './Model';
-import browser from './browser';
 import CacheComponent from './CacheComponent';
 
 class CacheModel extends Model {

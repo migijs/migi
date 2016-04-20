@@ -1,21 +1,19 @@
 define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
 var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
 var Component=function(){var _2=require('./Component');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var util=function(){var _4=require('./util');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var Obj=function(){var _5=require('./Obj');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var Cb=function(){var _6=require('./Cb');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var range=function(){var _7=require('./range');return _7.hasOwnProperty("default")?_7["default"]:_7}();
-var match=function(){var _8=require('./match');return _8.hasOwnProperty("default")?_8["default"]:_8}();
-var sort=function(){var _9=require('./sort');return _9.hasOwnProperty("default")?_9["default"]:_9}();
-var domDiff=function(){var _10=require('./domDiff');return _10.hasOwnProperty("default")?_10["default"]:_10}();
-var type=function(){var _11=require('./type');return _11.hasOwnProperty("default")?_11["default"]:_11}();
-var fixEvent=function(){var _12=require('./fixEvent');return _12.hasOwnProperty("default")?_12["default"]:_12}();
-var attr=function(){var _13=require('./attr');return _13.hasOwnProperty("default")?_13["default"]:_13}();
-var hash=function(){var _14=require('./hash');return _14.hasOwnProperty("default")?_14["default"]:_14}();
-var touch=function(){var _15=require('./touch');return _15.hasOwnProperty("default")?_15["default"]:_15}();
-var delegate=function(){var _16=require('./delegate');return _16.hasOwnProperty("default")?_16["default"]:_16}();
-var matchUtil=function(){var _17=require('./matchUtil');return _17.hasOwnProperty("default")?_17["default"]:_17}();
+var util=function(){var _3=require('./util');return _3.hasOwnProperty("default")?_3["default"]:_3}();
+var Obj=function(){var _4=require('./Obj');return _4.hasOwnProperty("default")?_4["default"]:_4}();
+var Cb=function(){var _5=require('./Cb');return _5.hasOwnProperty("default")?_5["default"]:_5}();
+var range=function(){var _6=require('./range');return _6.hasOwnProperty("default")?_6["default"]:_6}();
+var match=function(){var _7=require('./match');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var domDiff=function(){var _8=require('./domDiff');return _8.hasOwnProperty("default")?_8["default"]:_8}();
+var type=function(){var _9=require('./type');return _9.hasOwnProperty("default")?_9["default"]:_9}();
+var fixEvent=function(){var _10=require('./fixEvent');return _10.hasOwnProperty("default")?_10["default"]:_10}();
+var attr=function(){var _11=require('./attr');return _11.hasOwnProperty("default")?_11["default"]:_11}();
+var hash=function(){var _12=require('./hash');return _12.hasOwnProperty("default")?_12["default"]:_12}();
+var touch=function(){var _13=require('./touch');return _13.hasOwnProperty("default")?_13["default"]:_13}();
+var delegate=function(){var _14=require('./delegate');return _14.hasOwnProperty("default")?_14["default"]:_14}();
+var matchUtil=function(){var _15=require('./matchUtil');return _15.hasOwnProperty("default")?_15["default"]:_15}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -104,7 +102,7 @@ function __findEq(name, child, res, first) {
   return res;
 }
 
-!function(){var _18=Object.create(Element.prototype);_18.constructor=VirtualDom;VirtualDom.prototype=_18}();
+!function(){var _16=Object.create(Element.prototype);_16.constructor=VirtualDom;VirtualDom.prototype=_16}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props=[];if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -933,16 +931,16 @@ function __findEq(name, child, res, first) {
     return this;
   }
 
-  var _19={};_19.names={};_19.names.get =function() {
+  var _17={};_17.names={};_17.names.get =function() {
     return this.__names || (this.__names = []);
   }
-  _19.element={};_19.element.get =function() {
+  _17.element={};_17.element.get =function() {
     return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
   }
-  _19.style={};_19.style.get =function() {
+  _17.style={};_17.style.get =function() {
     return this.__style;
   }
-  _19.style.set =function(v) {
+  _17.style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.parent instanceof VirtualDom) {
@@ -956,7 +954,7 @@ function __findEq(name, child, res, first) {
       childStyle(child, v);
     });
   }
-Object.keys(_19).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_19[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
+Object.keys(_17).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_17[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 //静态文本节点，包括空、undefined、null、空数组
 function isEmptyText(item) {
