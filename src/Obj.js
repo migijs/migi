@@ -27,7 +27,7 @@ class Obj {
     if(prop) {
       return util.encodeHtml(s, prop);
     }
-    return this.v instanceof Element || browser.lie && this.v && this.v.__migiEL ? s : util.encodeHtml(s);
+    return this.v instanceof Element ? s : util.encodeHtml(s);
   }
   update(ov) {
     var nv = this.cb.call(this.context);

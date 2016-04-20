@@ -27,7 +27,7 @@ var browser=function(){var _2=require('./browser');return _2.hasOwnProperty("def
     if(prop) {
       return util.encodeHtml(s, prop);
     }
-    return this.v instanceof Element || browser.lie && this.v && this.v.__migiEL ? s : util.encodeHtml(s);
+    return this.v instanceof Element ? s : util.encodeHtml(s);
   }
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);

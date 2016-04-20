@@ -10,19 +10,12 @@ var uid = 0;
 !function(){var _6=Object.create(Event.prototype);_6.constructor=Model;Model.prototype=_6}();
   function Model() {
     Event.call(this);
-    this.$ = this.$$ = this;
     this.uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = [];
     this.__bridgeHash = {};
 
     this.on(Event.DATA, this.__onData);
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiMD = this;
-      return this.__hackLie(Model, GS);
-    }
   }
 
   Model.prototype.__onData = function(k, caller) {
@@ -43,22 +36,15 @@ var uid = 0;
       this.__ref.splice(i, 1);
     }
   }
-Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
+
+  var _7={};_7.name={};_7.name.get =function() {
+    return this.__name;
+  }
+Object.keys(_7).forEach(function(k){Object.defineProperty(Model.prototype,k,_7[k])});Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
+
 //完全一样的桥接数据流方法，复用
 ['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo'].forEach(function(k) {
   Model.prototype[k] = Component.prototype[k];
 });
-
-var GS = {};
-['name'].forEach(function(item) {
-  GS[item] = {
-    get: function() {
-      return this['__' + item];
-    }
-  };
-});
-if(!browser.lie) {
-  Object.defineProperties(Model.prototype, GS);
-}
 
 exports["default"]=Model;});

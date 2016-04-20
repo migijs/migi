@@ -14,7 +14,6 @@ import cachePool from './cachePool';
 import util from './util';
 import browser from './browser';
 import sort from './sort';
-import mix from './mix';
 import hash from './hash';
 import Fastclick from './Fastclick';
 
@@ -49,7 +48,6 @@ var migi = {
   util,
   browser,
   sort,
-  mix,
   hash,
   Fastclick
 };

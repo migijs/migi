@@ -14,9 +14,8 @@ var cachePool=function(){var _12=require('./cachePool');return _12.hasOwnPropert
 var util=function(){var _13=require('./util');return _13.hasOwnProperty("default")?_13["default"]:_13}();
 var browser=function(){var _14=require('./browser');return _14.hasOwnProperty("default")?_14["default"]:_14}();
 var sort=function(){var _15=require('./sort');return _15.hasOwnProperty("default")?_15["default"]:_15}();
-var mix=function(){var _16=require('./mix');return _16.hasOwnProperty("default")?_16["default"]:_16}();
-var hash=function(){var _17=require('./hash');return _17.hasOwnProperty("default")?_17["default"]:_17}();
-var Fastclick=function(){var _18=require('./Fastclick');return _18.hasOwnProperty("default")?_18["default"]:_18}();
+var hash=function(){var _16=require('./hash');return _16.hasOwnProperty("default")?_16["default"]:_16}();
+var Fastclick=function(){var _17=require('./Fastclick');return _17.hasOwnProperty("default")?_17["default"]:_17}();
 
 var migi = {
   render:function(element, dom) {
@@ -49,7 +48,6 @@ var migi = {
   util:util,
   browser:browser,
   sort:sort,
-  mix:mix,
   hash:hash,
   Fastclick:Fastclick
 };

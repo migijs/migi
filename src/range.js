@@ -27,7 +27,7 @@ function join(index, children, history) {
           break;
         }
       }
-      else if(child.v instanceof Element || browser.lie && child.v && child.v.__migiEL) {
+      else if(child.v instanceof Element) {
         history.end = true;
         break;
       }
@@ -35,7 +35,7 @@ function join(index, children, history) {
         res += child.toString();
       }
     }
-    else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    else if(child instanceof Element) {
       history.end = true;
       break;
     }
@@ -63,7 +63,7 @@ function joinObj(arr, history) {
     if(Array.isArray(child)) {
       res += joinObj(child, history);
     }
-    else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    else if(child instanceof Element) {
       history.end = true;
       break;
     }
@@ -88,7 +88,7 @@ export function update(item, children, elem) {
   if(textNode.nodeType == 1) {
     return;
   }
-  var now = browser.lie ? textNode.nodeValue : textNode.textContent;
+  var now = textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
     //ie8的用nodeValue替代
@@ -97,9 +97,6 @@ export function update(item, children, elem) {
       var node = browser.NODE;
       node.innerHTML = util.encodeHtml(res);
       elem.replaceChild(node.firstChild, textNode);
-    }
-    else if(browser.lie) {
-      textNode.nodeValue = res;
     }
     else {
       textNode.textContent = res;

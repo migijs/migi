@@ -6,12 +6,6 @@ var browser=function(){var _3=require('./browser');return _3.hasOwnProperty("def
 !function(){var _4=Object.create(Component.prototype);_4.constructor=NonVisualComponent;NonVisualComponent.prototype=_4}();
   function NonVisualComponent(data) {
     data=[].slice.call(arguments, 0);Component.apply(this,[].concat(Array.from(data)));
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiNV = true;
-      return this.__hackLie(NonVisualComponent);
-    }
   }
 
   //非可视为空

@@ -48,7 +48,7 @@ const TOUCH = {
 };
 
 function convertSelector(selector) {
-  if(selector instanceof Element || browser.lie && selector && selector.__migiEL) {
+  if(selector instanceof Element) {
     return selector.name + '[migi-uid="' + selector.uid + '"]';
   }
   return selector.replace(/(^|\s|,|])([A-Z][\w$]*)\b/, '$1[migi-name="$2"]');
@@ -63,7 +63,7 @@ function findAll(name, children, first) {
 function __findAll(name, children, res, first) {
   for(var i = 0, len = children.length; i < len; i++) {
     var child = children[i];
-    if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    if(child instanceof Element) {
       res = __findEq(name, child, res, first);
     }
     else if(child instanceof Obj) {
@@ -71,7 +71,7 @@ function __findAll(name, children, res, first) {
       if(Array.isArray(child)) {
         res = __findAll(name, child, res, first);
       }
-      else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+      else if(child instanceof Element) {
         res = __findEq(name, child, res, first);
       }
     }
@@ -86,16 +86,14 @@ function __findAll(name, children, res, first) {
 }
 function __findEq(name, child, res, first) {
   //cp不递归
-  if(child instanceof Component || browser.lie && child && child.__migiCP) {
-    if(child instanceof name
-      || browser.lie && child.__migiCP && child.__migiCP instanceof name) {
+  if(child instanceof Component) {
+    if(child instanceof name) {
       res.push(child);
     }
   }
   //vd递归
   else {
-    if(child instanceof name
-      || browser.lie && child.__migiVD && child.__migiVD instanceof name) {
+    if(child instanceof name) {
       res.push(child);
       if(first) {
         return res;
@@ -127,11 +125,6 @@ class VirtualDom extends Element {
     self.__active = false; //是否处于鼠标active状态
     self.__listener = null; //添加的event的cb引用，remove时使用
     self.__init(name, children);
-
-    if(browser.lie) {
-      self.__migiVD = this;
-      return self.__hackLie(VirtualDom, GS);
-    }
   }
 
   //@override
@@ -172,7 +165,7 @@ class VirtualDom extends Element {
   //始终以缓存的props属性为准，哪怕更改了真实DOM的属性
   isFirst(children) {
     //本身就是Component的唯一节点
-    if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
+    if(this.parent instanceof Component) {
       return true;
     }
     children = children || this.parent.children;
@@ -184,7 +177,7 @@ class VirtualDom extends Element {
       else if(child == this) {
         return true;
       }
-      else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+      else if(child instanceof VirtualDom) {
         return false;
       }
       else if(child instanceof Obj) {
@@ -197,7 +190,7 @@ class VirtualDom extends Element {
   }
   isLast(children) {
     //本身就是Component的唯一节点
-    if(this.parent instanceof Component || browser.lie && this.parent && this.parent.__migiCP) {
+    if(this.parent instanceof Component) {
       return true;
     }
     children = children || this.parent.children;
@@ -209,7 +202,7 @@ class VirtualDom extends Element {
       else if(child == this) {
         return true;
       }
-      else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+      else if(child instanceof VirtualDom) {
         return false;
       }
       else if(child instanceof Obj) {
@@ -341,7 +334,6 @@ class VirtualDom extends Element {
         }
         var name = k.slice(2).toLowerCase();
         self.__addListener(name, function(e) {
-          e = e || window.event;
           fixEvent(e);
           var target = e.target;
           var uid = target.getAttribute('migi-uid');
@@ -464,7 +456,6 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               item.setV(v);
@@ -508,7 +499,6 @@ class VirtualDom extends Element {
         if(item instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               item.setV(v);
@@ -533,7 +523,6 @@ class VirtualDom extends Element {
         if(child instanceof Obj) {
           self.once(Event.DOM, function() {
             function cb(e) {
-              e = e || window.event;
               fixEvent(e);
               var v = e.target.value;
               child.setV(v);
@@ -567,17 +556,7 @@ class VirtualDom extends Element {
       }
       //记录下来留待清除
       self.__listener.push([name, cb]);
-      //pc注册侦听
-      if(browser.lie && elem.attachEvent) {
-        //ie8没有input
-        if(name == 'input') {
-          name = 'keyup';
-        }
-        elem.attachEvent('on' + name, cb);
-      }
-      else {
-        elem.addEventListener(name, cb);
-      }
+      elem.addEventListener(name, cb);
     }
   }
   __removeListener() {
@@ -585,12 +564,7 @@ class VirtualDom extends Element {
     if(self.__listener) {
       var elem = self.element;
       self.__listener.forEach(function(arr) {
-        if(browser.lie && elem.attachEvent) {
-          elem.detachEvent('on' + arr[0], arr[1]);
-        }
-        else {
-          elem.removeEventListener(arr[0], arr[1]);
-        }
+        elem.removeEventListener(arr[0], arr[1]);
       });
     }
   }
@@ -655,8 +629,7 @@ class VirtualDom extends Element {
         self.__domChild(item, index, len, option);
       });
     }
-    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)
-      || browser.lie && child && child.__migiEL && !child.__migiNV) {
+    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
         self.__insertBlank(option.start);
@@ -677,7 +650,7 @@ class VirtualDom extends Element {
       self.__domChild(child.v, index, len, option);
     }
     else if(isEmptyText(child)) {
-      if(child instanceof migi.NonVisualComponent || browser.lie && child && child.__migiNV) {
+      if(child instanceof migi.NonVisualComponent) {
         child.emit(Event.DOM);
       }
       //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
@@ -831,10 +804,10 @@ class VirtualDom extends Element {
       }
     }
     //递归通知，增加索引
-    else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+    else if(child instanceof Element) {
       delete option.t2d;
       delete option.d2t;
-      if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+      if(child instanceof VirtualDom) {
         child.__onData(k);
       }
       option.start++;
@@ -898,7 +871,7 @@ class VirtualDom extends Element {
   }
   __initCI() {
     var p = this.parent;
-    if(p instanceof VirtualDom || browser.lie && p && p.__migiVD) {
+    if(p instanceof VirtualDom) {
       this.__classes = p.__classes.slice();
       this.__ids = p.__ids.slice();
     }
@@ -920,7 +893,7 @@ class VirtualDom extends Element {
       return;
     }
     this.children.forEach(function(child) {
-      if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+      if(child instanceof VirtualDom) {
         child.__updateStyle();
       }
     });
@@ -940,14 +913,8 @@ class VirtualDom extends Element {
   }
   __destroy() {
     if(this.__onHover || this.__outHover) {
-      if(browser.lie && document.attachEvent) {
-        this.element.detachEvent('onmouseenter', this.__onHover);
-        this.element.detachEvent('onmouseleave', this.__outHover);
-      }
-      else {
-        this.element.removeEventListener('mouseenter', this.__onHover);
-        this.element.removeEventListener('mouseleave', this.__outHover);
-      }
+      this.element.removeEventListener('mouseenter', this.__onHover);
+      this.element.removeEventListener('mouseleave', this.__outHover);
     }
     this.__hash = {};
     this.__cache = {};
@@ -965,41 +932,30 @@ class VirtualDom extends Element {
     this.__element = null;
     return this;
   }
-}
 
-var GS = {
-  names: {
-    get: function() {
-      return this.__names || (this.__names = []);
-    }
-  },
-  element: {
-    get: function() {
-      return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
-    }
-  },
-  style: {
-    get: function() {
-      return this.__style;
-    },
-    set: function(v) {
-      var self = this;
-      self.__style = v;
-      if(self.parent instanceof VirtualDom || browser.lie && self.parent && self.parent.__migiVD) {
-        self.__names = self.parent.names.slice();
-      }
-      else {
-        self.__names = [];
-      }
-      self.__names.push(self.name);
-      self.children.forEach(function(child) {
-        childStyle(child, v);
-      });
-    }
+  get names() {
+    return this.__names || (this.__names = []);
   }
-};
-if(!browser.lie) {
-  Object.defineProperties(VirtualDom.prototype, GS);
+  get element() {
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
+  }
+  get style() {
+    return this.__style;
+  }
+  set style(v) {
+    var self = this;
+    self.__style = v;
+    if(self.parent instanceof VirtualDom) {
+      self.__names = self.parent.names.slice();
+    }
+    else {
+      self.__names = [];
+    }
+    self.__names.push(self.name);
+    self.children.forEach(function(child) {
+      childStyle(child, v);
+    });
+  }
 }
 
 //静态文本节点，包括空、undefined、null、空数组
@@ -1007,7 +963,7 @@ function isEmptyText(item) {
   return item === void 0 || item === null || !item.toString();
 }
 function renderChild(child) {
-  if(child instanceof Element || child instanceof Obj || browser.lie && child.__migiEL) {
+  if(child instanceof Element || child instanceof Obj) {
     return child.toString();
   }
   if(Array.isArray(child)) {
@@ -1025,7 +981,7 @@ function childParent(child, parent) {
       childParent(item, parent);
     });
   }
-  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+  else if(child instanceof Element) {
     child.__parent = parent;
   }
   else if(child instanceof Obj) {
@@ -1038,7 +994,7 @@ function childStyle(child, style) {
       childStyle(item, style);
     });
   }
-  else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+  else if(child instanceof VirtualDom) {
     child.style = style;
   }
   else if(child instanceof Obj) {
@@ -1055,7 +1011,7 @@ function childEmpty(child) {
       }
     }
   }
-  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+  else if(child instanceof Element) {
     res = false;
   }
   else if(child instanceof Obj) {
@@ -1075,7 +1031,7 @@ function getPrev(child, target, res, cb) {
       }
     }
   }
-  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+  else if(child instanceof Element) {
     if(target == child) {
       res.done = true;
       return;
@@ -1095,7 +1051,7 @@ function getNext(child, target, res, cb) {
       }
     }
   }
-  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+  else if(child instanceof Element) {
     if(target == child) {
       res.start = true;
     }
@@ -1113,7 +1069,7 @@ function allChildren(child, res = []) {
       allChildren(child[i], res);
     }
   }
-  else if(child instanceof Element || browser.lie && child && child.__migiEL) {
+  else if(child instanceof Element) {
     res.push(child);
   }
   else if(child instanceof Obj) {

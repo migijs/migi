@@ -8,7 +8,6 @@ const SELECT = document.createElement('select');
 const MENU = document.createElement('menu');
 
 export default {
-  lie: !+'\v1',
   NODE: NODE,
   getParent(name) {
     switch(name) {

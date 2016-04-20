@@ -6,12 +6,6 @@ import browser from './browser';
 class NonVisualComponent extends Component {
   constructor(...data) {
     super(...data);
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiNV = true;
-      return this.__hackLie(NonVisualComponent);
-    }
   }
 
   //非可视为空

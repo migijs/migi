@@ -1,6 +1,3 @@
-import browser from './browser';
-import mix from './mix';
-
 class Event {
   constructor() {
     this.__hash = {};
@@ -76,29 +73,11 @@ class Event {
       if(self.__hash.hasOwnProperty(id)) {
         var list = self.__hash[id].slice();
         list.forEach(function(item) {
-          //hack ie8，Component有get/set时会返回__migiNode的DOM元素，比较是否等于自己便可判别是否返回的是个DOM元素
-          if(browser.lie && self instanceof migi.Component && self.__migiNode == self && self.__migiCP) {
-            item.apply(self.__migiNode, data);
-          }
-          else {
-            item.apply(self, data);
-          }
+          item.apply(self, data);
         });
       }
     }
     return this;
-  }
-
-  __hackLie(cons, GS) {
-    this.__migiGS = mix.gs({}, this.__migiGS, GS);
-    if(this.constructor == cons) {
-      var a = document.createElement('a');
-      this.__migiNode = a.__migiNode = a;
-      this.$ = a;
-      mix.ref(this, a, this.__migiGS);
-      Object.defineProperties(a, this.__migiGS);
-      return a;
-    }
   }
 
   static mix(...obj) {

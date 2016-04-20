@@ -10,11 +10,6 @@ class CacheModel extends Model {
     this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
     this.__timeout;
     this.__timecb;
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      return this.__hackLie(CacheModel);
-    }
   }
 }
 

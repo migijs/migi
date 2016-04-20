@@ -8,7 +8,7 @@ function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
   }
-  else if(dom instanceof Element || browser.lie && dom && dom.__migiEL) {
+  else if(dom instanceof Element) {
     return dom.element;
   }
   return dom;
@@ -51,7 +51,6 @@ function spread(arr) {
 class Element extends Event {
   constructor(name, props, children) {
     super();
-    this.$ = this.$$ = this;
     this.__reset(name, props, children);
   }
   __reset(name, props, children) {
@@ -76,12 +75,6 @@ class Element extends Event {
     this.__cache = {}; //缓存计算好的props
 
     this.once(Event.DOM, this.__onDom);
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiEL = this;
-      this.__migiGS = GS;
-    }
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   clean() {
@@ -162,44 +155,30 @@ class Element extends Event {
     this.emit(Event.DOM);
   }
 
+  get top() {
+    if(!this.__top && this.parent) {
+      if(this.parent instanceof migi.Component) {
+        this.__top = this.parent;
+      }
+      else {
+        this.__top = this.parent.top;
+      }
+    }
+    return this.__top;
+  }
+  get parent() {
+    return this.__parent;
+  }
+  get name() {
+    return this.__name;
+  }
+  get dom() {
+    return this.__dom;
+  }
+
   static resetUid() {
     uid = 0;
   }
-}
-
-var GS = {
-  top: {
-    get: function() {
-      if(!this.__top && this.parent) {
-        if(this.parent instanceof migi.Component || this.parent && this.parent.__migiCP) {
-          this.__top = this.parent;
-        }
-        else {
-          this.__top = this.parent.top;
-        }
-      }
-      return this.__top;
-    }
-  },
-  parent: {
-    get: function() {
-      var p = this.__parent;
-      if(browser.lie && p) {
-        return p.__migiNode;
-      }
-      return p;
-    }
-  }
-};
-['name', 'dom'].forEach(function(item) {
-  GS[item] = {
-    get: function() {
-      return this['__' + item];
-    }
-  };
-});
-if(!browser.lie) {
-  Object.defineProperties(Element.prototype, GS);
 }
 
 export default Element;

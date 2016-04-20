@@ -1,7 +1,4 @@
-define(function(require, exports, module){var browser=function(){var _0=require('./browser');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-
-
+define(function(require, exports, module){
   function Event() {
     this.__hash = {};
   }
@@ -76,29 +73,11 @@ var mix=function(){var _1=require('./mix');return _1.hasOwnProperty("default")?_
       if(self.__hash.hasOwnProperty(id)) {
         var list = self.__hash[id].slice();
         list.forEach(function(item) {
-          //hack ie8，Component有get/set时会返回__migiNode的DOM元素，比较是否等于自己便可判别是否返回的是个DOM元素
-          if(browser.lie && self instanceof migi.Component && self.__migiNode == self && self.__migiCP) {
-            item.apply(self.__migiNode, data);
-          }
-          else {
-            item.apply(self, data);
-          }
+          item.apply(self, data);
         });
       }
     }
     return this;
-  }
-
-  Event.prototype.__hackLie = function(cons, GS) {
-    this.__migiGS = mix.gs({}, this.__migiGS, GS);
-    if(this.constructor == cons) {
-      var a = document.createElement('a');
-      this.__migiNode = a.__migiNode = a;
-      this.$ = a;
-      mix.ref(this, a, this.__migiGS);
-      Object.defineProperties(a, this.__migiGS);
-      return a;
-    }
   }
 
   Event.mix=function(obj) {

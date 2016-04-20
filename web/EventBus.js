@@ -67,8 +67,7 @@ var uid = 0;
     }
     if(!target
       || !(target instanceof migi.Component)
-        && !(target instanceof migi.Model)
-        && (browser.lie && !target.__migiCP && !target.__migiMD)) {
+        && !(target instanceof migi.Model)) {
       throw new Error('can only bridge to Component/Model: ' + self);
     }
     //重载

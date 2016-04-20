@@ -37,7 +37,7 @@ function replaceWith(elem, cns, index, vd, isText) {
     else {
       elem.replaceChild(target, cns[index]);
     }
-    if(vd instanceof migi.NonVisualComponent || browser.lie && vd && vd.__migiNV) {
+    if(vd instanceof migi.NonVisualComponent) {
       vd.emit(Event.DOM);
     }
   }
@@ -80,7 +80,7 @@ function insertAt(elem, cns, index, vd, isText) {
     else {
       elem.insertBefore(target, cns[index]);
     }
-    if(vd instanceof migi.NonVisualComponent || browser.lie && vd && vd.__migiNV) {
+    if(vd instanceof migi.NonVisualComponent) {
       vd.emit(Event.DOM);
     }
   }
@@ -115,11 +115,10 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
     }
     history.pop();
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)
-    || browser.lie && vd && vd.__migiEL && !vd.__migiNV) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
     vd.__parent = parent;
     vd.__top = parent.top;
-    vd.$$.style = parent.$$.style;
+    vd.style = parent.style;
     hash.set(vd);
     if(temp.hasOwnProperty('prev')) {
       if(option.prev == type.TEXT) {
@@ -223,8 +222,7 @@ function del(elem, vd, ranges, option, temp, last) {
       del(elem, item, ranges, option, temp, last && i == len - 1);
     });
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)
-    || browser.lie && vd && vd.__migiEL && !vd.__migiNV) {
+  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
     if(temp.hasOwnProperty('prev')) {
       //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
       if(temp.prev == type.TEXT) {
@@ -591,10 +589,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
   }
   //都不是数组
   else {
-    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent)
-      || browser.lie && ovd && ovd.__migiEL && !ovd.__migiNV ? 1 : 0;
-    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent)
-      || browser.lie && nvd && nvd.__migiEL && !nvd.__migiNV? 2 : 0;
+    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
+    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
     //新老值是否为DOM或TEXT分4种情况
     switch(oe + ne) {
       //都是text时，根据上个节点类型和history设置range
@@ -677,7 +673,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
         //这种情况下相当于add新vd，无parent和style引用
         nvd.__parent = parent;
         nvd.__top = parent.top;
-        nvd.$$.style = parent.$$.style;
+        nvd.style = parent.style;
         hash.set(nvd);
         var cns = elem.childNodes;
         if(option.first) {
@@ -715,22 +711,20 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
           delete option.t2d;
           delete option.d2t;
         }
-        var ocp = ovd instanceof Component
-          || browser.lie && ovd && ovd.__migiCP ? 1 : 0;
-        var ncp = nvd instanceof Component
-          || browser.lie && nvd && nvd.__migiCP ? 2 : 0;
+        var ocp = ovd instanceof Component ? 1 : 0;
+        var ncp = nvd instanceof Component ? 2 : 0;
         switch(ocp + ncp) {
           //DOM名没变递归diff，否则重绘
           case 0:
             if(ovd.name == nvd.name) {
               ovd.__parent = parent;
-              ovd.__top = parent.$$.top;
+              ovd.__top = parent.top;
               diffVd(ovd, nvd);
             }
             else {
               nvd.__parent = parent;
               nvd.__top = parent.top;
-              nvd.$$.style = parent.$$.style;
+              nvd.style = parent.style;
               elem = ovd.element;
               elem.insertAdjacentHTML('afterend', nvd.toString());
               elem.parentNode.removeChild(elem);
@@ -754,7 +748,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
             }
             else {
               matchHash.del(ovd.uid);
-              nvd.$$.style = parent.$$.style;
+              nvd.style = parent.style;
             }
             nvd.emit(Event.DOM);
             hash.set(nvd);
@@ -768,7 +762,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
         break;
     }
     //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
-    if(nvd instanceof migi.NonVisualComponent || browser.lie && nvd && nvd.__migiNV) {
+    if(nvd instanceof migi.NonVisualComponent) {
       nvd.emit(Event.DOM);
     }
   }

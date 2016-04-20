@@ -8,7 +8,6 @@ var SELECT = document.createElement('select');
 var MENU = document.createElement('menu');
 
 exports["default"]={
-  lie: !+'\v1',
   NODE: NODE,
   getParent:function(name) {
     switch(name) {

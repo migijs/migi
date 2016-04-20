@@ -204,12 +204,7 @@ function match(names, classes, ids, style, virtualDom, first) {
           hash.get(virtualDom.uid).__updateStyle();
         }, 100);
       }
-      if(browser.lie && document.attachEvent) {
-        window.attachEvent('onresize', resize);
-      }
-      else {
-        window.addEventListener('resize', resize);
-      }
+      window.addEventListener('resize', resize);
       matchHash.add(virtualDom.uid, resize);}();
     }
   }
@@ -274,14 +269,8 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__updateStyle();
                 }
                 function cb() {
-                  if(browser.lie && document.attachEvent) {
-                    virtualDom.element.attachEvent('onmouseenter', onHover);
-                    virtualDom.element.attachEvent('onmouseleave', outHover);
-                  }
-                  else {
-                    virtualDom.element.addEventListener('mouseenter', onHover);
-                    virtualDom.element.addEventListener('mouseleave', outHover);
-                  }
+                  virtualDom.element.addEventListener('mouseenter', onHover);
+                  virtualDom.element.addEventListener('mouseleave', outHover);
                 }
                 //可能由DOMDiff发起，此时已经在DOM上了
                 if(virtualDom.__dom) {
@@ -305,28 +294,17 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
                   hash.get(uid).__updateStyle();
                 }
                 function cb2() {
-                  if(browser.lie && document.attachEvent) {
-                    virtualDom.element.attachEvent('onmousedown', onActive);
-                    //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    window.attachEvent('onmouseup', outActive, true);
-                    //window失焦时也需判断
-                    window.attachEvent('onblur', outActive);
-                    //drag结束时也需判断
-                    window.attachEvent('ondragend', outActive);
-                  }
-                  else {
-                    virtualDom.element.addEventListener('mousedown', onActive);
-                    //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
-                    window.addEventListener('mouseup', outActive, true);
-                    //touchend也失焦
-                    window.addEventListener('touchend', outActive, true);
-                    //touchcancel也失焦
-                    window.addEventListener('touchcancel', outActive, true);
-                    //window失焦时也需判断
-                    window.addEventListener('blur', outActive);
-                    //drag结束时也需判断
-                    window.addEventListener('dragend', outActive);
-                  }
+                  virtualDom.element.addEventListener('mousedown', onActive);
+                  //鼠标弹起捕获body，因为可能会移出元素后再弹起，且事件被shadow化阻止冒泡了
+                  window.addEventListener('mouseup', outActive, true);
+                  //touchend也失焦
+                  window.addEventListener('touchend', outActive, true);
+                  //touchcancel也失焦
+                  window.addEventListener('touchcancel', outActive, true);
+                  //window失焦时也需判断
+                  window.addEventListener('blur', outActive);
+                  //drag结束时也需判断
+                  window.addEventListener('dragend', outActive);
                 }
                 //可能由DOMDiff发起，此时已经在DOM上了
                 if(virtualDom.__dom) {

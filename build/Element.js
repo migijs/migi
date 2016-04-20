@@ -8,7 +8,7 @@ function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
   }
-  else if(dom instanceof Element || browser.lie && dom && dom.__migiEL) {
+  else if(dom instanceof Element) {
     return dom.element;
   }
   return dom;
@@ -51,7 +51,6 @@ function spread(arr) {
 !function(){var _3=Object.create(Event.prototype);_3.constructor=Element;Element.prototype=_3}();
   function Element(name, props, children) {
     Event.call(this);
-    this.$ = this.$$ = this;
     this.__reset(name, props, children);
   }
   Element.prototype.__reset = function(name, props, children) {
@@ -76,12 +75,6 @@ function spread(arr) {
     this.__cache = {}; //缓存计算好的props
 
     this.once(Event.DOM, this.__onDom);
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiEL = this;
-      this.__migiGS = GS;
-    }
   }
   //防止多次插入后重复，清除上次，永远只存在一个实例
   Element.prototype.clean = function() {
@@ -162,44 +155,30 @@ function spread(arr) {
     this.emit(Event.DOM);
   }
 
+  var _4={};_4.top={};_4.top.get =function() {
+    if(!this.__top && this.parent) {
+      if(this.parent instanceof migi.Component) {
+        this.__top = this.parent;
+      }
+      else {
+        this.__top = this.parent.top;
+      }
+    }
+    return this.__top;
+  }
+  _4.parent={};_4.parent.get =function() {
+    return this.__parent;
+  }
+  _4.name={};_4.name.get =function() {
+    return this.__name;
+  }
+  _4.dom={};_4.dom.get =function() {
+    return this.__dom;
+  }
+
   Element.resetUid=function() {
     uid = 0;
   }
-Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
-
-var GS = {
-  top: {
-    get: function() {
-      if(!this.__top && this.parent) {
-        if(this.parent instanceof migi.Component || this.parent && this.parent.__migiCP) {
-          this.__top = this.parent;
-        }
-        else {
-          this.__top = this.parent.top;
-        }
-      }
-      return this.__top;
-    }
-  },
-  parent: {
-    get: function() {
-      var p = this.__parent;
-      if(browser.lie && p) {
-        return p.__migiNode;
-      }
-      return p;
-    }
-  }
-};
-['name', 'dom'].forEach(function(item) {
-  GS[item] = {
-    get: function() {
-      return this['__' + item];
-    }
-  };
-});
-if(!browser.lie) {
-  Object.defineProperties(Element.prototype, GS);
-}
+Object.keys(_4).forEach(function(k){Object.defineProperty(Element.prototype,k,_4[k])});Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
 
 exports["default"]=Element;

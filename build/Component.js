@@ -41,12 +41,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     });
 
     self.on(Event.DATA, self.__onData);
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      self.__migiCP = this;
-      return self.__hackLie(Component, GS);
-    }
   }
   Component.prototype.__init = function(k, v) {
     if(/^on[a-zA-Z]/.test(k)) {
@@ -66,15 +60,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   }
   //@override
   Component.prototype.toString = function() {
-    //lie下构造器中设置style无法触发get/set，特殊hack
-    if(browser.lie && this.$$.style && this.$$.style != this.$$.__style) {
-      this.$$.__style = this.$$.style;
-    }
-    //还有model
-    if(browser.lie && this.$$.model && this.$$.model != this.$$.__model) {
-      this.$.model = this.$$.__model = this.$$.model;
-    }
-
     this.__virtualDom = this.render();
     if(!this.__virtualDom) {
       throw new Error('render must return a VirtualDom: ' + this.name);
@@ -92,7 +77,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     var res = [];
     for(var i = 0, len = this.children.length; i < len; i++) {
       var child = this.children[i];
-      if(child instanceof Element || browser.lie && child && child.__migiEL) {
+      if(child instanceof Element) {
         if(child instanceof Component) {
           if(child.name == name || util.isFunction(name) && child instanceof name) {
             res.push(child);
@@ -144,8 +129,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     if(!target
       || !(target instanceof EventBus)
         && !(target instanceof Component)
-        && !(target instanceof Model)
-        && (browser.lie && !target.__migiCP && !target.__migiMD)) {
+        && !(target instanceof Model)) {
       throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
     }
     //重载
@@ -209,13 +193,8 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__stop = stopPropagation;
     //仅考虑用户事件，媒体等忽略
     STOP.forEach(function(name) {
-        if(browser.lie && elem.attachEvent) {
-          elem.attachEvent('on' + name, stopPropagation);
-        }
-        else {
-          elem.addEventListener(name, stopPropagation);
-        }
-      });
+      elem.addEventListener(name, stopPropagation);
+    });
     //fastclick处理移动点击点透
     Fastclick.attach(this.element);
   }
@@ -250,10 +229,10 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       this.virtualDom.__onData(k);
     }
     this.children.forEach(function(child) {
-      if(child instanceof Component || browser.lie && child && child.__migiCP) {
+      if(child instanceof Component) {
         child.emit(Event.DATA, k);
       }
-      else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+      else if(child instanceof VirtualDom) {
         child.__onData(k);
       }
     });
@@ -263,12 +242,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     if(self.__stop) {
       var elem = self.element;
       STOP.forEach(function(name) {
-        if(browser.lie && elem.attachEvent) {
-          elem.detachEvent('on' + name, self.__stop);
-        }
-        else {
-          elem.removeEventListener(name, self.__stop);
-        }
+        elem.removeEventListener(name, self.__stop);
       });
     }
     if(self.model) {
@@ -285,62 +259,31 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     this.__data('state');
   }
 
+  var _10={};_10.virtualDom={};_10.virtualDom.get =function() {
+    return this.__virtualDom;
+  }
+  _10.ref={};_10.ref.get =function() {
+    return this.__ref;
+  }
+
   Component.fakeDom=function(child) {
     if(Array.isArray(child)) {
       child.forEach(function(item) {
         Component.fakeDom(item);
       });
     }
-    else if(child instanceof Component || browser.lie && child && child.__migiCP) {
+    else if(child instanceof Component) {
       child.emit(Event.DOM, true);
     }
-    else if(child instanceof VirtualDom || browser.lie && child && child.__migiVD) {
+    else if(child instanceof VirtualDom) {
       child.emit(Event.DOM, true);
     }
   }
-Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
+Object.keys(_10).forEach(function(k){Object.defineProperty(Component.prototype,k,_10[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
-//hack ie8，clone get/set in Element
-var GS = {
-  element: {
-    get: function() {
-      return this.virtualDom ? this.virtualDom.element : null;
-    }
-  },
-  style: {
-    get: function() {
-      return this.__style;
-    },
-    set: function(v) {
-      this.__style = v;
-    }
-  },
-  model: {
-    get: function() {
-      return this.__model;
-    },
-    set: function(v) {
-      if(!(v instanceof Model) && browser.lie && !v.__migiMD) {
-        throw new Error('can not set model to a non Model: ' + v);
-      }
-      this.__model = v;
-      v.__add(this);
-    }
-  }
-};
 //完全一样的桥接数据流方法，复用
 ['__record', '__unRecord', 'bridgeTo', 'unBridge', 'unBridgeTo'].forEach(function(k) {
   Component.prototype[k] = EventBus.prototype[k];
 });
-['virtualDom', 'ref'].forEach(function(item) {
-  GS[item] = {
-    get: function() {
-      return this['__' + item];
-    }
-  };
-});
-if(!browser.lie) {
-  Object.defineProperties(Component.prototype, GS);
-}
 
 exports["default"]=Component;

@@ -14,12 +14,6 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
     this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
     this.__timeout;
     this.__timecb;
-
-    //ie8的对象识别hack
-    if(browser.lie) {
-      this.__migiCC = true;
-      return this.__hackLie(CacheComponent);
-    }
   }
 
   //@overwrite
@@ -140,7 +134,6 @@ var CacheModel=function(){var _6=require('./CacheModel');return _6.hasOwnPropert
       CacheModel = CacheModel['default'];
     }
     if(target instanceof CacheComponent
-      || browser.lie && target.__migiCC
       || target instanceof CacheModel) {
       var tItem = target.__handler[name] || target.__handler2[name] || 0;
       return tItem.sid || tItem;
