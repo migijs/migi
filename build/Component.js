@@ -259,7 +259,26 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     this.__data('state');
   }
 
-  var _10={};_10.virtualDom={};_10.virtualDom.get =function() {
+  var _10={};_10.element={};_10.element.get =function() {
+    return this.virtualDom ? this.virtualDom.element : null;
+  }
+  _10.style={};_10.style.get =function() {
+    return this.__style;
+  }
+  _10.style.set =function(v) {
+    this.__style = v;
+  }
+  _10.model={};_10.model.get =function() {
+    return this.__model;
+  }
+  _10.model.set =function(v) {
+    if(!(v instanceof Model)) {
+      throw new Error('can not set model to a non Model: ' + v);
+    }
+    this.__model = v;
+    v.__add(this);
+  }
+  _10.virtualDom={};_10.virtualDom.get =function() {
     return this.__virtualDom;
   }
   _10.ref={};_10.ref.get =function() {

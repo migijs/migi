@@ -259,6 +259,25 @@ class Component extends Element {
     this.__data('state');
   }
 
+  get element() {
+    return this.virtualDom ? this.virtualDom.element : null;
+  }
+  get style() {
+    return this.__style;
+  }
+  set style(v) {
+    this.__style = v;
+  }
+  get model() {
+    return this.__model;
+  }
+  set model(v) {
+    if(!(v instanceof Model)) {
+      throw new Error('can not set model to a non Model: ' + v);
+    }
+    this.__model = v;
+    v.__add(this);
+  }
   get virtualDom() {
     return this.__virtualDom;
   }
