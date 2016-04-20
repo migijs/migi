@@ -16,6 +16,5 @@ before_script:
 
 script:
   - make test
-  - make test-lie
 
 sudo: false
