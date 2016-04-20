@@ -87,7 +87,7 @@ function jsx(file, enc, cb) {
       return JSON.stringify(jaw.parse($1));
     });
   }
-  content = lefty.parse(content, false);
+  content = lefty.parse(content, true);
   file.contents = new Buffer(content);
   cb(null, file);
 }
