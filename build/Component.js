@@ -228,10 +228,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       this.virtualDom.__onData(k);
     }
     this.children.forEach(function(child) {
-      if(child instanceof Component) {
-        child.emit(Event.DATA, k);
-      }
-      else if(child instanceof VirtualDom) {
+      if(child instanceof VirtualDom) {
         child.__onData(k);
       }
     });
