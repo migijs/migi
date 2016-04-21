@@ -241,4 +241,5 @@ exports["default"]=function(vd, name, cb, listener) {
       gesture.addPointer(e.pointerId);
     }
   }
-};});
+};
+});

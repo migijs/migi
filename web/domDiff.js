@@ -780,4 +780,5 @@ exports.check=check;function check(option, elem, vd, ranges, history) {
     addRange(ranges, option);
     removeAt(elem, option.start + 1);
   }
-}});
+}
+});

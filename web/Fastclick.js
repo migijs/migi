@@ -826,4 +826,5 @@ FastClick.attach = function(layer, options) {
   return new FastClick(layer, options);
 };
 
-exports["default"]=FastClick;});
+exports["default"]=FastClick;
+});

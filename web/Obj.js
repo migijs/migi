@@ -37,4 +37,5 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
   }
 
 
-exports["default"]=Obj;});
+exports["default"]=Obj;
+});

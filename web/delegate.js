@@ -159,4 +159,5 @@ function matchSel(i, names, classes, ids, json, virtualDom) {
   }
 }
 
-exports["default"]=delegate;});
+exports["default"]=delegate;
+});

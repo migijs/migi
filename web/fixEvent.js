@@ -3,4 +3,5 @@ define(function(require, exports, module){exports["default"]=function(e) {
   if(e.target.nodeType == 3) {
     e.target = e.target.parentNode;
   }
-};});
+};
+});

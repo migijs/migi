@@ -3,7 +3,6 @@ define(function(require, exports, module){function quickSort(arr, begin, end, co
     return;
   }
   var i = begin, j = end, p = i, n = arr[p], seq = true;
-  outer:
   while(i < j) {
     if(seq) {
       for(; i < j; j--) {
@@ -11,7 +10,7 @@ define(function(require, exports, module){function quickSort(arr, begin, end, co
           swap(arr, p, j);
           p = j;
           seq = !seq;
-          continue outer;
+          break;
         }
       }
     }
@@ -21,7 +20,7 @@ define(function(require, exports, module){function quickSort(arr, begin, end, co
           swap(arr, p, i);
           p = i;
           seq = !seq;
-          continue outer;
+          break;
         }
       }
     }

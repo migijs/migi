@@ -19,4 +19,5 @@ define(function(require, exports, module){var Component=function(){var _0=requir
   }
 Object.keys(Component).forEach(function(k){NonVisualComponent[k]=Component[k]});
 
-exports["default"]=NonVisualComponent;});
+exports["default"]=NonVisualComponent;
+});

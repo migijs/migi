@@ -15,4 +15,5 @@ exports["default"]={
       delete hash[uid];
     }
   }
-};});
+};
+});

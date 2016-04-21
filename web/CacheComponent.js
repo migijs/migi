@@ -140,4 +140,5 @@ var CacheModel=function(){var _4=require('./CacheModel');return _4.hasOwnPropert
   }
 Object.keys(Component).forEach(function(k){CacheComponent[k]=Component[k]});
 
-exports["default"]=CacheComponent;});
+exports["default"]=CacheComponent;
+});

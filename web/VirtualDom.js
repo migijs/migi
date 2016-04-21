@@ -1076,4 +1076,5 @@ function allChildren(child, res) {
   return res;
 }
 
-exports["default"]=VirtualDom;});
+exports["default"]=VirtualDom;
+});

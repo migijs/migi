@@ -21,4 +21,5 @@ define(function(require, exports, module){var sid = 1;
   }
 
 
-exports["default"]=Stream;});
+exports["default"]=Stream;
+});

@@ -301,4 +301,5 @@ Object.keys(_9).forEach(function(k){Object.defineProperty(Component.prototype,k,
   Component.prototype[k] = EventBus.prototype[k];
 });
 
-exports["default"]=Component;});
+exports["default"]=Component;
+});

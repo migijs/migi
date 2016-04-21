@@ -8,4 +8,5 @@ exports["default"]={
     hash[elem.uid] = elem;
     return elem;
   }
-};});
+};
+});

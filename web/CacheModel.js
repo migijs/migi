@@ -14,4 +14,5 @@ Object.keys(Model).forEach(function(k){CacheModel[k]=Model[k]});
 
 CacheModel.prototype.__data = CacheComponent.prototype.__data;
 
-exports["default"]=CacheModel;});
+exports["default"]=CacheModel;
+});

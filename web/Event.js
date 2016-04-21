@@ -96,4 +96,5 @@ Event.DOM = '__0';
 Event.DESTROY = '__1';
 Event.DATA = '__2';
 
-exports["default"]=Event;});
+exports["default"]=Event;
+});

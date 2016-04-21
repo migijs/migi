@@ -117,4 +117,5 @@ exports.record=record;function record(history, option) {
   if(option.first || option.prev == type.DOM) {
     option.record = history.slice();
   }
-}});
+}
+});

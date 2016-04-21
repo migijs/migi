@@ -56,4 +56,5 @@ if(typeof window != 'undefined') {
   Fastclick.attach(document.body);
 }
 
-exports["default"]=migi;});
+exports["default"]=migi;
+});

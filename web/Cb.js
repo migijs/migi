@@ -5,4 +5,5 @@ define(function(require, exports, module){
   }
 
 
-exports["default"]=Cb;});
+exports["default"]=Cb;
+});

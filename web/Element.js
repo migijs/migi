@@ -180,4 +180,5 @@ function spread(arr) {
   }
 Object.keys(_3).forEach(function(k){Object.defineProperty(Element.prototype,k,_3[k])});Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
 
-exports["default"]=Element;});
+exports["default"]=Element;
+});

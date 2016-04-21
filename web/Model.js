@@ -43,4 +43,5 @@ Object.keys(_3).forEach(function(k){Object.defineProperty(Model.prototype,k,_3[k
   Model.prototype[k] = Component.prototype[k];
 });
 
-exports["default"]=Model;});
+exports["default"]=Model;
+});

@@ -133,4 +133,5 @@ var uid = 0;
   }
 Object.keys(Event).forEach(function(k){EventBus[k]=Event[k]});
 
-exports["default"]=EventBus;});
+exports["default"]=EventBus;
+});
