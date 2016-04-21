@@ -29,6 +29,7 @@ class Component extends Element {
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
+    self.__allowPropagation = false; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
     self.state = {}; //兼容rc
@@ -178,7 +179,7 @@ class Component extends Element {
       Component.fakeDom(self.children);
     }
     //指定允许冒泡
-    if(self.props.allowPropagation) {
+    if(self.props.allowPropagation ||  self.allowPropagation) {
       return;
     }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -255,6 +256,12 @@ class Component extends Element {
     this.__data('state');
   }
 
+  get allowPropagation() {
+    return this.__allowPropagation;
+  }
+  set allowPropagation(v) {
+    this.__allowPropagation = v;
+  }
   get element() {
     return this.virtualDom ? this.virtualDom.element : null;
   }

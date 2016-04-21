@@ -29,6 +29,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
+    self.__allowPropagation = false; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
     self.state = {}; //兼容rc
@@ -178,7 +179,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       Component.fakeDom(self.children);
     }
     //指定允许冒泡
-    if(self.props.allowPropagation) {
+    if(self.props.allowPropagation ||  self.allowPropagation) {
       return;
     }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -255,7 +256,13 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     this.__data('state');
   }
 
-  var _9={};_9.element={};_9.element.get =function() {
+  var _9={};_9.allowPropagation={};_9.allowPropagation.get =function() {
+    return this.__allowPropagation;
+  }
+  _9.allowPropagation.set =function(v) {
+    this.__allowPropagation = v;
+  }
+  _9.element={};_9.element.get =function() {
     return this.virtualDom ? this.virtualDom.element : null;
   }
   _9.style={};_9.style.get =function() {

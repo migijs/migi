@@ -27,6 +27,8 @@
   class Shadow extends migi.Component {
     constructor(...data) {
       super(...data);
+      // 下面这句可以达到同样的效果
+      // this.allowPropagation = true;
     }
     click() {
       alert('inner');
