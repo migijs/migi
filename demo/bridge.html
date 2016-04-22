@@ -110,21 +110,21 @@
         var ajax = self.findChild('Ajax');
         if(ajax) {
           ajax.on('success', function(data) {
-            self.$.list = data;
+            self.list = data;
           });
         }
         if(migi.browser.lie && document.body.attachEvent) {
           document.body.attachEvent('onclick', function(e) {
             e = e || window.event;
             if(e.srcElement != self.$.element) {
-              self.$.show = false;
+              self.show = false;
             }
           });
         }
         else {
           document.body.addEventListener('click', function(e) {
             if(e.target != self.element) {
-              self.$.show = false;
+              self.show = false;
             }
           });
         }

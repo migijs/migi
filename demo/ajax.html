@@ -37,7 +37,7 @@
       var self = this;
       self._text = 'loading...';
       self.findChild('Ajax').on('success', function(data) {
-        self.$.txt = data.name;
+        self.txt = data.name;
       });
     }
     get txt() {

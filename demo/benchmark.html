@@ -27,7 +27,7 @@
       var self = this;
       self._list = [];
       self.on(migi.Event.DOM, function() {
-        self.$.list = ENV.generateData().toArray();
+        self.list = ENV.generateData().toArray();
         Monitoring.renderRate.ping();
         setTimeout(arguments.callee, ENV.timeout);
       });
