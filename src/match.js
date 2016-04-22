@@ -210,11 +210,11 @@ function match(names, classes, ids, style, virtualDom, first) {
   sort(res, function(a, b) {
     var pa = a[2];
     var pb = b[2];
-    //引用相等
+    //引用相等比较出现顺序
     if(pa == pb) {
       return a[0] > b[0];
     }
-    //优先级内容不相等
+    //优先级不相等
     for(var i = 0; i < 3; i++) {
       if(pa[i] != pb[i]) {
         return pa[i] > pb[i];
