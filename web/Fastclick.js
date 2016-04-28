@@ -292,7 +292,7 @@ FastClick.prototype.sendClick = function(targetElement, event) {
   var clickEvent, touch;
 
   // On some Android devices activeElement needs to be blurred otherwise the synthetic click will have no effect (#24)
-  if (document.activeElement && document.activeElement !== targetElement) {
+  if (deviceIsAndroid && document.activeElement && document.activeElement !== targetElement) {
     document.activeElement.blur();
   }
 
