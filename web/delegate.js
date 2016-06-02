@@ -28,7 +28,7 @@ function delegate(e, json, top) {
     classes.pop();
     ids.pop();
     matchSel(names.length - 1, names, classes, ids, json, vd);
-  }console.log(vd.name)
+  }
   return [res, vd];
 }
 
