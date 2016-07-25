@@ -911,8 +911,10 @@ function __findEq(name, child, res, first) {
   }
   VirtualDom.prototype.__destroy = function() {
     if(this.__onHover || this.__outHover) {
-      this.element.removeEventListener('mouseenter', this.__onHover);
-      this.element.removeEventListener('mouseleave', this.__outHover);
+      if(this.element) {
+        this.element.removeEventListener('mouseenter', this.__onHover);
+        this.element.removeEventListener('mouseleave', this.__outHover);
+      }
     }
     this.__hash = {};
     this.__cache = {};
