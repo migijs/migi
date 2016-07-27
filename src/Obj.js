@@ -28,6 +28,12 @@ class Obj {
     }
     return this.v instanceof Element ? s : util.encodeHtml(s);
   }
+  toSourceString() {
+    if(Array.isArray(this.v)) {
+      return util.joinSourceArray(this.v);
+    }
+    return util.stringify(this.v);
+  }
   update(ov) {
     var nv = this.cb.call(this.context);
     if(!util.equal(ov, nv)) {

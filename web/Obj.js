@@ -28,6 +28,12 @@ var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")
     }
     return this.v instanceof Element ? s : util.encodeHtml(s);
   }
+  Obj.prototype.toSourceString = function() {
+    if(Array.isArray(this.v)) {
+      return util.joinSourceArray(this.v);
+    }
+    return util.stringify(this.v);
+  }
   Obj.prototype.update = function(ov) {
     var nv = this.cb.call(this.context);
     if(!util.equal(ov, nv)) {

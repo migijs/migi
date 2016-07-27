@@ -361,14 +361,14 @@ class VirtualDom extends Element {
     }
     //Obj类型绑定处理
     else if(v instanceof Obj) {
-      var s = v.toString(true);
       //特殊html不转义
       if(k == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
-          self.element.innerHTML = s;
+          self.element.innerHTML = v.toSourceString();
         });
         return '';
       }
+      var s = v.toString(true);
       if(k == 'className') {
         k = 'class';
       }
@@ -395,7 +395,7 @@ class VirtualDom extends Element {
       }
     }
     else {
-      var s = Array.isArray(v) ? util.joinArray(v) : util.stringify(v);
+      var s = Array.isArray(v) ? util.joinSourceArray(v) : util.stringify(v);
       if(k == 'dangerouslySetInnerHTML') {
         self.once(Event.DOM, function() {
           self.element.innerHTML = s;

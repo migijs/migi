@@ -22,6 +22,10 @@ module.exports = {
       .assert.containsText('#test span#s7', '&')
       .assert.elementPresent('#test span#s8')
       .assert.containsText('#test span#s8', '"')
+      .assert.elementPresent('#test span#s9')
+      .assert.containsText('#test span#s9', '<strong>1"23</strong>')
+      .assert.elementPresent('#test span#s10')
+      .assert.containsText('#test span#s20', '<strong>1"23</strong>')
       .end();
   }
 };

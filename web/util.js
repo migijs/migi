@@ -97,6 +97,19 @@ function joinArray(arr, prop) {
   return res;
 }
 
+function joinSourceArray(arr) {
+  var res = '';
+  arr.forEach(function(item) {
+    if(Array.isArray(item)) {
+      res += joinSourceArray(item);
+    }
+    else {
+      res += item.toString();
+    }
+  });
+  return res;
+}
+
 function stringify(s) {
   if(s === null || s === void 0) {
     return '';
@@ -137,6 +150,13 @@ var util = {
       Element = Element['default'];
     }
     return joinArray(arr, prop);
+  },
+  joinSourceArray:function(arr) {
+    //fix循环依赖
+    if(Element.hasOwnProperty('default')) {
+      Element = Element['default'];
+    }
+    return joinSourceArray(arr);
   }
 };
 
