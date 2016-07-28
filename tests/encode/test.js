@@ -23,9 +23,9 @@ module.exports = {
       .assert.elementPresent('#test span#s8')
       .assert.containsText('#test span#s8', '"')
       .assert.elementPresent('#test span#s9')
-      .assert.containsText('#test span#s9', '<strong>1"23</strong>')
+      .assert.containsText('#test span#s9', '1"23')
       .assert.elementPresent('#test span#s10')
-      .assert.containsText('#test span#s10', '<strong>1"23</strong>')
+      .assert.containsText('#test span#s10', '1"23')
       .end();
   }
 };
