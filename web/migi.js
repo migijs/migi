@@ -53,7 +53,14 @@ var migi = {
 
 if(typeof window != 'undefined') {
   window.migi = migi;
-  Fastclick.attach(document.body);
+  if(document.body) {
+    Fastclick.attach(document.body);
+  }
+  else {
+    document.addEventListener('DOMContentLoaded', function() {
+      Fastclick.attach(document.body);
+    });
+  }
 }
 
 exports["default"]=migi;
