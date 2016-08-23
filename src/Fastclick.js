@@ -679,6 +679,30 @@ FastClick.prototype.onMouse = function(event) {
  * @returns {boolean}
  */
 FastClick.prototype.onClick = function(event) {
+  /**
+   * 当shadowDom出现时，fastclick会调用2次，1为默认的body，2为本shadowDom
+   * 如此捕获阶段便会触发2次，同上，且并无大碍
+   * 但会发生点透现象，2次捕获回调后，冒泡回调，再发生原生的click，捕获触发
+   * 此时有个特点，既无this.targetElement，event又无forwardedTouchEvent
+   * 没有this.targetElement是因为shadowDom阻止了冒泡
+   * 没有forwardedTouchEvent是因为这是个原生的重复发生的点击
+   * 此时可以进行this.onMouse中的stopImmediatePropagation()操作
+   * 如此便可防止点透
+   */
+  if(!this.targetElement && !event.forwardedTouchEvent) {
+    // Prevent any user-added listeners declared on FastClick element from being fired.
+    if (event.stopImmediatePropagation) {
+      event.stopImmediatePropagation();
+    } else {
+      // Part of the hack for browsers that don't support Event#stopImmediatePropagation (e.g. Android 2)
+      event.propagationStopped = true;
+    }
+    // Cancel the event
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
+  }
+  
   var permitted;
 
   // It's possible for another FastClick-like library delivered with third-party code to fire a click event before FastClick does (issue #44). In that case, set the click-tracking flag back to false and return early. This will cause onTouchEnd to return early.

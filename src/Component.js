@@ -32,7 +32,7 @@ class Component extends Element {
     self.__allowPropagation = false; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
-    self.__state = {}; //兼容rc
+    self.state = {}; //兼容rc
 
     self.__props.forEach(function(item) {
       var k = item[0];
@@ -178,8 +178,8 @@ class Component extends Element {
     if(!fake && self.children != self.virtualDom.children) {
       Component.fakeDom(self.children);
     }
-    //指定允许冒泡
-    if(self.props.allowPropagation ||  self.allowPropagation) {
+    //指定不允许冒泡，默认是全部冒泡
+    if(!self.props.allowPropagation || !self.allowPropagation) {
       return;
     }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -251,9 +251,9 @@ class Component extends Element {
     return vd;
   }
 
-  setState(__state) {
-    this.__state = state;
-    this.__data('__state');
+  setState(state) {
+    this.state = state;
+    this.__data('state');
   }
 
   get allowPropagation() {
