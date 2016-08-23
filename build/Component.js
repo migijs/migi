@@ -32,7 +32,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__allowPropagation = false; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
-    self.state = {}; //兼容rc
+    self.__state = {}; //兼容rc
 
     self.__props.forEach(function(item) {
       var k = item[0];
@@ -196,7 +196,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       elem.addEventListener(name, stopPropagation);
     });
     //fastclick处理移动点击点透
-    Fastclick.attach(this.element);
+    Fastclick.attach(elem);
   }
   Component.prototype.__data = function(k) {
     var self = this;
@@ -251,9 +251,9 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     return vd;
   }
 
-  Component.prototype.setState = function(state) {
-    this.state = state;
-    this.__data('state');
+  Component.prototype.setState = function(__state) {
+    this.__state = state;
+    this.__data('__state');
   }
 
   var _9={};_9.allowPropagation={};_9.allowPropagation.get =function() {

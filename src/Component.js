@@ -32,7 +32,7 @@ class Component extends Element {
     self.__allowPropagation = false; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
-    self.state = {}; //兼容rc
+    self.__state = {}; //兼容rc
 
     self.__props.forEach(function(item) {
       var k = item[0];
@@ -196,7 +196,7 @@ class Component extends Element {
       elem.addEventListener(name, stopPropagation);
     });
     //fastclick处理移动点击点透
-    Fastclick.attach(this.element);
+    Fastclick.attach(elem);
   }
   __data(k) {
     var self = this;
@@ -251,9 +251,9 @@ class Component extends Element {
     return vd;
   }
 
-  setState(state) {
-    this.state = state;
-    this.__data('state');
+  setState(__state) {
+    this.__state = state;
+    this.__data('__state');
   }
 
   get allowPropagation() {
