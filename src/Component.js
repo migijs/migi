@@ -179,7 +179,10 @@ class Component extends Element {
       Component.fakeDom(self.children);
     }
     //指定不允许冒泡，默认是全部冒泡
-    if(self.props.allowPropagation || self.allowPropagation) {
+    if(self.props.allowPropagation == 'true') {
+      return;
+    }
+    else if(self.props.allowPropagation != 'false' && self.allowPropagation) {
       return;
     }
     //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
