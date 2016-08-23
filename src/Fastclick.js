@@ -680,9 +680,9 @@ FastClick.prototype.onMouse = function(event) {
  */
 FastClick.prototype.onClick = function(event) {
   /**
-   * 当shadowDom出现时，fastclick会调用2次，1为默认的body，2为本shadowDom
-   * 如此捕获阶段便会触发2次，同上，且并无大碍
-   * 但会发生点透现象，2次捕获回调后，冒泡回调，再发生原生的click，捕获触发
+   * 当阻止事件冒泡来模拟shadowDom时，fastclick会调用2次，1为默认的body，2为本shadowDom
+   * 如此捕获阶段便会触发2次，1为默认的body，2为本shadowDom，且并无大碍
+   * 但会发生点透现象，在2次捕获回调后、冒泡回调、再发生原生的click，原生捕获回调触发在body上
    * 此时有个特点，既无this.targetElement，event又无forwardedTouchEvent
    * 没有this.targetElement是因为shadowDom阻止了冒泡
    * 没有forwardedTouchEvent是因为这是个原生的重复发生的点击
