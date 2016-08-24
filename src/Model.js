@@ -17,6 +17,10 @@ class Model extends Event {
   __onData(k, caller) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {
+      //set触发数据变更时，若已DOM则打开开关
+      if(cp.dom) {
+        cp.__canData = true;
+      }
       cp.emit(Event.DATA, k, caller);
     });
   }
