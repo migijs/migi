@@ -17,6 +17,11 @@ var CacheModel=function(){var _4=require('./CacheModel');return _4.hasOwnPropert
   //@overwrite
   CacheComponent.prototype.__data = function(k) {
     var _6=this;var self = this;
+    //set触发数据变更时，若已DOM则打开开关
+    if(self.dom) {
+      self.__canData = true;
+    }
+    
     //没有缓存根据是否桥接模式赋予stream对象或生成sid
     if(!self.__handler.hasOwnProperty(k)) {
       self.__handler[k] = self.__stream || Stream.gen();

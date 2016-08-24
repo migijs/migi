@@ -32,6 +32,7 @@ class Component extends Element {
     self.__allowPropagation = true; //默认是否允许冒泡
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
+    self.__canData = false; //防止添加至DOM前触发无谓的数据更新
     self.state = {}; //兼容rc
 
     self.__props.forEach(function(item) {
@@ -203,7 +204,12 @@ class Component extends Element {
   }
   __data(k) {
     var self = this;
+    //set触发数据变更时，若已DOM则打开开关
+    if(self.dom) {
+      self.__canData = true;
+    }
     self.emit(Event.DATA, k);
+    
     var bridge = self.__bridgeHash[k];
     if(bridge) {
       var stream = self.__stream || new Stream(self.uid);
@@ -228,6 +234,10 @@ class Component extends Element {
   }
   //@overwrite
   __onData(k) {
+    //未DOM或开关时不触发更新
+    if(!this.dom || !this.canData) {
+      return;
+    }
     if(this.virtualDom) {
       this.virtualDom.__onData(k);
     }
@@ -289,6 +299,9 @@ class Component extends Element {
   }
   get ref() {
     return this.__ref;
+  }
+  get canData() {
+    return this.__canData;
   }
 
   static fakeDom(child) {
