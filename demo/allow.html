@@ -27,7 +27,7 @@
   class Shadow extends migi.Component {
     constructor(...data) {
       super(...data);
-      // 下面这句可以达到同样的效果
+      // 下面这句可以达到同样的效果，但优先级不如DOM属性
       // this.allowPropagation = true;
     }
     click() {

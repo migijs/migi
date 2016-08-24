@@ -56,11 +56,11 @@
   </li>
   <li>
     <a href="shadow.html" title="shadow">shadow作用域隔离</a>
-    <span>如同WebComponent一样，组件内的事件是不向外冒泡的，但这并不能阻止捕获。在下面的css组件中，如果使用了jaw构建，css也将shadow化</span>
+    <span>如同WebComponent一样，如果组件声明了allowPropagation为false，组件内的事件是不向外冒泡的，但这并不能阻止捕获。在下面的css组件中，如果使用了jaw构建，css也将shadow化</span>
   </li>
   <li>
     <a href="allow.html" title="shadow">allowPropagation</a>
-    <span>如果组件声明了allowPropagation，那么事件则可冒泡</span>
+    <span>如果组件声明了allowPropagation为true（默认值），那么所有事件可以冒泡。注意DOM属性优先级大于js属性优先级</span>
   </li>
   <li>
     <a href="find.html" title="dom">find</a>
