@@ -33,7 +33,6 @@ class Component extends Element {
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
     self.__canData = false; //防止添加至DOM前触发无谓的数据更新
-    self.state = {}; //兼容rc
 
     self.__props.forEach(function(item) {
       var k = item[0];
@@ -262,11 +261,6 @@ class Component extends Element {
     self.emit(Event.DESTROY);
     self.__hash = {};
     return vd;
-  }
-
-  setState(state) {
-    this.state = state;
-    this.__data('state');
   }
 
   get allowPropagation() {
