@@ -3,10 +3,10 @@ class Model extends migi.CacheModel {
     super();
     this._i = 0;
   }
+  @bind
   set count(v) {
     this._i = v;
   }
-  @bind
   get count() {
     return this._i;
   }
