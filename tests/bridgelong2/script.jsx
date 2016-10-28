@@ -19,7 +19,7 @@ class Component2 extends migi.Component {
   }
   get txt() {
     return this._txt;
-  }v
+  }
   set txt(v) {
     this._txt = v;
   }
