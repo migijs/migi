@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 
 require('./hack');
-require('es6-shim');
+require('migi-es6-shim');
 
 var migi = require('../');
 var lefty = require('lefty');
