@@ -446,6 +446,7 @@ describe('Component', function() {
       get v() {
         return this._v;
       }
+      @bind
       set v(v) {
         this._v = v;
       }
@@ -515,6 +516,7 @@ describe('Component', function() {
       get v() {
         return this._v;
       }
+      @bind
       set v(v) {
         this._v = v;
       }
@@ -786,6 +788,7 @@ describe('css', function() {
       get cn() {
         return this._cn;
       }
+      @bind
       set cn(v) {
         this._cn = 'toggle';
       }
@@ -818,6 +821,7 @@ describe('css', function() {
       get cn() {
         return this._cn;
       }
+      @bind
       set cn(v) {
         this._cn = 'toggle';
       }
@@ -1441,6 +1445,7 @@ describe('bridge', function() {
     get a() {
       return this._a;
     }
+    @bind
     set a(v) {
       this._a = v;
     }
@@ -1532,6 +1537,7 @@ describe('model bridge', function() {
     get a() {
       return this._a;
     }
+    @bind
     set a(v) {
       this._a = v;
     }
@@ -1620,6 +1626,7 @@ describe('model bridge event', function() {
     get a() {
       return this._a;
     }
+    @bind
     set a(v) {
       this._a = v;
     }
