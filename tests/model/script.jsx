@@ -3,6 +3,7 @@ class Model extends migi.Model {
     super();
     this._i = 0;
   }
+  @bind
   set count(v) {
     this._i = v;
   }

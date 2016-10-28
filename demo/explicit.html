@@ -7,7 +7,7 @@
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
   <script src="es5-sham.js"></script>
-  <script src="es6-shim.js"></script>
+  <script src="migi-es6-shim.js"></script>
   <script src="sea.js"></script>
 </head>
 <body>
@@ -20,7 +20,8 @@
       this._first = 'army';
       this._last = '';
     }
-    get name(first, last) {
+    @link(first, last)
+    get name() {
       if(!this.first && !this.last) {
         return '(no name)';
       }
@@ -29,12 +30,14 @@
     get first() {
       return this._first;
     }
+    @bind
     set first(v) {
       this._first = v;
     }
     get last() {
       return this._last;
     }
+    @bind
     set last(v) {
       this._last = v;
     }

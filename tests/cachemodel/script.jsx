@@ -6,6 +6,7 @@ class Model extends migi.CacheModel {
   set count(v) {
     this._i = v;
   }
+  @bind
   get count() {
     return this._i;
   }

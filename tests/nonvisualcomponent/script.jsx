@@ -18,6 +18,7 @@ class MyComponent extends migi.Component {
   get txt() {
     return this._text;
   }
+  @bind
   set txt(v) {
     this._text = v;
   }

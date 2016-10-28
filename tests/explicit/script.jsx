@@ -4,7 +4,8 @@ class Person extends migi.Component {
     this._first = 'army';
     this._last = '';
   }
-  get name(first, last) {
+  @link(first, last)
+  get name() {
     if(!this.first && !this.last) {
       return '(no name)';
     }
@@ -13,12 +14,14 @@ class Person extends migi.Component {
   get first() {
     return this._first;
   }
+  @bind
   set first(v) {
     this._first = v;
   }
   get last() {
     return this._last;
   }
+  @bind
   set last(v) {
     this._last = v;
   }

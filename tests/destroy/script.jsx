@@ -14,12 +14,14 @@ class Component extends migi.Component {
   get data() {
     return this._data;
   }
+  @bind
   set data(v) {
     this._data = v;
   }
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }

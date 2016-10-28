@@ -5,6 +5,7 @@ class Component extends migi.Component {
   get readonly() {
     return this._readonly;
   }
+  @bind
   set readonly(v) {
     this._readonly = !!v;
   }

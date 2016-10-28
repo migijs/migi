@@ -9,6 +9,7 @@ class Component extends migi.Component {
   get a() {
     return this._a;
   }
+  @bind
   set a(v) {
     this._a = v;
   }

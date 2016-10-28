@@ -9,18 +9,21 @@ class Component extends migi.Component {
   get txt1() {
     return this._txt1;
   }
+  @bind
   set txt1(v) {
     this._txt1 = v;
   }
   get txt2() {
     return this._txt2;
   }
+  @bind
   set txt2(v) {
     this._txt2 = v;
   }
   get dom1() {
     return this._dom1;
   }
+  @bind
   set dom1(v) {
     this._dom1 = v;
   }

@@ -17,6 +17,7 @@ class Component extends migi.Component {
   get list() {
     return this._list;
   }
+  @bind
   set list(v) {
     this._list = v;
   }

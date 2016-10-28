@@ -25,6 +25,7 @@ class Test extends migi.Component {
   get cn() {
     return this._cn;
   }
+  @bind
   set cn(v) {
     this._cn = 'toggle';
   }

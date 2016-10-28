@@ -5,6 +5,7 @@ class Component extends migi.Component {
   get index() {
     return this._index;
   }
+  @bind
   set index(v) {
     this._index = v;
   }

@@ -7,12 +7,14 @@ class MyComponent extends migi.Component {
   get a() {
     return this.va;
   }
+  @bind
   set a(v) {
     this.va = v;
   }
   get b() {
     return this.vb;
   }
+  @bind
   set b(v) {
     this.vb = v;
   }

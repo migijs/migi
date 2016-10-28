@@ -5,12 +5,14 @@ class Cache extends migi.CacheComponent {
   get cname() {
     return this._cname;
   }
+  @bind
   set cname(v) {
     this._cname = v;
   }
   get text() {
     return this._text;
   }
+  @bind
   set text(v) {
     this._text = v;
   }

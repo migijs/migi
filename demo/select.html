@@ -7,7 +7,7 @@
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
   <script src="es5-sham.js"></script>
-  <script src="es6-shim.js"></script>
+  <script src="migi-es6-shim.js"></script>
   <script src="sea.js"></script>
   <script src="jquery-1.11.3.js"></script>
   <style>
@@ -106,6 +106,7 @@
       self._list = [];
       self._value = '';
       self._show = false;
+      self.allowPropagation = false;
       self.on(migi.Event.DOM, function() {
         self.findChild('Ajax').on('success', function(data) {
           self.list = data;
@@ -120,6 +121,7 @@
     get list() {
       return this._list;
     }
+    @bind
     set list(v) {
       this._list = v;
       if(v.length) {
@@ -132,6 +134,7 @@
     get show() {
       return this._show;
     }
+    @bind
     set show(v) {
       this._show = v;
       if(v) {
@@ -145,10 +148,12 @@
         }
       }
     }
+    @bind
     set value(v) {
       this._value = v;
     }
-    get value(list) {
+    @link(list)
+    get value() {
       return this._value;
     }
     handleClick(e) {

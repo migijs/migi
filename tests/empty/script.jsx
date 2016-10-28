@@ -10,6 +10,7 @@ class Component extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this.txt = v;
   }

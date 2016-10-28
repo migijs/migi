@@ -13,12 +13,14 @@ class Cache extends migi.CacheComponent {
   get count() {
     return this.i;
   }
+  @bind
   set count(v) {
     this.i = v;
   }
   get count2() {
     return this.j;
   }
+  @bind
   set count2(v) {
     this.j = v;
   }

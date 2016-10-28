@@ -10,6 +10,7 @@ class Component extends migi.Component {
   get list() {
     return this._list;
   }
+  @bind
   set list(_list) {
     this._list = _list;
   }

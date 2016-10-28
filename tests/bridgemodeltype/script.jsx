@@ -13,6 +13,7 @@ class Component2 extends migi.Component {
   get b() {
     return this._b;
   }
+  @bind
   set b(v) {
     this._b = v;
   }
@@ -30,6 +31,7 @@ class Model extends migi.Model {
   get a() {
     return this._a;
   }
+  @bind
   set a(v) {
     this._a = v;
   }

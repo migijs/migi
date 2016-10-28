@@ -8,12 +8,14 @@ class Component extends migi.Component {
   get data() {
     return this._data;
   }
+  @bind
   set data(v) {
     this._data = v;
   }
   get list() {
     return this._list;
   }
+  @bind
   set list(v) {
     this._list = v;
   }

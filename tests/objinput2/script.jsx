@@ -5,6 +5,7 @@ class Component extends migi.Component {
   get states() {
     return this._state;
   }
+  @bind
   set states(v) {
     this._state = v;
   }

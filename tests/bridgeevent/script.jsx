@@ -8,6 +8,7 @@ class Component extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -25,6 +26,7 @@ class Component2 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -42,6 +44,7 @@ class Component3 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -59,6 +62,7 @@ class Component4 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -78,6 +82,7 @@ class Component5 extends migi.Component {
   get txt5() {
     return this._txt;
   }
+  @bind
   set txt5(v) {
     this._txt = v;
   }
@@ -95,6 +100,7 @@ class Component6 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -114,6 +120,7 @@ class Component7 extends migi.Component {
   get txt7() {
     return this._txt;
   }
+  @bind
   set txt7(v) {
     this._txt = v;
   }
@@ -131,6 +138,7 @@ class Component8 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -153,6 +161,7 @@ class Component9 extends migi.Component {
   get txt9() {
     return this._txt;
   }
+  @bind
   set txt9(v) {
     this._txt = v;
   }
@@ -170,6 +179,7 @@ class Component10 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -187,6 +197,7 @@ class Component11 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -204,6 +215,7 @@ class Component12 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }

@@ -31,6 +31,7 @@ class Model extends migi.Model {
   get a() {
     return this._a;
   }
+  @bind
   set a(v) {
     this._a = v;
   }

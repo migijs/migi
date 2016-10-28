@@ -7,7 +7,7 @@
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
   <script src="es5-sham.js"></script>
-  <script src="es6-shim.js"></script>
+  <script src="migi-es6-shim.js"></script>
   <script src="sea.js"></script>
 </head>
 <body>
@@ -123,6 +123,7 @@
     get index() {
       return this._index || 1;
     }
+    @bind
     set index(v) {
       this._index = v;
       this.update();
@@ -130,6 +131,7 @@
     get total() {
       return this._total || 1;
     }
+    @bind
     set total(v) {
       this._total = v;
       this.index = 1;
@@ -137,12 +139,14 @@
     get list() {
       return this._list || [];
     }
+    @bind
     set list(v) {
       this._list = v;
     }
     get num() {
       return this._num;
     }
+    @bind
     set num(v) {
       this._num = v;
     }

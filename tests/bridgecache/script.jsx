@@ -11,12 +11,14 @@ class Component extends migi.CacheComponent {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
   get count() {
     return this._count;
   }
+  @bind
   set count(v) {
     this._count = v;
   }

@@ -5,6 +5,7 @@ class Component extends migi.Component {
   get s() {
     return this._s || 0;
   }
+  @bind
   set s(v) {
     this._s = v;
   }

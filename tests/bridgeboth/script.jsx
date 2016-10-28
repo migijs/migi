@@ -15,6 +15,7 @@ class Component extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }
@@ -36,6 +37,7 @@ class Component2 extends migi.Component {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }

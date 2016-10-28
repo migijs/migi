@@ -24,12 +24,14 @@ class Model extends migi.Model {
   get a() {
     return this._a;
   }
+  @bind
   set a(v) {
     this._a = v;
   }
   get b() {
     return this._b;
   }
+  @bind
   set b(v) {
     this._b = v;
   }

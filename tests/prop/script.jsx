@@ -7,12 +7,14 @@ class Component extends migi.Component {
   get value() {
     return this._value;
   }
+  @bind
   set value(v) {
     this._value = v;
   }
   get checked() {
     return this._checked;
   }
+  @bind
   set checked(v) {
     this._checked = v;
   }

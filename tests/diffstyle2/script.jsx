@@ -7,6 +7,7 @@ class Component extends migi.CacheComponent {
   get list() {
     return this._list;
   }
+  @bind
   set list(v) {
     this._list = v;
   }

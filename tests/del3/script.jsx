@@ -7,6 +7,7 @@ class Component extends migi.Component {
   get data() {
     return this._data;
   }
+  @bind
   set data(v) {
     this._data = v;
   }

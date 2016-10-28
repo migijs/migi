@@ -6,6 +6,7 @@ class CacheComponent extends migi.CacheComponent {
   get count() {
     return this._count;
   }
+  @bind
   set count(v) {
     this._count = v;
   }

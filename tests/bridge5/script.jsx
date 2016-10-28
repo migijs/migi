@@ -5,6 +5,7 @@ class Component extends migi.CacheComponent {
   get txt() {
     return this._txt;
   }
+  @bind
   set txt(v) {
     this._txt = v;
   }

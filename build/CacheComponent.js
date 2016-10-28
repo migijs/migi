@@ -22,37 +22,42 @@ var CacheModel=function(){var _4=require('./CacheModel');return _4.hasOwnPropert
       self.__canData = true;
     }
     
-    //没有缓存根据是否桥接模式赋予stream对象或生成sid
-    if(!self.__handler.hasOwnProperty(k)) {
-      self.__handler[k] = self.__stream || Stream.gen();
+    if(!Array.isArray(k)) {
+      k = [k];
     }
-    else {
-      var item = self.__handler[k];
-      //新stream的sid必须大于老stream的sid或sid才能覆盖
-      if(self.__stream) {
-        if(item instanceof Stream) {
-          if(item.sid < self.__stream.sid) {
+    //没有缓存根据是否桥接模式赋予stream对象或生成sid
+    k.forEach(function(k) {
+      if (!self.__handler.hasOwnProperty(k)) {
+        self.__handler[k] = self.__stream || Stream.gen();
+      }
+      else {
+        var item = self.__handler[k];
+        //新stream的sid必须大于老stream的sid或sid才能覆盖
+        if (self.__stream) {
+          if (item instanceof Stream) {
+            if (item.sid < self.__stream.sid) {
+              self.__handler[k] = self.__stream;
+            }
+          }
+          else if (item < self.__stream.sid) {
             self.__handler[k] = self.__stream;
           }
         }
-        else if(item < self.__stream.sid) {
-          self.__handler[k] = self.__stream;
-        }
-      }
-      //非stream触发更新即主动数据更新
-      //当缓存是bridge时，Stream当前的sid>=缓存的sid即说明是发生在bridge之后的
-      else {
-        var now = Stream.now();
-        if(item instanceof Stream) {
-          if(item.sid <= now) {
+        //非stream触发更新即主动数据更新
+        //当缓存是bridge时，Stream当前的sid>=缓存的sid即说明是发生在bridge之后的
+        else {
+          var now = Stream.now();
+          if (item instanceof Stream) {
+            if (item.sid <= now) {
+              self.__handler[k] = now;
+            }
+          }
+          else if (item < now) {
             self.__handler[k] = now;
           }
         }
-        else if(item < now) {
-          self.__handler[k] = now;
-        }
       }
-    }
+    });
     if(!self.__ccb) {
       self.__ccb = true;
       //1ms后触发数据变更并重设状态

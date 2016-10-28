@@ -6,12 +6,14 @@ class Component extends migi.Component {
   get cp() {
     return this._cp;
   }
+  @bind
   set cp(v) {
     this._cp = v;
   }
   get data() {
     return this.__data;
   }
+  @bind
   set data(v) {
     this._data = v;
   }
