@@ -555,6 +555,12 @@ class VirtualDom extends Element {
       //记录下来留待清除
       self.__listener.push([name, cb]);
       elem.addEventListener(name, cb);
+      //onLoad可能因为缓存不发生
+      if(name == 'load' && elem.complete) {
+        var event = document.createEvent('Event');
+        event.initEvent('load', true, true);
+        elem.dispatchEvent(event);
+      }
     }
   }
   __removeListener() {
