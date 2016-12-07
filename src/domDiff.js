@@ -337,7 +337,10 @@ function del(elem, vd, ranges, option, temp, last) {
   }
 }
 function removeAt(elem, start) {
-  elem.removeChild(elem.childNodes[start]);
+  // 当table省略tbody直接写tr时，浏览器可能会自动生成tbody节点，diff时不在对比内会造成bug，提前判断下
+  if(elem.childNodes[start]) {
+    elem.removeChild(elem.childNodes[start]);
+  }
 }
 
 function equalText(a, b) {
