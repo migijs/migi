@@ -30,7 +30,6 @@ module.exports = {
     browser
       .click('#test>div>p')
       .assert.elementPresent('#test div span')
-      .assert.elementNotPresent('#test div b')
       .end()
   }
 };
