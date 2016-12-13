@@ -531,24 +531,6 @@ describe('Component', function() {
     expect(div.top).to.eql(cmpn);
     expect(span.top).to.eql(cmpn);
   });
-  it('on', function() {
-    class Component extends migi.Component {
-      constructor(...data) {
-        super(...data);
-        this.on(migi.Event.DOM, function() {
-          this.emit('test', 1);
-        });
-      }
-      render() {
-        return <div/>;
-      }
-    }
-    var count = 0;
-    var vd = <Component ontest={ function() { count++; } }/>;
-    vd.toString();
-    vd.emit(migi.Event.DOM);
-    expect(count).to.eql(1);
-  });
 });
 
 describe('css', function() {

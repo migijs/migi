@@ -14,6 +14,7 @@ import hash from './hash';
 import touch from './touch';
 import delegate from './delegate';
 import matchUtil from './matchUtil';
+import eventCaseName from './eventCaseName';
 
 const SELF_CLOSE = {
   'img': true,
@@ -558,7 +559,7 @@ class VirtualDom extends Element {
       }
       //记录下来留待清除
       self.__listener.push([name, cb]);
-      elem.addEventListener(name, cb);
+      elem.addEventListener(eventCaseName[name] || name, cb);
       //onLoad可能因为缓存不发生
       if(name == 'load' && elem.complete) {
         var event = document.createEvent('Event');

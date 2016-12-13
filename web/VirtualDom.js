@@ -14,6 +14,7 @@ var hash=function(){var _12=require('./hash');return _12.hasOwnProperty("default
 var touch=function(){var _13=require('./touch');return _13.hasOwnProperty("default")?_13["default"]:_13}();
 var delegate=function(){var _14=require('./delegate');return _14.hasOwnProperty("default")?_14["default"]:_14}();
 var matchUtil=function(){var _15=require('./matchUtil');return _15.hasOwnProperty("default")?_15["default"]:_15}();
+var eventCaseName=function(){var _16=require('./eventCaseName');return _16.hasOwnProperty("default")?_16["default"]:_16}();
 
 var SELF_CLOSE = {
   'img': true,
@@ -102,7 +103,7 @@ function __findEq(name, child, res, first) {
   return res;
 }
 
-!function(){var _16=Object.create(Element.prototype);_16.constructor=VirtualDom;VirtualDom.prototype=_16}();
+!function(){var _17=Object.create(Element.prototype);_17.constructor=VirtualDom;VirtualDom.prototype=_17}();
   function VirtualDom(name, props, children) {
     //fix循环依赖
     if(props===void 0)props=[];if(children===void 0)children=[];if(Component.hasOwnProperty('default')) {
@@ -558,7 +559,7 @@ function __findEq(name, child, res, first) {
       }
       //记录下来留待清除
       self.__listener.push([name, cb]);
-      elem.addEventListener(name, cb);
+      elem.addEventListener(eventCaseName[name] || name, cb);
       //onLoad可能因为缓存不发生
       if(name == 'load' && elem.complete) {
         var event = document.createEvent('Event');
@@ -943,16 +944,16 @@ function __findEq(name, child, res, first) {
     return this;
   }
 
-  var _17={};_17.names={};_17.names.get =function() {
+  var _18={};_18.names={};_18.names.get =function() {
     return this.__names || (this.__names = []);
   }
-  _17.element={};_17.element.get =function() {
+  _18.element={};_18.element.get =function() {
     return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
   }
-  _17.style={};_17.style.get =function() {
+  _18.style={};_18.style.get =function() {
     return this.__style;
   }
-  _17.style.set =function(v) {
+  _18.style.set =function(v) {
     var self = this;
     self.__style = v;
     if(self.parent instanceof VirtualDom) {
@@ -966,7 +967,7 @@ function __findEq(name, child, res, first) {
       childStyle(child, v);
     });
   }
-Object.keys(_17).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_17[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
+Object.keys(_18).forEach(function(k){Object.defineProperty(VirtualDom.prototype,k,_18[k])});Object.keys(Element).forEach(function(k){VirtualDom[k]=Element[k]});
 
 //静态文本节点，包括空、undefined、null、空数组
 function isEmptyText(item) {
