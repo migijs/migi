@@ -43,14 +43,15 @@ class Component extends Element {
     self.on(Event.DATA, self.__onData);
   }
   __init(k, v) {
+    var self = this;
     if(/^on[a-zA-Z]/.test(k)) {
-      var name = k.slice(2);
-      this.on(name, function(...data) {
-        v(...data);
+      var name = k.slice(2).toLowerCase();
+      self.once(Event.DOM, function() {
+        self.virtualDom.__addEvt(name, v);
       });
     }
     else if(k == 'model') {
-      this.model = v;
+      self.model = v;
     }
   }
   //需要被子类覆盖

@@ -331,32 +331,7 @@ function __findEq(name, child, res, first) {
           return;
         }
         var name = k.slice(2).toLowerCase();
-        self.__addListener(name, function(e) {
-          fixEvent(e);
-          var target = e.target;
-          var uid = target.getAttribute('migi-uid');
-          var tvd = hash.get(uid);
-          if(v instanceof Cb) {
-            v.cb.call(v.context, e, self, tvd);
-          }
-          else if(util.isFunction(v)) {
-            v(e, self, tvd);
-          }
-          else if(Array.isArray(v)) {
-            v.forEach(function(item) {
-              var cb = item[1];
-              var res = delegate(e, item[0], self);
-              if(res[0]) {
-                if(cb instanceof Cb) {
-                  cb.cb.call(cb.context, e, self, res[1], tvd);
-                }
-                else if(util.isFunction(cb)) {
-                  cb(e, self, res[1], tvd);
-                }
-              }
-            });
-          }
-        });
+        self.__addEvt(name, v);
       });
     }
     //Obj类型绑定处理
@@ -532,6 +507,35 @@ function __findEq(name, child, res, first) {
         }
       }
     }
+  }
+  VirtualDom.prototype.__addEvt = function(name, v) {
+    var self = this;
+    self.__addListener(name, function(e) {
+      fixEvent(e);
+      var target = e.target;
+      var uid = target.getAttribute('migi-uid');
+      var tvd = hash.get(uid);
+      if(v instanceof Cb) {
+        v.cb.call(v.context, e, self, tvd);
+      }
+      else if(util.isFunction(v)) {
+        v(e, self, tvd);
+      }
+      else if(Array.isArray(v)) {
+        v.forEach(function(item) {
+          var cb = item[1];
+          var res = delegate(e, item[0], self);
+          if(res[0]) {
+            if(cb instanceof Cb) {
+              cb.cb.call(cb.context, e, self, res[1], tvd);
+            }
+            else if(util.isFunction(cb)) {
+              cb(e, self, res[1], tvd);
+            }
+          }
+        });
+      }
+    });
   }
   VirtualDom.prototype.__addListener = function(name, cb) {
     var self = this;

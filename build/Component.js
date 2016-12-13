@@ -43,14 +43,15 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.on(Event.DATA, self.__onData);
   }
   Component.prototype.__init = function(k, v) {
+    var self = this;
     if(/^on[a-zA-Z]/.test(k)) {
-      var name = k.slice(2);
-      this.on(name, function(data) {
-        data=[].slice.call(arguments, 0);v.apply(this,[].concat(Array.from(data)));
+      var name = k.slice(2).toLowerCase();
+      self.once(Event.DOM, function() {
+        self.virtualDom.__addEvt(name, v);
       });
     }
     else if(k == 'model') {
-      this.model = v;
+      self.model = v;
     }
   }
   //需要被子类覆盖
