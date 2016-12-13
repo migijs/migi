@@ -620,13 +620,55 @@ function __findEq(name, child, res, first) {
     }
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
-    for(var index = 0, len = self.children.length; index < len; index++) {
-      var child = self.children[index];
-      self.__domChild(child, index, len, option);
-    }
-    //可能最后一个是空白text，需特殊判断下插入
-    if(option.empty) {
+    self.__chenckBlank(self.children, option);
+    //可能最后一个是空白text，或没有children，需特殊判断下插入
+    if(option.empty || option.first) {
       self.__insertBlank(option.start);
+    }
+  }
+  VirtualDom.prototype.__chenckBlank = function(item, option) {
+    var self = this;
+    if(Array.isArray(item)) {
+      item.forEach(function(item) {
+        self.__chenckBlank(item, option);
+      });
+    }
+    else if(item instanceof Element && !(item instanceof migi.NonVisualComponent)) {
+      //前面的连续的空白节点需插入一个空TextNode
+      if(option.empty) {
+        self.__insertBlank(option.start);
+      }
+      option.prev = type.DOM;
+      option.empty = false;
+      //递归通知DOM事件，增加start索引
+      option.start++;
+      //前方文本节点需再增1次，因为文本节点自身不涉及start索引逻辑
+      if(option.prev == type.TEXT) {
+        option.start++;
+      }
+      option.first = false;
+      item.emit(Event.DOM);
+    }
+    else if(item instanceof Obj) {
+      self.__chenckBlank(item.v, option);
+    }
+    else if(isEmptyText(item)) {
+      if(item instanceof migi.NonVisualComponent) {
+        item.emit(Event.DOM);
+      }
+      //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
+      if(option.prev == type.TEXT) {
+        return;
+      }
+      option.empty = true;
+      option.prev = type.TEXT;
+      option.first = false;
+    }
+    //一旦是个非空text，之前记录的空text将无效，因为相邻的text会合并为一个text节点
+    else {
+      option.empty = false;
+      option.prev = type.TEXT;
+      option.first = false;
     }
   }
   //index和i结合判断首个，因为child为数组时会展开，当child不是第1个时其展开项都有prev

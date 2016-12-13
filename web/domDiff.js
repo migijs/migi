@@ -437,53 +437,8 @@ function diffVd(ovd, nvd) {
   if(nvd.__style) {
     nvd.__updateStyle(true);
   }
-  var ol = ovd.children.length;
-  var nl = nvd.children.length;
-  //渲染children
   var ranges = [];
-  var option = { start: 0, record: [], first: true };
-  var history;
-  //遍历孩子，长度取新老vd最小值
-  for(var i = 0, len = Math.min(ol, nl); i < len; i++) {
-    var oc = ovd.children[i];
-    var nc = nvd.children[i];
-    //history记录着当前child索引，可能它是个数组，递归记录
-    history = [i];
-    //vd的child可能是vd、文本、变量和数组，但已不可能是Obj
-    diffChild(elem, oc, nc, ranges, option, history, nvd);
-  }
-  temp = {};
-  //老的多余的删除
-  if(i < ol) {
-    //Obj是一个vd时，vd的children进行diff，可能之后没有children，假设有个空text
-    if(!history) {
-      var first = getFirst(ovd.children);
-      if(first instanceof Element && !(first instanceof migi.NonVisualComponent)) {
-        option.state = DOM_TO_DOM;
-      }
-      else {
-        option.state = DOM_TO_TEXT;
-      }
-    }
-    for(;i < ol; i++) {
-      del(elem, ovd.children[i], ranges, option, temp, i == ol - 1);
-    }
-  }
-  //新的多余的插入
-  else if(i < nl) {
-    for(;i < nl; i++) {
-      if(history) {
-        history[history.length - 1] = i;
-      }
-      //Obj是一个vd时，vd的children进行diff，可能之前没有children，假设有个空text
-      else {
-        option.state = TEXT_TO_TEXT;
-        history = [0];
-        range.record(history, option);
-      }
-      add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1, nvd);
-    }
-  }
+  diffChild(ovd.element, ovd.children, nvd.children, ranges, { start: 0, record: [], first: true }, [], nvd);
   if(ranges.length) {
     //textarea特殊判断
     if(nvd.name == 'textarea') {
@@ -491,7 +446,7 @@ function diffVd(ovd, nvd) {
       return;
     }
     ranges.forEach(function(item) {
-      range.update(item, nvd.children, elem);
+      range.update(item, nvd.children, nvd.element);
     });
   }
   //缓存对象池
@@ -800,15 +755,6 @@ exports.check=check;function check(option, elem, vd, ranges, history) {
     delete option.d2t;
     addRange(ranges, option);
     removeAt(elem, option.start + 1);
-  }
-}
-
-function getFirst(vd) {
-  if(Array.isArray(vd)) {
-    return getFirst(vd[0])
-  }
-  else {
-    return vd;
   }
 }
 });

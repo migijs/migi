@@ -1,4 +1,4 @@
 exports["default"]={
-  TEXT: 0,
-  DOM: 1
+  TEXT: 1,
+  DOM: 2
 };
