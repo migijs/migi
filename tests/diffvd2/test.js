@@ -18,7 +18,7 @@ module.exports = {
     browser
       .click('#test div p')
       .assert.elementPresent('#test div span')
-      .assert.not.containsText('#test div span', '1')
+      .assert.containsText('#test div span', '')
   },
   'click3': function(browser) {
     browser
@@ -30,7 +30,7 @@ module.exports = {
     browser
       .click('#test>div>p')
       .assert.elementPresent('#test div span')
-      .assert.not.elementPresent('#test div b')
+      .assert.elementNotPresent('#test div b')
       .end()
   }
 };
