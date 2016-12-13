@@ -455,6 +455,16 @@ function diffVd(ovd, nvd) {
   temp = {};
   //老的多余的删除
   if(i < ol) {
+    //Obj是一个vd时，vd的children进行diff，可能之后没有children，假设有个空text
+    if(!history) {
+      var first = getFirst(ovd.children);
+      if(first instanceof Element && !(first instanceof migi.NonVisualComponent)) {
+        option.state = DOM_TO_DOM;
+      }
+      else {
+        option.state = DOM_TO_TEXT;
+      }
+    }
     for(;i < ol; i++) {
       del(elem, ovd.children[i], ranges, option, temp, i == ol - 1);
     }
@@ -462,7 +472,15 @@ function diffVd(ovd, nvd) {
   //新的多余的插入
   else if(i < nl) {
     for(;i < nl; i++) {
-      history[history.length - 1] = i;
+      if(history) {
+        history[history.length - 1] = i;
+      }
+      //Obj是一个vd时，vd的children进行diff，可能之前没有children，假设有个空text
+      else {
+        option.state = TEXT_TO_TEXT;
+        history = [0];
+        range.record(history, option);
+      }
       add(elem, nvd.children[i], ranges, option, history, temp, i == nl - 1, nvd);
     }
   }
@@ -782,5 +800,14 @@ exports.check=check;function check(option, elem, vd, ranges, history) {
     delete option.d2t;
     addRange(ranges, option);
     removeAt(elem, option.start + 1);
+  }
+}
+
+function getFirst(vd) {
+  if(Array.isArray(vd)) {
+    return getFirst(vd[0])
+  }
+  else {
+    return vd;
   }
 }
