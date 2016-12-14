@@ -854,6 +854,8 @@ class VirtualDom extends Element {
         v = '';
       }
       this.element.innerHTML = util.stringify(v);
+      //清空后创建空字符节点
+      this.__insertBlank(0);
       return;
     }
     attr.update(this.name, this.element, k, v, this.__style);

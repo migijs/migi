@@ -438,7 +438,7 @@ function diffVd(ovd, nvd) {
     nvd.__updateStyle(true);
   }
   var ranges = [];
-  diffChild(ovd.element, ovd.children, nvd.children, ranges, { start: 0, record: [], first: true }, [], nvd);
+  diffChild(elem, ovd.children, nvd.children, ranges, { start: 0, record: [], first: true }, [], nvd);
   if(ranges.length) {
     //textarea特殊判断
     if(nvd.name == 'textarea') {
@@ -446,7 +446,7 @@ function diffVd(ovd, nvd) {
       return;
     }
     ranges.forEach(function(item) {
-      range.update(item, nvd.children, nvd.element);
+      range.update(item, nvd.children, elem);
     });
   }
   //缓存对象池
