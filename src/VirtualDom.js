@@ -628,7 +628,7 @@ class VirtualDom extends Element {
   }
   __chenckBlank(item, option) {
     var self = this;
-``    if(Array.isArray(item) && item.length) {
+    if(Array.isArray(item) && item.length) {
       item.forEach(function(item) {
         self.__chenckBlank(item, option);
       });

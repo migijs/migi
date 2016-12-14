@@ -25,7 +25,20 @@ class Component extends migi.Component {
       case 3:
         this.a = <span></span>;
         break;
+      case 4:
+        this.a = <span><b>3</b></span>;
+        break;
+      case 5:
+        this.a = <span><small>1</small></span>;
+        break;
+      case 6:
+        this.a = <span>2</span>;
+        break;
     }
+    this.record();
+  }
+  record() {
+    document.querySelector('#test2').innerHTML = '^' + document.querySelector('#test1 span').childNodes.length + '$';
   }
   render() {
     return <div>
