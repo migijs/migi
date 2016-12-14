@@ -38,7 +38,7 @@ class Component extends migi.Component {
     this.record();
   }
   record() {
-    document.querySelector('#test2').innerHTML = '^' + document.querySelector('#test1 span').childNodes.length + '$';
+    document.querySelector('#test2').innerHTML = '^' + document.querySelector('#test span').childNodes.length + '$';
   }
   render() {
     return <div>
