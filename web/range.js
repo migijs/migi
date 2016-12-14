@@ -83,21 +83,8 @@ exports.update=update;function update(item, children, elem) {
   var res = join(item.index, children, {});
   var cns = elem.childNodes;
   var textNode = cns[item.start];
-  if(!textNode) {
-    if(/&([a-z]+|#\d+);/i.test(res)) {
-      var node = browser.NODE;
-      node.innerHTML = util.encodeHtml(res);
-      elem.appendChild(node.firstChild);
-    }
-    else {
-      textNode = document.createTextNode(res);
-      elem.appendChild(textNode);
-    }
-    return;
-  }
   //神奇的地方，更新的对象是个DOM而不是TEXT，会发生在混杂情况下的t2d变化
   //如t1{t}t2{t}变为t1{d}t2{d}，t2记录的range的start在3，而其目前是第2个{d}的DOM，插入在t2d逻辑中
-  //Obj为vd时，diff其children从没有变为1个vd时也会
   if(textNode.nodeType == 1) {
     return;
   }

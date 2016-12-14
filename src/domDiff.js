@@ -362,7 +362,7 @@ function addRange(ranges, option) {
 
 function diffVd(ovd, nvd) {
   //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
-  if(ovd === nvd) {
+  if(ovd == nvd) {
     return;
   }
   //特殊的uid，以及一些引用赋给新vd

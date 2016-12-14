@@ -628,7 +628,7 @@ function __findEq(name, child, res, first) {
   }
   VirtualDom.prototype.__chenckBlank = function(item, option) {
     var self = this;
-    if(Array.isArray(item)) {
+    if(Array.isArray(item) && item.length) {
       item.forEach(function(item) {
         self.__chenckBlank(item, option);
       });
@@ -638,14 +638,14 @@ function __findEq(name, child, res, first) {
       if(option.empty) {
         self.__insertBlank(option.start);
       }
-      option.prev = type.DOM;
-      option.empty = false;
       //递归通知DOM事件，增加start索引
       option.start++;
       //前方文本节点需再增1次，因为文本节点自身不涉及start索引逻辑
       if(option.prev == type.TEXT) {
         option.start++;
       }
+      option.prev = type.DOM;
+      option.empty = false;
       option.first = false;
       item.emit(Event.DOM);
     }
@@ -670,55 +670,6 @@ function __findEq(name, child, res, first) {
       option.prev = type.TEXT;
       option.first = false;
     }
-  }
-  //index和i结合判断首个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  VirtualDom.prototype.__domChild = function(child, index, len, option) {
-    var self = this;
-    //防止空数组跳过逻辑，它被认为是个空字符串
-    if(Array.isArray(child) && child.length) {
-      child.forEach(function(item) {
-        self.__domChild(item, index, len, option);
-      });
-    }
-    else if(child instanceof Element && !(child instanceof migi.NonVisualComponent)) {
-      //前面的连续的空白节点需插入一个空TextNode
-      if(option.empty) {
-        self.__insertBlank(option.start);
-        option.empty = false;
-      }
-      //递归通知DOM事件，增加start索引
-      child.emit(Event.DOM);
-      option.start++;
-      //前方文本节点需再增1次，因为文本节点自身不涉及start索引逻辑
-      if(!option.first) {
-        if(option.prev == type.TEXT) {
-          option.start++;
-        }
-      }
-      option.prev = type.DOM;
-    }
-    else if(child instanceof Obj) {
-      self.__domChild(child.v, index, len, option);
-    }
-    else if(isEmptyText(child)) {
-      if(child instanceof migi.NonVisualComponent) {
-        child.emit(Event.DOM);
-      }
-      //前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
-      if(!option.first) {
-        if(option.prev == type.TEXT) {
-          return;
-        }
-      }
-      option.empty = true;
-      option.prev = type.TEXT;
-    }
-    //一旦是个非空text，之前记录的空text将无效，因为相邻的text会合并为一个text节点
-    else {
-      option.empty = false;
-      option.prev = type.TEXT;
-    }
-    option.first = false;
   }
   VirtualDom.prototype.__insertBlank = function(start) {
     var blank = document.createTextNode('');
