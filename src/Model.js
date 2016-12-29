@@ -8,8 +8,9 @@ class Model extends Event {
     super();
     this.uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
-    this.__ref = [];
-    this.__bridgeHash = {};
+    this.__ref = []; //以ref为attr的vd快速访问引用
+    this.__bridgeHash = {}; //桥接记录
+    this.__bindHash = {}; //缩略语法中是否设置过默认值
 
     this.on(Event.DATA, this.__onData);
   }
@@ -23,6 +24,20 @@ class Model extends Event {
       }
       cp.emit(Event.DATA, k, caller);
     });
+  }
+  __initBind(name) {
+    if(this.__bindHash.hasOwnProperty(name)) {
+      return false;
+    }
+    this.__bindHash[name] = true;
+    return true;
+  }
+  __getBind(name) {
+    return this[name + '__'];
+  }
+  __setBind(name, v) {
+    this.__bindHash[name] = true;
+    this[name + '__'] = v;
   }
 
   __add(cp) {

@@ -33,6 +33,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
     self.__canData = false; //防止添加至DOM前触发无谓的数据更新
+    self.__bindHash = {}; //缩略语法中是否设置过默认值
 
     self.__props.forEach(function(item) {
       var k = item[0];
@@ -267,6 +268,20 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     self.emit(Event.DESTROY);
     self.__hash = {};
     return vd;
+  }
+  Component.prototype.__initBind = function(name) {
+    if(this.__bindHash.hasOwnProperty(name)) {
+      return false;
+    }
+    this.__bindHash[name] = true;
+    return true;
+  }
+  Component.prototype.__getBind = function(name) {
+    return this[name + '__'];
+  }
+  Component.prototype.__setBind = function(name, v) {
+    this.__bindHash[name] = true;
+    this[name + '__'] = v;
   }
 
   var _9={};_9.allowPropagation={};_9.allowPropagation.get =function() {

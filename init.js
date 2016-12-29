@@ -7,7 +7,7 @@ define(function(require, exports, module) {
       var node = jsx[i];
       if(node.getAttribute('type') == 'text/jsx') {
         var code = node.text;
-        node.parentNode.removeChild(node);
+        // node.parentNode.removeChild(node);
         if(!code) {
           continue;
         }
