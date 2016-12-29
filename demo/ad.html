@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"/>
+  <title>@bind注解简写</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es5-shim.js"></script>
+  <script src="es5-sham.js"></script>
+  <script src="migi-es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class MyComponent extends migi.Component {
+    @bind txt = 'like'
+    constructor(...data) {
+      super(...data);
+    }
+    handleClick() {
+      this.txt = this.txt == 'like' ? 'unlike' : 'like';
+    }
+    render() {
+      return (
+        <p onClick={this.handleClick}>
+          You {this.txt} this. Click to toggle.
+        </p>
+      );
+    }
+  }
+  
+  migi.render(
+    <MyComponent />,
+    '#example'
+  );
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.text;
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
