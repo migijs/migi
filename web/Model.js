@@ -25,20 +25,6 @@ var uid = 0;
       cp.emit(Event.DATA, k, caller);
     });
   }
-  Model.prototype.__initBind = function(name) {
-    if(this.__bindHash.hasOwnProperty(name)) {
-      return false;
-    }
-    this.__bindHash[name] = true;
-    return true;
-  }
-  Model.prototype.__getBind = function(name) {
-    return this[name + '__'];
-  }
-  Model.prototype.__setBind = function(name, v) {
-    this.__bindHash[name] = true;
-    this[name + '__'] = v;
-  }
 
   Model.prototype.__add = function(cp) {
     if(this.__ref.indexOf(cp) == -1) {
@@ -58,7 +44,7 @@ var uid = 0;
 Object.keys(_3).forEach(function(k){Object.defineProperty(Model.prototype,k,_3[k])});Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
 
 //完全一样的桥接数据流方法，复用
-['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo'].forEach(function(k) {
+['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo', '__initBind', '__getBind', '__setBind'].forEach(function(k) {
   Model.prototype[k] = Component.prototype[k];
 });
 
