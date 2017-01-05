@@ -6,6 +6,7 @@ var EventBus=function(){var _4=require('./EventBus');return _4.hasOwnProperty("d
 var Model=function(){var _5=require('./Model');return _5.hasOwnProperty("default")?_5["default"]:_5}();
 var Stream=function(){var _6=require('./Stream');return _6.hasOwnProperty("default")?_6["default"]:_6}();
 var Fastclick=function(){var _7=require('./Fastclick');return _7.hasOwnProperty("default")?_7["default"]:_7}();
+var array=function(){var _8=require('./array');return _8.hasOwnProperty("default")?_8["default"]:_8}();
 
 var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -14,7 +15,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
   'touchmove', 'touchend', 'touchcancel', 'MSGestureEnd', 'MSPointerDown', 'pointerdown', 'MSPointerMove', 'pointermove',
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
-!function(){var _8=Object.create(Element.prototype);_8.constructor=Component;Component.prototype=_8}();
+!function(){var _9=Object.create(Element.prototype);_9.constructor=Component;Component.prototype=_9}();
   function Component(props, children) {
     //fix循环依赖
     if(props===void 0)props=[];if(children===void 0)children=[];if(Model.hasOwnProperty('default')) {
@@ -215,6 +216,15 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       k = [k];
     }
     k.forEach(function(k) {
+      //检查array类型，替换并侦听array的原型方法
+      var v = self[k];
+      if(Array.isArray(v) && v.__proto__ != array) {
+        v.__proto__ = array;
+        v.__ob__ = function() {
+          self[k] = self[k];
+        }
+      }
+      //分析桥接
       var bridge = self.__bridgeHash[k];
       if(bridge) {
         var stream = self.__stream || new Stream(self.uid);
@@ -225,12 +235,12 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
           if(!stream.has(target.uid)) {
             stream.add(target.uid);
             if(target instanceof EventBus) {
-              target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+              target.emit(Event.DATA, name, middleware ? middleware.call(self, v) : v, stream);
             }
             //先设置桥接对象数据为桥接模式，修改数据后再恢复
             else {
               target.__stream = stream;
-              target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+              target[name] = middleware ? middleware.call(self, v) : v;
               target.__stream = null;
             }
           }
@@ -280,42 +290,49 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     return this[name + '__'];
   }
   Component.prototype.__setBind = function(name, v) {
-    this.__bindHash[name] = true;
-    this[name + '__'] = v;
+    var self = this;
+    self.__bindHash[name] = true;
+    self[name + '__'] = v;
+    if(Array.isArray(v) && v.__proto__ != array) {
+      v.__proto__ = array;
+      v.__ob__ = function() {
+        self[name] = self[name];
+      };
+    }
   }
 
-  var _9={};_9.allowPropagation={};_9.allowPropagation.get =function() {
+  var _10={};_10.allowPropagation={};_10.allowPropagation.get =function() {
     return this.__allowPropagation;
   }
-  _9.allowPropagation.set =function(v) {
+  _10.allowPropagation.set =function(v) {
     this.__allowPropagation = v;
   }
-  _9.element={};_9.element.get =function() {
+  _10.element={};_10.element.get =function() {
     return this.virtualDom ? this.virtualDom.element : null;
   }
-  _9.style={};_9.style.get =function() {
+  _10.style={};_10.style.get =function() {
     return this.__style;
   }
-  _9.style.set =function(v) {
+  _10.style.set =function(v) {
     this.__style = v;
   }
-  _9.model={};_9.model.get =function() {
+  _10.model={};_10.model.get =function() {
     return this.__model;
   }
-  _9.model.set =function(v) {
+  _10.model.set =function(v) {
     if(!(v instanceof Model)) {
       throw new Error('can not set model to a non Model: ' + v);
     }
     this.__model = v;
     v.__add(this);
   }
-  _9.virtualDom={};_9.virtualDom.get =function() {
+  _10.virtualDom={};_10.virtualDom.get =function() {
     return this.__virtualDom;
   }
-  _9.ref={};_9.ref.get =function() {
+  _10.ref={};_10.ref.get =function() {
     return this.__ref;
   }
-  _9.canData={};_9.canData.get =function() {
+  _10.canData={};_10.canData.get =function() {
     return this.__canData;
   }
 
@@ -332,7 +349,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       child.emit(Event.DOM, true);
     }
   }
-Object.keys(_9).forEach(function(k){Object.defineProperty(Component.prototype,k,_9[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
+Object.keys(_10).forEach(function(k){Object.defineProperty(Component.prototype,k,_10[k])});Object.keys(Element).forEach(function(k){Component[k]=Element[k]});
 
 //完全一样的桥接数据流方法，复用
 ['__record', '__unRecord', 'bridgeTo', 'unBridge', 'unBridgeTo'].forEach(function(k) {

@@ -29,7 +29,7 @@ function match(names, classes, ids, style, virtualDom, first) {
           var item = qlist[i];
           //Array/String类型标明是否有值，目前只支持Array
           if(Array.isArray(item)) {
-            var k = item[0].replace(/^-[a-z]+-/i, '').replace(/^mso-/, '').toLowerCase();
+            var k = item[0].replace(/^-[a-z]+-/i, '').replace(/^mso-/i, '').toLowerCase();
             var v = item[1];
             //只支持px单位
             if(/(px|\d)$/.test(v)) {

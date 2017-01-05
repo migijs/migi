@@ -6,6 +6,7 @@ import EventBus from './EventBus';
 import Model from './Model';
 import Stream from './Stream';
 import Fastclick from './Fastclick';
+import array from './array';
 
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -215,6 +216,15 @@ class Component extends Element {
       k = [k];
     }
     k.forEach(function(k) {
+      //检查array类型，替换并侦听array的原型方法
+      var v = self[k];
+      if(Array.isArray(v) && v.__proto__ != array) {
+        v.__proto__ = array;
+        v.__ob__ = function() {
+          self[k] = self[k];
+        }
+      }
+      //分析桥接
       var bridge = self.__bridgeHash[k];
       if(bridge) {
         var stream = self.__stream || new Stream(self.uid);
@@ -225,12 +235,12 @@ class Component extends Element {
           if(!stream.has(target.uid)) {
             stream.add(target.uid);
             if(target instanceof EventBus) {
-              target.emit(Event.DATA, name, middleware ? middleware.call(self, self[k]) : self[k], stream);
+              target.emit(Event.DATA, name, middleware ? middleware.call(self, v) : v, stream);
             }
             //先设置桥接对象数据为桥接模式，修改数据后再恢复
             else {
               target.__stream = stream;
-              target[name] = middleware ? middleware.call(self, self[k]) : self[k];
+              target[name] = middleware ? middleware.call(self, v) : v;
               target.__stream = null;
             }
           }
@@ -280,8 +290,15 @@ class Component extends Element {
     return this[name + '__'];
   }
   __setBind(name, v) {
-    this.__bindHash[name] = true;
-    this[name + '__'] = v;
+    var self = this;
+    self.__bindHash[name] = true;
+    self[name + '__'] = v;
+    if(Array.isArray(v) && v.__proto__ != array) {
+      v.__proto__ = array;
+      v.__ob__ = function() {
+        self[name] = self[name];
+      };
+    }
   }
 
   get allowPropagation() {
