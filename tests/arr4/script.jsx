@@ -7,7 +7,7 @@ class MyComponent extends migi.Component {
     return this._a;
   }
   set a(v) {
-    this._a = v;
+    this._a = this._arr = v;
   }
   @link(a)
   get arr() {
