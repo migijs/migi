@@ -216,18 +216,11 @@ class Component extends Element {
       k = [k];
     }
     k.forEach(function(k) {
-      //检查array类型，替换并侦听array的原型方法
-      var v = self[k];
-      if(Array.isArray(v) && v.__proto__ != array) {
-        v.__proto__ = array;
-        v.__ob__ = function() {
-          self[k] = self[k];
-        }
-      }
       //分析桥接
       var bridge = self.__bridgeHash[k];
       if(bridge) {
         var stream = self.__stream || new Stream(self.uid);
+        var v = self[k];
         bridge.forEach(function(item) {
           var target = item.target;
           var name = item.name;
@@ -290,14 +283,17 @@ class Component extends Element {
     return this[name + '__'];
   }
   __setBind(name, v) {
-    var self = this;
-    self.__bindHash[name] = true;
-    self[name + '__'] = v;
+    this.__bindHash[name] = true;
+    this[name + '__'] = v;
+    this.__array(name, v);
+  }
+  __array(name, v) {
+    //检查array类型，替换并侦听array的原型方法
     if(Array.isArray(v) && v.__proto__ != array) {
       v.__proto__ = array;
       v.__ob__ = function() {
-        self[name] = self[name];
-      };
+        this[name] = this[name];
+      }
     }
   }
 

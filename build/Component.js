@@ -216,14 +216,6 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       k = [k];
     }
     k.forEach(function(k) {
-      //检查array类型，替换并侦听array的原型方法
-      var v = self[k];
-      if(Array.isArray(v) && v.__proto__ != array) {
-        v.__proto__ = array;
-        v.__ob__ = function() {
-          self[k] = self[k];
-        }
-      }
       //分析桥接
       var bridge = self.__bridgeHash[k];
       if(bridge) {
@@ -232,6 +224,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
           var target = item.target;
           var name = item.name;
           var middleware = item.middleware;
+          var v = self[k];
           if(!stream.has(target.uid)) {
             stream.add(target.uid);
             if(target instanceof EventBus) {
@@ -290,14 +283,17 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
     return this[name + '__'];
   }
   Component.prototype.__setBind = function(name, v) {
-    var self = this;
-    self.__bindHash[name] = true;
-    self[name + '__'] = v;
+    this.__bindHash[name] = true;
+    this[name + '__'] = v;
+    this.__array(name, v);
+  }
+  Component.prototype.__array = function(name, v) {
+    //检查array类型，替换并侦听array的原型方法
     if(Array.isArray(v) && v.__proto__ != array) {
       v.__proto__ = array;
       v.__ob__ = function() {
-        self[name] = self[name];
-      };
+        this[name] = this[name];
+      }
     }
   }
 

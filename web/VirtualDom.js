@@ -516,7 +516,7 @@ function __findEq(name, child, res, first) {
       var target = e.target;
       var uid = target.getAttribute('migi-uid');
       var tvd = hash.get(uid);
-      if(v instanceof Cb) {
+      if(v instanceof Cb && util.isFunction(v.cb)) {
         v.cb.call(v.context, e, self, tvd);
       }
       else if(util.isFunction(v)) {
