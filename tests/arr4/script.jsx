@@ -7,11 +7,11 @@ class MyComponent extends migi.Component {
     return this._a;
   }
   set a(v) {
-    this._a = this._arr = v;
+    this._a = v;
   }
   @link(a)
   get arr() {
-    return this._arr;
+    return this._a;
   }
   click() {
     this.a.push(2);
