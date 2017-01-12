@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
-  'unidirectional': function(browser) {
+  'arr4': function(browser) {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
