@@ -288,11 +288,12 @@ class Component extends Element {
     this.__array(name, v);
   }
   __array(name, v) {
+    var self = this;
     //检查array类型，替换并侦听array的原型方法
     if(Array.isArray(v) && v.__proto__ != array) {
       v.__proto__ = array;
       v.__ob__ = function() {
-        this[name] = this[name];
+        self[name] = self[name];
       }
     }
   }
