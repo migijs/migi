@@ -220,11 +220,11 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
       var bridge = self.__bridgeHash[k];
       if(bridge) {
         var stream = self.__stream || new Stream(self.uid);
+        var v = self[k];
         bridge.forEach(function(item) {
           var target = item.target;
           var name = item.name;
           var middleware = item.middleware;
-          var v = self[k];
           if(!stream.has(target.uid)) {
             stream.add(target.uid);
             if(target instanceof EventBus) {
