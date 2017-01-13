@@ -540,7 +540,7 @@ describe('Component', function() {
         });
       }
       render() {
-        return <div/>;
+        return <div>a</div>;
       }
     }
     var count = 0;
