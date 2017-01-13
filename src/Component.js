@@ -52,7 +52,7 @@ class Component extends Element {
         self.virtualDom.__addEvt(name, v);
       });
     }
-    else if(/^on-[a-zA-Z\d]/.test(k)) {
+    else if(/^on-[a-zA-Z\d_]/.test(k) && util.isFunction(v)) {
       var name = k.slice(3);
       this.on(name, function(...data) {
         v(...data);

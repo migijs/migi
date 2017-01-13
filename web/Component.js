@@ -52,7 +52,7 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
         self.virtualDom.__addEvt(name, v);
       });
     }
-    else if(/^on-[a-zA-Z\d]/.test(k)) {
+    else if(/^on-[a-zA-Z\d_]/.test(k) && util.isFunction(v)) {
       var name = k.slice(3);
       this.on(name, function(data) {
         data=[].slice.call(arguments, 0);v.apply(this,[].concat(Array.from(data)));
