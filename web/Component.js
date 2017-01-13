@@ -52,6 +52,12 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
         self.virtualDom.__addEvt(name, v);
       });
     }
+    else if(/^on-[a-zA-Z\d]/.test(k)) {
+      var name = k.slice(3);
+      this.on(name, function(data) {
+        data=[].slice.call(arguments, 0);v.apply(this,[].concat(Array.from(data)));
+      });
+    }
     else if(k == 'model') {
       self.model = v;
     }
