@@ -1,4 +1,4 @@
-var arr = [];
+var arr = [1];
 
 class MyComponent extends migi.Component {
   constructor(...data) {

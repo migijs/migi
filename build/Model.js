@@ -11,6 +11,7 @@ var uid = 0;
     this.__ref = []; //以ref为attr的vd快速访问引用
     this.__bridgeHash = {}; //桥接记录
     this.__bindHash = {}; //缩略语法中是否设置过默认值
+    this.__ob = []; //被array们的__ob__引用
 
     this.on(Event.DATA, this.__onData);
   }

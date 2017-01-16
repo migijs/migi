@@ -276,7 +276,6 @@ class Component extends Element {
     if(self.model) {
       self.model.__del(self);
     }
-    self.__hash = {};
     //侦听array里面的引用需删除
     self.__ob.forEach(function(arr) {
       var i = arr.__ob__.indexOf(self);
@@ -287,6 +286,7 @@ class Component extends Element {
     });
     var vd = self.virtualDom.__destroy();
     self.emit(Event.DESTROY);
+    self.__hash = {};
     return vd;
   }
   __initBind(name) {
@@ -311,7 +311,7 @@ class Component extends Element {
       v.__proto__ = array;
       v.__ob__ = v.__ob__ || [];
       v.__cb__ = v.__cb__ || [];
-      if(v.__ob__.indexOf(self) == -1) {
+      if(v.__ob__.indexOf(self) == -1) {console.log(self,self.__ob);
         self.__ob.push(v);
         v.__ob__.push(self);
         v.__cb__.push(function() {
