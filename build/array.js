@@ -11,9 +11,9 @@ var arrayMethods = Object.create(arrayProto);
         args[i] = arguments[i];
       }
       var result = original.apply(this, args);
-      if(Array.isArray(this.__ob__)) {
-        this.__ob__.forEach(function(ob) {
-          ob(result);
+      if(Array.isArray(this.__cb__)) {
+        this.__cb__.forEach(function(cb) {
+          cb();
         });
       }
       return result;
