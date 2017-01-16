@@ -48,7 +48,12 @@ var migi = {
   browser,
   sort,
   hash,
-  Fastclick
+  Fastclick,
+  name: function(Class, name) {
+    if(Component.prototype.isPrototypeOf(Class.prototype)) {
+      Class.__migiName = name;
+    }
+  }
 };
 
 if(typeof window != 'undefined') {

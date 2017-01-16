@@ -92,9 +92,9 @@ define(function(require, exports, module){
   }
 
 
-Event.DOM = '__0';
-Event.DESTROY = '__1';
-Event.DATA = '__2';
+Event.DOM = 'DOM';
+Event.DESTROY = 'DESTROY';
+Event.DATA = 'DATA';
 
 exports["default"]=Event;
 });

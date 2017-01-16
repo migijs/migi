@@ -181,7 +181,9 @@ class Component extends Element {
     var self = this;
     self.virtualDom.emit(Event.DOM, fake);
     var elem = self.element;
-    elem.setAttribute('migi-name', self.name);
+    if(self.name) {
+      elem.setAttribute('migi-name', self.name);
+    }
     //无覆盖render时渲染标签的children；有时渲染render的children
     //标签的children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
     if(!fake && self.children != self.virtualDom.children) {
@@ -298,8 +300,9 @@ class Component extends Element {
     //检查array类型，替换并侦听array的原型方法
     if(Array.isArray(v) && v.__proto__ != array) {
       v.__proto__ = array;
-      v.__ob__ = function() {
-        self[name] = self[name];
+      v.__ob__ = v.__ob__ || [];
+      if(v.__ob__.indexOf(self) == -1) {
+        v.__ob__.push(self);
       }
     }
   }
