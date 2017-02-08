@@ -311,7 +311,7 @@ class Component extends Element {
       v.__proto__ = array;
       v.__ob__ = v.__ob__ || [];
       v.__cb__ = v.__cb__ || [];
-      if(v.__ob__.indexOf(self) == -1) {console.log(self,self.__ob);
+      if(v.__ob__.indexOf(self) == -1) {
         self.__ob.push(v);
         v.__ob__.push(self);
         v.__cb__.push(function() {
