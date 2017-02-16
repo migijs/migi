@@ -1,13 +1,15 @@
 var ENV = ENV || (function() {
-
+    
+    var first = true;
+    var counter = 0;
+    var data;
     var _base;
-
     (_base = String.prototype).lpad || (_base.lpad = function(padding, toLength) {
       return padding.repeat((toLength - this.length) / padding.length).concat(this);
     });
-
+    
     function formatElapsed(value) {
-      str = parseFloat(value).toFixed(2);
+      var str = parseFloat(value).toFixed(2);
       if (value > 60) {
         minutes = Math.floor(value / 60);
         comps = (value % 60).toFixed(2).split('.');
@@ -17,7 +19,7 @@ var ENV = ENV || (function() {
       }
       return str;
     }
-
+    
     function getElapsedClassName(elapsed) {
       var className = 'Query elapsed';
       if (elapsed >= 10.0) {
@@ -31,132 +33,147 @@ var ENV = ENV || (function() {
       }
       return className;
     }
-
-    var lastGeneratedDatabases = [];
-
-    function getData() {
-      // generate some dummy data
-      data = {
-        start_at: new Date().getTime() / 1000,
-        databases: {}
-      };
-
-      for (var i = 1; i <= ENV.rows; i++) {
-        data.databases["cluster" + i] = {
-          queries: []
-        };
-
-        data.databases["cluster" + i + "slave"] = {
-          queries: []
-        };
+    
+    function countClassName(queries) {
+      var countClassName = "label";
+      if (queries >= 20) {
+        countClassName += " label-important";
       }
-
-      Object.keys(data.databases).forEach(function(dbname) {
-
-        if (lastGeneratedDatabases.length == 0 || Math.random() < ENV.mutations()) {
-          var info = data.databases[dbname];
-          var r = Math.floor((Math.random() * 10) + 1);
-          for (var i = 0; i < r; i++) {
-            var elapsed = Math.random() * 15;
-            var q = {
-              canvas_action: null,
-              canvas_context_id: null,
-              canvas_controller: null,
-              canvas_hostname: null,
-              canvas_job_tag: null,
-              canvas_pid: null,
-              elapsed: elapsed,
-              formatElapsed: formatElapsed(elapsed),
-              elapsedClassName: getElapsedClassName(elapsed),
-              query: "SELECT blah FROM something",
-              waiting: Math.random() < 0.5
-            };
-
-            if (Math.random() < 0.2) {
-              q.query = "<IDLE> in transaction";
-            }
-
-            if (Math.random() < 0.1) {
-              q.query = "vacuum";
-            }
-
-            info.queries.push(q);
-          }
-
-          info.queries = info.queries.sort(function (a, b) {
-            return b.elapsed - a.elapsed;
-          });
-        } else {
-          data.databases[dbname] = lastGeneratedDatabases[dbname];
-        }
-      });
-
-      lastGeneratedDatabases = data.databases;
-
-      return data;
+      else if (queries >= 10) {
+        countClassName += " label-warning";
+      }
+      else {
+        countClassName += " label-success";
+      }
+      return countClassName;
     }
-
-    var lastDatabases = {
-      toArray: function() {
-        return Object.keys(this).filter(function(k) { return k !== 'toArray'; }).map(function(k) { return this[k]; }.bind(this))
+    
+    function updateQuery(object) {
+      if (!object) {
+        object = {};
       }
-    };
-
-    function generateData() {
-      var databases = [];
-      var newData = getData();
-      Object.keys(newData.databases).forEach(function(dbname) {
-        var sampleInfo = newData.databases[dbname];
-        var database = {
-          dbname: dbname,
-          samples: []
+      var elapsed = Math.random() * 15;
+      object.elapsed = elapsed;
+      object.formatElapsed = formatElapsed(elapsed);
+      object.elapsedClassName = getElapsedClassName(elapsed);
+      object.query = "SELECT blah FROM something";
+      object.waiting = Math.random() < 0.5;
+      if (Math.random() < 0.2) {
+        object.query = "<IDLE> in transaction";
+      }
+      if (Math.random() < 0.1) {
+        object.query = "vacuum";
+      }
+      return object;
+    }
+    
+    function cleanQuery(value) {
+      if (value) {
+        value.formatElapsed = "";
+        value.elapsedClassName = "";
+        value.query = "";
+        value.elapsed = null;
+        value.waiting = null;
+      } else {
+        return {
+          query: "***",
+          formatElapsed: "",
+          elapsedClassName: ""
         };
-
-        function countClassName(queries) {
-          var countClassName = "label";
-          if (queries.length >= 20) {
-            countClassName += " label-important";
+      }
+    }
+    
+    function generateRow(object, keepIdentity, counter) {
+      var nbQueries = Math.floor((Math.random() * 10) + 1);
+      if (!object) {
+        object = {};
+      }
+      object.lastMutationId = counter;
+      object.nbQueries = nbQueries;
+      if (!object.lastSample) {
+        object.lastSample = {};
+      }
+      if (!object.lastSample.topFiveQueries) {
+        object.lastSample.topFiveQueries = [];
+      }
+      if (keepIdentity) {
+        // for Angular optimization
+        if (!object.lastSample.queries) {
+          object.lastSample.queries = [];
+          for (var l = 0; l < 12; l++) {
+            object.lastSample.queries[l] = cleanQuery();
           }
-          else if (queries.length >= 10) {
-            countClassName += " label-warning";
-          }
-          else {
-            countClassName += " label-success";
-          }
-          return countClassName;
         }
-
-        function topFiveQueries(queries) {
-          var tfq = queries.slice(0, 5);
-          while (tfq.length < 5) {
-            tfq.push({ query: "" });
+        for (var j in object.lastSample.queries) {
+          var value = object.lastSample.queries[j];
+          if (j <= nbQueries) {
+            updateQuery(value);
+          } else {
+            cleanQuery(value);
           }
-          return tfq;
         }
-
-        var samples = database.samples;
-        samples.push({
-          time: newData.start_at,
-          queries: sampleInfo.queries,
-          topFiveQueries: topFiveQueries(sampleInfo.queries),
-          countClassName: countClassName(sampleInfo.queries)
-        });
-        if (samples.length > 5) {
-          samples.splice(0, samples.length - 5);
+      } else {
+        object.lastSample.queries = [];
+        for (var j = 0; j < 12; j++) {
+          if (j < nbQueries) {
+            var value = updateQuery(cleanQuery());
+            object.lastSample.queries.push(value);
+          } else {
+            object.lastSample.queries.push(cleanQuery());
+          }
         }
-        var samples = database.samples;
-        database.lastSample = database.samples[database.samples.length - 1];
-        databases.push(database);
-      });
+      }
+      for (var i = 0; i < 5; i++) {
+        var source = object.lastSample.queries[i];
+        object.lastSample.topFiveQueries[i] = source;
+      }
+      object.lastSample.nbQueries = nbQueries;
+      object.lastSample.countClassName = countClassName(nbQueries);
+      return object;
+    }
+    
+    function getData(keepIdentity) {
+      var oldData = data;
+      if (!keepIdentity) { // reset for each tick when !keepIdentity
+        data = [];
+        for (var i = 1; i <= ENV.rows; i++) {
+          data.push({ dbname: 'cluster' + i, query: "", formatElapsed: "", elapsedClassName: "" });
+          data.push({ dbname: 'cluster' + i + ' slave', query: "", formatElapsed: "", elapsedClassName: "" });
+        }
+      }
+      if (!data) { // first init when keepIdentity
+        data = [];
+        for (var i = 1; i <= ENV.rows; i++) {
+          data.push({ dbname: 'cluster' + i });
+          data.push({ dbname: 'cluster' + i + ' slave' });
+        }
+        oldData = data;
+      }
+      for (var i in data) {
+        var row = data[i];
+        if (!keepIdentity && oldData && oldData[i]) {
+          row.lastSample = oldData[i].lastSample;
+        }
+        if (!row.lastSample || Math.random() < ENV.mutations()) {
+          counter = counter + 1;
+          if (!keepIdentity) {
+            row.lastSample = null;
+          }
+          generateRow(row, keepIdentity, counter);
+        } else {
+          data[i] = oldData[i];
+        }
+      }
+      first = false;
       return {
         toArray: function() {
-          return databases;
+          return data;
         }
       };
     }
-
+    
     var mutationsValue = 0.5;
-
+    
     function mutations(value) {
       if (value) {
         mutationsValue = value;
@@ -165,10 +182,10 @@ var ENV = ENV || (function() {
         return mutationsValue;
       }
     }
-
+    
     var body = document.querySelector('body');
     var theFirstChild = body.firstChild;
-
+    
     var sliderContainer = document.createElement( 'div' );
     sliderContainer.style.cssText = "display: flex";
     var slider = document.createElement('input');
@@ -184,13 +201,11 @@ var ENV = ENV || (function() {
     sliderContainer.appendChild( text );
     sliderContainer.appendChild( slider );
     body.insertBefore( sliderContainer, theFirstChild );
-
+    
     return  {
-      generateData: generateData,
+      generateData: getData,
       rows: 50,
       timeout: 0,
       mutations: mutations
     };
   })();
-
-

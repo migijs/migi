@@ -1,5 +1,5 @@
 var Monitoring = Monitoring || (function() {
-
+    
     var stats = new MemoryStats();
     stats.domElement.style.position = 'fixed';
     stats.domElement.style.right        = '0px';
@@ -9,23 +9,23 @@ var Monitoring = Monitoring || (function() {
       stats.update();
       requestAnimationFrame(rAFloop);
     });
-
+    
     var RenderRate = function () {
       var container = document.createElement( 'div' );
       container.id  = 'stats';
       container.style.cssText = 'width:150px;opacity:0.9;cursor:pointer;position:fixed;right:80px;bottom:0px;';
-
+      
       var msDiv = document.createElement( 'div' );
       msDiv.id  = 'ms';
       msDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#020;';
       container.appendChild( msDiv );
-
+      
       var msText  = document.createElement( 'div' );
       msText.id = 'msText';
       msText.style.cssText = 'color:#0f0;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
       msText.innerHTML= 'Repaint rate: 0/sec';
       msDiv.appendChild( msText );
-
+      
       var bucketSize = 20;
       var bucket = [];
       var lastTime  = Date.now();
@@ -48,13 +48,13 @@ var Monitoring = Monitoring || (function() {
         }
       }
     };
-
+    
     var renderRate = new RenderRate();
     document.body.appendChild( renderRate.domElement );
-
+    
     return {
       memoryStats: stats,
       renderRate: renderRate
     };
-
+    
   })();
