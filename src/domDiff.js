@@ -23,14 +23,7 @@ function replaceWith(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
     var s = util.stringify(vd);
-    if(s) {
-      var node = browser.NODE;
-      node.innerHTML = util.encodeHtml(s);
-      target = node.firstChild;
-    }
-    else {
-      target = document.createTextNode('');
-    }
+    target = document.createTextNode(s || '');
     if(index >= cns.length) {
       elem.appendChild(target);
     }
@@ -66,14 +59,7 @@ function insertAt(elem, cns, index, vd, isText) {
   var target;
   if(isText) {
     var s = util.stringify(vd);
-    if(s) {
-      var node = browser.NODE;
-      node.innerHTML = util.encodeHtml(s);
-      target = node.firstChild;
-    }
-    else {
-      target = document.createTextNode('');
-    }
+    target = document.createTextNode(s || '');
     if(index >= cns.length) {
       elem.appendChild(target);
     }

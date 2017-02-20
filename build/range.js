@@ -91,7 +91,6 @@ exports.update=update;function update(item, children, elem) {
   var now = textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
-    //ie8的用nodeValue替代
     //有实体字符时也不能用textContent
     if(/&([a-z]+|#\d+);/i.test(res)) {
       var node = browser.NODE;
