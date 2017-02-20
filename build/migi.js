@@ -1,71 +1,129 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var Element=function(){var _1=require('./Element');return _1.hasOwnProperty("default")?_1["default"]:_1}();
-var EventBus=function(){var _2=require('./EventBus');return _2.hasOwnProperty("default")?_2["default"]:_2}();
-var Model=function(){var _3=require('./Model');return _3.hasOwnProperty("default")?_3["default"]:_3}();
-var CacheModel=function(){var _4=require('./CacheModel');return _4.hasOwnProperty("default")?_4["default"]:_4}();
-var Component=function(){var _5=require('./Component');return _5.hasOwnProperty("default")?_5["default"]:_5}();
-var VirtualDom=function(){var _6=require('./VirtualDom');return _6.hasOwnProperty("default")?_6["default"]:_6}();
-var NonVisualComponent=function(){var _7=require('./NonVisualComponent');return _7.hasOwnProperty("default")?_7["default"]:_7}();
-var CacheComponent=function(){var _8=require('./CacheComponent');return _8.hasOwnProperty("default")?_8["default"]:_8}();
-var Obj=function(){var _9=require('./Obj');return _9.hasOwnProperty("default")?_9["default"]:_9}();
-var Cb=function(){var _10=require('./Cb');return _10.hasOwnProperty("default")?_10["default"]:_10}();
-var cachePool=function(){var _11=require('./cachePool');return _11.hasOwnProperty("default")?_11["default"]:_11}();
-var util=function(){var _12=require('./util');return _12.hasOwnProperty("default")?_12["default"]:_12}();
-var browser=function(){var _13=require('./browser');return _13.hasOwnProperty("default")?_13["default"]:_13}();
-var sort=function(){var _14=require('./sort');return _14.hasOwnProperty("default")?_14["default"]:_14}();
-var hash=function(){var _15=require('./hash');return _15.hasOwnProperty("default")?_15["default"]:_15}();
-var Fastclick=function(){var _16=require('./Fastclick');return _16.hasOwnProperty("default")?_16["default"]:_16}();
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Event = require('./Event');
+
+var _Event2 = _interopRequireDefault(_Event);
+
+var _Element = require('./Element');
+
+var _Element2 = _interopRequireDefault(_Element);
+
+var _EventBus = require('./EventBus');
+
+var _EventBus2 = _interopRequireDefault(_EventBus);
+
+var _Model = require('./Model');
+
+var _Model2 = _interopRequireDefault(_Model);
+
+var _CacheModel = require('./CacheModel');
+
+var _CacheModel2 = _interopRequireDefault(_CacheModel);
+
+var _Component = require('./Component');
+
+var _Component2 = _interopRequireDefault(_Component);
+
+var _VirtualDom = require('./VirtualDom');
+
+var _VirtualDom2 = _interopRequireDefault(_VirtualDom);
+
+var _NonVisualComponent = require('./NonVisualComponent');
+
+var _NonVisualComponent2 = _interopRequireDefault(_NonVisualComponent);
+
+var _CacheComponent = require('./CacheComponent');
+
+var _CacheComponent2 = _interopRequireDefault(_CacheComponent);
+
+var _Obj = require('./Obj');
+
+var _Obj2 = _interopRequireDefault(_Obj);
+
+var _Cb = require('./Cb');
+
+var _Cb2 = _interopRequireDefault(_Cb);
+
+var _cachePool = require('./cachePool');
+
+var _cachePool2 = _interopRequireDefault(_cachePool);
+
+var _util = require('./util');
+
+var _util2 = _interopRequireDefault(_util);
+
+var _browser = require('./browser');
+
+var _browser2 = _interopRequireDefault(_browser);
+
+var _sort = require('./sort');
+
+var _sort2 = _interopRequireDefault(_sort);
+
+var _hash = require('./hash');
+
+var _hash2 = _interopRequireDefault(_hash);
+
+var _Fastclick = require('./Fastclick');
+
+var _Fastclick2 = _interopRequireDefault(_Fastclick);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var migi = {
-  render:function(element, dom) {
-    if(dom) {
+  render: function render(element, dom) {
+    if (dom) {
       element.appendTo(dom);
     }
     return element;
   },
-  createCp:function(cp, props, children) {
-    return hash.set(new cp(props, children));
+  createCp: function createCp(cp, props, children) {
+    return _hash2.default.set(new cp(cp.__migiName, props, children));
   },
-  createVd:function(name, props, children) {
-    if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
+  createVd: function createVd(name, props, children) {
+    if ({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
       throw new Error('can not create VirtualDom of: ' + name);
     }
-    return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
+    return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(name, props, children) : new _VirtualDom2.default(name, props, children));
   },
-  Event:Event,
-  Model:Model,
-  CacheModel:CacheModel,
-  EventBus:EventBus,
-  eventBus: new EventBus,
-  Element:Element,
-  Component:Component,
-  NonVisualComponent:NonVisualComponent,
-  CacheComponent:CacheComponent,
-  VirtualDom:VirtualDom,
-  Obj:Obj,
-  Cb:Cb,
-  util:util,
-  browser:browser,
-  sort:sort,
-  hash:hash,
-  Fastclick:Fastclick,
-  name: function(Class, name) {
-    if(Component.prototype.isPrototypeOf(Class.prototype)) {
-      Class.__migiName = name;
+
+  Event: _Event2.default,
+  Model: _Model2.default,
+  CacheModel: _CacheModel2.default,
+  EventBus: _EventBus2.default,
+  eventBus: new _EventBus2.default(),
+  Element: _Element2.default,
+  Component: _Component2.default,
+  NonVisualComponent: _NonVisualComponent2.default,
+  CacheComponent: _CacheComponent2.default,
+  VirtualDom: _VirtualDom2.default,
+  Obj: _Obj2.default,
+  Cb: _Cb2.default,
+  util: _util2.default,
+  browser: _browser2.default,
+  sort: _sort2.default,
+  hash: _hash2.default,
+  Fastclick: _Fastclick2.default,
+  name: function name(Class, _name) {
+    if (_Component2.default.prototype.isPrototypeOf(Class.prototype)) {
+      Class.__migiName = _name;
     }
   }
 };
 
-if(typeof window != 'undefined') {
+if (typeof window != 'undefined') {
   window.migi = migi;
-  if(document.body) {
-    Fastclick.attach(document.body);
-  }
-  else {
-    document.addEventListener('DOMContentLoaded', function() {
-      Fastclick.attach(document.body);
+  if (document.body) {
+    _Fastclick2.default.attach(document.body);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () {
+      _Fastclick2.default.attach(document.body);
     });
   }
 }
 
-exports["default"]=migi;
+exports.default = migi;

@@ -439,11 +439,7 @@ function diffVd(ovd, nvd) {
   cachePool.add(ovd.__destroy());
 }
 
-export function diff(elem, ov, nv, ranges, option, history, parent) {
-  //fix循环依赖
-  if(Component.hasOwnProperty('default')) {
-    Component = Component['default'];
-  }
+function diff(elem, ov, nv, ranges, option, history, parent) {
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if(!option.first) {
     if(option.prev == type.TEXT) {
@@ -731,7 +727,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
   option.first = false;
 }
 
-export function check(option, elem, vd, ranges, history) {
+function check(option, elem, vd, ranges, history) {
   if(option.t2d) {
     delete option.t2d;
     range.record(history, option);
@@ -743,3 +739,8 @@ export function check(option, elem, vd, ranges, history) {
     removeAt(elem, option.start + 1);
   }
 }
+
+export default {
+  diff,
+  check
+};

@@ -1,4 +1,9 @@
-exports["default"]={
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
   domactivate: 'DOMActivate',
   domfocusin: 'DOMFocusIn',
   msgestureend: 'MSGestureEnd',

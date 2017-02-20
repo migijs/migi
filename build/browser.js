@@ -1,3 +1,8 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 var NODE = document.createElement('div');
 var TABLE = document.createElement('table');
 var TBODY = document.createElement('tbody');
@@ -7,10 +12,10 @@ var DL = document.createElement('dl');
 var SELECT = document.createElement('select');
 var MENU = document.createElement('menu');
 
-exports["default"]={
+exports.default = {
   NODE: NODE,
-  getParent:function(name) {
-    switch(name) {
+  getParent: function getParent(name) {
+    switch (name) {
       case 'td':
         return TR;
       case 'tr':

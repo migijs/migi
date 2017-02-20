@@ -1,24 +1,32 @@
-define(function(require, exports, module){var Element=function(){var _0=require('./Element');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+define(function(require, exports, module){'use strict';
 
-function clone(obj) {
-  if(obj instanceof Element) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Element = require('./Element');
+
+var _Element2 = _interopRequireDefault(_Element);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _clone(obj) {
+  if (obj instanceof _Element2.default) {
     return obj;
   }
-  if(isOrigin(obj)) {
+  if (isOrigin(obj)) {
     return obj;
   }
   var o = Array.isArray(obj) ? [] : {};
-  for(var i in obj) {
-    if(obj.hasOwnProperty(i)) {
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
       var item = obj[i];
-      if(item instanceof Element) {
+      if (item instanceof _Element2.default) {
         o[i] = item;
-      }
-      else if(util.isDate(item)) {
+      } else if (util.isDate(item)) {
         o[i] = new Date(item);
-      }
-      else {
-        o[i] = util.isObject(item) ? clone(item) : item;
+      } else {
+        o[i] = util.isObject(item) ? _clone(item) : item;
       }
     }
   }
@@ -27,53 +35,53 @@ function clone(obj) {
 
 var toString = {}.toString;
 function isType(type) {
-  return function(obj) {
+  return function (obj) {
     return toString.call(obj) == '[object ' + type + ']';
-  }
+  };
 }
 
 function isOrigin(o) {
   return o === void 0 || o === null || util.isBoolean(o) || util.isNumber(o) || util.isString(o);
 }
-function equal(a, b) {
+function _equal(a, b) {
   //vd常量
-  if(a instanceof Element || b instanceof Element) {
+  if (a instanceof _Element2.default || b instanceof _Element2.default) {
     return a == b;
   }
-  if(isOrigin(a) || isOrigin(b)) {
+  if (isOrigin(a) || isOrigin(b)) {
     return a === b;
   }
-  if(Array.isArray(a)) {
-    if(!Array.isArray(b)) {
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b)) {
       return false;
     }
-    if(a.length != b.length) {
+    if (a.length != b.length) {
       return false;
     }
-    for(var i = 0, len = a.length; i < len; i++) {
-      if(!equal(a[i], b[i])) {
+    for (var i = 0, len = a.length; i < len; i++) {
+      if (!_equal(a[i], b[i])) {
         return false;
       }
     }
     return true;
   }
-  if(util.isDate(a)) {
-    if(!util.isDate(b)) {
+  if (util.isDate(a)) {
+    if (!util.isDate(b)) {
       return false;
     }
     return a - b == 0;
   }
-  if(util.isObject(a)) {
-    if(!util.isObject(b)) {
+  if (util.isObject(a)) {
+    if (!util.isObject(b)) {
       return false;
     }
     var ka = Object.keys(a);
     var kb = Object.keys(b);
-    if(ka.length !== kb.length) {
+    if (ka.length !== kb.length) {
       return false;
     }
-    for(var i = 0, len = ka.length; i < len; i++) {
-      if(!b.hasOwnProperty(i) || !equal(a[i], b[i])) {
+    for (var i = 0, len = ka.length; i < len; i++) {
+      if (!b.hasOwnProperty(i) || !_equal(a[i], b[i])) {
         return false;
       }
     }
@@ -81,29 +89,26 @@ function equal(a, b) {
   }
 }
 
-function joinArray(arr, prop) {
+function _joinArray(arr, prop) {
   var res = '';
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
-      res += joinArray(item);
-    }
-    else if(item instanceof Element) {
+  arr.forEach(function (item) {
+    if (Array.isArray(item)) {
+      res += _joinArray(item);
+    } else if (item instanceof _Element2.default) {
       res += prop ? encodeHtml(item.toString(), prop) : item.toString();
-    }
-    else {
+    } else {
       res += encodeHtml(stringify(item), prop);
     }
   });
   return res;
 }
 
-function joinSourceArray(arr) {
+function _joinSourceArray(arr) {
   var res = '';
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
-      res += joinSourceArray(item);
-    }
-    else {
+  arr.forEach(function (item) {
+    if (Array.isArray(item)) {
+      res += _joinSourceArray(item);
+    } else {
       res += item.toString();
     }
   });
@@ -111,7 +116,7 @@ function joinSourceArray(arr) {
 }
 
 function stringify(s) {
-  if(s === null || s === void 0) {
+  if (s === null || s === void 0) {
     return '';
   }
   return s.toString();
@@ -122,43 +127,28 @@ function encodeHtml(s, prop) {
 }
 
 var util = {
-  clone:function(obj) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
-    return clone(obj);
+  clone: function clone(obj) {
+    return _clone(obj);
   },
+
   isObject: isType('Object'),
   isString: isType('String'),
   isFunction: isType('Function'),
   isNumber: isType('Number'),
   isBoolean: isType('Boolean'),
   isDate: isType('Date'),
-  equal:function(a, b) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
-    return equal(a, b);
+  equal: function equal(a, b) {
+    return _equal(a, b);
   },
-  stringify:stringify,
-  encodeHtml:encodeHtml,
-  joinArray:function(arr, prop) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
-    return joinArray(arr, prop);
+
+  stringify: stringify,
+  encodeHtml: encodeHtml,
+  joinArray: function joinArray(arr, prop) {
+    return _joinArray(arr, prop);
   },
-  joinSourceArray:function(arr) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
-    return joinSourceArray(arr);
+  joinSourceArray: function joinSourceArray(arr) {
+    return _joinSourceArray(arr);
   }
 };
 
-exports["default"]=util;
-});
+exports.default = util;});

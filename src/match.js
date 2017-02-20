@@ -10,10 +10,6 @@ import matchUtil from './matchUtil';
 //virtualDom当前传入的VirtualDom对象
 //first为初始化时第一次
 function match(names, classes, ids, style, virtualDom, first) {
-  //fix循环依赖
-  if(VirtualDom.hasOwnProperty('default')) {
-    VirtualDom = VirtualDom['default'];
-  }
   var res = [];
   matchSel(names.length - 1, names, classes, ids, style.default, virtualDom, res, first);
   //如果有media query

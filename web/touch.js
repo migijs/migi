@@ -1,4 +1,71 @@
-define(function(require, exports, module){/**
+define(function(require, exports, module){'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (vd, name, cb, listener) {
+  if (!hasInitGlobal) {
+    hasInitGlobal = true;
+    initGlobal();
+  }
+  listener.push(['touchstart', onTouchStart]);
+  listener.push(['MSPointerDown', onTouchStart]);
+  listener.push(['pointerdown', onTouchStart]);
+
+  var elem = vd.element;
+
+  elem.addEventListener('touchstart', onTouchStart);
+  elem.addEventListener('MSPointerDown', onTouchStart);
+  elem.addEventListener('pointerdown', onTouchStart);
+
+  function onTouchStart(e) {
+    if ((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
+      return;
+    }
+    //有可能组件内父子多个使用了手势，冒泡触发了多个
+    if (touch.first) {
+      touchList.push({
+        vd: vd,
+        name: name,
+        cb: cb
+      });
+      return;
+    }
+
+    firstTouch = _isPointerType ? e : e.touches[0];
+    if (e.touches && e.touches.length === 1 && touch.x2) {
+      // Clear out touch movement data if we have it sticking around
+      // This can occur if touchcancel doesn't fire due to preventDefault, etc.
+      touch.x2 = undefined;
+      touch.y2 = undefined;
+    }
+
+    touch = {
+      vd: vd,
+      name: name,
+      cb: cb,
+      first: true,
+      x1: firstTouch.pageX,
+      y1: firstTouch.pageY
+    };
+    lastTouch = touch;
+
+    now = Date.now();
+    delta = now - lastTime;
+    lastTime = now;
+    if (delta > 0 && delta < 250) {
+      touch.isDoubleTap = true;
+    }
+
+    // adds the current touch contact for IE gesture recognition
+    if (gesture && _isPointerType) {
+      gesture.addPointer(e.pointerId);
+    }
+  }
+};
+
+/**
  * Thanks to zepto-touch.js
  * https://github.com/madrobby/zepto/blob/master/src/touch.js
  */
@@ -19,17 +86,15 @@ var firstTouch;
 var _isPointerType;
 
 function swipeDirection(x1, x2, y1, y2) {
-  return Math.abs(x1 - x2) >= Math.abs(y1 - y2)
-    ? (x1 - x2 > 0 ? 'left' : 'right')
-    : (y1 - y2 > 0 ? 'up' : 'down');
+  return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? x1 - x2 > 0 ? 'left' : 'right' : y1 - y2 > 0 ? 'up' : 'down';
 }
 
 function longTap(e) {
   longTapTimeout = null;
-  if(touch.last && touch.name == 'longtap') {
+  if (touch.last && touch.name == 'longtap') {
     touch.cb(e);
-    touchList.forEach(function(touch) {
-      if(touch.name == 'longtap') {
+    touchList.forEach(function (touch) {
+      if (touch.name == 'longtap') {
         touch.cb(e);
       }
     });
@@ -39,17 +104,17 @@ function longTap(e) {
 }
 
 function cancelLongTap() {
-  if(longTapTimeout) {
+  if (longTapTimeout) {
     clearTimeout(longTapTimeout);
   }
   longTapTimeout = null;
 }
 
 function cancelAll() {
-  if(tapTimeout){
+  if (tapTimeout) {
     clearTimeout(tapTimeout);
   }
-  if(swipeTimeout) {
+  if (swipeTimeout) {
     clearTimeout(swipeTimeout);
   }
   tapTimeout = swipeTimeout = null;
@@ -57,13 +122,12 @@ function cancelAll() {
   touchList = [];
 }
 
-function isPrimaryTouch(event){
-  return (event.pointerType == 'touch' || event.pointerType == event.MSPOINTER_TYPE_TOUCH)
-    && event.isPrimary;
+function isPrimaryTouch(event) {
+  return (event.pointerType == 'touch' || event.pointerType == event.MSPOINTER_TYPE_TOUCH) && event.isPrimary;
 }
 
-function isPointerEventType(e, type){
-  return (e.type == 'pointer' + type || e.type.toLowerCase() == 'mspointer' + type);
+function isPointerEventType(e, type) {
+  return e.type == 'pointer' + type || e.type.toLowerCase() == 'mspointer' + type;
 }
 
 var hasInitGlobal;
@@ -87,10 +151,10 @@ function initGlobal() {
 }
 
 function onTouchMove(e) {
-  if(!touch.vd) {
+  if (!touch.vd) {
     return;
   }
-  if((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
+  if ((_isPointerType = isPointerEventType(e, 'move')) && !isPrimaryTouch(e)) {
     return;
   }
 
@@ -103,17 +167,17 @@ function onTouchMove(e) {
 }
 
 function onGestureEnd(e) {
-  if(!touch.vd) {
+  if (!touch.vd) {
     return;
   }
 
   var type = e.velocityX > 1 ? 'right' : e.velocityX < -1 ? 'left' : e.velocityY > 1 ? 'down' : e.velocityY < -1 ? 'up' : null;
-  if(type) {
-    if(touch.name == 'swipe' || touch.name == type) {
+  if (type) {
+    if (touch.name == 'swipe' || touch.name == type) {
       touch.cb(e);
     }
-    touchList.forEach(function(touch) {
-      if(touch.name == 'swipe' || touch.name == type) {
+    touchList.forEach(function (touch) {
+      if (touch.name == 'swipe' || touch.name == type) {
         touch.cb(e);
       }
     });
@@ -121,23 +185,22 @@ function onGestureEnd(e) {
 }
 
 function onTouchEnd(e) {
-  if(!touch.vd) {
+  if (!touch.vd) {
     return;
   }
-  if((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
+  if ((_isPointerType = isPointerEventType(e, 'up')) && !isPrimaryTouch(e)) {
     return;
   }
 
   // swipe
-  if((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30)
-    || (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30)) {
-    swipeTimeout = setTimeout(function() {
-      var type = 'swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2));
-      if(touch.name == 'swipe' || touch.name == type) {
+  if (touch.x2 && Math.abs(touch.x1 - touch.x2) > 30 || touch.y2 && Math.abs(touch.y1 - touch.y2) > 30) {
+    swipeTimeout = setTimeout(function () {
+      var type = 'swipe' + swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2);
+      if (touch.name == 'swipe' || touch.name == type) {
         touch.cb(e);
       }
-      touchList.forEach(function(touch) {
-        if(touch.name == 'swipe' || touch.name == type) {
+      touchList.forEach(function (touch) {
+        if (touch.name == 'swipe' || touch.name == type) {
           touch.cb(e);
         }
       });
@@ -147,99 +210,38 @@ function onTouchEnd(e) {
   }
   // don't fire tap when delta position changed by more than 30 pixels,
   // for instance when moving to a point and back to origin
-  else if(deltaX < 30 && deltaY < 30) {
-    tapTimeout = setTimeout(function() {
-      var isLongTap = (Date.now() - lastTime) > longTapDelay;
-      if(isLongTap) {
-        if(touch.name == 'longtap') {
-          touch.cb(e);
-        }
-        touchList.forEach(function(touch) {
-          if(touch.name == 'longtap') {
+  else if (deltaX < 30 && deltaY < 30) {
+      tapTimeout = setTimeout(function () {
+        var isLongTap = Date.now() - lastTime > longTapDelay;
+        if (isLongTap) {
+          if (touch.name == 'longtap') {
             touch.cb(e);
           }
-        });
-      }
-      // trigger double tap immediately
-      else if(touch.isDoubleTap && touch.vd == lastTouch.vd) {
-        if(touch.name == 'doubletap') {
-          touch.cb(e);
+          touchList.forEach(function (touch) {
+            if (touch.name == 'longtap') {
+              touch.cb(e);
+            }
+          });
         }
-        touchList.forEach(function(touch) {
-          if(touch.name == 'doubletap') {
-            touch.cb(e);
+        // trigger double tap immediately
+        else if (touch.isDoubleTap && touch.vd == lastTouch.vd) {
+            if (touch.name == 'doubletap') {
+              touch.cb(e);
+            }
+            touchList.forEach(function (touch) {
+              if (touch.name == 'doubletap') {
+                touch.cb(e);
+              }
+            });
           }
-        });
-      }
+        touch = {};
+        touchList = [];
+      }, 0);
+    } else {
       touch = {};
       touchList = [];
-    }, 0);
-  }
-  else {
-    touch = {};
-    touchList = [];
-  }
+    }
   deltaX = deltaY = 0;
 }
 
-exports["default"]=function(vd, name, cb, listener) {
-  if(!hasInitGlobal) {
-    hasInitGlobal = true;
-    initGlobal();
-  }
-  listener.push(['touchstart', onTouchStart]);
-  listener.push(['MSPointerDown', onTouchStart]);
-  listener.push(['pointerdown', onTouchStart]);
-
-  var elem = vd.element;
-
-  elem.addEventListener('touchstart', onTouchStart);
-  elem.addEventListener('MSPointerDown', onTouchStart);
-  elem.addEventListener('pointerdown', onTouchStart);
-
-  function onTouchStart(e) {
-    if((_isPointerType = isPointerEventType(e, 'down')) && !isPrimaryTouch(e)) {
-      return;
-    }
-    //有可能组件内父子多个使用了手势，冒泡触发了多个
-    if(touch.first) {
-      touchList.push({
-        vd:vd,
-        name:name,
-        cb:cb
-      });
-      return;
-    }
-
-    firstTouch = _isPointerType ? e : e.touches[0];
-    if(e.touches && e.touches.length === 1 && touch.x2) {
-      // Clear out touch movement data if we have it sticking around
-      // This can occur if touchcancel doesn't fire due to preventDefault, etc.
-      touch.x2 = undefined;
-      touch.y2 = undefined;
-    }
-
-    touch = {
-      vd:vd,
-      name:name,
-      cb:cb,
-      first: true,
-      x1: firstTouch.pageX,
-      y1: firstTouch.pageY
-    };
-    lastTouch = touch;
-
-    now = Date.now();
-    delta = now - lastTime;
-    lastTime = now;
-    if(delta > 0 && delta < 250) {
-      touch.isDoubleTap = true;
-    }
-
-    // adds the current touch contact for IE gesture recognition
-    if(gesture && _isPointerType) {
-      gesture.addPointer(e.pointerId);
-    }
-  }
-};
-});
+;});

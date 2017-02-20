@@ -3,11 +3,6 @@ import util from './util';
 
 class Obj {
   constructor(k, context, cb) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
-
     this.k = k;
     this.context = context;
     this.cb = cb;

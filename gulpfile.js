@@ -6,6 +6,7 @@ var through2 = require('through2');
 var jsdc = require('jsdc');
 var lefty = require('lefty');
 var jaw = require('jaw');
+var babel = require('babel-core');
 
 var fs = require('fs');
 var path = require('path');
@@ -33,8 +34,11 @@ gulp.task('clean-web', function() {
 function cb(file, enc, cb) {
   util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
-  jsdc.reset();
-  content = jsdc.parse(content);
+  // jsdc.reset();
+  // content = jsdc.parse(content);
+  content = babel.transform(content, {
+    presets: ['es2015']
+  }).code;
   file.contents = new Buffer(content);
   cb(null, file);
 }

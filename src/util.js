@@ -123,10 +123,6 @@ function encodeHtml(s, prop) {
 
 var util = {
   clone(obj) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
     return clone(obj);
   },
   isObject: isType('Object'),
@@ -136,26 +132,14 @@ var util = {
   isBoolean: isType('Boolean'),
   isDate: isType('Date'),
   equal(a, b) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
     return equal(a, b);
   },
   stringify,
   encodeHtml,
   joinArray(arr, prop) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
     return joinArray(arr, prop);
   },
   joinSourceArray(arr) {
-    //fix循环依赖
-    if(Element.hasOwnProperty('default')) {
-      Element = Element['default'];
-    }
     return joinSourceArray(arr);
   }
 };

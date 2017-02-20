@@ -1,4 +1,9 @@
-define(function(require, exports, module){exports["default"]={
+define(function(require, exports, module){'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
   domactivate: 'DOMActivate',
   domfocusin: 'DOMFocusIn',
   msgestureend: 'MSGestureEnd',
@@ -6,5 +11,4 @@ define(function(require, exports, module){exports["default"]={
   mspointermove: 'MSPointerMove',
   mspointerup: 'MSPointerUp',
   mspointercancel: 'MSPointerCancel'
-};
-});
+};});

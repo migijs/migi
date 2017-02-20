@@ -1,12 +1,17 @@
-define(function(require, exports, module){var hash = {};
+define(function(require, exports, module){'use strict';
 
-exports["default"]={
-  add: function(uid, cb) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var hash = {};
+
+exports.default = {
+  add: function add(uid, cb) {
     hash[uid] = cb;
   },
-  del: function(uid) {
+  del: function del(uid) {
     var cb = hash[uid];
-    if(cb) {
+    if (cb) {
       window.removeEventListener('mouseup', cb, true);
       window.removeEventListener('touchend', cb, true);
       window.removeEventListener('touchcancel', cb, true);
@@ -15,5 +20,4 @@ exports["default"]={
       delete hash[uid];
     }
   }
-};
-});
+};});

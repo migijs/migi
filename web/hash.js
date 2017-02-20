@@ -1,12 +1,16 @@
-define(function(require, exports, module){var hash = {};
+define(function(require, exports, module){"use strict";
 
-exports["default"]={
-  get: function(k) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var hash = {};
+
+exports.default = {
+  get: function get(k) {
     return hash[k];
   },
-  set: function(elem) {
+  set: function set(elem) {
     hash[elem.uid] = elem;
     return elem;
   }
-};
-});
+};});

@@ -1,4 +1,14 @@
-var util=function(){var _0=require('./util');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _util = require('./util');
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var NUM = 0;
 var STR = 1;
@@ -106,31 +116,31 @@ var lowerCase = {
   selectindex: 'selectIndex'
 };
 
-exports["default"]={
-  RENDER_EXIST:RENDER_EXIST,
-  RENDER_DOM:RENDER_DOM,
-  special:function(name, prop) {
-    if(SPECIALS.hasOwnProperty(name)) {
+exports.default = {
+  RENDER_EXIST: RENDER_EXIST,
+  RENDER_DOM: RENDER_DOM,
+  special: function special(name, prop) {
+    if (SPECIALS.hasOwnProperty(name)) {
       var o = SPECIALS[name];
-      if(o.hasOwnProperty(prop)) {
+      if (o.hasOwnProperty(prop)) {
         return o[prop];
       }
     }
   },
-  update:function(name, element, k, v, jaw) {
+  update: function update(name, element, k, v, jaw) {
     //特殊对待的prop，用js赋值
-    if(SETS.hasOwnProperty(name)) {
+    if (SETS.hasOwnProperty(name)) {
       var o = SETS[name];
-      if(o.hasOwnProperty(k)) {
+      if (o.hasOwnProperty(k)) {
         o = o[k];
         k = lowerCase[k] || k;
-        switch(o) {
+        switch (o) {
           case NUM:
             v = parseInt(v);
             element[k] = v || 0;
             break;
           case STR:
-            v = util.stringify(v);
+            v = _util2.default.stringify(v);
             element[k] = v;
             break;
           case BOOL:
@@ -142,7 +152,7 @@ exports["default"]={
       }
     }
     //普通的setAttribute
-    switch(k) {
+    switch (k) {
       case 'className':
         k = 'class';
         break;
@@ -151,18 +161,17 @@ exports["default"]={
         break;
     }
     //jaw导入style时改写migi-前缀
-    if(jaw) {
-      switch(k) {
+    if (jaw) {
+      switch (k) {
         case 'id':
         case 'class':
           k = 'migi-' + k;
           break;
       }
     }
-    if(v === null || v === void 0) {
+    if (v === null || v === void 0) {
       element.removeAttribute(k);
-    }
-    else {
+    } else {
       element.setAttribute(k, v);
     }
   }

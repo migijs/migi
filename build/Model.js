@@ -1,52 +1,90 @@
-var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var Component=function(){var _1=require('./Component');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Event2 = require('./Event');
+
+var _Event3 = _interopRequireDefault(_Event2);
+
+var _Component = require('./Component');
+
+var _Component2 = _interopRequireDefault(_Component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var uid = 0;
 
-!function(){var _2=Object.create(Event.prototype);_2.constructor=Model;Model.prototype=_2}();
+var Model = function (_Event) {
+  _inherits(Model, _Event);
+
   function Model() {
-    Event.call(this);
-    this.uid = 'm' + uid++;
-    this.__name = this.constructor.__migiName;
-    this.__ref = []; //以ref为attr的vd快速访问引用
-    this.__bridgeHash = {}; //桥接记录
-    this.__bindHash = {}; //缩略语法中是否设置过默认值
-    this.__ob = []; //被array们的__ob__引用
+    _classCallCheck(this, Model);
 
-    this.on(Event.DATA, this.__onData);
+    var _this = _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this));
+
+    _this.uid = 'm' + uid++;
+    _this.__name = _this.constructor.__migiName;
+    _this.__ref = []; //以ref为attr的vd快速访问引用
+    _this.__bridgeHash = {}; //桥接记录
+    _this.__bindHash = {}; //缩略语法中是否设置过默认值
+    _this.__ob = []; //被array们的__ob__引用
+
+    _this.on(_Event3.default.DATA, _this.__onData);
+    return _this;
   }
 
-  Model.prototype.__onData = function(k, caller) {
-    k = 'model.' + k;
-    this.__ref.forEach(function(cp) {
-      //set触发数据变更时，若已DOM则打开开关
-      if(cp.dom) {
-        cp.__canData = true;
+  _createClass(Model, [{
+    key: '__onData',
+    value: function __onData(k, caller) {
+      k = 'model.' + k;
+      this.__ref.forEach(function (cp) {
+        //set触发数据变更时，若已DOM则打开开关
+        if (cp.dom) {
+          cp.__canData = true;
+        }
+        cp.emit(_Event3.default.DATA, k, caller);
+      });
+    }
+  }, {
+    key: '__add',
+    value: function __add(cp) {
+      if (this.__ref.indexOf(cp) == -1) {
+        this.__ref.push(cp);
       }
-      cp.emit(Event.DATA, k, caller);
-    });
-  }
-
-  Model.prototype.__add = function(cp) {
-    if(this.__ref.indexOf(cp) == -1) {
-      this.__ref.push(cp);
     }
-  }
-  Model.prototype.__del = function(cp) {
-    var i = this.__ref.indexOf(cp);
-    if(i > -1) {
-      this.__ref.splice(i, 1);
+  }, {
+    key: '__del',
+    value: function __del(cp) {
+      var i = this.__ref.indexOf(cp);
+      if (i > -1) {
+        this.__ref.splice(i, 1);
+      }
     }
-  }
+  }, {
+    key: 'name',
+    get: function get() {
+      return this.__name;
+    }
+  }]);
 
-  var _3={};_3.name={};_3.name.get =function() {
-    return this.__name;
-  }
-Object.keys(_3).forEach(function(k){Object.defineProperty(Model.prototype,k,_3[k])});Object.keys(Event).forEach(function(k){Model[k]=Event[k]});
+  return Model;
+}(_Event3.default);
 
 //完全一样的桥接数据流方法，复用
-['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo', '__initBind', '__getBind', '__setBind', '__array'].forEach(function(k) {
-  Model.prototype[k] = Component.prototype[k];
+
+
+['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo', '__initBind', '__getBind', '__setBind', '__array'].forEach(function (k) {
+  Model.prototype[k] = _Component2.default.prototype[k];
 });
 
-exports["default"]=Model;
+exports.default = Model;

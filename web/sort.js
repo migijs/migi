@@ -1,22 +1,27 @@
-define(function(require, exports, module){function quickSort(arr, begin, end, compare) {
-  if(begin >= end) {
+define(function(require, exports, module){'use strict';
+
+function quickSort(arr, begin, end, compare) {
+  if (begin >= end) {
     return;
   }
-  var i = begin, j = end, p = i, n = arr[p], seq = true;
-  while(i < j) {
-    if(seq) {
-      for(; i < j; j--) {
-        if((compare && compare.call(arr, n, arr[j])) || (!compare && n > arr[j])) {
+  var i = begin,
+      j = end,
+      p = i,
+      n = arr[p],
+      seq = true;
+  while (i < j) {
+    if (seq) {
+      for (; i < j; j--) {
+        if (compare && compare.call(arr, n, arr[j]) || !compare && n > arr[j]) {
           swap(arr, p, j);
           p = j;
           seq = !seq;
           break;
         }
       }
-    }
-    else {
-      for(; i < j; i++) {
-        if((compare && compare.call(arr, arr[i], n)) || (!compare && n < arr[i])) {
+    } else {
+      for (; i < j; i++) {
+        if (compare && compare.call(arr, arr[i], n) || !compare && n < arr[i]) {
           swap(arr, p, i);
           p = i;
           seq = !seq;
@@ -34,11 +39,11 @@ function swap(arr, a, b) {
   arr[b] = temp;
 }
 
-module.exports = function(arr, compare) {
-  if(!Array.isArray(arr)) {
+module.exports = function (arr, compare) {
+  if (!Array.isArray(arr)) {
     throw new Error('quick sort need an array');
   }
-  if(arr.length < 2) {
+  if (arr.length < 2) {
     return arr;
   }
   quickSort(arr, 0, arr.length - 1, compare);

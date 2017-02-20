@@ -16,16 +16,10 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
-  constructor(props = [], children = []) {
-    //fix循环依赖
-    if(Model.hasOwnProperty('default')) {
-      Model = Model['default'];
-    }
-
-    var self = this;
-    var name = self.constructor.__migiName;
+  constructor(name, props = [], children = []) {
     super(name, props, children);
-
+  
+    var self = this;
     self.__virtualDom = null; //根节点vd引用
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用
@@ -128,10 +122,6 @@ class Component extends Element {
    * bridge(target, Object<String:Object<name:String,middleware:Function>>)
   */
   bridge(target, src, name, middleware) {
-    //fix循环依赖
-    if(Model.hasOwnProperty('default')) {
-      Model = Model['default'];
-    }
     var self = this;
     if(target == this) {
       throw new Error('can not bridge self: ' + self.name);

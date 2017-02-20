@@ -1,39 +1,47 @@
-define(function(require, exports, module){var sort=function(){var _0=require('./sort');return _0.hasOwnProperty("default")?_0["default"]:_0}();
+define(function(require, exports, module){'use strict';
 
-exports["default"]={
-  splitClass: function(s) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _sort = require('./sort');
+
+var _sort2 = _interopRequireDefault(_sort);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  splitClass: function splitClass(s) {
     s = (s || '').trim();
-    if(s) {
+    if (s) {
       s = s.split(/\s+/);
-      sort(s, function(a, b) {
+      (0, _sort2.default)(s, function (a, b) {
         return a > b;
       });
       return s;
-    }
-    else {
+    } else {
       return '';
     }
   },
-  preId: function(s) {
+  preId: function preId(s) {
     s = (s || '').trim();
-    if(s) {
+    if (s) {
       return '#' + s;
-    }
-    else {
+    } else {
       return '';
     }
   },
-  combo: function(klass, name, id, json) {
+  combo: function combo(klass, name, id, json) {
     var hasId = 0;
     var hasClass = 0;
     //class可能有多个，任意个class的组合也要匹配
-    if(klass && klass.length) {
+    if (klass && klass.length) {
       var comboClass = comboArr(klass, klass.length);
       hasClass = 1;
     }
     //id、class、name可能单个或组合出现，每种都要匹配
     var combo = [name];
-    if(id) {
+    if (id) {
       hasId = 2;
     }
     //各种*的情况标识
@@ -41,211 +49,210 @@ exports["default"]={
     var hasStarId = json.hasOwnProperty('_*#');
     var hasStarIdClass = json.hasOwnProperty('_*.#');
     //只有当前有_*时说明有*才匹配
-    if(json.hasOwnProperty('_*')) {
+    if (json.hasOwnProperty('_*')) {
       combo.push('*');
     }
     //将各种可能的组合添加进入combo
-    if(hasClass) {
-      comboClass.forEach(function(klass) {
+    if (hasClass) {
+      comboClass.forEach(function (klass) {
         combo.push(klass);
         combo.push(name + klass);
-        if(hasStarClass) {
+        if (hasStarClass) {
           combo.push('*' + klass);
         }
-        if(hasId) {
+        if (hasId) {
           combo.push(klass + id);
           combo.push(name + klass + id);
-          if(hasStarIdClass) {
+          if (hasStarIdClass) {
             combo.push('*' + klass + id);
           }
         }
       });
     }
-    if(hasId) {
+    if (hasId) {
       combo.push(id);
       combo.push(name + id);
-      if(hasStarId) {
+      if (hasStarId) {
         combo.push('*' + id);
       }
     }
     return combo;
   },
-  pseudo: function(pseudos, virtualDom, sel) {
-    for(var j = 0, len = pseudos.length; j < len; j++) {
+  pseudo: function pseudo(pseudos, virtualDom, sel) {
+    for (var j = 0, len = pseudos.length; j < len; j++) {
       var pseudo = pseudos[j];
-      switch(pseudo) {
+      switch (pseudo) {
         case 'hover':
-          if(!virtualDom.__hover) {
+          if (!virtualDom.__hover) {
             return false;
           }
           break;
         case 'active':
-          if(!virtualDom.__active) {
+          if (!virtualDom.__active) {
             return false;
           }
           break;
         case 'first-child':
-          if(!virtualDom.isFirst()) {
+          if (!virtualDom.isFirst()) {
             return false;
           }
           break;
         case 'last-child':
-          if(!virtualDom.isLast()) {
+          if (!virtualDom.isLast()) {
             return false;
           }
           break;
         case 'empty':
-          if(!virtualDom.isEmpty()) {
+          if (!virtualDom.isEmpty()) {
             return false;
           }
           break;
         case 'enabled':
-          if(!virtualDom.isEnabled()) {
+          if (!virtualDom.isEnabled()) {
             return false;
           }
           break;
         case 'disabled':
-          if(!virtualDom.isDisabled()) {
+          if (!virtualDom.isDisabled()) {
             return false;
           }
           break;
         case 'checked':
-          if(!virtualDom.isChecked()) {
+          if (!virtualDom.isChecked()) {
             return false;
           }
           break;
         case 'only-child':
-          if(!virtualDom.isOnly()) {
+          if (!virtualDom.isOnly()) {
             return false;
           }
           break;
         case 'only-of-type':
-          if(!virtualDom.isOnlyOfType(sel)) {
+          if (!virtualDom.isOnlyOfType(sel)) {
             return false;
           }
           break;
         case 'first-of-type':
-          if(!virtualDom.isFirstOfType(sel)) {
+          if (!virtualDom.isFirstOfType(sel)) {
             return false;
           }
           break;
         case 'last-of-type':
-          if(!virtualDom.isLastOfType(sel)) {
+          if (!virtualDom.isLastOfType(sel)) {
             return false;
           }
           break;
         //除了nth外不支持
         default:
-          if(pseudo.indexOf('nth-child') == 0) {
+          if (pseudo.indexOf('nth-child') == 0) {
             var idx = virtualDom.getIdx();
             var n = /\((.+)\)/.exec(pseudo)[1];
-            if(!nth(idx, n)) {
+            if (!nth(idx, n)) {
               return false;
             }
-          }
-          else if(pseudo.indexOf('nth-last-child') == 0) {
+          } else if (pseudo.indexOf('nth-last-child') == 0) {
             var idx = virtualDom.getIdx(true);
             var n = /\((.+)\)/.exec(pseudo)[1];
-            if(!nth(idx, n)) {
+            if (!nth(idx, n)) {
               return false;
             }
-          }
-          else if(pseudo.indexOf('nth-of-type') == 0) {
+          } else if (pseudo.indexOf('nth-of-type') == 0) {
             var idx = virtualDom.getIdxOfType(sel);
             var n = /\((.+)\)/.exec(pseudo)[1];
-            if(!nth(idx, n)) {
+            if (!nth(idx, n)) {
               return false;
             }
-          }
-          else if(pseudo.indexOf('nth-last-of-type') == 0) {
+          } else if (pseudo.indexOf('nth-last-of-type') == 0) {
             var idx = virtualDom.getIdxOfType(sel, true);
             var n = /\((.+)\)/.exec(pseudo)[1];
-            if(!nth(idx, n)) {
+            if (!nth(idx, n)) {
               return false;
             }
-          }
-          else {
+          } else {
             return false;
           }
       }
     }
     return true;
   },
-  attr: function(attrs, virtualDom) {
+  attr: function attr(attrs, virtualDom) {
     var isMatch = true;
-    outer:
-    for(var j = 0, len = attrs.length; j < len; j++) {
+    outer: for (var j = 0, len = attrs.length; j < len; j++) {
       var attr = attrs[j];
       //[attr]形式，只要有属性即可
-      if(attr.length == 1) {
-        if(!virtualDom.__cache.hasOwnProperty(attr[0])) {
+      if (attr.length == 1) {
+        if (!virtualDom.__cache.hasOwnProperty(attr[0])) {
           isMatch = false;
           break;
         }
       }
       //[attr=xxx]形式，需比较值
       else {
-        var p = virtualDom.__cache[attr[0]];
-        if(p === void 0) {
-          isMatch = false;
-          break;
-        }
-        var v = attr[2];
-        switch(attr[1]) {
-          case '=':
-            isMatch = p == v;
-            break;
-          case '^=':
-            isMatch = p.indexOf(v) == 0;
-            break;
-          case '$=':
-            isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
-            break;
-          case '~=':
-            var reg = new RegExp('\\b' + v + '\\b');
-            isMatch = reg.test(p);
-            break;
-          case '*=':
-            isMatch = p.indexOf(v) > -1;
-            break;
-          case '|=':
-            isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
-            break;
-          default:
+          var p = virtualDom.__cache[attr[0]];
+          if (p === void 0) {
             isMatch = false;
-            break outer;
+            break;
+          }
+          var v = attr[2];
+          switch (attr[1]) {
+            case '=':
+              isMatch = p == v;
+              break;
+            case '^=':
+              isMatch = p.indexOf(v) == 0;
+              break;
+            case '$=':
+              isMatch = p.length >= v.length && p.indexOf(v) == p.length - v.length;
+              break;
+            case '~=':
+              var reg = new RegExp('\\b' + v + '\\b');
+              isMatch = reg.test(p);
+              break;
+            case '*=':
+              isMatch = p.indexOf(v) > -1;
+              break;
+            case '|=':
+              isMatch = p.indexOf(v) == 0 || p.indexOf(v + '-') == 0;
+              break;
+            default:
+              isMatch = false;
+              break outer;
+          }
+          if (!isMatch) {
+            break;
+          }
         }
-        if(!isMatch) {
-          break;
-        }
-      }
     }
     return isMatch;
   },
-  nci: function(s, vd) {
+  nci: function nci(s, vd) {
     var nodeName = /^[a-z\d]+/i.exec(s);
-    if(nodeName && nodeName[0].toUpperCase() != vd.__name.toUpperCase()) {
+    if (nodeName && nodeName[0].toUpperCase() != vd.__name.toUpperCase()) {
       return true;
     }
     var className = s.match(/\.[a-z\d_-]+/ig);
-    if(className) {
-      for(var j = className.length - 1; j >= 0; j--) {
-        if(!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(vd.__cache.class)) {
+    if (className) {
+      for (var j = className.length - 1; j >= 0; j--) {
+        if (!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(vd.__cache.class)) {
           return true;
         }
       }
     }
     var id = /#[a-z\d_-]+/i.exec(s);
-    if(id && id[0].toUpperCase() != vd.__cache.id.toUpperCase()) {
+    if (id && id[0].toUpperCase() != vd.__cache.id.toUpperCase()) {
       return true;
     }
   }
 };
 
-function comboArr(arr, len, res, i) {
-  if(res===void 0)res=[];if(i===void 0)i=0;if(len - i > 1) {
+
+function comboArr(arr, len) {
+  var res = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var i = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+  if (len - i > 1) {
     comboArr(arr, len, res, i + 1);
-    for(var j = 0, len2 = res.length; j < len2; j++) {
+    for (var j = 0, len2 = res.length; j < len2; j++) {
       res.push(res[j] + '.' + arr[i]);
     }
   }
@@ -254,34 +261,30 @@ function comboArr(arr, len, res, i) {
 }
 
 function nth(idx, n) {
-  if(n == 'odd') {
-    if(idx % 2 == 1) {
+  if (n == 'odd') {
+    if (idx % 2 == 1) {
       return false;
     }
-  }
-  else if(n == 'even') {
-    if(idx % 2 == 0) {
+  } else if (n == 'even') {
+    if (idx % 2 == 0) {
       return false;
     }
-  }
-  else if(/^\d+$/.test(n)) {
-    if(idx != n - 1) {
+  } else if (/^\d+$/.test(n)) {
+    if (idx != n - 1) {
       return false;
     }
-  }
-  else {
+  } else {
     var mc = /(\d+)?n(?:\+(\d+))?/.exec(n);
     var res = false;
-    for(var k = 0; k <= Math.ceil(idx / mc[1]); k++) {
-      if((mc[1] || 1) * k + (mc[2] || 0) == idx + 1) {
+    for (var k = 0; k <= Math.ceil(idx / mc[1]); k++) {
+      if ((mc[1] || 1) * k + (mc[2] || 0) == idx + 1) {
         res = true;
         break;
       }
     }
-    if(!res) {
+    if (!res) {
       return false;
     }
   }
   return true;
-}
-});
+}});

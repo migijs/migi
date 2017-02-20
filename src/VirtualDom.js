@@ -105,10 +105,6 @@ function __findEq(name, child, res, first) {
 
 class VirtualDom extends Element {
   constructor(name, props = [], children = []) {
-    //fix循环依赖
-    if(Component.hasOwnProperty('default')) {
-      Component = Component['default'];
-    }
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren: ' + name);

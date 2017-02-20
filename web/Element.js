@@ -1,25 +1,44 @@
-define(function(require, exports, module){var Event=function(){var _0=require('./Event');return _0.hasOwnProperty("default")?_0["default"]:_0}();
-var util=function(){var _1=require('./util');return _1.hasOwnProperty("default")?_1["default"]:_1}();
+define(function(require, exports, module){'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Event2 = require('./Event');
+
+var _Event3 = _interopRequireDefault(_Event2);
+
+var _util = require('./util');
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var uid = 0;
 
 function getDom(dom) {
-  if(util.isString(dom)) {
+  if (_util2.default.isString(dom)) {
     return document.querySelector(dom);
-  }
-  else if(dom instanceof Element) {
+  } else if (dom instanceof Element) {
     return dom.element;
   }
   return dom;
 }
 function arr2hash(arr) {
   var hash = {};
-  arr.forEach(function(item) {
-    if(Array.isArray(item)) {
+  arr.forEach(function (item) {
+    if (Array.isArray(item)) {
       hash[item[0]] = item[1];
-    }
-    else {
-      Object.keys(item).forEach(function(k) {
+    } else {
+      Object.keys(item).forEach(function (k) {
         hash[k] = item[k];
       });
     }
@@ -28,157 +47,189 @@ function arr2hash(arr) {
 }
 function hash2arr(hash) {
   var arr = [];
-  Object.keys(hash).forEach(function(k) {
+  Object.keys(hash).forEach(function (k) {
     arr.push([k, hash[k]]);
   });
   return arr;
 }
 function spread(arr) {
-  for(var i = 0, len = arr.length; i < len; i++) {
+  for (var i = 0, len = arr.length; i < len; i++) {
     var item = arr[i];
-    if(!Array.isArray(item)) {
+    if (!Array.isArray(item)) {
       var temp = [];
-      Object.keys(item).forEach(function(k) {
+      Object.keys(item).forEach(function (k) {
         temp.push([k, item[k]]);
       });
-      arr.splice.apply(arr,[i,1].concat(Array.from(temp)));
+      arr.splice.apply(arr, [i, 1].concat(temp));
     }
   }
   return arr;
 }
 
-!function(){var _2=Object.create(Event.prototype);_2.constructor=Element;Element.prototype=_2}();
+var Element = function (_Event) {
+  _inherits(Element, _Event);
+
   function Element(name, props, children) {
-    Event.call(this);
-    this.__reset(name, props, children);
-  }
-  Element.prototype.__reset = function(name, props, children) {
-    this.uid = uid++;
-    this.__name = name;
-    //构建工具中都是arr，手写可能出现hash情况
-    if(Array.isArray(props)) {
-      this.props = arr2hash(props);
-      this.__props = spread(props);
-    }
-    else {
-      this.props = props;
-      this.__props = hash2arr(props);
-    }
-    this.children = children;
+    _classCallCheck(this, Element);
 
-    this.__element = null; //真实DOM引用
-    this.__parent = null; //父vd或cp引用
-    this.__top = null; //最近父cp引用
-    this.__style = null; //样式中间生成代码
-    this.__dom = false; //是否被添加到真实DOM标识
-    this.__cache = {}; //缓存计算好的props
+    var _this = _possibleConstructorReturn(this, (Element.__proto__ || Object.getPrototypeOf(Element)).call(this));
 
-    this.once(Event.DOM, this.__onDom);
+    _this.__reset(name, props, children);
+    return _this;
   }
-  //防止多次插入后重复，清除上次，永远只存在一个实例
-  Element.prototype.clean = function() {
-    if(this.__dom) {
-      this.__dom = false;
-      this.once(Event.DOM, this.__onDom);
-      var elem = this.element;
-      if(elem) {
-        elem.parentNode.removeChild(elem);
+
+  _createClass(Element, [{
+    key: '__reset',
+    value: function __reset(name, props, children) {
+      this.uid = uid++;
+      this.__name = name;
+      //构建工具中都是arr，手写可能出现hash情况
+      if (Array.isArray(props)) {
+        this.props = arr2hash(props);
+        this.__props = spread(props);
+      } else {
+        this.props = props;
+        this.__props = hash2arr(props);
       }
-    }
-  }
+      this.children = children;
 
-  Element.prototype.__onDom = function() {
-    this.__dom = true;
-    this.__saveRef();
-  }
-  Element.prototype.__saveRef = function() {
-    //ref快速引用
-    if(this.__cache['ref']) {
-      var top = this.top;
-      if(top) {
-        var k = this.__cache['ref'];
-        var exist = top.ref[k];
-        if(Array.isArray(exist)) {
-          exist.push(this);
-        }
-        else if(exist) {
-          top.ref[k] = [exist, this];
-        }
-        else {
-          top.ref[k] = this;
+      this.__element = null; //真实DOM引用
+      this.__parent = null; //父vd或cp引用
+      this.__top = null; //最近父cp引用
+      this.__style = null; //样式中间生成代码
+      this.__dom = false; //是否被添加到真实DOM标识
+      this.__cache = {}; //缓存计算好的props
+
+      this.once(_Event3.default.DOM, this.__onDom);
+    }
+    //防止多次插入后重复，清除上次，永远只存在一个实例
+
+  }, {
+    key: 'clean',
+    value: function clean() {
+      if (this.__dom) {
+        this.__dom = false;
+        this.once(_Event3.default.DOM, this.__onDom);
+        var elem = this.element;
+        if (elem) {
+          elem.parentNode.removeChild(elem);
         }
       }
     }
-  }
-
-  Element.prototype.inTo = function(dom) {
-    this.clean();
-    var s = this.toString();
-    getDom(dom).innerHTML = s;
-    this.emit(Event.DOM);
-  }
-  Element.prototype.appendTo = function(dom) {
-    this.clean();
-    var s = this.toString();
-    dom = getDom(dom);
-    dom.insertAdjacentHTML('beforeend', s);
-    this.emit(Event.DOM);
-  }
-  Element.prototype.prependTo = function(dom) {
-    this.clean();
-    var s = this.toString();
-    dom = getDom(dom);
-    dom.insertAdjacentHTML('afterbegin', s);
-    this.emit(Event.DOM);
-  }
-  Element.prototype.before = function(dom) {
-    this.clean();
-    var s = this.toString();
-    dom = getDom(dom);
-    dom.insertAdjacentHTML('beforebegin', s);
-    this.emit(Event.DOM);
-  }
-  Element.prototype.after = function(dom) {
-    this.clean();
-    var s = this.toString();
-    dom = getDom(dom);
-    dom.insertAdjacentHTML('afterend', s);
-    this.emit(Event.DOM);
-  }
-  Element.prototype.replace = function(dom) {
-    this.clean();
-    var s = this.toString();
-    dom = getDom(dom);
-    dom.insertAdjacentHTML('afterend', s);
-    dom.parentNode.removeChild(dom);
-    this.emit(Event.DOM);
-  }
-
-  var _3={};_3.top={};_3.top.get =function() {
-    if(!this.__top && this.parent) {
-      if(this.parent instanceof migi.Component) {
-        this.__top = this.parent;
-      }
-      else {
-        this.__top = this.parent.top;
+  }, {
+    key: '__onDom',
+    value: function __onDom() {
+      this.__dom = true;
+      this.__saveRef();
+    }
+  }, {
+    key: '__saveRef',
+    value: function __saveRef() {
+      //ref快速引用
+      if (this.__cache['ref']) {
+        var top = this.top;
+        if (top) {
+          var k = this.__cache['ref'];
+          var exist = top.ref[k];
+          if (Array.isArray(exist)) {
+            exist.push(this);
+          } else if (exist) {
+            top.ref[k] = [exist, this];
+          } else {
+            top.ref[k] = this;
+          }
+        }
       }
     }
-    return this.__top;
-  }
-  _3.parent={};_3.parent.get =function() {
-    return this.__parent;
-  }
-  _3.name={};_3.name.get =function() {
-    return this.__name;
-  }
-  _3.dom={};_3.dom.get =function() {
-    return this.__dom;
-  }
+  }, {
+    key: 'inTo',
+    value: function inTo(dom) {
+      this.clean();
+      var s = this.toString();
+      getDom(dom).innerHTML = s;
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'appendTo',
+    value: function appendTo(dom) {
+      this.clean();
+      var s = this.toString();
+      dom = getDom(dom);
+      dom.insertAdjacentHTML('beforeend', s);
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'prependTo',
+    value: function prependTo(dom) {
+      this.clean();
+      var s = this.toString();
+      dom = getDom(dom);
+      dom.insertAdjacentHTML('afterbegin', s);
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'before',
+    value: function before(dom) {
+      this.clean();
+      var s = this.toString();
+      dom = getDom(dom);
+      dom.insertAdjacentHTML('beforebegin', s);
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'after',
+    value: function after(dom) {
+      this.clean();
+      var s = this.toString();
+      dom = getDom(dom);
+      dom.insertAdjacentHTML('afterend', s);
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'replace',
+    value: function replace(dom) {
+      this.clean();
+      var s = this.toString();
+      dom = getDom(dom);
+      dom.insertAdjacentHTML('afterend', s);
+      dom.parentNode.removeChild(dom);
+      this.emit(_Event3.default.DOM);
+    }
+  }, {
+    key: 'top',
+    get: function get() {
+      if (!this.__top && this.parent) {
+        if (this.parent instanceof migi.Component) {
+          this.__top = this.parent;
+        } else {
+          this.__top = this.parent.top;
+        }
+      }
+      return this.__top;
+    }
+  }, {
+    key: 'parent',
+    get: function get() {
+      return this.__parent;
+    }
+  }, {
+    key: 'name',
+    get: function get() {
+      return this.__name;
+    }
+  }, {
+    key: 'dom',
+    get: function get() {
+      return this.__dom;
+    }
+  }], [{
+    key: 'resetUid',
+    value: function resetUid() {
+      uid = 0;
+    }
+  }]);
 
-  Element.resetUid=function() {
-    uid = 0;
-  }
-Object.keys(_3).forEach(function(k){Object.defineProperty(Element.prototype,k,_3[k])});Object.keys(Event).forEach(function(k){Element[k]=Event[k]});
+  return Element;
+}(_Event3.default);
 
-exports["default"]=Element;
-});
+exports.default = Element;});

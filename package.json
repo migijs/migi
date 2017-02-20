@@ -1,7 +1,7 @@
 {
   "name": "migi",
-  "version": "3.4.3",
-  "description": "A JavaScript MVVM WebComponent on JSX",
+  "version": "3.5.0",
+  "description": "A JavaScript MVVM on JSX",
   "maintainers": [
     {
       "name": "army8735",
@@ -39,6 +39,8 @@
     "jaw": "~3.0.0"
   },
   "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-preset-es2015": "^6.22.0",
     "blanket": "~1.1.7",
     "coveralls": "~2.11.2",
     "expect.js": "~0.3.1",

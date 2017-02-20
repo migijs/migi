@@ -138,9 +138,6 @@ class CacheComponent extends Component {
   }
 
   static getSid(target, name) {
-    if(CacheModel.hasOwnProperty('default')) {
-      CacheModel = CacheModel['default'];
-    }
     if(target instanceof CacheComponent
       || target instanceof CacheModel) {
       var tItem = target.__handler[name] || target.__handler2[name] || 0;

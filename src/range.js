@@ -74,11 +74,7 @@ function joinObj(arr, history) {
   return res;
 }
 
-export function update(item, children, elem) {
-  //fix循环依赖
-  if(VirtualDom.hasOwnProperty('default')) {
-    VirtualDom = VirtualDom['default'];
-  }
+function update(item, children, elem) {
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   var res = join(item.index, children, {});
   var cns = elem.childNodes;
@@ -103,17 +99,19 @@ export function update(item, children, elem) {
   }
 }
 
-export function value(item, children) {
-  //fix循环依赖
-  if(VirtualDom.hasOwnProperty('default')) {
-    VirtualDom = VirtualDom['default'];
-  }
+function value(item, children) {
   //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   return join(item.index, children, {});
 }
 
-export function record(history, option) {
+function record(history, option) {
   if(option.first || option.prev == type.DOM) {
     option.record = history.slice();
   }
 }
+
+export default {
+  update,
+  value,
+  record
+};
