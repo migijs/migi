@@ -16,10 +16,11 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
-  constructor(name, props = [], children = []) {
-    super(name, props, children);
+  constructor(props = [], children = []) {
+    super(null, props, children);
   
     var self = this;
+    self.__name = self.constructor.__migiName;
     self.__virtualDom = null; //根节点vd引用
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用

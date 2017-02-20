@@ -57,15 +57,16 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
 var Component = function (_Element) {
   _inherits(Component, _Element);
 
-  function Component(name) {
-    var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-    var children = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  function Component() {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    var children = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
     _classCallCheck(this, Component);
 
-    var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this, name, props, children));
+    var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this, null, props, children));
 
     var self = _this;
+    self.__name = self.constructor.__migiName;
     self.__virtualDom = null; //根节点vd引用
     self.__ref = {}; //以ref为attr的vd快速访问引用
     self.__stop = null; //停止冒泡的fn引用

@@ -82,7 +82,7 @@ var migi = {
     return element;
   },
   createCp: function createCp(cp, props, children) {
-    return _hash2.default.set(new cp(cp.__migiName, props, children));
+    return _hash2.default.set(new cp(props, children));
   },
   createVd: function createVd(name, props, children) {
     if ({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {

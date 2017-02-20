@@ -24,7 +24,7 @@ var migi = {
     return element;
   },
   createCp(cp, props, children) {
-    return hash.set(new cp(cp.__migiName, props, children));
+    return hash.set(new cp(props, children));
   },
   createVd(name, props, children) {
     if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
