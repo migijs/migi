@@ -88,7 +88,10 @@ function jsx(file, enc, cb) {
       return JSON.stringify(jaw.parse($1));
     });
   }
-  content = lefty.parse(content, true);
+  content = lefty.parse(content);
+  content = babel.transform(content, {
+    presets: ['es2015']
+  }).code;
   file.contents = new Buffer(content);
   cb(null, file);
 }
