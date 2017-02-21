@@ -205,10 +205,11 @@ var VirtualDom = function (_Element) {
       var self = this;
       var res = '<' + self.name;
       //处理属性
-      self.__props.forEach(function (item) {
+      for (var i = 0, len = self.__props.length; i < len; i++) {
+        var item = self.__props[i];
         var s = self.__renderProp(item[0], item[1]);
         res += s;
-      });
+      }
       //使用jaw内联css需解析
       if (self.__style) {
         var s = self.__match(true);
@@ -518,9 +519,9 @@ var VirtualDom = function (_Element) {
     value: function __renderChildren() {
       var self = this;
       var res = '';
-      self.children.forEach(function (child) {
-        res += renderChild(child);
-      });
+      for (var i = 0, len = self.children.length; i < len; i++) {
+        res += renderChild(self.children[i]);
+      }
       return res;
     }
   }, {
@@ -740,9 +741,9 @@ var VirtualDom = function (_Element) {
     value: function __checkBlank(item, option) {
       var self = this;
       if (Array.isArray(item) && item.length) {
-        item.forEach(function (item) {
-          self.__checkBlank(item, option);
-        });
+        for (var i = 0, len = item.length; i < len; i++) {
+          self.__checkBlank(item[i], option);
+        }
       } else if (item instanceof _Element3.default && !(item instanceof migi.NonVisualComponent)) {
         //前面的连续的空白节点需插入一个空TextNode
         if (option.empty) {
@@ -1095,9 +1096,9 @@ var VirtualDom = function (_Element) {
         self.__names = [];
       }
       self.__names.push(self.name);
-      self.children.forEach(function (child) {
-        childStyle(child, v);
-      });
+      for (var i = 0, len = self.children.length; i < len; i++) {
+        childStyle(self.children[i], v);
+      }
     }
   }]);
 
@@ -1116,18 +1117,18 @@ function renderChild(child) {
   }
   if (Array.isArray(child)) {
     var res = '';
-    child.forEach(function (item) {
-      res += renderChild(item);
-    });
+    for (var i = 0, len = child.length; i < len; i++) {
+      res += renderChild(child[i]);
+    }
     return res;
   }
   return _util2.default.encodeHtml(_util2.default.stringify(child));
 }
 function childParent(child, parent) {
   if (Array.isArray(child)) {
-    child.forEach(function (item) {
-      childParent(item, parent);
-    });
+    for (var i = 0, len = child.length; i < len; i++) {
+      childParent(child[i], parent);
+    }
   } else if (child instanceof _Element3.default) {
     child.__parent = parent;
   } else if (child instanceof _Obj2.default) {
@@ -1136,9 +1137,9 @@ function childParent(child, parent) {
 }
 function childStyle(child, style) {
   if (Array.isArray(child)) {
-    child.forEach(function (item) {
-      childStyle(item, style);
-    });
+    for (var i = 0, len = child.length; i < len; i++) {
+      childStyle(child[i], style);
+    }
   } else if (child instanceof VirtualDom) {
     child.style = style;
   } else if (child instanceof _Obj2.default) {
