@@ -642,9 +642,9 @@ var VirtualDom = function (_Element) {
     value: function __addListener(name, cb) {
       var self = this;
       if (Array.isArray(name)) {
-        name.forEach(function (n) {
-          self.__addListener(n, cb);
-        });
+        for (var i = 0, len = name.length; i < len; i++) {
+          self.__addListener(name[i], cb);
+        }
       } else {
         //一般没有event，也就不生成对象防止diff比对
         self.__listener = self.__listener || [];
@@ -674,9 +674,10 @@ var VirtualDom = function (_Element) {
       var self = this;
       if (self.__listener) {
         var elem = self.element;
-        self.__listener.forEach(function (arr) {
+        for (var i = self.__listener.length - 1; i >= 0; i--) {
+          var arr = self.__listener[i];
           elem.removeEventListener(arr[0], arr[1]);
-        });
+        }
       }
     }
   }, {
@@ -866,7 +867,7 @@ var VirtualDom = function (_Element) {
           return;
         }
         for (var i = ranges.length - 1; i >= 0; i--) {
-          _range2.default.update(ranges[i], self.children, self.elem);
+          _range2.default.update(ranges[i], self.children, self.element);
         }
       }
     }

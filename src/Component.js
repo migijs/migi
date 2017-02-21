@@ -255,11 +255,12 @@ class Component extends Element {
     if(this.virtualDom) {
       this.virtualDom.__onData(k);
     }
-    this.children.length && this.children.forEach(function(child) {
+    for(var i = 0, len = this.children.length; i < len; i++) {
+      var child = this.children[i];
       if(child instanceof VirtualDom) {
         child.__onData(k);
       }
-    });
+    }
   }
   __destroy() {
     var self = this;

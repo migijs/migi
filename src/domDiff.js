@@ -204,9 +204,9 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
 function del(elem, vd, ranges, option, temp, last) {
   if(Array.isArray(vd)) {
     var len = vd.length;
-    vd.forEach(function(item, i) {
-      del(elem, item, ranges, option, temp, last && i == len - 1);
-    });
+    for(var i = 0, len = vd.length; i < len; i++) {
+      del(elem, vd[i], ranges, option, temp, last && i == len - 1);
+    }
   }
   else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
     if(temp.hasOwnProperty('prev')) {

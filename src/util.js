@@ -83,7 +83,8 @@ function equal(a, b) {
 
 function joinArray(arr, prop) {
   var res = '';
-  arr.forEach(function(item) {
+  for(var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
     if(Array.isArray(item)) {
       res += joinArray(item);
     }
@@ -93,20 +94,21 @@ function joinArray(arr, prop) {
     else {
       res += encodeHtml(stringify(item), prop);
     }
-  });
+  }
   return res;
 }
 
 function joinSourceArray(arr) {
   var res = '';
-  arr.forEach(function(item) {
+  for(var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
     if(Array.isArray(item)) {
       res += joinSourceArray(item);
     }
     else {
       res += item.toString();
     }
-  });
+  }
   return res;
 }
 

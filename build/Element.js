@@ -34,22 +34,25 @@ function getDom(dom) {
 }
 function arr2hash(arr) {
   var hash = {};
-  arr.forEach(function (item) {
+  for (var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
     if (Array.isArray(item)) {
       hash[item[0]] = item[1];
     } else {
-      Object.keys(item).forEach(function (k) {
+      for (var list = Object.keys(item), j = list.length - 1; j >= 0; j--) {
+        var k = list[j];
         hash[k] = item[k];
-      });
+      }
     }
-  });
+  }
   return hash;
 }
 function hash2arr(hash) {
   var arr = [];
-  Object.keys(hash).forEach(function (k) {
+  for (var list = Object.keys(hash), i = 0, len = list.length; i < len; i++) {
+    var k = list[i];
     arr.push([k, hash[k]]);
-  });
+  }
   return arr;
 }
 function spread(arr) {
@@ -57,9 +60,10 @@ function spread(arr) {
     var item = arr[i];
     if (!Array.isArray(item)) {
       var temp = [];
-      Object.keys(item).forEach(function (k) {
+      for (var list = Object.keys(item), j = 0, len = list.length; j < len; j++) {
+        var k = list[j];
         temp.push([k, item[k]]);
-      });
+      }
       arr.splice.apply(arr, [i, 1].concat(temp));
     }
   }

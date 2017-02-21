@@ -91,7 +91,8 @@ function _equal(a, b) {
 
 function _joinArray(arr, prop) {
   var res = '';
-  arr.forEach(function (item) {
+  for (var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
     if (Array.isArray(item)) {
       res += _joinArray(item);
     } else if (item instanceof _Element2.default) {
@@ -99,19 +100,20 @@ function _joinArray(arr, prop) {
     } else {
       res += encodeHtml(stringify(item), prop);
     }
-  });
+  }
   return res;
 }
 
 function _joinSourceArray(arr) {
   var res = '';
-  arr.forEach(function (item) {
+  for (var i = 0, len = arr.length; i < len; i++) {
+    var item = arr[i];
     if (Array.isArray(item)) {
       res += _joinSourceArray(item);
     } else {
       res += item.toString();
     }
-  });
+  }
   return res;
 }
 

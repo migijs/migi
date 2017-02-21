@@ -5,9 +5,9 @@ class Event {
   on(id, handle) {
     var self = this;
     if(Array.isArray(id)) {
-      id.forEach(function(item) {
-        self.on(item, handle);
-      });
+      for(var i = 0, len = id.length; i < len; i++) {
+        self.on(id[i], handle);
+      }
     }
     else if(handle) {
       if(!self.__hash.hasOwnProperty(id)) {
@@ -26,9 +26,9 @@ class Event {
   once(id, handle) {
     var self = this;
     if(Array.isArray(id)) {
-      id.forEach(function(item) {
-        self.once(item, handle);
-      });
+      for(var i = 0, len = id.length; i < len; i++) {
+        self.once(id[i], handle);
+      }
     }
     else if(handle) {
       function cb(...data) {
@@ -42,9 +42,9 @@ class Event {
   off(id, handle) {
     var self = this;
     if(Array.isArray(id)) {
-      id.forEach(function(item) {
-        self.off(item, handle);
-      });
+      for(var i = 0, len = id.length; i < len; i++) {
+        self.off(id[i], handle);
+      }
     }
     else if(self.__hash.hasOwnProperty(id)) {
       if(handle) {
@@ -65,17 +65,18 @@ class Event {
   emit(id, ...data) {
     var self = this;
     if(Array.isArray(id)) {
-      id.forEach(function(item) {
-        self.emit(item, data);
-      });
+      for(var i = 0, len = id.length; i < len; i++) {
+        self.emit(id[i], data);
+      }
     }
     else {
       if(self.__hash.hasOwnProperty(id)) {
         var list = self.__hash[id];
         if(list.length) {
-          list.slice().forEach(function(item) {
-            item.apply(self, data);
-          });
+          list = list.slice();
+          for(var i = 0, len = list.length; i < len; i++) {
+            list[i].apply(self, data);
+          }
         }
       }
     }
@@ -83,14 +84,16 @@ class Event {
   }
 
   static mix(...obj) {
-    obj.forEach(function(o) {
+    for(var i = obj.length - 1; i >= 0; i--) {
+      var o = obj[i];
       var event = new Event();
       o.__hash = {};
       var fns = ['on', 'once', 'off', 'emit'];
-      fns.forEach(function(fn) {
+      for(var j = fns.length - 1; j >= 0; j--) {
+        var fn = fns[j];
         o[fn] = event[fn];
-      });
-    });
+      }
+    }
   }
 }
 

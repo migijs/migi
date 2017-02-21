@@ -317,11 +317,12 @@ var Component = function (_Element) {
       if (this.virtualDom) {
         this.virtualDom.__onData(k);
       }
-      this.children.length && this.children.forEach(function (child) {
+      for (var i = 0, len = this.children.length; i < len; i++) {
+        var child = this.children[i];
         if (child instanceof _VirtualDom2.default) {
           child.__onData(k);
         }
-      });
+      }
     }
   }, {
     key: '__destroy',

@@ -20,9 +20,9 @@ var Event = function () {
     value: function on(id, handle) {
       var self = this;
       if (Array.isArray(id)) {
-        id.forEach(function (item) {
-          self.on(item, handle);
-        });
+        for (var i = 0, len = id.length; i < len; i++) {
+          self.on(id[i], handle);
+        }
       } else if (handle) {
         if (!self.__hash.hasOwnProperty(id)) {
           self.__hash[id] = [];
@@ -42,9 +42,9 @@ var Event = function () {
     value: function once(id, handle) {
       var self = this;
       if (Array.isArray(id)) {
-        id.forEach(function (item) {
-          self.once(item, handle);
-        });
+        for (var i = 0, len = id.length; i < len; i++) {
+          self.once(id[i], handle);
+        }
       } else if (handle) {
         var _cb = function _cb() {
           for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
@@ -64,9 +64,9 @@ var Event = function () {
     value: function off(id, handle) {
       var self = this;
       if (Array.isArray(id)) {
-        id.forEach(function (item) {
-          self.off(item, handle);
-        });
+        for (var i = 0, len = id.length; i < len; i++) {
+          self.off(id[i], handle);
+        }
       } else if (self.__hash.hasOwnProperty(id)) {
         if (handle) {
           for (var i = 0, item = self.__hash[id], len = item.length; i < len; i++) {
@@ -86,22 +86,24 @@ var Event = function () {
   }, {
     key: 'emit',
     value: function emit(id) {
+      var self = this;
+
       for (var _len2 = arguments.length, data = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
         data[_key2 - 1] = arguments[_key2];
       }
 
-      var self = this;
       if (Array.isArray(id)) {
-        id.forEach(function (item) {
-          self.emit(item, data);
-        });
+        for (var i = 0, len = id.length; i < len; i++) {
+          self.emit(id[i], data);
+        }
       } else {
         if (self.__hash.hasOwnProperty(id)) {
           var list = self.__hash[id];
           if (list.length) {
-            list.slice().forEach(function (item) {
-              item.apply(self, data);
-            });
+            list = list.slice();
+            for (var i = 0, len = list.length; i < len; i++) {
+              list[i].apply(self, data);
+            }
           }
         }
       }
@@ -114,14 +116,16 @@ var Event = function () {
         obj[_key3] = arguments[_key3];
       }
 
-      obj.forEach(function (o) {
+      for (var i = obj.length - 1; i >= 0; i--) {
+        var o = obj[i];
         var event = new Event();
         o.__hash = {};
         var fns = ['on', 'once', 'off', 'emit'];
-        fns.forEach(function (fn) {
+        for (var j = fns.length - 1; j >= 0; j--) {
+          var fn = fns[j];
           o[fn] = event[fn];
-        });
-      });
+        }
+      }
     }
   }]);
 

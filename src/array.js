@@ -1,7 +1,9 @@
 var arrayProto = Array.prototype;
 var arrayMethods = Object.create(arrayProto);
+var list = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
 
-['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'].forEach(function(method) {
+for(var i = list.length - 1; i >= 0; i--) {
+  var method = list[i];
   var original = arrayProto[method];
   Object.defineProperty(arrayMethods, method, {
     value: function() {
@@ -19,6 +21,6 @@ var arrayMethods = Object.create(arrayProto);
       return result;
     }
   });
-});
+}
 
 export default arrayMethods;
