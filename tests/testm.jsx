@@ -134,10 +134,11 @@ describe('Event', function() {
   it('off arguments', function() {
     var event = new migi.Event();
     var count = 0;
-    event.on('name', function() {
+    function cb() {
       count++;
-      event.off('name', arguments.callee);
-    });
+      event.off('name', cb);
+    }
+    event.on('name', cb);
     event.emit('name');
     event.emit('name');
     event.emit('name');
