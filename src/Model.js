@@ -13,7 +13,7 @@ class Model extends Event {
     this.__bindHash = {}; //缩略语法中是否设置过默认值
     this.__ob = []; //被array们的__ob__引用
 
-    this.on(Event.DATA, this.__onData);
+    // this.on(Event.DATA, this.__onData);
   }
 
   __onData(k, caller) {
@@ -23,7 +23,8 @@ class Model extends Event {
       if(cp.dom) {
         cp.__canData = true;
       }
-      cp.emit(Event.DATA, k, caller);
+      // cp.emit(Event.DATA, k, caller);
+      cp.__onData(k);
     });
   }
 

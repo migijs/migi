@@ -39,7 +39,7 @@ var Model = function (_Event) {
     _this.__bindHash = {}; //缩略语法中是否设置过默认值
     _this.__ob = []; //被array们的__ob__引用
 
-    _this.on(_Event3.default.DATA, _this.__onData);
+    // this.on(Event.DATA, this.__onData);
     return _this;
   }
 
@@ -52,7 +52,8 @@ var Model = function (_Event) {
         if (cp.dom) {
           cp.__canData = true;
         }
-        cp.emit(_Event3.default.DATA, k, caller);
+        // cp.emit(Event.DATA, k, caller);
+        cp.__onData(k);
       });
     }
   }, {
