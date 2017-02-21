@@ -85,7 +85,7 @@ var migi = {
     return _hash2.default.set(new cp(props, children));
   },
   createVd: function createVd(name, props, children) {
-    if ({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
+    if (name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
     return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(name, props, children) : new _VirtualDom2.default(name, props, children));

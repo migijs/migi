@@ -171,6 +171,8 @@ exports.default = {
     }
     if (v === null || v === void 0) {
       element.removeAttribute(k);
+    } else if (k == 'id' || k == 'class') {
+      element[k] = v;
     } else {
       element.setAttribute(k, v);
     }

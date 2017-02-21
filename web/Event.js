@@ -97,10 +97,12 @@ var Event = function () {
         });
       } else {
         if (self.__hash.hasOwnProperty(id)) {
-          var list = self.__hash[id].slice();
-          list.forEach(function (item) {
-            item.apply(self, data);
-          });
+          var list = self.__hash[id];
+          if (list.length) {
+            list.slice().forEach(function (item) {
+              item.apply(self, data);
+            });
+          }
         }
       }
       return this;

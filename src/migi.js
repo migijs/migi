@@ -27,7 +27,7 @@ var migi = {
     return hash.set(new cp(props, children));
   },
   createVd(name, props, children) {
-    if({ script: true, style: true }.hasOwnProperty(name.toLowerCase())) {
+    if(name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
     return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));

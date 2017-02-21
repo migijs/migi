@@ -1052,7 +1052,7 @@ var VirtualDom = function (_Element) {
         }
       }
       this.__hash = {};
-      this.__cache = {};
+      this.__cache = null;
       this.__names = null;
       this.__classes = null;
       this.__ids = null;

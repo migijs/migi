@@ -3,7 +3,6 @@ var rimraf = require('gulp-rimraf');
 var util = require('gulp-util');
 var rename = require('gulp-rename');
 var through2 = require('through2');
-var jsdc = require('jsdc');
 var lefty = require('lefty');
 var jaw = require('jaw');
 var babel = require('babel-core');
@@ -34,8 +33,6 @@ gulp.task('clean-web', function() {
 function cb(file, enc, cb) {
   util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
-  // jsdc.reset();
-  // content = jsdc.parse(content);
   content = babel.transform(content, {
     presets: ['es2015']
   }).code;
