@@ -459,9 +459,9 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr('value', _range2.default.value(ranges[0], nvd.children));
       return;
     }
-    ranges.forEach(function (item) {
-      _range2.default.update(item, nvd.children, elem);
-    });
+    for (i = ranges.length - 1; i >= 0; i--) {
+      _range2.default.update(ranges[i], nvd.children, elem);
+    }
   }
   //缓存对象池
   _cachePool2.default.add(ovd.__destroy());

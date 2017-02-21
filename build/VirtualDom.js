@@ -805,7 +805,8 @@ var VirtualDom = function (_Element) {
         return;
       }
       //联动属性值
-      self.__props.length && self.__props.forEach(function (item) {
+      for (var i = 0, len = self.__props.length; i < len; i++) {
+        var item = self.__props[i];
         var key = item[0];
         item = item[1];
         if (item instanceof _Obj2.default) {
@@ -824,9 +825,9 @@ var VirtualDom = function (_Element) {
               break;
             case 3:
               var hash = {};
-              k.forEach(function (item) {
-                hash[item] = true;
-              });
+              for (var i = k.length - 1; i >= 0; i--) {
+                hash[k[i]] = true;
+              }
               for (var temp = item.k, i = 0, len = temp.length; i < len; i++) {
                 if (hash.hasOwnProperty(temp[i])) {
                   change = true;
@@ -842,7 +843,7 @@ var VirtualDom = function (_Element) {
             }
           }
         }
-      });
+      }
       //利用索引更新，子节点可能为文本、Component、VirtualDom，以及数组
       //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
       //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引
@@ -864,9 +865,9 @@ var VirtualDom = function (_Element) {
           self.__updateAttr('value', _range2.default.value(ranges[0], self.children));
           return;
         }
-        ranges.forEach(function (item) {
-          _range2.default.update(item, self.children, self.element);
-        });
+        for (var i = ranges.length - 1; i >= 0; i--) {
+          _range2.default.update(ranges[i], self.children, self.elem);
+        }
       }
     }
     //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
@@ -894,9 +895,9 @@ var VirtualDom = function (_Element) {
             break;
           case 3:
             var hash = {};
-            k.forEach(function (item) {
-              hash[item] = true;
-            });
+            for (var i = k.length - 1; i >= 0; i--) {
+              hash[k[i]] = true;
+            }
             for (var temp = child.k, i = 0, len = temp.length; i < len; i++) {
               if (hash.hasOwnProperty(temp[i])) {
                 change = true;
@@ -935,11 +936,12 @@ var VirtualDom = function (_Element) {
           if (child.length) {
             //数组类型记得递归记录history索引，结束后出栈
             history.push(0);
-            child.forEach(function (item, i) {
+            for (var i = 0, len = child.length; i < len; i++) {
+              var item = child[i];
               history[history.length - 1] = i;
               //第1个同时作为children的第1个要特殊处理
               self.__checkObj(k, item, ranges, option, history);
-            });
+            }
             history.pop();
           }
           //注意空数组算text类型
@@ -1016,11 +1018,12 @@ var VirtualDom = function (_Element) {
       if (first) {
         return;
       }
-      this.children.forEach(function (child) {
+      for (var i = this.children.length - 1; i >= 0; i--) {
+        var child = this.children[i];
         if (child instanceof VirtualDom) {
           child.__updateStyle();
         }
-      });
+      }
     }
   }, {
     key: '__init',

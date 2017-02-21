@@ -436,9 +436,9 @@ function diffVd(ovd, nvd) {
       nvd.__updateAttr('value', range.value(ranges[0], nvd.children));
       return;
     }
-    ranges.forEach(function(item) {
-      range.update(item, nvd.children, elem);
-    });
+    for(i = ranges.length - 1; i >= 0; i--) {
+      range.update(ranges[i], nvd.children, elem);
+    }
   }
   //缓存对象池
   cachePool.add(ovd.__destroy());
