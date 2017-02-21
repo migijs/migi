@@ -616,17 +616,17 @@ class VirtualDom extends Element {
     }
     //start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
-    self.__chenckBlank(self.children, option);
+    self.__checkBlank(self.children, option);
     //可能最后一个是空白text，或没有children，需特殊判断下插入
     if(option.empty || option.first) {
       self.__insertBlank(option.start);
     }
   }
-  __chenckBlank(item, option) {
+  __checkBlank(item, option) {
     var self = this;
     if(Array.isArray(item) && item.length) {
       item.forEach(function(item) {
-        self.__chenckBlank(item, option);
+        self.__checkBlank(item, option);
       });
     }
     else if(item instanceof Element && !(item instanceof migi.NonVisualComponent)) {
@@ -646,7 +646,7 @@ class VirtualDom extends Element {
       item.emit(Event.DOM);
     }
     else if(item instanceof Obj) {
-      self.__chenckBlank(item.v, option);
+      self.__checkBlank(item.v, option);
     }
     else if(isEmptyText(item)) {
       if(item instanceof migi.NonVisualComponent) {
@@ -689,7 +689,7 @@ class VirtualDom extends Element {
       return;
     }
     //联动属性值
-    self.__props.forEach(function(item) {
+    self.__props.length && self.__props.forEach(function(item) {
       var key = item[0];
       item = item[1];
       if(item instanceof Obj) {

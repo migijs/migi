@@ -72,7 +72,7 @@ var Component = function (_Element) {
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
     self.__allowPropagation = true; //默认是否允许冒泡
-    self.__bridgeHash = {}; //桥接记录
+    // self.__bridgeHash = {}; //桥接记录
     self.__stream = null; //桥接过程中传递的stream对象
     self.__canData = false; //防止添加至DOM前触发无谓的数据更新
     self.__bindHash = {}; //缩略语法中是否设置过默认值
@@ -84,7 +84,7 @@ var Component = function (_Element) {
       self.__init(k, v);
     });
 
-    self.on(_Event2.default.DATA, self.__onData);
+    // self.on(Event.DATA, self.__onData);
     return _this;
   }
 
@@ -194,6 +194,8 @@ var Component = function (_Element) {
       if (!target || !(target instanceof _EventBus2.default) && !(target instanceof Component) && !(target instanceof _Model2.default)) {
         throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
       }
+      //使用桥接时才创建对象
+      self.__bridgeHash = self.__bridgeHash || {};
       //重载
       if (arguments.length == 2) {
         if (_util2.default.isString(src)) {
@@ -269,36 +271,39 @@ var Component = function (_Element) {
       if (self.dom) {
         self.__canData = true;
       }
+      self.__onData(k);
       self.emit(_Event2.default.DATA, k);
 
-      if (!Array.isArray(k)) {
-        k = [k];
-      }
-      k.forEach(function (k) {
-        //分析桥接
-        var bridge = self.__bridgeHash[k];
-        if (bridge) {
-          var stream = self.__stream || new _Stream2.default(self.uid);
-          var v = self[k];
-          bridge.forEach(function (item) {
-            var target = item.target;
-            var name = item.name;
-            var middleware = item.middleware;
-            if (!stream.has(target.uid)) {
-              stream.add(target.uid);
-              if (target instanceof _EventBus2.default) {
-                target.emit(_Event2.default.DATA, name, middleware ? middleware.call(self, v) : v, stream);
-              }
-              //先设置桥接对象数据为桥接模式，修改数据后再恢复
-              else {
-                  target.__stream = stream;
-                  target[name] = middleware ? middleware.call(self, v) : v;
-                  target.__stream = null;
-                }
-            }
-          });
+      if (self.__bridgeHash) {
+        if (!Array.isArray(k)) {
+          k = [k];
         }
-      });
+        k.forEach(function (k) {
+          //分析桥接
+          var bridge = self.__bridgeHash[k];
+          if (bridge) {
+            var stream = self.__stream || new _Stream2.default(self.uid);
+            var v = self[k];
+            bridge.forEach(function (item) {
+              var target = item.target;
+              var name = item.name;
+              var middleware = item.middleware;
+              if (!stream.has(target.uid)) {
+                stream.add(target.uid);
+                if (target instanceof _EventBus2.default) {
+                  target.emit(_Event2.default.DATA, name, middleware ? middleware.call(self, v) : v, stream);
+                }
+                //先设置桥接对象数据为桥接模式，修改数据后再恢复
+                else {
+                    target.__stream = stream;
+                    target[name] = middleware ? middleware.call(self, v) : v;
+                    target.__stream = null;
+                  }
+              }
+            });
+          }
+        });
+      }
     }
     //@overwrite
 
@@ -312,7 +317,7 @@ var Component = function (_Element) {
       if (this.virtualDom) {
         this.virtualDom.__onData(k);
       }
-      this.children.forEach(function (child) {
+      this.children.length && this.children.forEach(function (child) {
         if (child instanceof _VirtualDom2.default) {
           child.__onData(k);
         }
@@ -342,6 +347,7 @@ var Component = function (_Element) {
       var vd = self.virtualDom.__destroy();
       self.emit(_Event2.default.DESTROY);
       self.__hash = {};
+      self.__bridgeHash = null;
       return vd;
     }
   }, {

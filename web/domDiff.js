@@ -381,22 +381,26 @@ function diffVd(ovd, nvd) {
   }
   //特殊的uid，以及一些引用赋给新vd
   var elem = ovd.element;
-  ['uid', '__element', '__parent', '__top', '__style', '__dom', '__names'].forEach(function (k) {
+  var props = ['uid', '__element', '__parent', '__top', '__style', '__dom', '__names'];
+  var i = props.length - 1;
+  for (; i >= 0; i--) {
+    var k = props[i];
     nvd[k] = ovd[k];
-  });
+  }
   //vd记录更新uid引用
   _hash2.default.set(nvd);
   //记录对比过的prop
   var temp = {};
-  ovd.__props.forEach(function (item) {
+  for (i = ovd.__props.length - 1; i >= 0; i--) {
+    var item = ovd.__props[i];
     var k = item[0];
     var v = item[1];
     //只检查普通属性，onXXX事件由__listener中的引用移除
-    if (!/^on[a-zA-Z]/.test(k)) {
+    if (k.indexOf('on') == 0 && k != 'on') {
       temp[k] = true;
       //对比老属性，多余删除，相同无需更新
-      if (nvd.props.hasOwnProperty(k)) {
-        var nv = nvd.props[k];
+      if (nvd.__props.hasOwnProperty(k)) {
+        var nv = nvd.__props[k];
         if (nv !== v) {
           nvd.__updateAttr(k, nv);
         }
@@ -406,15 +410,16 @@ function diffVd(ovd, nvd) {
         delete nvd.__cache[k];
       }
     }
-  });
+  }
   //移除__listener记录的引用
   ovd.__removeListener();
   //添加新vd的属性
-  nvd.__props.forEach(function (item) {
+  for (i = nvd.__props.length - 1; i >= 0; i--) {
+    var item = nvd.__props[i];
     var k = item[0];
     var v = item[1];
     //事件和属性区分对待
-    if (/^on[a-zA-Z]/.test(k)) {
+    if (k.indexOf('on') == 0 && k != 'on') {
       var name = k.slice(2).toLowerCase();
       nvd.__addListener(name, function (e) {
         e = e || window.event;
@@ -442,7 +447,7 @@ function diffVd(ovd, nvd) {
     } else if (!temp.hasOwnProperty(k)) {
       nvd.__updateAttr(k, v);
     }
-  });
+  }
   if (nvd.__style) {
     nvd.__updateStyle(true);
   }
