@@ -162,8 +162,11 @@ export default {
     if(v === null || v === void 0) {
       element.removeAttribute(k);
     }
-    else if(k == 'id' || k == 'class') {
+    else if(k == 'id') {
       element[k] = v;
+    }
+    else if(k == 'class') {
+      element.className = v;
     }
     else {
       element.setAttribute(k, v);

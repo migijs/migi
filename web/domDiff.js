@@ -395,11 +395,11 @@ function diffVd(ovd, nvd) {
     var k = item[0];
     var v = item[1];
     //只检查普通属性，onXXX事件由__listener中的引用移除
-    if (k.indexOf('on') == 0 && k != 'on') {
+    if (k.indexOf('on') != 0 || k == 'on') {
       temp[k] = true;
       //对比老属性，多余删除，相同无需更新
-      if (nvd.__props.hasOwnProperty(k)) {
-        var nv = nvd.__props[k];
+      if (nvd.props.hasOwnProperty(k)) {
+        var nv = nvd.props[k];
         if (nv !== v) {
           nvd.__updateAttr(k, nv);
         }
