@@ -5,10 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 var arrayProto = Array.prototype;
 var arrayMethods = Object.create(arrayProto);
-var list = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
 
-for (var i = list.length - 1; i >= 0; i--) {
-  var method = list[i];
+['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'].forEach(function (method) {
   var original = arrayProto[method];
   Object.defineProperty(arrayMethods, method, {
     value: function value() {
@@ -26,6 +24,6 @@ for (var i = list.length - 1; i >= 0; i--) {
       return result;
     }
   });
-}
+});
 
 exports.default = arrayMethods;

@@ -236,7 +236,6 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
 }
 function del(elem, vd, ranges, option, temp, last) {
   if (Array.isArray(vd)) {
-    var len = vd.length;
     for (var i = 0, len = vd.length; i < len; i++) {
       del(elem, vd[i], ranges, option, temp, last && i == len - 1);
     }
@@ -414,13 +413,17 @@ function diffVd(ovd, nvd) {
   //移除__listener记录的引用
   ovd.__removeListener();
   //添加新vd的属性
-  for (i = nvd.__props.length - 1; i >= 0; i--) {
-    var item = nvd.__props[i];
-    var k = item[0];
+  var len = nvd.__props.length;
+
+  var _loop = function _loop() {
+    item = nvd.__props[i];
+    k = item[0];
+
     var v = item[1];
     //事件和属性区分对待
     if (k.indexOf('on') == 0 && k != 'on') {
-      var name = k.slice(2).toLowerCase();
+      name = k.slice(2).toLowerCase();
+
       nvd.__addListener(name, function (e) {
         e = e || window.event;
         (0, _fixEvent2.default)(e);
@@ -447,6 +450,14 @@ function diffVd(ovd, nvd) {
     } else if (!temp.hasOwnProperty(k)) {
       nvd.__updateAttr(k, v);
     }
+  };
+
+  for (i = 0; i < len; i++) {
+    var item;
+    var k;
+    var name;
+
+    _loop();
   }
   if (nvd.__style) {
     nvd.__updateStyle(true);

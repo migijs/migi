@@ -710,11 +710,11 @@ class VirtualDom extends Element {
             break;
           case 3:
             var hash = {};
-            for(var i = k.length - 1; i >= 0; i--) {
-              hash[k[i]] = true;
+            for(var j = k.length - 1; j >= 0; j--) {
+              hash[k[j]] = true;
             }
-            for(var temp = item.k, i = 0, len = temp.length; i < len; i++) {
-              if(hash.hasOwnProperty(temp[i])) {
+            for(var temp = item.k, j = 0, len = temp.length; j < len; j++) {
+              if(hash.hasOwnProperty(temp[j])) {
                 change = true;
                 break;
               }
