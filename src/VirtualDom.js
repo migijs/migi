@@ -514,24 +514,36 @@ class VirtualDom extends Element {
       var uid = target.getAttribute('migi-uid');
       var tvd = hash.get(uid);
       if(v instanceof Cb && util.isFunction(v.cb)) {
-        v.cb.call(v.context, e, self, tvd);
+        return v.cb.call(v.context, e, self, tvd);
       }
       else if(util.isFunction(v)) {
-        v(e, self, tvd);
+        return v(e, self, tvd);
       }
       else if(Array.isArray(v)) {
-        v.forEach(function(item) {
+        var ret;
+        v.forEach(function(item, i) {
           var cb = item[1];
           var res = delegate(e, item[0], self);
           if(res[0]) {
             if(cb instanceof Cb) {
-              cb.cb.call(cb.context, e, self, res[1], tvd);
+              if(i) {
+                cb.cb.call(cb.context, e, self, res[1], tvd);
+              }
+              else {
+                ret = cb.cb.call(cb.context, e, self, res[1], tvd);
+              }
             }
             else if(util.isFunction(cb)) {
-              cb(e, self, res[1], tvd);
+              if(i) {
+                cb(e, self, res[1], tvd);
+              }
+              else {
+                ret = cb(e, self, res[1], tvd);
+              }
             }
           }
         });
+        return ret;
       }
     });
   }

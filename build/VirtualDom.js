@@ -620,21 +620,31 @@ var VirtualDom = function (_Element) {
         var uid = target.getAttribute('migi-uid');
         var tvd = _hash2.default.get(uid);
         if (v instanceof _Cb2.default && _util2.default.isFunction(v.cb)) {
-          v.cb.call(v.context, e, self, tvd);
+          return v.cb.call(v.context, e, self, tvd);
         } else if (_util2.default.isFunction(v)) {
-          v(e, self, tvd);
+          return v(e, self, tvd);
         } else if (Array.isArray(v)) {
-          v.forEach(function (item) {
+          var ret;
+          v.forEach(function (item, i) {
             var cb = item[1];
             var res = (0, _delegate2.default)(e, item[0], self);
             if (res[0]) {
               if (cb instanceof _Cb2.default) {
-                cb.cb.call(cb.context, e, self, res[1], tvd);
+                if (i) {
+                  cb.cb.call(cb.context, e, self, res[1], tvd);
+                } else {
+                  ret = cb.cb.call(cb.context, e, self, res[1], tvd);
+                }
               } else if (_util2.default.isFunction(cb)) {
-                cb(e, self, res[1], tvd);
+                if (i) {
+                  cb(e, self, res[1], tvd);
+                } else {
+                  ret = cb(e, self, res[1], tvd);
+                }
               }
             }
           });
+          return ret;
         }
       });
     }
