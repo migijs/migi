@@ -8,7 +8,6 @@ module.exports = {
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test strong')
       .click('#test span')
-      .click('#test p')
       .assert.containsText('#test strong', '')
       .end();
   }
