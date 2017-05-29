@@ -19,8 +19,8 @@ var res;
 function delegate(e, json, top) {
   var elem = e.target;
   var vd = _hash2.default.get(elem.getAttribute('migi-uid'));
-  //点击根元素忽略
-  if (vd == top) {
+  //点击根元素忽略；不存在也忽略，比如非vd添加的dom没有migi-uid
+  if (vd == top || !vd) {
     return [false];
   }
   var names = [];
