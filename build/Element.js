@@ -115,7 +115,7 @@ var Element = function (_Event) {
         this.__dom = false;
         this.once(_Event3.default.DOM, this.__onDom);
         var elem = this.element;
-        if (elem) {
+        if (elem && elem.parentNode) {
           elem.parentNode.removeChild(elem);
         }
       }
