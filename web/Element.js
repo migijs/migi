@@ -112,12 +112,15 @@ var Element = function (_Event) {
     key: 'clean',
     value: function clean() {
       if (this.__dom) {
-        this.__dom = false;
-        this.once(_Event3.default.DOM, this.__onDom);
         var elem = this.element;
         if (elem && elem.parentNode) {
           elem.parentNode.removeChild(elem);
         }
+        this.__element = null;
+        this.__parent = null;
+        this.__top = null;
+        this.__dom = false;
+        this.once(_Event3.default.DOM, this.__onDom);
       }
     }
   }, {

@@ -82,12 +82,15 @@ class Element extends Event {
   //防止多次插入后重复，清除上次，永远只存在一个实例
   clean() {
     if(this.__dom) {
-      this.__dom = false;
-      this.once(Event.DOM, this.__onDom);
       var elem = this.element;
       if(elem && elem.parentNode) {
         elem.parentNode.removeChild(elem);
       }
+      this.__element = null;
+      this.__parent = null;
+      this.__top = null;
+      this.__dom = false;
+      this.once(Event.DOM, this.__onDom);
     }
   }
 
