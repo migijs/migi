@@ -102,10 +102,10 @@ class Element extends Event {
   }
   __saveRef() {
     //ref快速引用
-    if(this.__cache['ref']) {
+    if(this.props.ref) {
       var top = this.top;
       if(top) {
-        var k = this.__cache['ref'];
+        var k = this.props.ref;
         var exist = top.ref[k];
         if(Array.isArray(exist)) {
           exist.push(this);
