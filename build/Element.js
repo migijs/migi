@@ -119,7 +119,9 @@ var Element = function (_Event) {
         this.__element = null;
         this.__parent = null;
         this.__top = null;
+        this.__style = null;
         this.__dom = false;
+        this.__cache = {};
         this.once(_Event3.default.DOM, this.__onDom);
       }
     }

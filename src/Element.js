@@ -89,7 +89,9 @@ class Element extends Event {
       this.__element = null;
       this.__parent = null;
       this.__top = null;
+      this.__style = null;
       this.__dom = false;
+      this.__cache = {};
       this.once(Event.DOM, this.__onDom);
     }
   }

@@ -192,7 +192,7 @@ var VirtualDom = function (_Element) {
     self.__hover = false; //是否处于鼠标hover状态
     self.__active = false; //是否处于鼠标active状态
     self.__listener = null; //添加的event的cb引用，remove时使用
-    self.__init(name, children);
+    // self.__init(name, children);
     return _this;
   }
 
