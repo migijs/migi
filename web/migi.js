@@ -81,6 +81,15 @@ var migi = {
     }
     return element;
   },
+
+  // 提前或服务器端渲染，仅输出，不触发DOM事件
+  preRender: function preRender(element) {
+    return element.toString();
+  },
+  preExist: function preExist(element) {
+    element.toString();console.log(element);
+    return element.emit(_Event2.default.DOM);
+  },
   createCp: function createCp(cp, props, children) {
     return _hash2.default.set(new cp(props, children));
   },

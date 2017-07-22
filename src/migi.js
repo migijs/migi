@@ -23,6 +23,14 @@ var migi = {
     }
     return element;
   },
+  // 提前或服务器端渲染，仅输出，不触发DOM事件
+  preRender(element) {
+    return element.toString();
+  },
+  preExist(element) {
+    element.toString();console.log(element)
+    return element.emit(Event.DOM);
+  },
   createCp(cp, props, children) {
     return hash.set(new cp(props, children));
   },
