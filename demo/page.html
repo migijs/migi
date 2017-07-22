@@ -108,7 +108,7 @@
   }
 </style>
 <script type="text/jsx">
-  import jaw from 'jaw';
+  var jaw = require('jaw');
   var style = document.querySelector('style[type="text/jsx"]');
   style = jaw.parse(style.textContent || style.innerHTML);
 
@@ -241,13 +241,13 @@
 <script>
   seajs.config({
     alias: {
-      'homunculus': seajs.resolve('../node_modules/lefty/node_modules/homunculus/index.js', seajs.data.cwd),
+      'homunculus': seajs.resolve('../node_modules/homunculus/index.js', seajs.data.cwd),
       'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
       'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
       'jaw': seajs.resolve('../node_modules/jaw/init.js', seajs.data.cwd)
     },
     map: [function(url) {
-      return url.replace('demo/lexer/', 'node_modules/lefty/node_modules/homunculus/web/lexer/');
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
     }]
   });
   define('fs', {});
