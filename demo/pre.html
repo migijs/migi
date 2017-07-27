@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"/>
+  <title>预渲染</title>
+  <link href="style.css" media="all" rel="stylesheet"/>
+  <script src="es5-shim.js"></script>
+  <script src="es5-sham.js"></script>
+  <script src="migi-es6-shim.js"></script>
+  <script src="sea.js"></script>
+</head>
+<body>
+<p migi-uid="1">Click me!</p>
+<div id="example"></div>
+<div id="example2"></div>
+<div id="example3"></div>
+<pre><code class="brush:jsx"></code></pre>
+<script type="text/jsx">
+  class HelloMessage extends migi.Component {
+    constructor(...data) {
+      super(...data);
+    }
+    click() {
+      alert('click');
+    }
+    render() {
+      return <p onClick={ this.click }>Click me!</p>;
+    }
+  }
+
+  // 预渲染也叫服务器端渲染，即通过preRender接口预输出vd为html字符串，
+  // 再通过preExist实例化vd，注意执行顺序严格保持一致。
+  // 实际就是将原本的render接口一分为二，提前执行一部分。
+  //  let s = migi.preRender(<HelloMessage/>);
+  //  console.log(s);
+
+  migi.preExist(<HelloMessage/>);
+</script>
+<script>
+  seajs.config({
+    alias: {
+      'homunculus': seajs.resolve('../node_modules/homunculus/index.js', seajs.data.cwd),
+      'jsdc': seajs.resolve('../node_modules/jsdc/index.js', seajs.data.cwd),
+      'lefty': seajs.resolve('../node_modules/lefty/init.js', seajs.data.cwd),
+      'jaw': seajs.resolve('../node_modules/jaw/init', seajs.data.cwd)
+    },
+    map: [function(url) {
+      return url.replace('demo/lexer/', 'node_modules/homunculus/web/lexer/');
+    }]
+  });
+  define('fs', {});
+  seajs.use(['jssc', '../init', 'lefty'], function(jssc, migi, lefty) {
+    var code = document.querySelector('pre code');
+    var jsx = document.querySelector('script[type="text/jsx"]');
+    var source = jsx.textContent || jsx.text;
+    source = source.trim().replace(/\n[ ]{2}/g, '\n');
+    var text = document.createTextNode(source);
+    code.appendChild(text);
+    jssc.exec();
+    lefty.init();
+    migi.init();
+  });
+</script>
+</body>
+</html>
