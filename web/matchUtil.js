@@ -24,7 +24,10 @@ exports.default = {
     }
   },
   preId: function preId(s) {
-    s = (s || '').trim();
+    if (s === undefined || s === null) {
+      s = '';
+    }
+    s = s.toString().trim();
     if (s) {
       return '#' + s;
     } else {
