@@ -525,7 +525,7 @@ class VirtualDom extends Element {
           var cb = item[1];
           var res = delegate(e, item[0], self);
           if(res[0]) {
-            if(cb instanceof Cb) {
+            if(cb instanceof Cb && util.isFunction(cb.cb)) {
               if(i) {
                 cb.cb.call(cb.context, e, self, res[1], tvd);
               }

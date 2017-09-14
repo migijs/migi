@@ -629,7 +629,7 @@ var VirtualDom = function (_Element) {
             var cb = item[1];
             var res = (0, _delegate2.default)(e, item[0], self);
             if (res[0]) {
-              if (cb instanceof _Cb2.default) {
+              if (cb instanceof _Cb2.default && _util2.default.isFunction(cb.cb)) {
                 if (i) {
                   cb.cb.call(cb.context, e, self, res[1], tvd);
                 } else {
