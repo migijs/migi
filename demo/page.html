@@ -154,7 +154,7 @@
       var list = [];
       list.push(<li>{ this.index == 1 ? <span>1</span> : <a href="#">1</a> }</li>);
       if(this.total > 1) {
-        if(this.index > 3) {
+        if(this.index > 4) {
           list.push(<li>...</li>);
         }
         for(var i = Math.max(2, this.index - 2); i < this.index; i++) {
@@ -182,7 +182,7 @@
         index = 1;
       }
       else if(index > this.total) {
-        index = total;
+        index = this.total;
       }
       this.num = index;
       if(index && index != this.index) {
