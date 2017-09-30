@@ -8,7 +8,7 @@
 
   "selenium" : {
     "start_process" : true,
-    "server_path" : "lib/selenium-server-standalone-2.46.0.jar",
+    "server_path" : "lib/selenium-server-standalone-3.6.0.jar",
     "log_path" : "",
     "host" : "127.0.0.1",
     "port" : 4444,
@@ -28,6 +28,13 @@
         "enabled" : false,
         "path" : ""
       },
+      "desiredCapabilities": {
+        "browserName": "chrome",
+        "javascriptEnabled": true,
+        "acceptSslCerts": true
+      }
+    },
+    "firefox" : {
       "desiredCapabilities": {
         "browserName": "firefox",
         "javascriptEnabled": true,

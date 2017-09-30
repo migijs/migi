@@ -9,7 +9,7 @@ init:
   @export SAUCE_ACCESS_KEY=6edc1ec9-7e0d-43c8-8d75-e9d8456d11f9
 
 test-firefox:
-	@nightwatch --filter test.js
+	@nightwatch --filter test.js --env firefox
 
 test-chrome:
 	@nightwatch --filter test.js --env chrome
@@ -17,7 +17,7 @@ test-chrome:
 test-ie:
 	@nightwatch --filter test.js --env ie
 
-test: build-test test-mocha test-firefox
+test: build-test test-mocha test-chrome
 
 test-mocha:
 	@mocha --timeout 5000 tests/testm.js -R spec
