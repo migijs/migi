@@ -9,7 +9,7 @@ class Component extends migi.Component {
   render() {
     return (
       <ol onClick={ { 'a': this.click } }>
-        <li><a href="#"><span>1</span></a></li>
+        <li><a href="#">2<span>1</span></a></li>
       </ol>
     );
   }
