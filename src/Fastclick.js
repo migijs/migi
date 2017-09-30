@@ -9,6 +9,7 @@
 /*jslint browser:true, node:true*/
 /*global define, Event, Node*/
 
+var userAgent = typeof window != 'undefined' ? navigator.userAgent : '';
 
 /**
  * Instantiate fast-clicking listeners on the specified layer.
@@ -175,14 +176,14 @@ function FastClick(layer, options) {
 *
 * @type boolean
 */
-var deviceIsWindowsPhone = navigator.userAgent.indexOf("Windows Phone") >= 0;
+var deviceIsWindowsPhone = userAgent.indexOf("Windows Phone") >= 0;
 
 /**
  * Android requires exceptions.
  *
  * @type boolean
  */
-var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0 && !deviceIsWindowsPhone;
+var deviceIsAndroid = userAgent.indexOf('Android') > 0 && !deviceIsWindowsPhone;
 
 
 /**
@@ -190,7 +191,7 @@ var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0 && !deviceIsWin
  *
  * @type boolean
  */
-var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent) && !deviceIsWindowsPhone;
+var deviceIsIOS = /iP(ad|hone|od)/.test(userAgent) && !deviceIsWindowsPhone;
 
 
 /**
@@ -198,7 +199,7 @@ var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent) && !deviceIsWindows
  *
  * @type boolean
  */
-var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
+var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(userAgent);
 
 
 /**
@@ -206,14 +207,14 @@ var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
  *
  * @type boolean
  */
-var deviceIsIOSWithBadTarget = deviceIsIOS && (/OS [6-7]_\d/).test(navigator.userAgent);
+var deviceIsIOSWithBadTarget = deviceIsIOS && (/OS [6-7]_\d/).test(userAgent);
 
 /**
  * BlackBerry requires exceptions.
  *
  * @type boolean
  */
-var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
+var deviceIsBlackBerry10 = userAgent.indexOf('BB10') > 0;
 
 /**
  * Determine whether a given element requires a native click.
@@ -768,7 +769,7 @@ FastClick.notNeeded = function(layer) {
   }
 
   // Chrome version - zero for other browsers
-  chromeVersion = +(/Chrome\/([0-9]+)/.exec(navigator.userAgent) || [,0])[1];
+  chromeVersion = +(/Chrome\/([0-9]+)/.exec(userAgent) || [,0])[1];
 
   if (chromeVersion) {
 
@@ -793,7 +794,7 @@ FastClick.notNeeded = function(layer) {
   }
 
   if (deviceIsBlackBerry10) {
-    blackberryVersion = navigator.userAgent.match(/Version\/([0-9]*)\.([0-9]*)/);
+    blackberryVersion = userAgent.match(/Version\/([0-9]*)\.([0-9]*)/);
 
     // BlackBerry 10.3+ does not require Fastclick library.
     // https://github.com/ftlabs/fastclick/issues/251
@@ -819,7 +820,7 @@ FastClick.notNeeded = function(layer) {
   }
 
   // Firefox version - zero for other browsers
-  firefoxVersion = +(/Firefox\/([0-9]+)/.exec(navigator.userAgent) || [,0])[1];
+  firefoxVersion = +(/Firefox\/([0-9]+)/.exec(userAgent) || [,0])[1];
 
   if (firefoxVersion >= 27) {
     // Firefox 27+ does not have tap delay if the content is not zoomable - https://bugzilla.mozilla.org/show_bug.cgi?id=922896

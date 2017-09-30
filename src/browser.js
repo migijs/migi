@@ -1,11 +1,17 @@
-const NODE = document.createElement('div');
-const TABLE = document.createElement('table');
-const TBODY = document.createElement('tbody');
-const TR = document.createElement('tr');
-const UL = document.createElement('ul');
-const DL = document.createElement('dl');
-const SELECT = document.createElement('select');
-const MENU = document.createElement('menu');
+function createElement(name) {
+  if(typeof window != 'undefined') {
+    return document.createElement(name);
+  }
+}
+
+const NODE = createElement('div');
+const TABLE = createElement('table');
+const TBODY = createElement('tbody');
+const TR = createElement('tr');
+const UL = createElement('ul');
+const DL = createElement('dl');
+const SELECT = createElement('select');
+const MENU = createElement('menu');
 
 export default {
   NODE: NODE,

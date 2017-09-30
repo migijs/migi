@@ -3,14 +3,20 @@ define(function(require, exports, module){'use strict';
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var NODE = document.createElement('div');
-var TABLE = document.createElement('table');
-var TBODY = document.createElement('tbody');
-var TR = document.createElement('tr');
-var UL = document.createElement('ul');
-var DL = document.createElement('dl');
-var SELECT = document.createElement('select');
-var MENU = document.createElement('menu');
+function createElement(name) {
+  if (typeof window != 'undefined') {
+    return document.createElement(name);
+  }
+}
+
+var NODE = createElement('div');
+var TABLE = createElement('table');
+var TBODY = createElement('tbody');
+var TR = createElement('tr');
+var UL = createElement('ul');
+var DL = createElement('dl');
+var SELECT = createElement('select');
+var MENU = createElement('menu');
 
 exports.default = {
   NODE: NODE,
