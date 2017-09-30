@@ -75,5 +75,8 @@ if(typeof window != 'undefined') {
     });
   }
 }
+else if(typeof global != 'undefined') {
+  global.migi = migi;
+}
 
 export default migi;

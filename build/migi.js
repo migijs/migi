@@ -133,6 +133,8 @@ if (typeof window != 'undefined') {
       _Fastclick2.default.attach(document.body);
     });
   }
+} else if (typeof global != 'undefined') {
+  global.migi = migi;
 }
 
 exports.default = migi;

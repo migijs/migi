@@ -21,4 +21,4 @@ script:
 sudo: false
 
 addons:
-  firefox: "49.0"
+  firefox: "45.0"
