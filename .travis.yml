@@ -22,6 +22,3 @@ sudo: false
 
 addons:
   chrome: stable
-  apt:
-    packages:
-      - oracle-java8-set-default
