@@ -1,6 +1,6 @@
 {
   "name": "migi",
-`  "version": "3.9.0",
+  "version": "3.9.0",
   "description": "A JavaScript MVVM on JSX",
   "maintainers": [
     {
@@ -39,8 +39,8 @@
     "jaw": "~3.0.0"
   },
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-preset-es2015": "^6.22.0",
+    "babel-core": "~6.23.1",
+    "babel-preset-es2015": "~6.22.0",
     "blanket": "~1.1.7",
     "coveralls": "~2.11.2",
     "expect.js": "~0.3.1",
@@ -55,14 +55,7 @@
   },
   "main": "./index",
   "engines": {
-    "node": ">= 4.2"
-  },
-  "spm": {
-    "main": "./index.js",
-    "output": [
-      "./index.js"
-    ],
-    "registry": "http://spm.alipay-inc.com"
+    "node": ">= 6.0"
   },
   "readmeFilename": "README.md"
 }
