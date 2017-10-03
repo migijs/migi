@@ -129,6 +129,13 @@ var Component = function (_Element) {
       }
       return this.__virtualDom.toString();
     }
+    //@override
+
+  }, {
+    key: 'preString',
+    value: function preString() {
+      this.toString();
+    }
   }, {
     key: 'findChild',
     value: function findChild(name) {

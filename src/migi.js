@@ -28,7 +28,7 @@ var migi = {
     return element.toString();
   },
   preExist(element) {
-    element.toString();
+    element.preString();
     return element.emit(Event.DOM);
   },
   createCp(cp, props, children) {

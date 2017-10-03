@@ -157,6 +157,23 @@ class VirtualDom extends Element {
     res +='</' + self.name + '>';
     return res;
   }
+  //@override
+  preString() {
+    var self = this;
+    //处理属性
+    for(var i = 0, len = self.__props.length; i < len; i++) {
+      var item = self.__props[i];
+      self.__renderProp(item[0], item[1]);
+    }
+    //使用jaw内联css需解析
+    if(self.__style) {
+      self.__match(true);
+    }
+    //:input要侦听数据绑定
+    self.__checkListener();
+    //渲染children
+    self.__renderChildren();
+  }
 
   //始终以缓存的props属性为准，哪怕更改了真实DOM的属性
   isFirst(children) {

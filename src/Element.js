@@ -95,6 +95,7 @@ class Element extends Event {
       this.once(Event.DOM, this.__onDom);
     }
   }
+  preString() {}
 
   __onDom() {
     this.__dom = true;

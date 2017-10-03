@@ -75,6 +75,11 @@ class Component extends Element {
     }
     return this.__virtualDom.toString();
   }
+  //@override
+  preString() {
+    this.toString();
+  }
+
   findChild(name) {
     return this.findChildren(name, true)[0];
   }
