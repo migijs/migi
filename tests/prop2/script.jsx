@@ -1,12 +1,10 @@
-var udf;
-
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind a = [1,2]
   render() {
-    return <div>{ this.a }</div>;
+    return <div><Inner a={ this.a }/></div>;
   }
 }
 
