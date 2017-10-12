@@ -152,8 +152,24 @@ class VirtualDom extends Element {
       return res + '/>';
     }
     res += '>';
+    //有dangerouslySetInnerHTML直接返回
+    if(self.props.dangerouslySetInnerHTML) {
+      var s = self.props.dangerouslySetInnerHTML;
+      if(s instanceof Obj) {
+        s = s.toSourceString();
+      }
+      else if(Array.isArray(s)) {
+        s = util.joinSourceArray(s);
+      }
+      else {
+        s = util.stringify(s);
+      }
+      res += s;
+    }
     //渲染children
-    res += self.__renderChildren();
+    else {
+      res += self.__renderChildren();
+    }
     res +='</' + self.name + '>';
     return res;
   }
@@ -353,9 +369,6 @@ class VirtualDom extends Element {
     else if(v instanceof Obj) {
       //特殊html不转义
       if(k == 'dangerouslySetInnerHTML') {
-        self.once(Event.DOM, function() {
-          self.element.innerHTML = v.toSourceString();
-        });
         return '';
       }
       var s = v.toString(true);
@@ -387,9 +400,6 @@ class VirtualDom extends Element {
     else {
       var s = Array.isArray(v) ? util.joinSourceArray(v) : util.stringify(v);
       if(k == 'dangerouslySetInnerHTML') {
-        self.once(Event.DOM, function() {
-          self.element.innerHTML = s;
-        });
         return '';
       }
       if(k == 'className') {

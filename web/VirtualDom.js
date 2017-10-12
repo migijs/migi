@@ -229,8 +229,22 @@ var VirtualDom = function (_Element) {
         return res + '/>';
       }
       res += '>';
+      //有dangerouslySetInnerHTML直接返回
+      if (self.props.dangerouslySetInnerHTML) {
+        var s = self.props.dangerouslySetInnerHTML;
+        if (s instanceof _Obj2.default) {
+          s = s.toSourceString();
+        } else if (Array.isArray(s)) {
+          s = _util2.default.joinSourceArray(s);
+        } else {
+          s = _util2.default.stringify(s);
+        }
+        res += s;
+      }
       //渲染children
-      res += self.__renderChildren();
+      else {
+          res += self.__renderChildren();
+        }
       res += '</' + self.name + '>';
       return res;
     }
@@ -462,9 +476,6 @@ var VirtualDom = function (_Element) {
       else if (v instanceof _Obj2.default) {
           //特殊html不转义
           if (k == 'dangerouslySetInnerHTML') {
-            self.once(_Event2.default.DOM, function () {
-              self.element.innerHTML = v.toSourceString();
-            });
             return '';
           }
           var s = v.toString(true);
@@ -494,9 +505,6 @@ var VirtualDom = function (_Element) {
         } else {
           var s = Array.isArray(v) ? _util2.default.joinSourceArray(v) : _util2.default.stringify(v);
           if (k == 'dangerouslySetInnerHTML') {
-            self.once(_Event2.default.DOM, function () {
-              self.element.innerHTML = s;
-            });
             return '';
           }
           if (k == 'className') {
