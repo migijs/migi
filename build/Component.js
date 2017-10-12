@@ -24,6 +24,10 @@ var _util = require('./util');
 
 var _util2 = _interopRequireDefault(_util);
 
+var _Obj = require('./Obj');
+
+var _Obj2 = _interopRequireDefault(_Obj);
+
 var _EventBus = require('./EventBus');
 
 var _EventBus2 = _interopRequireDefault(_EventBus);
@@ -78,19 +82,17 @@ var Component = function (_Element) {
     self.__bindHash = {}; //缩略语法中是否设置过默认值
     self.__ob = []; //被array们的__ob__引用
 
-    self.__props.forEach(function (item) {
+    self.__props.forEach(function (item, index) {
       var k = item[0];
       var v = item[1];
-      self.__init(k, v);
+      self.__init(k, v, index);
     });
-
-    // self.on(Event.DATA, self.__onData);
     return _this;
   }
 
   _createClass(Component, [{
     key: '__init',
-    value: function __init(k, v) {
+    value: function __init(k, v, index) {
       var self = this;
       if (/^on[a-zA-Z]/.test(k)) {
         var name = k.slice(2).toLowerCase();
@@ -104,6 +106,9 @@ var Component = function (_Element) {
         });
       } else if (k == 'model') {
         self.model = v;
+      } else if (v instanceof _Obj2.default) {
+        self.__props[index] = v.v;
+        self.props[k] = v.v;
       }
     }
     //需要被子类覆盖

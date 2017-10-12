@@ -2,6 +2,7 @@ import Event from './Event';
 import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
+import Obj from './Obj';
 import EventBus from './EventBus';
 import Model from './Model';
 import Stream from './Stream';
@@ -32,15 +33,13 @@ class Component extends Element {
     self.__bindHash = {}; //缩略语法中是否设置过默认值
     self.__ob = []; //被array们的__ob__引用
 
-    self.__props.forEach(function(item) {
+    self.__props.forEach(function(item, index) {
       var k = item[0];
       var v = item[1];
-      self.__init(k, v);
+      self.__init(k, v, index);
     });
-
-    // self.on(Event.DATA, self.__onData);
   }
-  __init(k, v) {
+  __init(k, v, index) {
     var self = this;
     if(/^on[a-zA-Z]/.test(k)) {
       var name = k.slice(2).toLowerCase();
@@ -56,6 +55,10 @@ class Component extends Element {
     }
     else if(k == 'model') {
       self.model = v;
+    }
+    else if(v instanceof Obj) {
+      self.__props[index] = v.v;
+      self.props[k] = v.v;
     }
   }
   //需要被子类覆盖
