@@ -20,7 +20,7 @@ module.exports = {
   'click': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref="1"]', '1&lt;div>3')
+      .assert.containsText('#test [ref="1"]', '1<div>3')
       .assert.attributeEquals('#test [ref="1"]', 'test', '1<div>3')
       .assert.containsText('#test [ref="2"]', '1&nbsp;&nbsp;3')
       .assert.attributeEquals('#test [ref="2"]', 'test', '1&nbsp;&nbsp;3')
