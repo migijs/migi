@@ -6,7 +6,7 @@ module.exports = {
     browser
       .url('file://' + path.join(__dirname, 'index.html'))
       .waitForElementVisible('body', 1000)
-      .assert.containsText('#test [ref="1"]', '1&lt;div>2')
+      .assert.containsText('#test [ref="1"]', '1<div>2')
       .assert.attributeEquals('#test [ref="1"]', 'test', '1<div>2')
       .assert.containsText('#test [ref="2"]', '1&nbsp;&nbsp;2')
       .assert.attributeEquals('#test [ref="2"]', 'test', '1  2')
@@ -20,7 +20,7 @@ module.exports = {
   'click': function(browser) {
     browser
       .click('#test p')
-      .assert.containsText('#test [ref="1"]', '1<div>3')
+      .assert.containsText('#test [ref="1"]', '1&lt;div>3')
       .assert.attributeEquals('#test [ref="1"]', 'test', '1<div>3')
       .assert.containsText('#test [ref="2"]', '1&nbsp;&nbsp;3')
       .assert.attributeEquals('#test [ref="2"]', 'test', '1&nbsp;&nbsp;3')

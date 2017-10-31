@@ -53,7 +53,7 @@ function join(index, children, history) {
         history.end = true;
         break;
       } else {
-        res += child.toString();
+        res += child.toSourceString();
       }
     } else if (child instanceof _Element2.default) {
       history.end = true;
@@ -104,14 +104,7 @@ function update(item, children, elem) {
   var now = textNode.textContent;
   if (res != now) {
     //textContent自动转义，保留空白
-    //有实体字符时也不能用textContent
-    if (/&([a-z]+|#\d+);/i.test(res)) {
-      var node = _browser2.default.NODE;
-      node.innerHTML = _util2.default.encodeHtml(res);
-      elem.replaceChild(node.firstChild, textNode);
-    } else {
-      textNode.textContent = res;
-    }
+    textNode.textContent = res;
   }
 }
 

@@ -32,7 +32,7 @@ function join(index, children, history) {
         break;
       }
       else {
-        res += child.toString();
+        res += child.toSourceString();
       }
     }
     else if(child instanceof Element) {
@@ -87,15 +87,7 @@ function update(item, children, elem) {
   var now = textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
-    //有实体字符时也不能用textContent
-    if(/&([a-z]+|#\d+);/i.test(res)) {
-      var node = browser.NODE;
-      node.innerHTML = util.encodeHtml(res);
-      elem.replaceChild(node.firstChild, textNode);
-    }
-    else {
-      textNode.textContent = res;
-    }
+    textNode.textContent = res;
   }
 }
 
