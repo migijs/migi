@@ -125,7 +125,10 @@ function stringify(s) {
 }
 
 function encodeHtml(s, prop) {
-  return prop ? s.replace(/"/g, '&quot;') : s.replace(/</g, '&lt;');
+  if (prop) {
+    return s.replace(/"/g, '&quot;');
+  }
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 }
 
 var util = {
