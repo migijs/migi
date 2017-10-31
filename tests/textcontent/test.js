@@ -13,7 +13,7 @@ module.exports = {
     browser
       .click('#test p')
       .assert.containsText('#test [ref="1"]', '1 2')
-      .assert.containsText('#test [ref="2"]', '1  2')
+      .assert.containsText('#test [ref="2"]', '1&nbsp;&nbsp;2')
       .end();
   }
 };

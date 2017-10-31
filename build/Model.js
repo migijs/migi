@@ -38,21 +38,19 @@ var Model = function (_Event) {
     _this.__bridgeHash = {}; //桥接记录
     _this.__bindHash = {}; //缩略语法中是否设置过默认值
     _this.__ob = []; //被array们的__ob__引用
-
-    // this.on(Event.DATA, this.__onData);
     return _this;
   }
 
   _createClass(Model, [{
     key: '__onData',
-    value: function __onData(k, caller) {
+    value: function __onData(k) {
+      console.log(k);
       k = 'model.' + k;
       this.__ref.forEach(function (cp) {
         //set触发数据变更时，若已DOM则打开开关
         if (cp.dom) {
           cp.__canData = true;
         }
-        // cp.emit(Event.DATA, k, caller);
         cp.__onData(k);
       });
     }

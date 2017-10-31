@@ -21,4 +21,4 @@ script:
 sudo: false
 
 addons:
-  chrome: stable
+  chrome: 61
