@@ -8,13 +8,13 @@ module.exports = {
       .waitForElementVisible('body', 1000)
       .assert.elementPresent('#test p')
       .assert.containsText('#test p', 'empty')
-      .click('#test div')
+      .click('#test strong')
       .assert.containsText('#test p', 'yes')
-      .click('#test div')
+      .click('#test strong')
       .assert.containsText('#test p', 'no')
-      .click('#test div')
+      .click('#test strong')
       .assert.containsText('#test p', 'yes')
-      .click('#test div')
+      .click('#test strong')
       .assert.containsText('#test p', 'no')
       .end();
   }

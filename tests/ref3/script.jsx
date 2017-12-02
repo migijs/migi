@@ -9,7 +9,7 @@ class Component extends migi.Component {
   }
   render() {
     return <div>
-      <div onClick={this.click}>click</div>
+      <strong onClick={this.click}>click</strong>
       <p ref="mes">empty</p>
       {
         this.d ? <Test ref="test"/> : ''
