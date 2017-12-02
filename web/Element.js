@@ -154,6 +154,30 @@ var Element = function (_Event) {
       }
     }
   }, {
+    key: '__delRef',
+    value: function __delRef() {
+      var k = this.props.ref;
+      if (!k) {
+        return;
+      }
+      var top = this.top;
+      if (top && top.ref) {
+        var ref = top.ref[k];
+        if (ref) {
+          if (ref === this) {
+            delete top.ref[k];
+          } else if (Array.isArray(ref)) {
+            for (var i = 0, len = ref.length; i < len; i++) {
+              if (ref[i] === this) {
+                ref.splice(i, 1);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }, {
     key: 'inTo',
     value: function inTo(dom) {
       this.clean();

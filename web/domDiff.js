@@ -636,6 +636,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               break;
             //DOM变TEXT
             case 1:
+              ovd.__delRef();
               _range2.default.record(history, option);
               var cns = elem.childNodes;
               //本身就是第1个，直接替换
@@ -708,6 +709,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               switch (ocp + ncp) {
                 //DOM名没变递归diff，否则重绘
                 case 0:
+                  ovd.__delRef();
                   if (ovd.name == nvd.name) {
                     ovd.__parent = parent;
                     ovd.__top = parent.top;
@@ -728,18 +730,19 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
                   break;
                 //Component和VirtualDom变化则直接重绘
                 default:
+                  ovd.__delRef();
                   elem = ovd.element;
                   elem.insertAdjacentHTML('afterend', nvd.toString());
                   elem.parentNode.removeChild(elem);
                   nvd.__parent = parent;
                   nvd.__top = parent.top;
                   //match中为模拟style的:active伪类注册了window的一些事件，需检查移除
-                  if (ncp) {
+                  if (ocp) {
                     _matchHash2.default.del(ovd.virtualDom.uid);
                   } else {
                     _matchHash2.default.del(ovd.uid);
-                    nvd.style = parent.style;
                   }
+                  nvd.style = parent.style;
                   nvd.emit(_Event2.default.DOM);
                   _hash2.default.set(nvd);
                   //缓存对象池

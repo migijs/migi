@@ -14,7 +14,7 @@ class Model extends Event {
     this.__ob = []; //被array们的__ob__引用
   }
 
-  __onData(k) {console.log(k)
+  __onData(k) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {
       //set触发数据变更时，若已DOM则打开开关
