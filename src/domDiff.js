@@ -685,6 +685,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               ovd.__parent = parent;
               ovd.__top = parent.top;
               diffVd(ovd, nvd);
+              nvd.__saveRef();
             }
             else {
               nvd.__parent = parent;
