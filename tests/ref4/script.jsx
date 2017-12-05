@@ -8,9 +8,9 @@ class Component extends migi.Component {
       {
         this.d
           ? <div>
-            <Test ref="a"/>
-            <p ref="b"/>
-          </div>
+              <Test ref="a"/>
+              <p ref="b"/>
+            </div>
           : <div>
             <p class="fn-placeholder-pic" ref="z"/>
             <p class="fn-placeholder-tags"/>
@@ -35,4 +35,4 @@ let c = migi.render(
   '#test'
 );
 c.d = true;
-document.getElementById('#test2').innerHTML = c.ref.a.name + "," + c.ref.b.name + "," + (c.ref.z ? '1' : '2');
+document.getElementById('test2').innerHTML = c.ref.a.name + "," + c.ref.b.name + "," + (c.ref.z ? '1' : '2');
