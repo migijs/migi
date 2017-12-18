@@ -16,6 +16,8 @@ import sort from './sort';
 import hash from './hash';
 import Fastclick from './Fastclick';
 
+var uid = 0;
+
 var migi = {
   render(element, dom) {
     if(dom) {
@@ -32,13 +34,13 @@ var migi = {
     return element.emit(Event.DOM);
   },
   createCp(cp, props, children) {
-    return hash.set(new cp(props, children));
+    return hash.set(new cp(uid++, props, children));
   },
   createVd(name, props, children) {
     if(name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
-    return hash.set(cachePool.index ? cachePool.get().__reset(name, props, children) : new VirtualDom(name, props, children));
+    return hash.set(cachePool.index ? cachePool.get().__reset(uid++, name, props, children) : new VirtualDom(uid++, name, props, children));
   },
   Event,
   Model,
@@ -61,6 +63,26 @@ var migi = {
     if(Component.prototype.isPrototypeOf(Class.prototype)) {
       Class.__migiName = name;
     }
+  },
+  resetUid: function() {
+    uid = 0;
+  },
+  clone: function() {
+    var clone = Object.create(migi);
+    var uid = 0;
+    clone.createCp = function(cp, props, children) {
+      return hash.set(new cp(uid++, props, children));
+    };
+    clone.createVd = function(name, props, children) {
+      if(name == 'style' || name == 'script') {
+        throw new Error('can not create VirtualDom of: ' + name);
+      }
+      return hash.set(cachePool.index ? cachePool.get().__reset(uid++, name, props, children) : new VirtualDom(uid++, name, props, children));
+    };
+    clone.resetUid = function() {
+      uid = 0;
+    };
+    return clone;
   }
 };
 

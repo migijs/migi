@@ -104,12 +104,12 @@ function __findEq(name, child, res, first) {
 }
 
 class VirtualDom extends Element {
-  constructor(name, props = [], children = []) {
+  constructor(uid, name, props = [], children = []) {
     //自闭合标签不能有children
     if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren: ' + name);
     }
-    super(name, props, children);
+    super(uid, name, props, children);
 
     var self = this;
     self.__names = null; //从Component根节点到自己的tagName列表，以便css计算
@@ -949,8 +949,8 @@ class VirtualDom extends Element {
     childParent(children, self);
   }
   //@overwrite
-  __reset(name, props = [], children = []) {
-    super.__reset(name, props, children);
+  __reset(uid, name, props = [], children = []) {
+    super.__reset(uid, name, props, children);
     this.__init(name, children);
     this.__hasDes = false;
     return this;

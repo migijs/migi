@@ -1,8 +1,6 @@
 import Event from './Event';
 import util from './util';
 
-var uid = 0;
-
 function getDom(dom) {
   if(util.isString(dom)) {
     return document.querySelector(dom);
@@ -52,12 +50,12 @@ function spread(arr) {
 }
 
 class Element extends Event {
-  constructor(name, props, children) {
+  constructor(uid, name, props, children) {
     super();
-    this.__reset(name, props, children);
+    this.__reset(uid, name, props, children);
   }
-  __reset(name, props, children) {
-    this.uid = uid++;
+  __reset(uid, name, props, children) {
+    this.uid = uid;
     this.__name = name;
     //构建工具中都是arr，手写可能出现hash情况
     if(Array.isArray(props)) {
@@ -206,10 +204,6 @@ class Element extends Event {
   }
   get dom() {
     return this.__dom;
-  }
-
-  static resetUid() {
-    uid = 0;
   }
 }
 

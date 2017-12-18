@@ -171,9 +171,9 @@ function __findEq(name, child, res, first) {
 var VirtualDom = function (_Element) {
   _inherits(VirtualDom, _Element);
 
-  function VirtualDom(name) {
-    var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-    var children = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  function VirtualDom(uid, name) {
+    var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+    var children = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
     _classCallCheck(this, VirtualDom);
 
@@ -182,7 +182,7 @@ var VirtualDom = function (_Element) {
       throw new Error('self-close tag can not has chilren: ' + name);
     }
 
-    var _this = _possibleConstructorReturn(this, (VirtualDom.__proto__ || Object.getPrototypeOf(VirtualDom)).call(this, name, props, children));
+    var _this = _possibleConstructorReturn(this, (VirtualDom.__proto__ || Object.getPrototypeOf(VirtualDom)).call(this, uid, name, props, children));
 
     var self = _this;
     self.__names = null; //从Component根节点到自己的tagName列表，以便css计算
@@ -1076,11 +1076,11 @@ var VirtualDom = function (_Element) {
 
   }, {
     key: '__reset',
-    value: function __reset(name) {
-      var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-      var children = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+    value: function __reset(uid, name) {
+      var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+      var children = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
-      _get(VirtualDom.prototype.__proto__ || Object.getPrototypeOf(VirtualDom.prototype), '__reset', this).call(this, name, props, children);
+      _get(VirtualDom.prototype.__proto__ || Object.getPrototypeOf(VirtualDom.prototype), '__reset', this).call(this, uid, name, props, children);
       this.__init(name, children);
       this.__hasDes = false;
       return this;

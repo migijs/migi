@@ -17,9 +17,9 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
-  constructor(props = [], children = []) {
-    super(null, props, children);
-  
+  constructor(uid, props = [], children = []) {
+    super(uid, null, props, children);
+
     var self = this;
     self.__name = self.constructor.__migiName;
     self.__virtualDom = null; //根节点vd引用
