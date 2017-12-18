@@ -21,7 +21,7 @@ define(function(require, exports, module) {
           node.setAttribute('crossorigin', crossorigin);
         }
         script.async = true;
-        script.text = code;console.log(head);console.log(script);
+        script.text = code;
         head.appendChild(script);
       }
     }

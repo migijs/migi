@@ -17,8 +17,8 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
-  constructor(uid, props = [], children = []) {
-    super(uid, null, props, children);
+  constructor(props = [], children = []) {
+    super(-1, null, props, children);
 
     var self = this;
     self.__name = self.constructor.__migiName;

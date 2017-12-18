@@ -131,7 +131,7 @@ var migi = {
     var clone = Object.create(migi);
     var uid = 0;
     clone.createCp = function (cp, props, children) {
-      return _hash2.default.set(new cp(uid++, props, children));
+      return _hash2.default.set(new cp(props, children));
     };
     clone.createVd = function (name, props, children) {
       if (name == 'style' || name == 'script') {
