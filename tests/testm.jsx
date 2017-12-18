@@ -257,7 +257,7 @@ describe('Event', function() {
 
 describe('VirtualDom', function() {
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('instanceof', function() {
     var div = <div>123</div>;
@@ -324,7 +324,7 @@ describe('Component', function() {
     }
   }
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('instanceof', function() {
     var cmpn = new Component();
@@ -569,7 +569,7 @@ describe('css', function() {
     .toggle #sp{padding:8px}
   `;
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('simple', function() {
     class Component extends migi.Component {
@@ -849,7 +849,7 @@ describe('css', function() {
 
 describe('pseudo', function() {
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('first-child', function() {
     class Component extends migi.Component {
@@ -1175,7 +1175,7 @@ describe('pseudo', function() {
 
 describe('relation', function() {
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('>', function() {
     class Component extends migi.Component {
@@ -1220,7 +1220,7 @@ describe('relation', function() {
 
 describe('media query', function() {
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('width', function() {
     class Component extends migi.Component {
@@ -1317,7 +1317,7 @@ describe('media query', function() {
 
 describe('attr', function() {
   beforeEach(function() {
-    migi.Element.resetUid();
+    migi.resetUid();
   });
   it('novalue', function() {
     class Component extends migi.Component {
