@@ -17,8 +17,8 @@ const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mo
   'MSPointerUp', 'pointerup', 'MSPointerCancel', 'pointercancel'];
 
 class Component extends Element {
-  constructor(props = [], children = []) {
-    super(-1, null, props, children);
+  constructor(uid, props = [], children = []) {
+    super(uid, null, props, children);
 
     var self = this;
     self.__name = self.constructor.__migiName;
@@ -64,7 +64,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom('div', this.props, this.children);
+    return new VirtualDom(this.uid, 'div', this.props, this.children);
   }
   //@override
   toString() {
@@ -222,7 +222,7 @@ class Component extends Element {
     }
     self.__onData(k);
     self.emit(Event.DATA, k);
-    
+
     if(self.__bridgeHash) {
       if (!Array.isArray(k)) {
         k = [k];

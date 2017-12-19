@@ -64,14 +64,14 @@ var migi = {
       Class.__migiName = name;
     }
   },
-  resetUid: function() {
-    uid = 0;
+  resetUid: function(n) {
+    uid = n || 0;
   },
   clone: function() {
     var clone = Object.create(migi);
     var uid = 0;
     clone.createCp = function(cp, props, children) {
-      return hash.set(new cp(props, children));
+      return hash.set(new cp(uid++, props, children));
     };
     clone.createVd = function(name, props, children) {
       if(name == 'style' || name == 'script') {
@@ -79,8 +79,8 @@ var migi = {
       }
       return hash.set(cachePool.index ? cachePool.get().__reset(uid++, name, props, children) : new VirtualDom(uid++, name, props, children));
     };
-    clone.resetUid = function() {
-      uid = 0;
+    clone.resetUid = function(n) {
+      uid = n || 0;
     };
     return clone;
   }

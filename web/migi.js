@@ -124,14 +124,14 @@ var migi = {
       Class.__migiName = _name;
     }
   },
-  resetUid: function resetUid() {
-    uid = 0;
+  resetUid: function resetUid(n) {
+    uid = n || 0;
   },
   clone: function clone() {
     var clone = Object.create(migi);
     var uid = 0;
     clone.createCp = function (cp, props, children) {
-      return _hash2.default.set(new cp(props, children));
+      return _hash2.default.set(new cp(uid++, props, children));
     };
     clone.createVd = function (name, props, children) {
       if (name == 'style' || name == 'script') {
@@ -139,8 +139,8 @@ var migi = {
       }
       return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(uid++, name, props, children) : new _VirtualDom2.default(uid++, name, props, children));
     };
-    clone.resetUid = function () {
-      uid = 0;
+    clone.resetUid = function (n) {
+      uid = n || 0;
     };
     return clone;
   }

@@ -61,13 +61,13 @@ var STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mous
 var Component = function (_Element) {
   _inherits(Component, _Element);
 
-  function Component() {
-    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-    var children = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  function Component(uid) {
+    var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    var children = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
     _classCallCheck(this, Component);
 
-    var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this, -1, null, props, children));
+    var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this, uid, null, props, children));
 
     var self = _this;
     self.__name = self.constructor.__migiName;
@@ -117,7 +117,7 @@ var Component = function (_Element) {
   }, {
     key: 'render',
     value: function render() {
-      return new _VirtualDom2.default('div', this.props, this.children);
+      return new _VirtualDom2.default(this.uid, 'div', this.props, this.children);
     }
     //@override
 

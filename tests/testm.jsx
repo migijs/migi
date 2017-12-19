@@ -324,7 +324,7 @@ describe('Component', function() {
     }
   }
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('instanceof', function() {
     var cmpn = new Component();
@@ -349,7 +349,7 @@ describe('Component', function() {
     expect(cmpn.virtualDom.children.length).to.eql(1);
   });
   it('children', function() {
-    var cmpn = new Component({}, [<span></span>]);
+    var cmpn = new Component(0, {}, [<span></span>]);
     cmpn.toString();
     expect(cmpn.children.length).to.eql(1);
     expect(cmpn.children[0]).to.be.a(migi.VirtualDom);
@@ -366,16 +366,16 @@ describe('Component', function() {
         super(...data);
       }
     }
-    var cmpn = new Component({}, [<span></span>]);
-    expect(cmpn.toString()).to.eql('<div migi-uid="2"><span migi-uid="0"></span></div>');
+    var cmpn = new Component(0, {}, [<span></span>]);
+    expect(cmpn.toString()).to.eql('<div migi-uid="0"><span migi-uid="1"></span></div>');
   });
   it('findChild', function() {
-    var cmpn = new Component({}, [<span></span>]);
+    var cmpn = new Component(0, {}, [<span></span>]);
     cmpn.toString();
     expect(cmpn.findChild('span')).to.eql(cmpn.children[0]);
   });
   it('findChildren', function() {
-    var cmpn = new Component({}, [<span></span>]);
+    var cmpn = new Component(0, {}, [<span></span>]);
     cmpn.toString();
     expect(cmpn.findChildren('span')).to.eql([cmpn.children[0]]);
   });
@@ -569,7 +569,7 @@ describe('css', function() {
     .toggle #sp{padding:8px}
   `;
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('simple', function() {
     class Component extends migi.Component {
@@ -849,7 +849,7 @@ describe('css', function() {
 
 describe('pseudo', function() {
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('first-child', function() {
     class Component extends migi.Component {
@@ -1175,7 +1175,7 @@ describe('pseudo', function() {
 
 describe('relation', function() {
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('>', function() {
     class Component extends migi.Component {
@@ -1220,7 +1220,7 @@ describe('relation', function() {
 
 describe('media query', function() {
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('width', function() {
     class Component extends migi.Component {
@@ -1317,7 +1317,7 @@ describe('media query', function() {
 
 describe('attr', function() {
   beforeEach(function() {
-    migi.resetUid();
+    migi.resetUid(1);
   });
   it('novalue', function() {
     class Component extends migi.Component {
@@ -1455,22 +1455,22 @@ describe('bridge', function() {
     }
   }
   it('(target, name)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(0);
+    var c2 = new Component(1);
     c1.bridge(c2, 'a');
     c1.a = 1;
     expect(c2.a).to.eql(1);
   });
   it('(target, name, name)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(2);
+    var c2 = new Component(3);
     c1.bridge(c2, 'a', 'a');
     c1.a = 1;
     expect(c2.a).to.eql(1);
   });
   it('(target, name, function)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(4);
+    var c2 = new Component(5);
     c1.bridge(c2, 'a', function(v) {
       return v + 1;
     });
@@ -1478,8 +1478,8 @@ describe('bridge', function() {
     expect(c2.a).to.eql(2);
   });
   it('(target, name, name, function)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(6);
+    var c2 = new Component(7);
     c1.bridge(c2, 'a', 'a', function(v) {
       return v + 1;
     });
@@ -1487,8 +1487,8 @@ describe('bridge', function() {
     expect(c2.a).to.eql(2);
   });
   it('(target, object<String:String>)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(8);
+    var c2 = new Component(9);
     c1.bridge(c2, {
       a: 'a'
     });
@@ -1496,8 +1496,8 @@ describe('bridge', function() {
     expect(c2.a).to.eql(1);
   });
   it('(target, object<String:Function>)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(10);
+    var c2 = new Component(11);
     c1.bridge(c2, {
       a: function(v) {
         return v + 1;
@@ -1507,8 +1507,8 @@ describe('bridge', function() {
     expect(c2.a).to.eql(2);
   });
   it('(target, object<String:Object<name:String,middleware:Function>>)', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(12);
+    var c2 = new Component(13);
     c1.bridge(c2, {
       a: {
         name: 'a',
@@ -1521,8 +1521,8 @@ describe('bridge', function() {
     expect(c2.a).to.eql(2);
   });
   it('duplicate', function() {
-    var c1 = new Component();
-    var c2 = new Component();
+    var c1 = new Component(14);
+    var c2 = new Component(15);
     c1.bridge(c2, 'a');
     expect(function() {
       c1.bridge(c2, 'a');
