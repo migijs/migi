@@ -74,9 +74,8 @@ var _Fastclick2 = _interopRequireDefault(_Fastclick);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var uid = 0;
-
 var migi = {
+  uid: 0,
   render: function render(element, dom) {
     if (dom) {
       element.appendTo(dom);
@@ -93,13 +92,13 @@ var migi = {
     return element.emit(_Event2.default.DOM);
   },
   createCp: function createCp(cp, props, children) {
-    return _hash2.default.set(new cp(uid++, props, children));
+    return _hash2.default.set(new cp(this.uid++, props, children));
   },
   createVd: function createVd(name, props, children) {
     if (name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
-    return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(uid++, name, props, children) : new _VirtualDom2.default(uid++, name, props, children));
+    return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(this.uid++, name, props, children) : new _VirtualDom2.default(this.uid++, name, props, children));
   },
 
   Event: _Event2.default,
@@ -125,23 +124,11 @@ var migi = {
     }
   },
   resetUid: function resetUid(n) {
-    uid = n || 0;
+    this.uid = n || 0;
   },
   clone: function clone() {
     var clone = Object.create(migi);
-    var uid = 0;
-    clone.createCp = function (cp, props, children) {
-      return _hash2.default.set(new cp(uid++, props, children));
-    };
-    clone.createVd = function (name, props, children) {
-      if (name == 'style' || name == 'script') {
-        throw new Error('can not create VirtualDom of: ' + name);
-      }
-      return _hash2.default.set(_cachePool2.default.index ? _cachePool2.default.get().__reset(uid++, name, props, children) : new _VirtualDom2.default(uid++, name, props, children));
-    };
-    clone.resetUid = function (n) {
-      uid = n || 0;
-    };
+    clone.uid = 0;
     return clone;
   }
 };
