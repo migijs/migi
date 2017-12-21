@@ -16,9 +16,8 @@ import sort from './sort';
 import hash from './hash';
 import Fastclick from './Fastclick';
 
-var uid = 0;
-
 var migi = {
+  uid: 0,
   render(element, dom) {
     if(dom) {
       element.appendTo(dom);
@@ -34,13 +33,13 @@ var migi = {
     return element.emit(Event.DOM);
   },
   createCp(cp, props, children) {
-    return hash.set(new cp(uid++, props, children));
+    return hash.set(new cp(this.uid++, props, children));
   },
   createVd(name, props, children) {
     if(name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
-    return hash.set(cachePool.index ? cachePool.get().__reset(uid++, name, props, children) : new VirtualDom(uid++, name, props, children));
+    return hash.set(cachePool.index ? cachePool.get().__reset(this.uid++, name, props, children) : new VirtualDom(this.uid++, name, props, children));
   },
   Event,
   Model,
@@ -65,23 +64,11 @@ var migi = {
     }
   },
   resetUid: function(n) {
-    uid = n || 0;
+    this.uid = n || 0;
   },
   clone: function() {
     var clone = Object.create(migi);
-    var uid = 0;
-    clone.createCp = function(cp, props, children) {
-      return hash.set(new cp(uid++, props, children));
-    };
-    clone.createVd = function(name, props, children) {
-      if(name == 'style' || name == 'script') {
-        throw new Error('can not create VirtualDom of: ' + name);
-      }
-      return hash.set(cachePool.index ? cachePool.get().__reset(uid++, name, props, children) : new VirtualDom(uid++, name, props, children));
-    };
-    clone.resetUid = function(n) {
-      uid = n || 0;
-    };
+    clone.uid = 0;
     return clone;
   }
 };
