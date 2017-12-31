@@ -48,7 +48,7 @@ const TOUCH = {
 
 function convertSelector(selector) {
   if(selector instanceof Element) {
-    return selector.name + '[migi-uid="' + selector.uid + '"]';
+    return selector.name + '[migi-uid="' + selector.__uid + '"]';
   }
   return selector.replace(/(^|\s|,|])([A-Z][\w$]*)\b/, '$1[migi-name="$2"]');
 }
