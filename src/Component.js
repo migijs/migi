@@ -64,7 +64,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom(this.uid, 'div', this.props, this.children);
+    return new VirtualDom(this.__uid, 'div', this.props, this.children);
   }
   //@override
   toString() {
@@ -231,14 +231,14 @@ class Component extends Element {
         //分析桥接
         var bridge = self.__bridgeHash[k];
         if (bridge) {
-          var stream = self.__stream || new Stream(self.uid);
+          var stream = self.__stream || new Stream(self.__uid);
           var v = self[k];
           bridge.forEach(function(item) {
             var target = item.target;
             var name = item.name;
             var middleware = item.middleware;
-            if (!stream.has(target.uid)) {
-              stream.add(target.uid);
+            if (!stream.has(target.__uid)) {
+              stream.add(target.__uid);
               if (target instanceof EventBus) {
                 target.emit(Event.DATA, name, middleware ? middleware.call(self, v) : v, stream);
               }

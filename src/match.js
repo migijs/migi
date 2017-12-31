@@ -196,11 +196,11 @@ function match(names, classes, ids, style, virtualDom, first) {
           clearTimeout(timeout);
         }
         timeout = setTimeout(function() {
-          hash.get(virtualDom.uid).__updateStyle();
+          hash.get(virtualDom.__uid).__updateStyle();
         }, 100);
       }
       window.addEventListener('resize', resize);
-      matchHash.add(virtualDom.uid, resize);
+      matchHash.add(virtualDom.__uid, resize);
     }
   }
   sort(res, function(a, b) {
@@ -251,7 +251,7 @@ function matchSel(i, names, classes, ids, style, virtualDom, res, first, isChild
       if(first && item.hasOwnProperty('_:')) {
         item['_:'].forEach(function(pseudoItem) {
           pseudoItem[0].forEach(function(pseudo) {
-            var uid = virtualDom.uid;
+            var uid = virtualDom.__uid;
             switch(pseudo) {
               case 'hover':
                 function onHover() {

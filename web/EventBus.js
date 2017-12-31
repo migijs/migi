@@ -32,7 +32,7 @@ var EventBus = function (_Event) {
 
     var _this = _possibleConstructorReturn(this, (EventBus.__proto__ || Object.getPrototypeOf(EventBus)).call(this));
 
-    _this.uid = 'e' + uid++; //为数据流历史记录hack
+    _this.__uid = 'e' + uid++; //为数据流历史记录hack
     _this.__bridgeHash = {};
     _this.on(_Event3.default.DATA, _this.__brcb);
     return _this;
@@ -48,8 +48,8 @@ var EventBus = function (_Event) {
           var target = item.target;
           var name = item.name;
           var middleware = item.middleware;
-          if (!stream.has(target.uid)) {
-            stream.add(target.uid);
+          if (!stream.has(target.__uid)) {
+            stream.add(target.__uid);
             //必须大于桥接对象的sid才生效
             var tItem = migi.CacheComponent.getSid(target);
             if (stream.sid > tItem) {

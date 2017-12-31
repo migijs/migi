@@ -55,7 +55,7 @@ class Element extends Event {
     this.__reset(uid, name, props, children);
   }
   __reset(uid, name, props, children) {
-    this.uid = uid;
+    this.__uid = uid;
     this.__name = name;
     //构建工具中都是arr，手写可能出现hash情况
     if(Array.isArray(props)) {

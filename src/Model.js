@@ -6,7 +6,7 @@ var uid = 0;
 class Model extends Event {
   constructor() {
     super();
-    this.uid = 'm' + uid++;
+    this.__uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = []; //以ref为attr的vd快速访问引用
     this.__bridgeHash = {}; //桥接记录

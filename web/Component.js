@@ -117,7 +117,7 @@ var Component = function (_Element) {
   }, {
     key: 'render',
     value: function render() {
-      return new _VirtualDom2.default(this.uid, 'div', this.props, this.children);
+      return new _VirtualDom2.default(this.__uid, 'div', this.props, this.children);
     }
     //@override
 
@@ -294,14 +294,14 @@ var Component = function (_Element) {
           //分析桥接
           var bridge = self.__bridgeHash[k];
           if (bridge) {
-            var stream = self.__stream || new _Stream2.default(self.uid);
+            var stream = self.__stream || new _Stream2.default(self.__uid);
             var v = self[k];
             bridge.forEach(function (item) {
               var target = item.target;
               var name = item.name;
               var middleware = item.middleware;
-              if (!stream.has(target.uid)) {
-                stream.add(target.uid);
+              if (!stream.has(target.__uid)) {
+                stream.add(target.__uid);
                 if (target instanceof _EventBus2.default) {
                   target.emit(_Event2.default.DATA, name, middleware ? middleware.call(self, v) : v, stream);
                 }

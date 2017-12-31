@@ -144,7 +144,7 @@ class VirtualDom extends Element {
         }
       }
     }
-    res += ' migi-uid="' + self.uid + '"';
+    res += ' migi-uid="' + self.__uid + '"';
     //:input要侦听数据绑定
     self.__checkListener();
     //自闭合标签特殊处理
@@ -983,7 +983,7 @@ class VirtualDom extends Element {
     return this.__names || (this.__names = []);
   }
   get element() {
-    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.uid + '"]'));
+    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.__uid + '"]'));
   }
   get style() {
     return this.__style;

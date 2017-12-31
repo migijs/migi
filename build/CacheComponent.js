@@ -129,8 +129,8 @@ var CacheComponent = function (_Component) {
                       var target = item.target;
                       var name = item.name;
                       var middleware = item.middleware;
-                      if (!stream.has(target.uid)) {
-                        stream.add(target.uid);
+                      if (!stream.has(target.__uid)) {
+                        stream.add(target.__uid);
                         //必须大于桥接对象的sid才生效
                         var tItem = CacheComponent.getSid(target, name);
                         if (stream.sid > tItem) {
@@ -146,13 +146,13 @@ var CacheComponent = function (_Component) {
               } else if (self.__bridgeHash) {
                 var bridge = self.__bridgeHash[key];
                 if (bridge) {
-                  stream = new _Stream2.default(self.uid, temp[key]);
+                  stream = new _Stream2.default(self.__uid, temp[key]);
                   bridge.forEach(function (item) {
                     var target = item.target;
                     var name = item.name;
                     var middleware = item.middleware;
                     //作为主动发起数据变更方，第一位无需检查重复
-                    stream.add(target.uid);
+                    stream.add(target.__uid);
                     if (target instanceof _EventBus2.default) {
                       target.emit(_Event2.default.DATA, name, middleware ? middleware.call(self, self[key]) : self[key], stream);
                     } else {

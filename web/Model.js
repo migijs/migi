@@ -32,7 +32,7 @@ var Model = function (_Event) {
 
     var _this = _possibleConstructorReturn(this, (Model.__proto__ || Object.getPrototypeOf(Model)).call(this));
 
-    _this.uid = 'm' + uid++;
+    _this.__uid = 'm' + uid++;
     _this.__name = _this.constructor.__migiName;
     _this.__ref = []; //以ref为attr的vd快速访问引用
     _this.__bridgeHash = {}; //桥接记录

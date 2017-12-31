@@ -83,7 +83,7 @@ var Element = function (_Event) {
   _createClass(Element, [{
     key: '__reset',
     value: function __reset(uid, name, props, children) {
-      this.uid = uid;
+      this.__uid = uid;
       this.__name = name;
       //构建工具中都是arr，手写可能出现hash情况
       if (Array.isArray(props)) {

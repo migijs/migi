@@ -6,7 +6,7 @@ var uid = 0;
 class EventBus extends Event {
   constructor() {
     super();
-    this.uid = 'e' + uid++; //为数据流历史记录hack
+    this.__uid = 'e' + uid++; //为数据流历史记录hack
     this.__bridgeHash = {};
     this.on(Event.DATA, this.__brcb);
   }
@@ -18,8 +18,8 @@ class EventBus extends Event {
         var target = item.target;
         var name = item.name;
         var middleware = item.middleware;
-        if(!stream.has(target.uid)) {
-          stream.add(target.uid);
+        if(!stream.has(target.__uid)) {
+          stream.add(target.__uid);
           //必须大于桥接对象的sid才生效
           var tItem = migi.CacheComponent.getSid(target);
           if(stream.sid > tItem) {

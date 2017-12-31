@@ -380,7 +380,7 @@ function diffVd(ovd, nvd) {
   }
   //特殊的uid，以及一些引用赋给新vd
   var elem = ovd.element;
-  var props = ['uid', '__element', '__parent', '__top', '__style', '__dom', '__names'];
+  var props = ['__uid', '__element', '__parent', '__top', '__style', '__dom', '__names'];
   var i = props.length - 1;
   for (; i >= 0; i--) {
     var k = props[i];
@@ -723,7 +723,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
                     elem.insertAdjacentHTML('afterend', nvd.toString());
                     elem.parentNode.removeChild(elem);
                     nvd.emit(_Event2.default.DOM);
-                    _matchHash2.default.del(ovd.uid);
+                    _matchHash2.default.del(ovd.__uid);
                     _hash2.default.set(nvd);
                     //缓存对象池
                     _cachePool2.default.add(ovd.__destroy());
@@ -739,9 +739,9 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
                   nvd.__top = parent.top;
                   //match中为模拟style的:active伪类注册了window的一些事件，需检查移除
                   if (ocp) {
-                    _matchHash2.default.del(ovd.virtualDom.uid);
+                    _matchHash2.default.del(ovd.virtualDom.__uid);
                   } else {
-                    _matchHash2.default.del(ovd.uid);
+                    _matchHash2.default.del(ovd.__uid);
                   }
                   nvd.style = parent.style;
                   nvd.emit(_Event2.default.DOM);
