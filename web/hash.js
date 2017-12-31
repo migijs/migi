@@ -10,7 +10,7 @@ exports.default = {
     return hash[k];
   },
   set: function set(elem) {
-    hash[elem.uid] = elem;
+    hash[elem.__uid] = elem;
     return elem;
   }
 };});

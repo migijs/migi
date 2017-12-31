@@ -5,7 +5,7 @@ export default {
     return hash[k];
   },
   set: function(elem) {
-    hash[elem.uid] = elem;
+    hash[elem.__uid] = elem;
     return elem;
   }
 };
