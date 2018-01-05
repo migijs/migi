@@ -14,7 +14,9 @@ import util from './util';
 import browser from './browser';
 import sort from './sort';
 import hash from './hash';
-import Fastclick from './Fastclick';
+import match from './match';
+import matchHash from './matchHash';
+import FastClick from './FastClick';
 
 var migi = {
   uid: 0,
@@ -57,7 +59,9 @@ var migi = {
   browser,
   sort,
   hash,
-  Fastclick,
+  match,
+  matchHash,
+  FastClick,
   name: function(Class, name) {
     if(Component.prototype.isPrototypeOf(Class.prototype)) {
       Class.__migiName = name;
@@ -76,11 +80,11 @@ var migi = {
 if(typeof window != 'undefined') {
   window.migi = migi;
   if(document.body) {
-    Fastclick.attach(document.body);
+    FastClick.attach(document.body);
   }
   else {
     document.addEventListener('DOMContentLoaded', function() {
-      Fastclick.attach(document.body);
+      FastClick.attach(document.body);
     });
   }
 }

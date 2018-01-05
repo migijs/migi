@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _VirtualDom = require('./VirtualDom');
-
-var _VirtualDom2 = _interopRequireDefault(_VirtualDom);
-
 var _Event = require('./Event');
 
 var _Event2 = _interopRequireDefault(_Event);

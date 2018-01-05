@@ -68,9 +68,17 @@ var _hash = require('./hash');
 
 var _hash2 = _interopRequireDefault(_hash);
 
-var _Fastclick = require('./Fastclick');
+var _match = require('./match');
 
-var _Fastclick2 = _interopRequireDefault(_Fastclick);
+var _match2 = _interopRequireDefault(_match);
+
+var _matchHash = require('./matchHash');
+
+var _matchHash2 = _interopRequireDefault(_matchHash);
+
+var _FastClick = require('./FastClick');
+
+var _FastClick2 = _interopRequireDefault(_FastClick);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -117,7 +125,9 @@ var migi = {
   browser: _browser2.default,
   sort: _sort2.default,
   hash: _hash2.default,
-  Fastclick: _Fastclick2.default,
+  match: _match2.default,
+  matchHash: _matchHash2.default,
+  FastClick: _FastClick2.default,
   name: function name(Class, _name) {
     if (_Component2.default.prototype.isPrototypeOf(Class.prototype)) {
       Class.__migiName = _name;
@@ -136,10 +146,10 @@ var migi = {
 if (typeof window != 'undefined') {
   window.migi = migi;
   if (document.body) {
-    _Fastclick2.default.attach(document.body);
+    _FastClick2.default.attach(document.body);
   } else {
     document.addEventListener('DOMContentLoaded', function () {
-      _Fastclick2.default.attach(document.body);
+      _FastClick2.default.attach(document.body);
     });
   }
 } else if (typeof global != 'undefined') {

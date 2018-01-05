@@ -1,4 +1,3 @@
-import VirtualDom from './VirtualDom';
 import Event from './Event';
 import sort from './sort';
 import hash from './hash';

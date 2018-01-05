@@ -40,9 +40,9 @@ var _Stream = require('./Stream');
 
 var _Stream2 = _interopRequireDefault(_Stream);
 
-var _Fastclick = require('./Fastclick');
+var _FastClick = require('./FastClick');
 
-var _Fastclick2 = _interopRequireDefault(_Fastclick);
+var _FastClick2 = _interopRequireDefault(_FastClick);
 
 var _array = require('./array');
 
@@ -272,8 +272,8 @@ var Component = function (_Element) {
       STOP.forEach(function (name) {
         elem.addEventListener(name, stopPropagation);
       });
-      //fastclick处理移动点击点透
-      _Fastclick2.default.attach(elem);
+      //FastClick处理移动点击点透
+      _FastClick2.default.attach(elem);
     }
   }, {
     key: '__data',
