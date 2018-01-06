@@ -1,4 +1,4 @@
-'use strict';
+define(function(require, exports, module){'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -839,4 +839,4 @@ FastClick.attach = function (layer, options) {
   return new FastClick(layer, options);
 };
 
-exports.default = FastClick;
+exports.default = FastClick;});
