@@ -117,7 +117,7 @@ var Component = function (_Element) {
   }, {
     key: 'render',
     value: function render() {
-      throw new Error(this.__name + ' must implement abstract method render');
+      return new _VirtualDom2.default(this.__uid, 'div', this.props, this.children);
     }
     //@override
 

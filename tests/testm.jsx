@@ -362,10 +362,8 @@ describe('Component', function() {
         super(...data);
       }
     }
-    expect(function() {
-      var c = new Component(0, {}, [<span></span>]);
-      c.toString();
-    }).to.throwError();
+    var cmpn = new Component(0, {}, [<span></span>]);
+    expect(cmpn.toString()).to.eql('<div migi-uid="0"><span migi-uid="1"></span></div>');
   });
   it('findChild', function() {
     var cmpn = new Component(0, {}, [<span></span>]);
