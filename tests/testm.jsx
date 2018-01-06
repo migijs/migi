@@ -363,7 +363,8 @@ describe('Component', function() {
       }
     }
     expect(function() {
-      new Component(0, {}, [<span></span>]);
+      var c = new Component(0, {}, [<span></span>]);
+      c.toString();
     }).to.throwError();
   });
   it('findChild', function() {
