@@ -64,7 +64,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom(this.__uid, 'div', this.props, this.children);
+    throw new Error(this.__name + ' must implement abstract method render');
   }
   //@override
   toString() {
