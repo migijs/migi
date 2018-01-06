@@ -15,26 +15,7 @@ import touch from './touch';
 import delegate from './delegate';
 import matchUtil from './matchUtil';
 import eventCaseName from './eventCaseName';
-
-const SELF_CLOSE = {
-  'img': true,
-  'meta': true,
-  'link': true,
-  'br': true,
-  'basefont': true,
-  'base': true,
-  'col': true,
-  'embed': true,
-  'frame': true,
-  'hr': true,
-  'input': true,
-  'keygen': true,
-  'area': true,
-  'param': true,
-  'source': true,
-  'track': true,
-  'wbr': true
-};
+import selfClose from './selfClose';
 
 const TOUCH = {
   'swipe': true,
@@ -106,7 +87,7 @@ function __findEq(name, child, res, first) {
 class VirtualDom extends Element {
   constructor(uid, name, props = [], children = []) {
     //自闭合标签不能有children
-    if(SELF_CLOSE.hasOwnProperty(name) && children.length) {
+    if(selfClose.hasOwnProperty(name) && children.length) {
       throw new Error('self-close tag can not has chilren: ' + name);
     }
     super(uid, name, props, children);
@@ -945,7 +926,7 @@ class VirtualDom extends Element {
 
   __init(name, children) {
     var self = this;
-    self.__selfClose = SELF_CLOSE.hasOwnProperty(name);
+    self.__selfClose = selfClose.hasOwnProperty(name);
     childParent(children, self);
   }
   //@overwrite

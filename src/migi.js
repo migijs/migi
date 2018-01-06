@@ -17,6 +17,7 @@ import hash from './hash';
 import match from './match';
 import matchHash from './matchHash';
 import attr from './attr';
+import selfClose from './selfClose';
 import FastClick from './FastClick';
 
 var migi = {
@@ -63,6 +64,7 @@ var migi = {
   match,
   matchHash,
   attr,
+  selfClose,
   FastClick,
   name: function(Class, name) {
     if(Component.prototype.isPrototypeOf(Class.prototype)) {

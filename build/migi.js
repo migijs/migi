@@ -80,6 +80,10 @@ var _attr = require('./attr');
 
 var _attr2 = _interopRequireDefault(_attr);
 
+var _selfClose = require('./selfClose');
+
+var _selfClose2 = _interopRequireDefault(_selfClose);
+
 var _FastClick = require('./FastClick');
 
 var _FastClick2 = _interopRequireDefault(_FastClick);
@@ -132,6 +136,7 @@ var migi = {
   match: _match2.default,
   matchHash: _matchHash2.default,
   attr: _attr2.default,
+  selfClose: _selfClose2.default,
   FastClick: _FastClick2.default,
   name: function name(Class, _name) {
     if (_Component2.default.prototype.isPrototypeOf(Class.prototype)) {

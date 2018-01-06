@@ -6,7 +6,7 @@ env:
     - secure: JmeSQ3AGCqhUVLkRz0jgZyxHyfINtdpYAbnKwDCeB9whYZ2KOeli8jO1fiqX0duaVhTicrTA2IfyuLnBuhT8MHiEOcoiNXdvs3NPGIA4hjB+chJ3Eg6rfGAoWk+wQE62qWjRF38v8/YDLqoRVjShdaBdHHwY/XC2fh7M52E1qv1ojl3xyxwNTGcHQ7LiWa8dIgO7r5tqZFKXa94AKXSDiokav03IyAqpE/ZHUcyTOQSg4DpPhmBhNkgDqjinKVIBKRFkD6GchmEt+PdGFfT4xuMBnbTjbghzSe6tGGYN1aWYe6X7fhwyvKcJbUBfFOTPDPe6NJPv/6YwcRDZ4o1kpVJowPSB67rFr7K7KPO6mNyhITQlwCpAxwAsCneRHkxBeV8b4aySifgtJW0clrPsG3jnZNmhGfk90lZkRlpI/ZgXK2a8UdJ2JafU8gzZfJlxALQOK5kkDV1FaWyLbuKAM8TVm1m2vIGe54pv/flYCjZQPQ1cCrmL0WDEbVPZD0EP8JCntD40ivCOlO1/V6ri36EgVcex9ucr624EMOSMfU98VT0RQ55ZTRAHJp5b/ag5IrmIRSV4qmgdOzqr88VmdeDJ7P1JEpvM06xYK3MPomqLOL4b1CztjFA8CupAwCnIaTA+oydCNqIVE+gvhBYTO3ICMl9UQC5k11n79xGfBGU=
 
 node_js:
-  - 6.10
+  - 8.9
 
 before_script:
   - nightwatch --version
@@ -21,4 +21,4 @@ script:
 sudo: false
 
 addons:
-  chrome: 61
+  chrome: 63
