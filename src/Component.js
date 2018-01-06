@@ -49,7 +49,7 @@ class Component extends Element {
     }
     else if(/^on-[a-zA-Z\d_]/.test(k) && util.isFunction(v)) {
       var name = k.slice(3);
-      this.on(name, function(...data) {
+      self.on(name, function(...data) {
         v(...data);
       });
     }

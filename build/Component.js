@@ -101,7 +101,7 @@ var Component = function (_Element) {
         });
       } else if (/^on-[a-zA-Z\d_]/.test(k) && _util2.default.isFunction(v)) {
         var name = k.slice(3);
-        this.on(name, function () {
+        self.on(name, function () {
           v.apply(undefined, arguments);
         });
       } else if (k == 'model') {
