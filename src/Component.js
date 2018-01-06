@@ -64,7 +64,7 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom(this.__uid, 'div', this.props, this.children);
+    return new VirtualDom(this.__uid, 'div', this.__props, this.children);
   }
   //@override
   toString() {
@@ -299,8 +299,7 @@ class Component extends Element {
     if(this.__bindHash.hasOwnProperty(name)) {
       return false;
     }
-    this.__bindHash[name] = true;
-    return true;
+    return this.__bindHash[name] = true;
   }
   __getBind(name) {
     return this[name + '__'];

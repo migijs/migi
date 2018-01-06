@@ -117,7 +117,7 @@ var Component = function (_Element) {
   }, {
     key: 'render',
     value: function render() {
-      return new _VirtualDom2.default(this.__uid, 'div', this.props, this.children);
+      return new _VirtualDom2.default(this.__uid, 'div', this.__props, this.children);
     }
     //@override
 
@@ -369,8 +369,7 @@ var Component = function (_Element) {
       if (this.__bindHash.hasOwnProperty(name)) {
         return false;
       }
-      this.__bindHash[name] = true;
-      return true;
+      return this.__bindHash[name] = true;
     }
   }, {
     key: '__getBind',
