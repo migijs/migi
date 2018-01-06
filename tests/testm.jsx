@@ -1,13 +1,9 @@
 var expect = require('expect.js');
-var fs = require('fs');
-var path = require('path');
 
 require('./hack');
 require('migi-es6-shim');
 
 var migi = require('../');
-var lefty = require('lefty');
-var jaw = require('jaw');
 
 global.migi = migi;
 
@@ -366,8 +362,9 @@ describe('Component', function() {
         super(...data);
       }
     }
-    var cmpn = new Component(0, {}, [<span></span>]);
-    expect(cmpn.toString()).to.eql('<div migi-uid="0"><span migi-uid="1"></span></div>');
+    expect(function() {
+      new Component(0, {}, [<span></span>]);
+    }).to.throwError();
   });
   it('findChild', function() {
     var cmpn = new Component(0, {}, [<span></span>]);
