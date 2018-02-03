@@ -18,7 +18,7 @@ before_script:
 script:
   - make test
 
-sudo: false
+sudo: true
 
 addons:
-  chrome: 63
+  chrome: stable
