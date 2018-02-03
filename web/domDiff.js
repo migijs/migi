@@ -512,7 +512,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
     if (option.first) {
       _range2.default.record(history, option);
     }
-    switch (os + ns) {
+    switch (os | ns) {
       //都是空数组
       case 0:
         option.state = TEXT_TO_TEXT;
@@ -587,7 +587,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
           var oe = ovd instanceof _Element2.default && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
           var ne = nvd instanceof _Element2.default && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
           //新老值是否为DOM或TEXT分4种情况
-          switch (oe + ne) {
+          switch (oe | ne) {
             //都是text时，根据上个节点类型和history设置range
             case 0:
               if (!option.first) {
@@ -706,7 +706,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               }
               var ocp = ovd instanceof _Component2.default ? 1 : 0;
               var ncp = nvd instanceof _Component2.default ? 2 : 0;
-              switch (ocp + ncp) {
+              switch (ocp | ncp) {
                 //DOM名没变递归diff，否则重绘
                 case 0:
                   ovd.__delRef();
