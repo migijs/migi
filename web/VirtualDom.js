@@ -951,6 +951,10 @@ var VirtualDom = function (_Element) {
           if (child instanceof VirtualDom) {
             child.__onData(k);
           }
+          // bindProperty #37
+          else {
+              child.__notifyBindProperty(k);
+            }
           option.start++;
           //前面的文本再加一次
           if (!option.first && option.prev == _type2.default.TEXT) {

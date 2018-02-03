@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "A JavaScript MVVM on JSX",
   "maintainers": [
     {
@@ -35,8 +35,8 @@
   "dependencies": {
     "es5-shim": "*",
     "migi-es6-shim": "*",
-    "lefty": "~3.8.0",
-    "jaw": "~3.0.0"
+    "lefty": "~4.0.0",
+    "jaw": "~4.0.0"
   },
   "devDependencies": {
     "babel-core": "~6.23.1",

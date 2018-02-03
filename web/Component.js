@@ -76,11 +76,12 @@ var Component = function (_Element) {
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
     self.__allowPropagation = true; //默认是否允许冒泡
-    // self.__bridgeHash = {}; //桥接记录
+    // self.__bridgeHash = {}; //桥接记录，延迟初始化
     self.__stream = null; //桥接过程中传递的stream对象
     self.__canData = false; //防止添加至DOM前触发无谓的数据更新
     self.__bindHash = {}; //缩略语法中是否设置过默认值
     self.__ob = []; //被array们的__ob__引用
+    self.__bindProperty = {}; //@property语法，出现在组件属性上时联动父层@bind值更新
 
     self.__props.forEach(function (item, index) {
       var k = item[0];
@@ -109,6 +110,7 @@ var Component = function (_Element) {
       } else if (v instanceof _Obj2.default) {
         self.__props[index] = v.v;
         self.props[k] = v.v;
+        self.__bindProperty[v.k] = [k, v];
       }
     }
     //需要被子类覆盖
@@ -333,6 +335,18 @@ var Component = function (_Element) {
         var child = this.children[i];
         if (child instanceof _VirtualDom2.default) {
           child.__onData(k);
+        }
+      }
+    }
+  }, {
+    key: '__notifyBindProperty',
+    value: function __notifyBindProperty(k) {
+      if (this.__bindProperty.hasOwnProperty(k)) {
+        var arr = this.__bindProperty[k];
+        var bindProperty = arr[0];
+        var obj = arr[1];
+        if (obj.update(obj.v)) {
+          this[bindProperty] = obj.v;
         }
       }
     }
