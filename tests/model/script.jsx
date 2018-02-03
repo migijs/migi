@@ -19,9 +19,12 @@ class Component extends migi.Component {
     super(...data);
     this.model = new Model();
   }
+  click() {
+    this.model.add();
+  }
   render() {
     return <div>
-      <p onClick={this.model.add}>click</p>
+      <p onClick={this.click}>click</p>
       <span>{this.model.count}</span>
     </div>;
   }

@@ -3,9 +3,6 @@ class Model extends migi.Model {
     super();
   }
   @bind arr = [1]
-  click() {
-    this.arr.push(2);
-  }
 }
 class Component extends migi.Component {
   constructor(...data) {
@@ -13,12 +10,11 @@ class Component extends migi.Component {
     this.model = new Model();
   }
   click() {
-    this.model.arr.push(3);
+    this.model.arr.push(2);
   }
   render() {
     return <div>
-      <p class="p1" onClick={this.model.click}>click1</p>
-      <p class="p2" onClick={this.click}>click2</p>
+      <p onClick={this.click}>click</p>
       <span>{ this.model.arr }</span>
     </div>;
   }
