@@ -3,6 +3,7 @@ import Element from './Element';
 import VirtualDom from './VirtualDom';
 import util from './util';
 import Obj from './Obj';
+import Cb from './Cb';
 import EventBus from './EventBus';
 import Model from './Model';
 import Stream from './Stream';
@@ -48,10 +49,15 @@ class Component extends Element {
         self.virtualDom.__addEvt(name, v);
       });
     }
-    else if(/^on-[a-zA-Z\d_]/.test(k) && util.isFunction(v)) {
+    else if(/^on-[a-zA-Z\d_]/.test(k)) {
       var name = k.slice(3);
       self.on(name, function(...data) {
-        v(...data);
+        if(v instanceof Cb) {
+          v.cb.call(v.context, ...data);
+        }
+        else {
+          cb(...data);
+        }
       });
     }
     else if(k == 'model') {

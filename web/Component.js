@@ -28,6 +28,10 @@ var _Obj = require('./Obj');
 
 var _Obj2 = _interopRequireDefault(_Obj);
 
+var _Cb = require('./Cb');
+
+var _Cb2 = _interopRequireDefault(_Cb);
+
 var _EventBus = require('./EventBus');
 
 var _EventBus2 = _interopRequireDefault(_EventBus);
@@ -100,10 +104,20 @@ var Component = function (_Element) {
         self.once(_Event2.default.DOM, function () {
           self.virtualDom.__addEvt(name, v);
         });
-      } else if (/^on-[a-zA-Z\d_]/.test(k) && _util2.default.isFunction(v)) {
+      } else if (/^on-[a-zA-Z\d_]/.test(k)) {
         var name = k.slice(3);
         self.on(name, function () {
-          v.apply(undefined, arguments);
+          for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
+            data[_key] = arguments[_key];
+          }
+
+          if (v instanceof _Cb2.default) {
+            var _v$cb;
+
+            (_v$cb = v.cb).call.apply(_v$cb, [v.context].concat(data));
+          } else {
+            cb.apply(undefined, data);
+          }
         });
       } else if (k == 'model') {
         self.model = v;
