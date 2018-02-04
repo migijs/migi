@@ -375,26 +375,23 @@ var Component = function (_Element) {
       self.emit(_Event2.default.DESTROY);
       self.__hash = {};
       self.__bridgeHash = null;
+      self.__bindProperty = null;
       return vd;
     }
   }, {
     key: '__initBind',
     value: function __initBind(name) {
-      if (this.__bindHash.hasOwnProperty(name)) {
-        return false;
-      }
-      return this.__bindHash[name] = true;
+      return !this.__bindHash.hasOwnProperty(name);
     }
   }, {
     key: '__getBind',
     value: function __getBind(name) {
-      return this[name + '__'];
+      return this.__bindHash[name];
     }
   }, {
     key: '__setBind',
     value: function __setBind(name, v) {
-      this.__bindHash[name] = true;
-      this[name + '__'] = v;
+      this.__bindHash[name] = v;
       this.__array(name, v);
     }
   }, {
