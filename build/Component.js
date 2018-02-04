@@ -116,7 +116,7 @@ var Component = function (_Element) {
 
             (_v$cb = v.cb).call.apply(_v$cb, [v.context].concat(data));
           } else {
-            cb.apply(undefined, data);
+            v.apply(undefined, data);
           }
         });
       } else if (k == 'model') {

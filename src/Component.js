@@ -56,7 +56,7 @@ class Component extends Element {
           v.cb.call(v.context, ...data);
         }
         else {
-          cb(...data);
+          v(...data);
         }
       });
     }
