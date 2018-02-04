@@ -529,9 +529,9 @@ class VirtualDom extends Element {
       }
       else if(Array.isArray(v)) {
         var ret;
-        v.forEach(function(item, i) {console.log(i,item);
+        v.forEach(function(item, i) {
           var cb = item[1];
-          var res = delegate(e, item[0], self);console.log(res);
+          var res = delegate(e, item[0], self);
           if(res[0]) {
             if(cb instanceof Cb && util.isFunction(cb.cb)) {
               if(i) {

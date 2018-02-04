@@ -638,9 +638,8 @@ var VirtualDom = function (_Element) {
         } else if (Array.isArray(v)) {
           var ret;
           v.forEach(function (item, i) {
-            console.log(i, item);
             var cb = item[1];
-            var res = (0, _delegate2.default)(e, item[0], self);console.log(res);
+            var res = (0, _delegate2.default)(e, item[0], self);
             if (res[0]) {
               if (cb instanceof _Cb2.default && _util2.default.isFunction(cb.cb)) {
                 if (i) {
