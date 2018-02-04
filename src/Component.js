@@ -305,20 +305,17 @@ class Component extends Element {
     self.emit(Event.DESTROY);
     self.__hash = {};
     self.__bridgeHash = null;
+    self.__bindProperty = null;
     return vd;
   }
   __initBind(name) {
-    if(this.__bindHash.hasOwnProperty(name)) {
-      return false;
-    }
-    return this.__bindHash[name] = true;
+    return !this.__bindHash.hasOwnProperty(name);
   }
   __getBind(name) {
-    return this[name + '__'];
+    return this.__bindHash[name];
   }
   __setBind(name, v) {
-    this.__bindHash[name] = true;
-    this[name + '__'] = v;
+    this.__bindHash[name] = v;
     this.__array(name, v);
   }
   __array(name, v) {
