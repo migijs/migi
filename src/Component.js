@@ -53,7 +53,9 @@ class Component extends Element {
       var name = k.slice(3);
       self.on(name, function(...data) {
         if(v instanceof Cb) {
-          v.cb.call(v.context, ...data);
+          if(util.isFunction(v.cb)) {
+            v.cb.call(v.context, ...data);
+          }
         }
         else if(util.isFunction(v)) {
           v(...data);

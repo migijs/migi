@@ -112,9 +112,11 @@ var Component = function (_Element) {
           }
 
           if (v instanceof _Cb2.default) {
-            var _v$cb;
+            if (_util2.default.isFunction(v.cb)) {
+              var _v$cb;
 
-            (_v$cb = v.cb).call.apply(_v$cb, [v.context].concat(data));
+              (_v$cb = v.cb).call.apply(_v$cb, [v.context].concat(data));
+            }
           } else if (_util2.default.isFunction(v)) {
             v.apply(undefined, data);
           }
