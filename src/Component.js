@@ -55,7 +55,7 @@ class Component extends Element {
         if(v instanceof Cb) {
           v.cb.call(v.context, ...data);
         }
-        else {
+        else if(util.isFunction(v)) {
           v(...data);
         }
       });

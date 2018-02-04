@@ -115,7 +115,7 @@ var Component = function (_Element) {
             var _v$cb;
 
             (_v$cb = v.cb).call.apply(_v$cb, [v.context].concat(data));
-          } else {
+          } else if (_util2.default.isFunction(v)) {
             v.apply(undefined, data);
           }
         });
