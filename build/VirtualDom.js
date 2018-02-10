@@ -907,7 +907,7 @@ var VirtualDom = function (_Element) {
         var change = false;
         var vk = Array.isArray(k) ? 1 : 0;
         var ok = Array.isArray(child.k) ? 2 : 0;
-        switch (vk + ok) {
+        switch (vk | ok) {
           case 0:
             change = k == child.k;
             break;

@@ -38,7 +38,7 @@ function isOrigin(o) {
 function equal(a, b) {
   //vd常量
   if(a instanceof Element || b instanceof Element) {
-    return a == b;
+    return a === b;
   }
   if(isOrigin(a) || isOrigin(b)) {
     return a === b;
