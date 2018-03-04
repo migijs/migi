@@ -234,7 +234,7 @@ exports.default = {
       return true;
     }
     var className = s.match(/\.[a-z\d_-]+/ig);
-    if (className) {
+    if (className && vd.__cache.class) {
       for (var j = className.length - 1; j >= 0; j--) {
         if (!new RegExp('\\b' + className[j].slice(1) + '\\b', 'i').test(vd.__cache.class)) {
           return true;
@@ -242,7 +242,7 @@ exports.default = {
       }
     }
     var id = /#[a-z\d_-]+/i.exec(s);
-    if (id && id[0].toUpperCase() != vd.__cache.id.toUpperCase()) {
+    if (id && vd.__cache.id && id[0].toUpperCase() != vd.__cache.id.toUpperCase()) {
       return true;
     }
   }

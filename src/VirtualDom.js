@@ -331,6 +331,16 @@ class VirtualDom extends Element {
     }
     return -1;
   }
+  closest(sel) {
+    let cur = this;
+    while(cur && cur != this.top) {
+      if(matchUtil.nci(sel, cur)) {
+        cur = cur.parent;
+        continue;
+      }
+      return cur;
+    }
+  }
 
   __renderProp(k, v) {
     var self = this;

@@ -441,6 +441,18 @@ var VirtualDom = function (_Element) {
       return -1;
     }
   }, {
+    key: 'closest',
+    value: function closest(sel) {
+      var cur = this;
+      while (cur && cur != this.top) {
+        if (_matchUtil2.default.nci(sel, cur)) {
+          cur = cur.parent;
+          continue;
+        }
+        return cur;
+      }
+    }
+  }, {
     key: '__renderProp',
     value: function __renderProp(k, v) {
       var self = this;
