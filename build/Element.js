@@ -93,7 +93,7 @@ var Element = function (_Event) {
         this.props = props;
         this.__props = hash2arr(props);
       }
-      this.children = children;
+      this.__children = children;
 
       this.__element = null; //真实DOM引用
       this.__parent = null; //父vd或cp引用
@@ -245,6 +245,11 @@ var Element = function (_Event) {
     key: 'parent',
     get: function get() {
       return this.__parent;
+    }
+  }, {
+    key: 'children',
+    get: function get() {
+      return this.__children;
     }
   }, {
     key: 'name',

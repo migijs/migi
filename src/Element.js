@@ -66,7 +66,7 @@ class Element extends Event {
       this.props = props;
       this.__props = hash2arr(props);
     }
-    this.children = children;
+    this.__children = children;
 
     this.__element = null; //真实DOM引用
     this.__parent = null; //父vd或cp引用
@@ -198,6 +198,9 @@ class Element extends Event {
   }
   get parent() {
     return this.__parent;
+  }
+  get children() {
+    return this.__children;
   }
   get name() {
     return this.__name;
