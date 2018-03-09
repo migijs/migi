@@ -19,12 +19,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Obj = function () {
-  function Obj(k, context, cb) {
+  function Obj(k, context, cb, single) {
     _classCallCheck(this, Obj);
 
     this.k = k;
     this.context = context;
     this.cb = cb;
+    this.single = single;
     this.setV(cb.call(context));
   }
 

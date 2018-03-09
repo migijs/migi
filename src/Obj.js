@@ -2,10 +2,11 @@ import Element from './Element';
 import util from './util';
 
 class Obj {
-  constructor(k, context, cb) {
+  constructor(k, context, cb, single) {
     this.k = k;
     this.context = context;
     this.cb = cb;
+    this.single = single;
     this.setV(cb.call(context));
   }
   setV(v) {

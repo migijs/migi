@@ -295,13 +295,13 @@ var Component = function (_Element) {
     }
   }, {
     key: '__data',
-    value: function __data(k) {
+    value: function __data(k, opt) {
       var self = this;
       //set触发数据变更时，若已DOM则打开开关
       if (self.dom) {
         self.__canData = true;
       }
-      self.__onData(k);
+      self.__onData(k, opt);
       self.emit(_Event2.default.DATA, k);
 
       if (self.__bridgeHash) {
@@ -339,18 +339,18 @@ var Component = function (_Element) {
 
   }, {
     key: '__onData',
-    value: function __onData(k) {
+    value: function __onData(k, opt) {
       //未DOM或开关时不触发更新
       if (!this.dom || !this.canData) {
         return;
       }
       if (this.virtualDom) {
-        this.virtualDom.__onData(k);
+        this.virtualDom.__onData(k, opt);
       }
       for (var i = 0, len = this.children.length; i < len; i++) {
         var child = this.children[i];
         if (child instanceof _VirtualDom2.default) {
-          child.__onData(k);
+          child.__onData(k, opt);
         }
       }
     }
@@ -422,8 +422,8 @@ var Component = function (_Element) {
         if (v.__ob__.indexOf(self) == -1) {
           self.__ob.push(v);
           v.__ob__.push(self);
-          v.__cb__.push(function () {
-            self[name] = self[name];
+          v.__cb__.push(function (opt) {
+            self.__data(name, opt);
           });
         }
       }

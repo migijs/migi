@@ -714,7 +714,7 @@ class VirtualDom extends Element {
     }
   }
   //@override
-  __onData(k) {
+  __onData(k, opt) {
     var self = this;
     //尚未添加到dom时无效
     if(!self.dom) {
@@ -762,11 +762,11 @@ class VirtualDom extends Element {
     }
     //利用索引更新，子节点可能为文本、Component、VirtualDom，以及数组
     //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
-    //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引
+    //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，index为vd索引
     //当文本节点时start不更新
     //Obj类型的判断type和count，及为文本时是否为空
     var ranges = [];
-    var option = { start: 0, record: [], first: true };
+    var option = { start: 0, record: [], first: true, method: opt && opt.method, args: opt && opt.args };
     var history;
     var children = self.children;
     for(var index = 0, len = children.length; index < len; index++) {
@@ -824,7 +824,7 @@ class VirtualDom extends Element {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff.diff(this.element, ov, child.v, ranges, option, history, this);
+          domDiff.diff(this.element, ov, child.v, ranges, option, history, this, child.single && option.method);
         }
         else {
           self.__checkObj(k, child.v, ranges, option, history);

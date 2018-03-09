@@ -13,7 +13,15 @@ var arrayMethods = Object.create(arrayProto);
       var result = original.apply(this, args);
       if(Array.isArray(this.__cb__)) {
         this.__cb__.forEach(function(cb) {
-          cb();
+          if(method == 'sort' || method == 'reverse') {
+            cb();
+          }
+          else {
+            cb({
+              method,
+              args,
+            });
+          }
         });
       }
       return result;

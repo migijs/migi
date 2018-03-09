@@ -224,13 +224,13 @@ class Component extends Element {
     //FastClick处理移动点击点透
     FastClick.attach(elem);
   }
-  __data(k) {
+  __data(k, opt) {
     var self = this;
     //set触发数据变更时，若已DOM则打开开关
     if(self.dom) {
       self.__canData = true;
     }
-    self.__onData(k);
+    self.__onData(k, opt);
     self.emit(Event.DATA, k);
 
     if(self.__bridgeHash) {
@@ -265,18 +265,18 @@ class Component extends Element {
     }
   }
   //@overwrite
-  __onData(k) {
+  __onData(k, opt) {
     //未DOM或开关时不触发更新
     if(!this.dom || !this.canData) {
       return;
     }
     if(this.virtualDom) {
-      this.virtualDom.__onData(k);
+      this.virtualDom.__onData(k, opt);
     }
     for(var i = 0, len = this.children.length; i < len; i++) {
       var child = this.children[i];
       if(child instanceof VirtualDom) {
-        child.__onData(k);
+        child.__onData(k, opt);
       }
     }
   }
@@ -336,8 +336,8 @@ class Component extends Element {
       if(v.__ob__.indexOf(self) == -1) {
         self.__ob.push(v);
         v.__ob__.push(self);
-        v.__cb__.push(function() {
-          self[name] = self[name];
+        v.__cb__.push(function(opt) {
+          self.__data(name, opt);
         });
       }
     }

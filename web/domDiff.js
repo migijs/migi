@@ -478,7 +478,7 @@ function diffVd(ovd, nvd) {
   _cachePool2.default.add(ovd.__destroy());
 }
 
-function diff(elem, ov, nv, ranges, option, history, parent) {
+function diff(elem, ov, nv, ranges, option, history, parent, list) {
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if (!option.first) {
     if (option.prev == _type2.default.TEXT) {
@@ -487,7 +487,11 @@ function diff(elem, ov, nv, ranges, option, history, parent) {
       option.state = DOM_TO_DOM;
     }
   }
-  diffChild(elem, ov, nv, ranges, option, history, parent);
+  if (list) {
+    diffList(elem, ov, nv, ranges, option, history, parent);
+  } else {
+    diffChild(elem, ov, nv, ranges, option, history, parent);
+  }
   //当最后一次对比是类型变换时记录，因为随后的text可能要更新
   if (!option.t2d && !option.d2t) {
     if (option.state == TEXT_TO_DOM) {
@@ -773,6 +777,83 @@ function check(option, elem, vd, ranges, history) {
     addRange(ranges, option);
     removeAt(elem, option.start + 1);
   }
+}
+
+function diffList(elem, ovd, nvd, ranges, option, history, parent) {
+  console.log(option);
+  var ol = ovd.length;
+  var nl = nvd.length;
+  var os = ol ? 1 : 0;
+  var ns = nl ? 2 : 0;
+  history.push(0);
+  if (option.first) {
+    _range2.default.record(history, option);
+  }
+  switch (os | ns) {
+    //都是空数组
+    case 0:
+      option.state = TEXT_TO_TEXT;
+      option.prev = _type2.default.TEXT;
+      break;
+    //有内容的数组变为空数组
+    case 1:
+      diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
+      var temp = {};
+      for (var i = 1; i < ol; i++) {
+        del(elem, ovd[i], ranges, option, temp, i == ol - 1);
+      }
+      break;
+    //空数组变为有内容
+    case 2:
+      diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
+      var temp = {};
+      for (var i = 1; i < nl; i++) {
+        history[history.length - 1] = i;
+        add(elem, nvd[i], ranges, option, history, temp, i == nl - 1, parent);
+      }
+      break;
+    //都有内容
+    case 3:
+      switch (option.method) {
+        case 'push':
+          traversal(elem, ovd, ranges, option, history);
+          add(elem, nvd[nvd.length - 1], ranges, option, history, {}, true, parent);
+          break;
+        case 'pop':
+          traversal(elem, nvd, ranges, option, history);
+          del(elem, ovd[ovd.length - 1], ranges, option, {}, true);
+          break;
+      }
+      break;
+  }
+  history.pop();
+  option.first = false;
+}
+
+function traversal(elem, vd, ranges, option, history) {
+  if (Array.isArray(vd)) {
+    vd.forEach(function (item) {
+      traversal(elem, item, ranges, option, history);
+    });
+  } else {
+    if (vd instanceof _Element2.default && !(vd instanceof migi.NonVisualComponent)) {
+      if (!option.first) {
+        delete option.t2d;
+        delete option.d2t;
+      }
+      option.state = DOM_TO_DOM;
+      option.prev = _type2.default.DOM;
+      option.start++;
+    } else {
+      if (!option.first) {
+        check(option, elem, vd, ranges, history);
+      }
+      _range2.default.record(history, option);
+      option.state = TEXT_TO_TEXT;
+      option.prev = _type2.default.TEXT;
+    }
+  }
+  option.first = false;
 }
 
 exports.default = {

@@ -1,6 +1,6 @@
 {
   "name": "migi",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "description": "A JavaScript MVVM on JSX",
   "maintainers": [
     {
@@ -35,7 +35,7 @@
   "dependencies": {
     "es5-shim": "*",
     "migi-es6-shim": "*",
-    "lefty": "~4.0.0",
+    "lefty": "~4.1.0",
     "jaw": "~4.0.0"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "gulp-util": "~3.0.1",
     "mocha": "~2.2.5",
     "mocha-lcov-reporter": "~0.0.2",
-    "nightwatch": "~0.9.6",
+    "nightwatch": "~0.9.20",
     "through2": "~2.0.0"
   },
   "main": "./index",
