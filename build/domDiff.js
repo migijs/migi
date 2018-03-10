@@ -515,6 +515,9 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
     switch (os | ns) {
       //都是空数组
       case 0:
+        if (option.state == TEXT_TO_DOM) {
+          insertAt(elem, elem.childNodes, option.start++, nvd, true);
+        }
         option.state = TEXT_TO_TEXT;
         option.prev = _type2.default.TEXT;
         break;
