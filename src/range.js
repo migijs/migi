@@ -87,7 +87,7 @@ function update(item, children, elem) {
   var now = textNode.textContent;
   if(res != now) {
     //textContent自动转义，保留空白
-    textNode.textContent = res;
+    textNode.textContent = res || '';
   }
 }
 

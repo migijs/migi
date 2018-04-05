@@ -1,5 +1,4 @@
 import Event from './Event';
-import Element from './Element';
 import Component from './Component';
 import Cb from './Cb';
 import util from './util';
@@ -16,6 +15,10 @@ const DOM_TO_TEXT = 0;
 const DOM_TO_DOM = 1;
 const TEXT_TO_DOM = 2;
 const TEXT_TO_TEXT = 3;
+const ADD_TEXT = 4; //之前是DOM，新增了TEXT可能对后面造成影响时
+const ADD_DOM = 5; //之前是TEXT，新增了DOM可能对后面造成影响时
+const DEL_TEXT = 6; //之前是DOM，删除了TEXT可能对后面造成影响时
+const DEL_DOM = 7; //之前是TEXT，删除了DOM可能对后面造成影响时
 
 function replaceWith(elem, cns, index, vd, isText) {
   //insertAdjacentHTML在插入text时浏览器行为表现不一致，ff会合并相邻text，chrome则不会
@@ -101,7 +104,7 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
     }
     history.pop();
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
+  else if(util.isDom(vd)) {
     vd.__parent = parent;
     vd.__top = parent.top;
     vd.style = parent.style;
@@ -207,7 +210,7 @@ function del(elem, vd, ranges, option, temp, last) {
       del(elem, vd[i], ranges, option, temp, last && i == len - 1);
     }
   }
-  else if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
+  else if(util.isDom(vd)) {
     if(temp.hasOwnProperty('prev')) {
       //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
       if(temp.prev == type.TEXT) {
@@ -340,6 +343,7 @@ function equalText(a, b) {
 
 function addRange(ranges, option) {
   var len = ranges.length;
+  //可能因为删除的原因使得<，存疑？
   if(!len || ranges[len - 1].start < option.start) {
     ranges.push({ start: option.start, index: option.record.slice() });
   }
@@ -444,9 +448,9 @@ function diffVd(ovd, nvd) {
   cachePool.add(ovd.__destroy());
 }
 
-function diff(elem, ov, nv, ranges, option, history, parent, list) {
+function diff(elem, ov, nv, ranges, option, history, parent, opt) {
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
-  if(!option.first) {
+  if(!option.first && option.state != TEXT_TO_TEXT && option.state != DOM_TO_DOM) {
     if(option.prev == type.TEXT) {
       option.state = TEXT_TO_TEXT;
     }
@@ -454,21 +458,21 @@ function diff(elem, ov, nv, ranges, option, history, parent, list) {
       option.state = DOM_TO_DOM;
     }
   }
-  if(list) {
-    diffList(elem, ov, nv, ranges, option, history, parent);
+  if(opt) {
+    diffList(elem, ov, nv, ranges, option, history, parent, opt);
   }
   else {
     diffChild(elem, ov, nv, ranges, option, history, parent);
   }
   //当最后一次对比是类型变换时记录，因为随后的text可能要更新
-  if(!option.t2d && !option.d2t) {
-    if(option.state == TEXT_TO_DOM) {
-      option.t2d = true;
-    }
-    else if(option.state == DOM_TO_TEXT) {
-      option.d2t = true;
-    }
-  }
+  // if(!option.t2d && !option.d2t) {
+  //   if(option.state == TEXT_TO_DOM) {
+  //     option.t2d = true;
+  //   }
+  //   else if(option.state == DOM_TO_TEXT) {
+  //     option.d2t = true;
+  //   }
+  // }
 }
 
 function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
@@ -488,7 +492,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
     switch(os | ns) {
       //都是空数组
       case 0:
-        if(option.state == TEXT_TO_DOM) {
+        if(option.state == TEXT_TO_DOM || option.state == ADD_DOM) {
           insertAt(elem, elem.childNodes, option.start++, nvd, true);
         }
         option.state = TEXT_TO_TEXT;
@@ -560,8 +564,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
   }
   //都不是数组
   else {
-    var oe = ovd instanceof Element && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
-    var ne = nvd instanceof Element && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
+    var oe = util.isDom(ovd) ? 1 : 0;
+    var ne = util.isDom(nvd) ? 2 : 0;
     //新老值是否为DOM或TEXT分4种情况
     switch(oe | ne) {
       //都是text时，根据上个节点类型和history设置range
@@ -757,16 +761,15 @@ function check(option, elem, vd, ranges, history) {
   }
 }
 
-function diffList(elem, ovd, nvd, ranges, option, history, parent) {
-  console.log(option);
+function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
   var ol = ovd.length;
   var nl = nvd.length;
   var os = ol ? 1 : 0;
   var ns = nl ? 2 : 0;
-  history.push(0);
-  if(option.first) {
-    range.record(history, option);
-  }
+  // history.push(0);
+  // if(option.first) {
+  //   range.record(history, option);
+  // }
   switch(os | ns) {
     //都是空数组
     case 0:
@@ -792,7 +795,7 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent) {
       break;
     //都有内容
     case 3:
-      switch(option.method) {
+      switch(opt.method) {
         case 'push':
           traversal(elem, ovd, ranges, option, history);
           add(elem, nvd[nvd.length - 1], ranges, option, history, {}, true, parent);
@@ -801,25 +804,65 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent) {
           traversal(elem, nvd, ranges, option, history);
           del(elem, ovd[ovd.length - 1], ranges, option, {}, true);
           break;
+        case 'unshift':
+          var args = opt.args[0];
+          var isDom = util.isDom(args);
+          var first = util.arrFirst(ovd);
+          var firstDom = util.isDom(first);
+          // 第一个位置比较简单，直接插入后继续遍历状态即可
+          if(option.first) {
+            if(isDom) {
+              add(elem, args, ranges, option, history, {}, false, parent);
+              option.start++;
+            }
+            else {
+              if(firstDom) {
+                insertAt(elem, elem.childNodes, 0, args, true);
+              }
+              else {console.log(JSON.stringify(ranges), JSON.stringify(option));
+                addRange(ranges, option);
+              }
+            }
+            traversal(elem, ovd, ranges, option, history);
+          }
+          else {
+            if(isDom) {
+              if(firstDom) {
+                insertAt(elem, elem.childNodes, 0, args, true);
+              }
+              option.start++;
+            }
+            else {
+              if(!firstDom) {
+                check(option, elem, nvd, ranges, history);
+              }
+            }
+            delete option.t2d;
+            delete option.d2t;
+          }
+          break;
+        case 'shift':
+          break;
       }
       break;
   }
-  history.pop();
   option.first = false;
 }
 
 function traversal(elem, vd, ranges, option, history) {
   if(Array.isArray(vd)) {
-    vd.forEach(function(item) {
-      traversal(elem, item, ranges, option, history);
-    });
+    history.push(0);
+    if(option.first) {
+      range.record(history, option);
+    }
+    for(var i = 0, len = vd.length; i < len; i++) {
+      history[history.length - 1] = i;
+      traversal(elem, vd[i], ranges, option, history);
+    }
+    history.pop();
   }
   else {
-    if(vd instanceof Element && !(vd instanceof migi.NonVisualComponent)) {
-      if(!option.first) {
-        delete option.t2d;
-        delete option.d2t;
-      }
+    if(util.isDom(vd)) {
       option.state = DOM_TO_DOM;
       option.prev = type.DOM;
       option.start++;
@@ -832,8 +875,8 @@ function traversal(elem, vd, ranges, option, history) {
       option.state = TEXT_TO_TEXT;
       option.prev = type.TEXT;
     }
+    option.first = false;
   }
-  option.first = false;
 }
 
 export default {

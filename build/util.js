@@ -131,6 +131,25 @@ function encodeHtml(s, prop) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 }
 
+function linear(arr, res) {
+  res = res || [];
+  if (Array.isArray(res)) {
+    res.forEach(function (item) {
+      res.push(item);
+    });
+  } else {
+    res.push(arr);
+  }
+  return res;
+}
+
+function arrFirst(arr) {
+  if (Array.isArray(arr)) {
+    return arrFirst(arr[0]);
+  }
+  return arr;
+}
+
 var util = {
   clone: function clone(obj) {
     return _clone(obj);
@@ -153,6 +172,12 @@ var util = {
   },
   joinSourceArray: function joinSourceArray(arr) {
     return _joinSourceArray(arr);
+  },
+
+  linear: linear,
+  arrFirst: arrFirst,
+  isDom: function isDom(obj) {
+    return obj instanceof _Element2.default && !(obj instanceof migi.NonVisualComponent);
   }
 };
 

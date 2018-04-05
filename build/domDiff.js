@@ -138,7 +138,7 @@ function add(elem, vd, ranges, option, history, temp, last, parent) {
       add(elem, item, ranges, option, history, temp, last && i == len - 1, parent);
     }
     history.pop();
-  } else if (vd instanceof _Element2.default && !(vd instanceof migi.NonVisualComponent)) {
+  } else if (_util2.default.isDom(vd)) {
     vd.__parent = parent;
     vd.__top = parent.top;
     vd.style = parent.style;
@@ -239,7 +239,7 @@ function del(elem, vd, ranges, option, temp, last) {
     for (var i = 0, len = vd.length; i < len; i++) {
       del(elem, vd[i], ranges, option, temp, last && i == len - 1);
     }
-  } else if (vd instanceof _Element2.default && !(vd instanceof migi.NonVisualComponent)) {
+  } else if (_util2.default.isDom(vd)) {
     if (temp.hasOwnProperty('prev')) {
       //刚删过t的话再d索引+1，并且还删过d则连带中间多余的t一并删除
       if (temp.prev == _type2.default.TEXT) {
@@ -478,7 +478,7 @@ function diffVd(ovd, nvd) {
   _cachePool2.default.add(ovd.__destroy());
 }
 
-function diff(elem, ov, nv, ranges, option, history, parent, list) {
+function diff(elem, ov, nv, ranges, option, history, parent, opt) {
   //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
   if (!option.first) {
     if (option.prev == _type2.default.TEXT) {
@@ -487,8 +487,8 @@ function diff(elem, ov, nv, ranges, option, history, parent, list) {
       option.state = DOM_TO_DOM;
     }
   }
-  if (list) {
-    diffList(elem, ov, nv, ranges, option, history, parent);
+  if (opt) {
+    diffList(elem, ov, nv, ranges, option, history, parent, opt);
   } else {
     diffChild(elem, ov, nv, ranges, option, history, parent);
   }
@@ -519,7 +519,7 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
     switch (os | ns) {
       //都是空数组
       case 0:
-        if (option.state == TEXT_TO_DOM) {
+        if (option.state == TEXT_TO_DOM || option.t2d) {
           insertAt(elem, elem.childNodes, option.start++, nvd, true);
         }
         option.state = TEXT_TO_TEXT;
@@ -591,8 +591,8 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
       }
       //都不是数组
       else {
-          var oe = ovd instanceof _Element2.default && !(ovd instanceof migi.NonVisualComponent) ? 1 : 0;
-          var ne = nvd instanceof _Element2.default && !(nvd instanceof migi.NonVisualComponent) ? 2 : 0;
+          var oe = _util2.default.isDom(ovd) ? 1 : 0;
+          var ne = _util2.default.isDom(nvd) ? 2 : 0;
           //新老值是否为DOM或TEXT分4种情况
           switch (oe | ne) {
             //都是text时，根据上个节点类型和history设置range
@@ -782,16 +782,16 @@ function check(option, elem, vd, ranges, history) {
   }
 }
 
-function diffList(elem, ovd, nvd, ranges, option, history, parent) {
-  console.log(option);
+function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
+  console.log(opt);
   var ol = ovd.length;
   var nl = nvd.length;
   var os = ol ? 1 : 0;
   var ns = nl ? 2 : 0;
-  history.push(0);
-  if (option.first) {
-    _range2.default.record(history, option);
-  }
+  // history.push(0);
+  // if(option.first) {
+  //   range.record(history, option);
+  // }
   switch (os | ns) {
     //都是空数组
     case 0:
@@ -817,7 +817,7 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent) {
       break;
     //都有内容
     case 3:
-      switch (option.method) {
+      switch (opt.method) {
         case 'push':
           traversal(elem, ovd, ranges, option, history);
           add(elem, nvd[nvd.length - 1], ranges, option, history, {}, true, parent);
@@ -826,24 +826,61 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent) {
           traversal(elem, nvd, ranges, option, history);
           del(elem, ovd[ovd.length - 1], ranges, option, {}, true);
           break;
+        case 'unshift':
+          var args = opt.args[0];
+          var isDom = _util2.default.isDom(args);
+          var first = _util2.default.arrFirst(ovd);
+          var firstDom = _util2.default.isDom(first);
+          // 第一个位置比较简单，直接插入后继续遍历状态即可
+          if (option.first) {
+            if (isDom) {
+              add(elem, args, ranges, option, history, {}, false, parent);
+              option.start++;
+            } else {
+              if (firstDom) {
+                insertAt(elem, elem.childNodes, 0, args, true);
+              } else {
+                console.log(JSON.stringify(ranges), JSON.stringify(option));
+                addRange(ranges, option);
+              }
+            }
+            traversal(elem, ovd, ranges, option, history);
+          } else {
+            if (isDom) {
+              if (firstDom) {
+                insertAt(elem, elem.childNodes, 0, args, true);
+              }
+              option.start++;
+            } else {
+              if (!firstDom) {
+                check(option, elem, nvd, ranges, history);
+              }
+            }
+            delete option.t2d;
+            delete option.d2t;
+          }
+          break;
+        case 'shift':
+          break;
       }
       break;
   }
-  history.pop();
   option.first = false;
 }
 
 function traversal(elem, vd, ranges, option, history) {
   if (Array.isArray(vd)) {
-    vd.forEach(function (item) {
-      traversal(elem, item, ranges, option, history);
-    });
+    history.push(0);
+    if (option.first) {
+      _range2.default.record(history, option);
+    }
+    for (var i = 0, len = vd.length; i < len; i++) {
+      history[history.length - 1] = i;
+      traversal(elem, vd[i], ranges, option, history);
+    }
+    history.pop();
   } else {
-    if (vd instanceof _Element2.default && !(vd instanceof migi.NonVisualComponent)) {
-      if (!option.first) {
-        delete option.t2d;
-        delete option.d2t;
-      }
+    if (_util2.default.isDom(vd)) {
       option.state = DOM_TO_DOM;
       option.prev = _type2.default.DOM;
       option.start++;
@@ -855,8 +892,8 @@ function traversal(elem, vd, ranges, option, history) {
       option.state = TEXT_TO_TEXT;
       option.prev = _type2.default.TEXT;
     }
+    option.first = false;
   }
-  option.first = false;
 }
 
 exports.default = {

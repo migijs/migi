@@ -126,6 +126,26 @@ function encodeHtml(s, prop) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 }
 
+function linear(arr, res) {
+  res = res || [];
+  if(Array.isArray(res)) {
+    res.forEach(function(item) {
+      res.push(item);
+    });
+  }
+  else {
+    res.push(arr);
+  }
+  return res;
+}
+
+function arrFirst(arr) {
+  if(Array.isArray(arr)) {
+    return arrFirst(arr[0]);
+  }
+  return arr;
+}
+
 var util = {
   clone(obj) {
     return clone(obj);
@@ -146,7 +166,12 @@ var util = {
   },
   joinSourceArray(arr) {
     return joinSourceArray(arr);
-  }
+  },
+  linear,
+  arrFirst,
+  isDom: function(obj) {
+    return obj instanceof Element && !(obj instanceof migi.NonVisualComponent);
+  },
 };
 
 export default util;

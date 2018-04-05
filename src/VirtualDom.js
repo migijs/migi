@@ -661,7 +661,7 @@ class VirtualDom extends Element {
         self.__checkBlank(item[i], option);
       }
     }
-    else if(item instanceof Element && !(item instanceof migi.NonVisualComponent)) {
+    else if(util.isDom(item)) {
       //前面的连续的空白节点需插入一个空TextNode
       if(option.empty) {
         self.__insertBlank(option.start);
@@ -762,18 +762,18 @@ class VirtualDom extends Element {
     }
     //利用索引更新，子节点可能为文本、Component、VirtualDom，以及数组
     //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
-    //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，index为vd索引
+    //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，history和record为vd索引
     //当文本节点时start不更新
     //Obj类型的判断type和count，及为文本时是否为空
     var ranges = [];
-    var option = { start: 0, record: [], first: true, method: opt && opt.method, args: opt && opt.args };
+    var option = { start: 0, record: [], first: true };
     var history;
     var children = self.children;
     for(var index = 0, len = children.length; index < len; index++) {
       var child = children[index];
       //history记录着当前child索引，可能它是个数组，递归记录
       history = [index];
-      self.__checkObj(k, child, ranges, option, history);
+      self.__checkObj(k, child, ranges, option, history, opt);
     }
     if(ranges.length) {
       //textarea特殊判断
@@ -787,7 +787,7 @@ class VirtualDom extends Element {
     }
   }
   //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __checkObj(k, child, ranges, option, history) {
+  __checkObj(k, child, ranges, option, history, opt) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -824,14 +824,14 @@ class VirtualDom extends Element {
         var ov = child.v;
         //对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff.diff(this.element, ov, child.v, ranges, option, history, this, child.single && option.method);
+          domDiff.diff(this.element, ov, child.v, ranges, option, history, this, child.single && opt);
         }
         else {
-          self.__checkObj(k, child.v, ranges, option, history);
+          self.__checkObj(k, child.v, ranges, option, history, opt);
         }
       }
       else {
-        self.__checkObj(k, child.v, ranges, option, history);
+        self.__checkObj(k, child.v, ranges, option, history, opt);
       }
     }
     //递归通知，增加索引
@@ -839,7 +839,7 @@ class VirtualDom extends Element {
       delete option.t2d;
       delete option.d2t;
       if(child instanceof VirtualDom) {
-        child.__onData(k);
+        child.__onData(k, opt);
       }
       // bindProperty #37
       else {
@@ -860,7 +860,7 @@ class VirtualDom extends Element {
           var item = child[i];
           history[history.length - 1] = i;
           //第1个同时作为children的第1个要特殊处理
-          self.__checkObj(k, item, ranges, option, history);
+          self.__checkObj(k, item, ranges, option, history, opt);
         }
         history.pop();
       }

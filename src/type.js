@@ -1,4 +1,4 @@
 export default {
   TEXT: 1,
-  DOM: 2
+  DOM: 2,
 };
