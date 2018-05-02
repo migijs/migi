@@ -13,7 +13,7 @@
     "host" : "127.0.0.1",
     "port" : 4444,
     "cli_args" : {
-      "webdriver.chrome.driver" : "lib/chromedriver_linux",
+      "webdriver.chrome.driver" : "lib/chromedriver_mac",
       "webdriver.ie.driver" : "lib/IEDriverServer.exe"
     }
   },

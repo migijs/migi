@@ -80,6 +80,10 @@ var _selfClose = require('./selfClose');
 
 var _selfClose2 = _interopRequireDefault(_selfClose);
 
+var _dev = require('./dev');
+
+var _dev2 = _interopRequireDefault(_dev);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -882,27 +886,24 @@ var VirtualDom = function (_Element) {
       }
       //利用索引更新，子节点可能为文本、Component、VirtualDom，以及数组
       //其中只有文本节点需要自己更新，记录其索引，组件和VirtualDom递归通知更新
-      //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，index为vd索引
+      //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，history和record为vd索引
       //当文本节点时start不更新
       //Obj类型的判断type和count，及为文本时是否为空
-      var ranges = [];
-      var option = { start: 0, record: [], first: true };
-      var history;
+      var record = { start: 0, range: [], history: [], first: true };
       var children = self.children;
       for (var index = 0, len = children.length; index < len; index++) {
         var child = children[index];
-        //history记录着当前child索引，可能它是个数组，递归记录
-        history = [index];
-        self.__checkObj(k, child, ranges, option, history, opt);
+        record.index = [index];
+        self.__checkObj(k, child, record, opt);
       }
-      if (ranges.length) {
+      if (record.range.length) {
         //textarea特殊判断
-        if (self.name == 'textarea') {
-          self.__updateAttr('value', _range2.default.value(ranges[0], self.children));
+        if (self.__name == 'textarea') {
+          self.__updateAttr('value', _range2.default.value(record.range[0], self.children));
           return;
         }
-        for (var i = ranges.length - 1; i >= 0; i--) {
-          _range2.default.update(ranges[i], self.children, self.element);
+        for (var i = 0, len = record.range.length; i < len; i++) {
+          _range2.default.update(record.range[i], self.children, self.element);
         }
       }
     }
@@ -910,7 +911,7 @@ var VirtualDom = function (_Element) {
 
   }, {
     key: '__checkObj',
-    value: function __checkObj(k, child, ranges, option, history, opt) {
+    value: function __checkObj(k, child, record, opt) {
       var self = this;
       //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
       //文本节点本身不会增加索引，因为可能有相邻的
@@ -942,23 +943,21 @@ var VirtualDom = function (_Element) {
             }
             break;
         }
-        //当可能发生变化时才进行比对
+        // 当可能发生变化时才进行比对
         if (change) {
           var ov = child.v;
-          //对比是否真正发生变更
+          // 对比是否真正发生变更
           if (child.update(ov)) {
-            _domDiff2.default.diff(this.element, ov, child.v, ranges, option, history, this, child.single && opt);
+            _domDiff2.default.diff(this, this.element, ov, child.v, record, _dev2.default.optimizeArrayDiff && child.single && opt);
           } else {
-            self.__checkObj(k, child.v, ranges, option, history, opt);
+            self.__checkObj(k, child.v, record, opt);
           }
         } else {
-          self.__checkObj(k, child.v, ranges, option, history, opt);
+          self.__checkObj(k, child.v, record, opt);
         }
       }
       //递归通知，增加索引
-      else if (child instanceof _Element3.default) {
-          delete option.t2d;
-          delete option.d2t;
+      else if (_util2.default.isDom(child)) {
           if (child instanceof VirtualDom) {
             child.__onData(k, opt);
           }
@@ -966,38 +965,45 @@ var VirtualDom = function (_Element) {
           else {
               child.__notifyBindProperty(k);
             }
-          option.start++;
-          //前面的文本再加一次
-          if (!option.first && option.prev == _type2.default.TEXT) {
-            option.start++;
+          record.start++;
+          // 前面的文本再加一次索引
+          if (!record.first && record.prev == _type2.default.TEXT) {
+            record.start++;
           }
-          option.prev = _type2.default.DOM;
+          record.state = _type2.default.DOM_TO_DOM;
+          record.prev = _type2.default.DOM;
         } else if (Array.isArray(child)) {
           if (child.length) {
             //数组类型记得递归记录history索引，结束后出栈
-            history.push(0);
+            record.index.push(0);
             for (var i = 0, len = child.length; i < len; i++) {
               var item = child[i];
-              history[history.length - 1] = i;
+              record.index[record.index.length - 1] = i;
               //第1个同时作为children的第1个要特殊处理
-              self.__checkObj(k, item, ranges, option, history, opt);
+              self.__checkObj(k, item, record, opt);
             }
-            history.pop();
+            record.index.pop();
           }
           //注意空数组算text类型
           else {
-              _domDiff2.default.check(option, this.element, child, ranges, history);
-              _range2.default.record(history, option);
-              option.prev = _type2.default.TEXT;
+              _domDiff2.default.check(this.element, child, record);
+              if (record.first) {
+                _domDiff2.default.recordRange(record);
+              }
+              record.state = _type2.default.TEXT_TO_TEXT;
+              record.prev = _type2.default.TEXT;
             }
         }
-        //else其它情况为文本节点或者undefined忽略
+        // 其它情况为文本节点或者undefined忽略
         else {
-            _domDiff2.default.check(option, this.element, child, ranges, history);
-            _range2.default.record(history, option);
-            option.prev = _type2.default.TEXT;
+            _domDiff2.default.check(this.element, child, record);
+            if (record.first) {
+              _domDiff2.default.recordRange(record);
+            }
+            record.state = _type2.default.TEXT_TO_TEXT;
+            record.prev = _type2.default.TEXT;
           }
-      option.first = false;
+      record.first = false;
     }
     //TODO: 一个神奇的现象，实体字符作为attr在初始化时作为String拼接和在setAttribute中表现不一致
     //如&nbsp;会成为charCode 160的Non-breaking space，而非32的Normal space

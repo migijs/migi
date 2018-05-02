@@ -88,6 +88,10 @@ var _FastClick = require('./FastClick');
 
 var _FastClick2 = _interopRequireDefault(_FastClick);
 
+var _dev = require('./dev');
+
+var _dev2 = _interopRequireDefault(_dev);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var migi = {
@@ -150,7 +154,8 @@ var migi = {
     var clone = Object.create(migi);
     clone.uid = 0;
     return clone;
-  }
+  },
+  dev: _dev2.default
 };
 
 if (typeof window != 'undefined') {

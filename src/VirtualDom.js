@@ -16,6 +16,7 @@ import delegate from './delegate';
 import matchUtil from './matchUtil';
 import eventCaseName from './eventCaseName';
 import selfClose from './selfClose';
+import dev from './dev';
 
 const TOUCH = {
   'swipe': true,
@@ -765,29 +766,26 @@ class VirtualDom extends Element {
     //由于渲染时相邻的文本变量和String文本同为一个文本节点，因此start为真实DOM的索引，history和record为vd索引
     //当文本节点时start不更新
     //Obj类型的判断type和count，及为文本时是否为空
-    var ranges = [];
-    var option = { start: 0, record: [], first: true };
-    var history;
+    var record = { start: 0, range: [], history: [], first: true };
     var children = self.children;
     for(var index = 0, len = children.length; index < len; index++) {
       var child = children[index];
-      //history记录着当前child索引，可能它是个数组，递归记录
-      history = [index];
-      self.__checkObj(k, child, ranges, option, history, opt);
+      record.index = [index];
+      self.__checkObj(k, child, record, opt);
     }
-    if(ranges.length) {
+    if(record.range.length) {
       //textarea特殊判断
-      if(self.name == 'textarea') {
-        self.__updateAttr('value', range.value(ranges[0], self.children));
+      if(self.__name == 'textarea') {
+        self.__updateAttr('value', range.value(record.range[0], self.children));
         return;
       }
-      for(var i = ranges.length - 1; i >= 0; i--) {
-        range.update(ranges[i], self.children, self.element);
+      for(var i = 0, len = record.range.length; i < len; i++) {
+        range.update(record.range[i], self.children, self.element);
       }
     }
   }
   //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
-  __checkObj(k, child, ranges, option, history, opt) {
+  __checkObj(k, child, record, opt) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
     //文本节点本身不会增加索引，因为可能有相邻的
@@ -819,25 +817,23 @@ class VirtualDom extends Element {
           }
           break;
       }
-      //当可能发生变化时才进行比对
+      // 当可能发生变化时才进行比对
       if(change) {
         var ov = child.v;
-        //对比是否真正发生变更
+        // 对比是否真正发生变更
         if(child.update(ov)) {
-          domDiff.diff(this.element, ov, child.v, ranges, option, history, this, child.single && opt);
+          domDiff.diff(this, this.element, ov, child.v, record, dev.optimizeArrayDiff && child.single && opt);
         }
         else {
-          self.__checkObj(k, child.v, ranges, option, history, opt);
+          self.__checkObj(k, child.v, record, opt);
         }
       }
       else {
-        self.__checkObj(k, child.v, ranges, option, history, opt);
+        self.__checkObj(k, child.v, record, opt);
       }
     }
     //递归通知，增加索引
-    else if(child instanceof Element) {
-      delete option.t2d;
-      delete option.d2t;
+    else if(util.isDom(child)) {
       if(child instanceof VirtualDom) {
         child.__onData(k, opt);
       }
@@ -845,39 +841,46 @@ class VirtualDom extends Element {
       else {
         child.__notifyBindProperty(k);
       }
-      option.start++;
-      //前面的文本再加一次
-      if(!option.first && option.prev == type.TEXT) {
-        option.start++;
+      record.start++;
+      // 前面的文本再加一次索引
+      if(!record.first && record.prev == type.TEXT) {
+        record.start++;
       }
-      option.prev = type.DOM;
+      record.state = type.DOM_TO_DOM;
+      record.prev = type.DOM;
     }
     else if(Array.isArray(child)) {
       if(child.length) {
         //数组类型记得递归记录history索引，结束后出栈
-        history.push(0);
+        record.index.push(0);
         for(var i = 0, len = child.length; i < len; i++) {
           var item = child[i];
-          history[history.length - 1] = i;
+          record.index[record.index.length - 1] = i;
           //第1个同时作为children的第1个要特殊处理
-          self.__checkObj(k, item, ranges, option, history, opt);
+          self.__checkObj(k, item, record, opt);
         }
-        history.pop();
+        record.index.pop();
       }
       //注意空数组算text类型
       else {
-        domDiff.check(option, this.element, child, ranges, history);
-        range.record(history, option);
-        option.prev = type.TEXT;
+        domDiff.check(this.element, child, record);
+        if(record.first) {
+          domDiff.recordRange(record);
+        }
+        record.state = type.TEXT_TO_TEXT;
+        record.prev = type.TEXT;
       }
     }
-    //else其它情况为文本节点或者undefined忽略
+    // 其它情况为文本节点或者undefined忽略
     else {
-      domDiff.check(option, this.element, child, ranges, history);
-      range.record(history, option);
-      option.prev = type.TEXT;
+      domDiff.check(this.element, child, record);
+      if(record.first) {
+        domDiff.recordRange(record);
+      }
+      record.state = type.TEXT_TO_TEXT;
+      record.prev = type.TEXT;
     }
-    option.first = false;
+    record.first = false;
   }
   //TODO: 一个神奇的现象，实体字符作为attr在初始化时作为String拼接和在setAttribute中表现不一致
   //如&nbsp;会成为charCode 160的Non-breaking space，而非32的Normal space

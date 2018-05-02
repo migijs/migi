@@ -92,7 +92,7 @@ function joinObj(arr, history) {
 }
 
 function update(item, children, elem) {
-  //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
+  // 从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   var res = join(item.index, children, {});
   var cns = elem.childNodes;
   var textNode = cns[item.start];
@@ -103,8 +103,8 @@ function update(item, children, elem) {
   }
   var now = textNode.textContent;
   if (res != now) {
-    //textContent自动转义，保留空白
-    textNode.textContent = res;
+    // textContent自动转义，保留空白
+    textNode.textContent = res || '';
   }
 }
 

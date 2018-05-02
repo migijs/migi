@@ -124,9 +124,6 @@ var Element = function (_Event) {
       }
     }
   }, {
-    key: 'preString',
-    value: function preString() {}
-  }, {
     key: '__onDom',
     value: function __onDom() {
       this.__dom = true;

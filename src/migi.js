@@ -19,6 +19,7 @@ import matchHash from './matchHash';
 import attr from './attr';
 import selfClose from './selfClose';
 import FastClick from './FastClick';
+import dev from './dev';
 
 var migi = {
   uid: 0,
@@ -78,7 +79,8 @@ var migi = {
     var clone = Object.create(migi);
     clone.uid = 0;
     return clone;
-  }
+  },
+  dev,
 };
 
 if(typeof window != 'undefined') {

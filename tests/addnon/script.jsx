@@ -55,6 +55,8 @@ class Component extends migi.Component {
   }
 }
 
+migi.dev.optimizeArrayDiff = false;
+
 migi.render(
   <Component/>,
   '#test'
