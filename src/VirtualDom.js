@@ -784,7 +784,7 @@ class VirtualDom extends Element {
       }
     }
   }
-  //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
+  // record.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
   __checkObj(k, child, record, opt) {
     var self = this;
     //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
@@ -863,8 +863,8 @@ class VirtualDom extends Element {
       }
       //注意空数组算text类型
       else {
-        domDiff.check(this.element, child, record);
-        if(record.first) {
+        domDiff.checkText(this.element, child, record);
+        if(record.first || record.prev == type.DOM) {
           domDiff.recordRange(record);
         }
         record.state = type.TEXT_TO_TEXT;
@@ -873,8 +873,8 @@ class VirtualDom extends Element {
     }
     // 其它情况为文本节点或者undefined忽略
     else {
-      domDiff.check(this.element, child, record);
-      if(record.first) {
+      domDiff.checkText(this.element, child, record);
+      if(record.first || record.prev == type.DOM) {
         domDiff.recordRange(record);
       }
       record.state = type.TEXT_TO_TEXT;

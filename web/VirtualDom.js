@@ -907,7 +907,7 @@ var VirtualDom = function (_Element) {
         }
       }
     }
-    //option.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
+    // record.first标明是否第一个，因为child为数组时会展开，当child不是第1个时其展开项都有prev
 
   }, {
     key: '__checkObj',
@@ -986,8 +986,8 @@ var VirtualDom = function (_Element) {
           }
           //注意空数组算text类型
           else {
-              _domDiff2.default.check(this.element, child, record);
-              if (record.first) {
+              _domDiff2.default.checkText(this.element, child, record);
+              if (record.first || record.prev == _type2.default.DOM) {
                 _domDiff2.default.recordRange(record);
               }
               record.state = _type2.default.TEXT_TO_TEXT;
@@ -996,8 +996,8 @@ var VirtualDom = function (_Element) {
         }
         // 其它情况为文本节点或者undefined忽略
         else {
-            _domDiff2.default.check(this.element, child, record);
-            if (record.first) {
+            _domDiff2.default.checkText(this.element, child, record);
+            if (record.first || record.prev == _type2.default.DOM) {
               _domDiff2.default.recordRange(record);
             }
             record.state = _type2.default.TEXT_TO_TEXT;

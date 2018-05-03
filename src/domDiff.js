@@ -108,9 +108,9 @@ function add(parent, elem, vd, record, temp, last) {
     else {
       switch(record.state) {
         case type.DOM_TO_TEXT:
-          record.start++;
-          break;
         case type.TEXT_TO_TEXT:
+          // 第一次添加dom时，即使之前的text没有变化，因为插入的关系可能影响，比如tt->tdt
+          addRange(record);
           record.start++;
           break;
         case type.TEXT_TO_DOM:
@@ -193,14 +193,10 @@ function del(elem, vd, record, temp, last) {
     else {
       switch(record.state) {
         case type.DOM_TO_TEXT:
-          removeAt(elem, record.start + 1);
-          break;
         case type.TEXT_TO_TEXT:
           removeAt(elem, record.start + 1);
           break;
         case type.TEXT_TO_DOM:
-          removeAt(elem, record.start);
-          break;
         case type.DOM_TO_DOM:
           removeAt(elem, record.start);
           break;
@@ -657,9 +653,8 @@ function diffChild(parent, elem, ovd, nvd, record) {
   record.first = false;
 }
 
-function check(elem, vd, record) {
+function checkText(elem, vd, record) {
   if(record.state == type.TEXT_TO_DOM) {
-    recordRange(record);
     insertAt(elem, elem.childNodes, record.start, vd, true);
   }
   else if(record.state == type.DOM_TO_TEXT) {
@@ -751,7 +746,7 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
             }
             else {
               if(!firstDom) {
-                check(option, elem, nvd, ranges, history);
+                checkText(option, elem, nvd, ranges, history);
               }
             }
             delete option.t2d;
@@ -786,7 +781,7 @@ function traversal(elem, vd, ranges, option, history) {
     }
     else {
       if(!option.first) {
-        check(option, elem, vd, ranges, history);
+        checkText(option, elem, vd, ranges, history);
       }
       range.record(history, option);
       option.state = TEXT_TO_TEXT;
@@ -798,7 +793,7 @@ function traversal(elem, vd, ranges, option, history) {
 
 export default {
   diff,
-  check,
+  checkText,
   recordRange,
   addRange,
 };
