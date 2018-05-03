@@ -15,6 +15,8 @@ class MyComponent extends migi.Component {
   }
 }
 
+migi.dev.optimizeArrayDiff = false;
+
 migi.render(
   <MyComponent />,
   '#test'
