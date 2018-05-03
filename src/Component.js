@@ -4,9 +4,7 @@ import VirtualDom from './VirtualDom';
 import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
-import EventBus from './EventBus';
 import Model from './Model';
-import Stream from './Stream';
 import FastClick from './FastClick';
 import array from './array';
 
@@ -28,9 +26,7 @@ class Component extends Element {
     self.__stop = null; //停止冒泡的fn引用
     self.__model = null; //数据模型引用
     self.__allowPropagation = true; //默认是否允许冒泡
-    // self.__bridgeHash = {}; //桥接记录，延迟初始化
-    self.__stream = null; //桥接过程中传递的stream对象
-    self.__canData = false; //防止添加至DOM前触发无谓的数据更新
+    // self.__canData = false; //防止添加至DOM前触发无谓的数据更新
     self.__bindHash = {}; //缩略语法中是否设置过默认值
     self.__ob = []; //被array们的__ob__引用
     self.__bindProperty = {}; //@property语法，出现在组件属性上时联动父层@bind值更新
@@ -131,61 +127,6 @@ class Component extends Element {
   findAll(selector) {
     return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
-  /*
-   * bridge(target, String, String, Function)
-   * bridge(target, String, Function)
-   * bridge(target, String, String)
-   * bridge(target, String)
-   * bridge(target, Object<String:String>)
-   * bridge(target, Object<String:Function>)
-   * bridge(target, Object<String:Object<name:String,middleware:Function>>)
-  */
-  bridge(target, src, name, middleware) {
-    var self = this;
-    if(target == this) {
-      throw new Error('can not bridge self: ' + self.name);
-    }
-    if(!target
-      || !(target instanceof EventBus)
-        && !(target instanceof Component)
-        && !(target instanceof Model)) {
-      throw new Error('can only bridge to EventBus/Component/Model: ' + self.name);
-    }
-    //使用桥接时才创建对象
-    self.__bridgeHash = self.__bridgeHash || {};
-    //重载
-    if(arguments.length == 2) {
-      if(util.isString(src)) {
-        self.__record(target, src, src);
-      }
-      else {
-        Object.keys(src).forEach(function(k) {
-          var o = src[k];
-          if(util.isString(o)) {
-            self.__record(target, k, o);
-          }
-          else if(util.isFunction(o)) {
-            self.__record(target, k, k, o);
-          }
-          else if(o.name) {
-            self.__record(target, k, o.name, o.middleware);
-          }
-        });
-      }
-    }
-    else if(arguments.length == 3) {
-      if(util.isString(name)) {
-        self.__record(target, src, name);
-      }
-      else {
-        middleware = name;
-        self.__record(target, src, src, middleware);
-      }
-    }
-    else if(arguments.length == 4) {
-      self.__record(target, src, name, middleware);
-    }
-  }
 
   //@overwrite
   __onDom(fake) {
@@ -232,37 +173,6 @@ class Component extends Element {
     }
     self.__onData(k, opt);
     self.emit(Event.DATA, k);
-
-    if(self.__bridgeHash) {
-      if (!Array.isArray(k)) {
-        k = [k];
-      }
-      k.forEach(function(k) {
-        //分析桥接
-        var bridge = self.__bridgeHash[k];
-        if (bridge) {
-          var stream = self.__stream || new Stream(self.__uid);
-          var v = self[k];
-          bridge.forEach(function(item) {
-            var target = item.target;
-            var name = item.name;
-            var middleware = item.middleware;
-            if (!stream.has(target.__uid)) {
-              stream.add(target.__uid);
-              if (target instanceof EventBus) {
-                target.emit(Event.DATA, name, middleware ? middleware.call(self, v) : v, stream);
-              }
-              //先设置桥接对象数据为桥接模式，修改数据后再恢复
-              else {
-                target.__stream = stream;
-                target[name] = middleware ? middleware.call(self, v) : v;
-                target.__stream = null;
-              }
-            }
-          });
-        }
-      });
-    }
   }
   //@overwrite
   __onData(k, opt) {
@@ -312,7 +222,6 @@ class Component extends Element {
     var vd = self.virtualDom.__destroy();
     self.emit(Event.DESTROY);
     self.__hash = {};
-    self.__bridgeHash = null;
     self.__bindProperty = null;
     return vd;
   }
@@ -392,10 +301,5 @@ class Component extends Element {
     }
   }
 }
-
-//完全一样的桥接数据流方法，复用
-['__record', '__unRecord', 'bridgeTo', 'unBridge', 'unBridgeTo'].forEach(function(k) {
-  Component.prototype[k] = EventBus.prototype[k];
-});
 
 export default Component;

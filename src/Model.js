@@ -9,7 +9,6 @@ class Model extends Event {
     this.__uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
     this.__ref = []; //以ref为attr的vd快速访问引用
-    this.__bridgeHash = {}; //桥接记录
     this.__bindHash = {}; //缩略语法中是否设置过默认值
     this.__ob = []; //被array们的__ob__引用
   }
@@ -43,7 +42,7 @@ class Model extends Event {
 }
 
 //完全一样的桥接数据流方法，复用
-['__data', '__record', 'bridge', 'bridgeTo', '__unRecord', 'unBridge', 'unBridgeTo', '__initBind', '__getBind', '__setBind', '__array'].forEach(function(k) {
+['__data', '__record', '__unRecord', '__initBind', '__getBind', '__setBind', '__array'].forEach(function(k) {
   Model.prototype[k] = Component.prototype[k];
 });
 

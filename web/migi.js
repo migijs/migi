@@ -12,10 +12,6 @@ var _Element = require('./Element');
 
 var _Element2 = _interopRequireDefault(_Element);
 
-var _EventBus = require('./EventBus');
-
-var _EventBus2 = _interopRequireDefault(_EventBus);
-
 var _Model = require('./Model');
 
 var _Model2 = _interopRequireDefault(_Model);
@@ -124,8 +120,7 @@ var migi = {
   Event: _Event2.default,
   Model: _Model2.default,
   CacheModel: _CacheModel2.default,
-  EventBus: _EventBus2.default,
-  eventBus: new _EventBus2.default(),
+  eventBus: new _Event2.default(),
   Element: _Element2.default,
   Component: _Component2.default,
   NonVisualComponent: _NonVisualComponent2.default,

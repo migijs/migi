@@ -1,6 +1,5 @@
 import Event from './Event';
 import Element from './Element';
-import EventBus from './EventBus';
 import Model from './Model';
 import CacheModel from './CacheModel';
 import Component from './Component';
@@ -49,8 +48,7 @@ var migi = {
   Event,
   Model,
   CacheModel,
-  EventBus,
-  eventBus: new EventBus,
+  eventBus: new Event,
   Element,
   Component,
   NonVisualComponent,

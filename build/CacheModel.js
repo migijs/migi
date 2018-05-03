@@ -30,7 +30,6 @@ var CacheModel = function (_Model) {
 
     _this.__handler = {}; //普通状态下缓存data key的hash
     _this.__ccb = false; //缓存1ms再数据分发的是否在缓存时间内的状态标识
-    _this.__handler2 = {}; //handler的副本，每次handler被重置为空后保留缓存值
     _this.__timeout;
     _this.__timecb;
     return _this;

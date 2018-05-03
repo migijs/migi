@@ -429,29 +429,11 @@ function diffVd(ovd, nvd) {
 }
 
 function diff(parent, elem, ov, nv, record, opt) {
-  //hack之前的状态，非Obj其实没有发生变更，假设自己变自己的状态
-  // if(!option.first && option.state != TEXT_TO_TEXT && option.state != DOM_TO_DOM) {
-  //   if(option.prev == type.TEXT) {
-  //     option.state = TEXT_TO_TEXT;
-  //   }
-  //   else {
-  //     option.state = DOM_TO_DOM;
-  //   }
-  // }
   if (opt) {
     diffList(parent, elem, ov, nv, record, opt);
   } else {
     diffChild(parent, elem, ov, nv, record);
   }
-  //当最后一次对比是类型变换时记录，因为随后的text可能要更新
-  // if(!option.t2d && !option.d2t) {
-  //   if(option.state == TEXT_TO_DOM) {
-  //     option.t2d = true;
-  //   }
-  //   else if(option.state == DOM_TO_TEXT) {
-  //     option.d2t = true;
-  //   }
-  // }
 }
 
 function diffChild(parent, elem, ovd, nvd, record) {
