@@ -94,6 +94,12 @@ class Component extends migi.Component {
       case 25:
         this.list = [<span>4</span>,<span>5</span>,<span>6</span>];
         break;
+      case 26:
+        this.list = [1,<span>2</span>,3];
+        break;
+      case 27:
+        this.list = [<span>4</span>,5,6];
+        break;
     }
     this.record();
   }

@@ -623,8 +623,6 @@ function diffChild(elem, ovd, nvd, ranges, option, history, parent) {
               elem.removeChild(cns[option.start + 1]);
               break;
             case TEXT_TO_DOM:
-              replaceWith(elem, cns, option.start++, nvd, true);
-              break;
             case DOM_TO_DOM:
               replaceWith(elem, cns, option.start, nvd, true);
               break;

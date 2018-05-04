@@ -164,6 +164,18 @@ module.exports = {
       .click('#test strong')
       .assert.containsText('#test p[ref="1"]', '3')
       .assert.containsText('#test p[ref="2"]', '<span migi-uid="42">4</span><span migi-uid="39">5</span><span migi-uid="44">6</span>')
+  },
+  'ddd2tdt2': function(browser) {
+    browser
+      .click('#test strong')
+      .assert.containsText('#test p[ref="1"]', '3')
+      .assert.containsText('#test p[ref="2"]', '1<span migi-uid="39">2</span>3')
+  },
+  'tdt2dtt': function(browser) {
+    browser
+      .click('#test strong')
+      .assert.containsText('#test p[ref="1"]', '2')
+      .assert.containsText('#test p[ref="2"]', '<span migi-uid="46">4</span>56')
       .end()
-  }
+  },
 };
