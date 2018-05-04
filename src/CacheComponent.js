@@ -14,14 +14,13 @@ class CacheComponent extends Component {
   __data(k) {
     var self = this;
     //set触发数据变更时，若已DOM则打开开关
-    if(self.dom) {
+    if(self.__dom) {
       self.__canData = true;
     }
-    
+
     if(!Array.isArray(k)) {
       k = [k];
     }
-    //没有缓存根据是否桥接模式赋予stream对象或生成sid
     k.forEach(function(k) {
       self.__handler[k] = true;
     });

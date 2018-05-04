@@ -125,7 +125,7 @@ var Component = function (_Element) {
   }, {
     key: 'render',
     value: function render() {
-      return new _VirtualDom2.default(this.__uid, 'div', this.__props, this.children);
+      return new _VirtualDom2.default(this.__uid, 'div', this.__props, this.__children);
     }
     //@override
 
@@ -134,7 +134,7 @@ var Component = function (_Element) {
     value: function toString() {
       this.__virtualDom = this.render();
       if (!this.__virtualDom) {
-        throw new Error('render must return a VirtualDom: ' + this.name);
+        throw new Error('render must return a VirtualDom: ' + this.__name);
       }
       this.__virtualDom.__parent = this;
       if (this.__style) {
@@ -251,7 +251,7 @@ var Component = function (_Element) {
     key: '__onData',
     value: function __onData(k, opt) {
       //未DOM或开关时不触发更新
-      if (!this.dom || !this.canData) {
+      if (!this.__dom || !this.__canData) {
         return;
       }
       if (this.virtualDom) {
@@ -379,11 +379,6 @@ var Component = function (_Element) {
     key: 'ref',
     get: function get() {
       return this.__ref;
-    }
-  }, {
-    key: 'canData',
-    get: function get() {
-      return this.__canData;
     }
   }], [{
     key: 'fakeDom',

@@ -70,13 +70,13 @@ class Component extends Element {
   //需要被子类覆盖
   //@abstract
   render() {
-    return new VirtualDom(this.__uid, 'div', this.__props, this.children);
+    return new VirtualDom(this.__uid, 'div', this.__props, this.__children);
   }
   //@override
   toString() {
     this.__virtualDom = this.render();
     if(!this.__virtualDom) {
-      throw new Error('render must return a VirtualDom: ' + this.name);
+      throw new Error('render must return a VirtualDom: ' + this.__name);
     }
     this.__virtualDom.__parent = this;
     if(this.__style) {
@@ -177,7 +177,7 @@ class Component extends Element {
   //@overwrite
   __onData(k, opt) {
     //未DOM或开关时不触发更新
-    if(!this.dom || !this.canData) {
+    if(!this.__dom || !this.__canData) {
       return;
     }
     if(this.virtualDom) {
@@ -282,9 +282,6 @@ class Component extends Element {
   }
   get ref() {
     return this.__ref;
-  }
-  get canData() {
-    return this.__canData;
   }
 
   static fakeDom(child) {

@@ -11,15 +11,6 @@ import matchHash from './matchHash';
 import fixEvent from './fixEvent';
 import delegate from './delegate';
 
-const DOM_TO_TEXT = 0;
-const DOM_TO_DOM = 1;
-const TEXT_TO_DOM = 2;
-const TEXT_TO_TEXT = 3;
-const ADD_TEXT = 4;
-const ADD_DOM = 5;
-const DEL_TEXT = 6;
-const DEL_DOM = 7;
-
 function replaceWith(elem, cns, index, vd, isText) {
   // insertAdjacentHTML在插入text时浏览器行为表现不一致，ff会合并相邻text，chrome则不会
   // 因此DOM使用insertAdjacentHTML，text则用textNode
@@ -685,7 +676,7 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
   switch(os | ns) {
     //都是空数组
     case 0:
-      option.state = TEXT_TO_TEXT;
+      option.state = type.TEXT_TO_TEXT;
       option.prev = type.TEXT;
       break;
     //有内容的数组变为空数组
@@ -775,7 +766,7 @@ function traversal(elem, vd, ranges, option, history) {
   }
   else {
     if(util.isDom(vd)) {
-      option.state = DOM_TO_DOM;
+      option.state = type.DOM_TO_DOM;
       option.prev = type.DOM;
       option.start++;
     }
@@ -784,7 +775,7 @@ function traversal(elem, vd, ranges, option, history) {
         checkText(option, elem, vd, ranges, history);
       }
       range.record(history, option);
-      option.state = TEXT_TO_TEXT;
+      option.state = type.TEXT_TO_TEXT;
       option.prev = type.TEXT;
     }
     option.first = false;

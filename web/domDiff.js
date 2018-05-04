@@ -54,15 +54,6 @@ var _delegate2 = _interopRequireDefault(_delegate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DOM_TO_TEXT = 0;
-var DOM_TO_DOM = 1;
-var TEXT_TO_DOM = 2;
-var TEXT_TO_TEXT = 3;
-var ADD_TEXT = 4;
-var ADD_DOM = 5;
-var DEL_TEXT = 6;
-var DEL_DOM = 7;
-
 function replaceWith(elem, cns, index, vd, isText) {
   // insertAdjacentHTML在插入text时浏览器行为表现不一致，ff会合并相邻text，chrome则不会
   // 因此DOM使用insertAdjacentHTML，text则用textNode
@@ -712,7 +703,7 @@ function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
   switch (os | ns) {
     //都是空数组
     case 0:
-      option.state = TEXT_TO_TEXT;
+      option.state = _type2.default.TEXT_TO_TEXT;
       option.prev = _type2.default.TEXT;
       break;
     //有内容的数组变为空数组
@@ -797,7 +788,7 @@ function traversal(elem, vd, ranges, option, history) {
     history.pop();
   } else {
     if (_util2.default.isDom(vd)) {
-      option.state = DOM_TO_DOM;
+      option.state = _type2.default.DOM_TO_DOM;
       option.prev = _type2.default.DOM;
       option.start++;
     } else {
@@ -805,7 +796,7 @@ function traversal(elem, vd, ranges, option, history) {
         checkText(option, elem, vd, ranges, history);
       }
       _range2.default.record(history, option);
-      option.state = TEXT_TO_TEXT;
+      option.state = _type2.default.TEXT_TO_TEXT;
       option.prev = _type2.default.TEXT;
     }
     option.first = false;
