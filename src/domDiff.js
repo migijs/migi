@@ -500,6 +500,8 @@ function diffChild(parent, elem, ovd, nvd, record) {
             case type.TEXT_TO_DOM:
               insertAt(elem, cns, record.start, nvd, true);
               recordRange(record);
+              // 因之前发生t2d变更，即便本次没有发生变化，但可能影响之后的t2t，也需记录
+              addRange(record);
               break;
             case type.DOM_TO_DOM:
               recordRange(record);
