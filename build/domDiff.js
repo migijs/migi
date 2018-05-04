@@ -561,9 +561,6 @@ function diffChild(parent, elem, ovd, nvd, record) {
                     elem.removeChild(cns[record.start + 1]);
                     break;
                   case _type2.default.TEXT_TO_DOM:
-                    replaceWith(elem, cns, record.start++, nvd, true);
-                    recordRange(record);
-                    break;
                   case _type2.default.DOM_TO_DOM:
                     replaceWith(elem, cns, record.start, nvd, true);
                     recordRange(record);
