@@ -526,13 +526,12 @@ function diffChild(parent, elem, ovd, nvd, record) {
                 switch (record.state) {
                   case _type2.default.DOM_TO_TEXT:
                     elem.removeChild(cns[record.start + 1]);
-                    // 之前发生的d2t变更，后续text即便相同也需要进行更新，否则相同时state不为true，不会更新
+                    // 因之前发生的d2t变更，本次t2t无需对比直接记录
                     addRange(record);
                     break;
                   case _type2.default.TEXT_TO_DOM:
                     insertAt(elem, cns, record.start, nvd, true);
                     recordRange(record);
-                    addRange(record);
                     break;
                   case _type2.default.DOM_TO_DOM:
                     recordRange(record);
