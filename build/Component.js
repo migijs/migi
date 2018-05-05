@@ -423,7 +423,7 @@ var Component = function (_Element) {
           self.__ob.push(v);
           v.__ob__.push(self);
           v.__cb__.push(function () {
-            self[name] = self[name];
+            self.__data(name);
           });
         }
       }
