@@ -113,14 +113,7 @@ function value(item, children) {
   return join(item.index, children, {});
 }
 
-function record(history, option) {
-  if (option.first || option.prev == _type2.default.DOM) {
-    option.record = history.slice();
-  }
-}
-
 exports.default = {
   update: update,
-  value: value,
-  record: record
+  value: value
 };});

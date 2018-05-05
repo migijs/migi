@@ -135,7 +135,7 @@ function add(parent, elem, vd, record, temp, last) {
       switch (record.state) {
         case _type2.default.DOM_TO_TEXT:
         case _type2.default.TEXT_TO_TEXT:
-          // 第一次添加dom时，即使之前的text没有变化，因为插入的关系可能影响，比如tt->tdt
+          // 第一次添加dom时，即使之前的text没有变化，也需记录range，但可能影响之后的t2t，也需记录
           addRange(record);
           record.start++;
           break;
@@ -157,21 +157,17 @@ function add(parent, elem, vd, record, temp, last) {
     } else {
       switch (record.state) {
         case _type2.default.DOM_TO_TEXT:
-        //d(t) -> tt(t)
         case _type2.default.TEXT_TO_TEXT:
           addRange(record);
-          //t(t) -> tt(t)
           break;
         case _type2.default.TEXT_TO_DOM:
           insertAt(elem, elem.childNodes, record.start, vd, true);
           recordRange(record);
           addRange(record);
-          //t(t) -> dt(t)
           break;
         case _type2.default.DOM_TO_DOM:
           insertAt(elem, elem.childNodes, record.start, vd, true);
           recordRange(record);
-          //d(t) -> dt(t)
           break;
       }
     }
@@ -204,6 +200,7 @@ function add(parent, elem, vd, record, temp, last) {
     record.prev = temp.prev;
   }
 }
+
 function del(elem, vd, record, temp, last) {
   if (Array.isArray(vd)) {
     for (var i = 0, len = vd.length; i < len; i++) {
@@ -257,6 +254,8 @@ function del(elem, vd, record, temp, last) {
       case _type2.default.TEXT_TO_TEXT:
         if (temp.prev == _type2.default.DOM) {
           record.state = _type2.default.DOM_TO_TEXT;
+        } else {
+          addRange(record);
         }
         break;
       case _type2.default.DOM_TO_DOM:
@@ -603,13 +602,11 @@ function diffChild(parent, elem, ovd, nvd, record) {
               break;
             //DOM变DOM
             case 3:
-              if (!record.first) {
-                switch (record.state) {
-                  case _type2.default.DOM_TO_TEXT:
-                  case _type2.default.TEXT_TO_TEXT:
-                    record.start++;
-                    break;
-                }
+              switch (record.state) {
+                case _type2.default.DOM_TO_TEXT:
+                case _type2.default.TEXT_TO_TEXT:
+                  record.start++;
+                  break;
               }
               var ocp = ovd instanceof _Component2.default ? 1 : 0;
               var ncp = nvd instanceof _Component2.default ? 2 : 0;
@@ -677,16 +674,6 @@ function checkText(elem, vd, record) {
     addRange(record);
     removeAt(elem, record.start + 1);
   }
-  // if(option.t2d) {
-  //   delete option.t2d;
-  //   range.record(history, option);
-  //   insertAt(elem, elem.childNodes, option.start, vd, true);
-  // }
-  // else if(option.d2t) {
-  //   delete option.d2t;
-  //   addRange(ranges, option);
-  //   removeAt(elem, option.start + 1);
-  // }
 }
 
 function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
@@ -777,7 +764,7 @@ function traversal(elem, vd, ranges, option, history) {
   if (Array.isArray(vd)) {
     history.push(0);
     if (option.first) {
-      _range2.default.record(history, option);
+      // range.record(history, option);
     }
     for (var i = 0, len = vd.length; i < len; i++) {
       history[history.length - 1] = i;
@@ -793,7 +780,7 @@ function traversal(elem, vd, ranges, option, history) {
       if (!option.first) {
         checkText(option, elem, vd, ranges, history);
       }
-      _range2.default.record(history, option);
+      // range.record(history, option);
       option.state = _type2.default.TEXT_TO_TEXT;
       option.prev = _type2.default.TEXT;
     }

@@ -96,14 +96,7 @@ function value(item, children) {
   return join(item.index, children, {});
 }
 
-function record(history, option) {
-  if(option.first || option.prev == type.DOM) {
-    option.record = history.slice();
-  }
-}
-
 export default {
   update,
   value,
-  record
 };
