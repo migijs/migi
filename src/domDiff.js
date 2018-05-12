@@ -175,20 +175,15 @@ function del(elem, vd, record, temp, last) {
     }
   }
   else if(util.isDom(vd)) {
-    if(temp.prev) {
-      removeAt(elem, record.start);
-    }
-    else {
-      switch(record.state) {
-        case type.DOM_TO_TEXT:
-        case type.TEXT_TO_TEXT:
-          removeAt(elem, record.start + 1);
-          break;
-        case type.TEXT_TO_DOM:
-        case type.DOM_TO_DOM:
-          removeAt(elem, record.start);
-          break;
-      }
+    switch(record.state) {
+      case type.DOM_TO_TEXT:
+      case type.TEXT_TO_TEXT:
+        removeAt(elem, record.start + 1);
+        break;
+      case type.TEXT_TO_DOM:
+      case type.DOM_TO_DOM:
+        removeAt(elem, record.start);
+        break;
     }
     temp.prev = type.DOM;
     //缓存对象池
@@ -197,7 +192,22 @@ function del(elem, vd, record, temp, last) {
   else {
     if(temp.prev) {
       if(temp.prev == type.DOM) {
-        removeAt(elem, record.start);
+        switch(record.state) {
+          case type.DOM_TO_TEXT:
+            removeAt(elem, record.start + 1);
+            addRange(record);
+            break;
+          case type.TEXT_TO_TEXT:
+            removeAt(elem, record.start + 1);
+            addRange(record);
+            break;
+          case type.DOM_TO_DOM:
+            removeAt(elem, record.start);
+            break;
+          case type.TEXT_TO_DOM:
+            removeAt(elem, record.start);
+            break;
+        }
       }
       else {
         // 删过text，之后的text自动一并删除

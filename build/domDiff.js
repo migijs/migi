@@ -207,19 +207,15 @@ function del(elem, vd, record, temp, last) {
       del(elem, vd[i], record, temp, last && i == len - 1);
     }
   } else if (_util2.default.isDom(vd)) {
-    if (temp.prev) {
-      removeAt(elem, record.start);
-    } else {
-      switch (record.state) {
-        case _type2.default.DOM_TO_TEXT:
-        case _type2.default.TEXT_TO_TEXT:
-          removeAt(elem, record.start + 1);
-          break;
-        case _type2.default.TEXT_TO_DOM:
-        case _type2.default.DOM_TO_DOM:
-          removeAt(elem, record.start);
-          break;
-      }
+    switch (record.state) {
+      case _type2.default.DOM_TO_TEXT:
+      case _type2.default.TEXT_TO_TEXT:
+        removeAt(elem, record.start + 1);
+        break;
+      case _type2.default.TEXT_TO_DOM:
+      case _type2.default.DOM_TO_DOM:
+        removeAt(elem, record.start);
+        break;
     }
     temp.prev = _type2.default.DOM;
     //缓存对象池
@@ -227,7 +223,22 @@ function del(elem, vd, record, temp, last) {
   } else {
     if (temp.prev) {
       if (temp.prev == _type2.default.DOM) {
-        removeAt(elem, record.start);
+        switch (record.state) {
+          case _type2.default.DOM_TO_TEXT:
+            removeAt(elem, record.start + 1);
+            addRange(record);
+            break;
+          case _type2.default.TEXT_TO_TEXT:
+            removeAt(elem, record.start + 1);
+            addRange(record);
+            break;
+          case _type2.default.DOM_TO_DOM:
+            removeAt(elem, record.start);
+            break;
+          case _type2.default.TEXT_TO_DOM:
+            removeAt(elem, record.start);
+            break;
+        }
       } else {
         // 删过text，之后的text自动一并删除
       }
