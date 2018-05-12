@@ -208,7 +208,7 @@ function del(elem, vd, record, temp, last) {
     }
   } else if (_util2.default.isDom(vd)) {
     if (temp.prev) {
-      removeAt(elem, record.start + 1);
+      removeAt(elem, record.start);
     } else {
       switch (record.state) {
         case _type2.default.DOM_TO_TEXT:
@@ -227,7 +227,7 @@ function del(elem, vd, record, temp, last) {
   } else {
     if (temp.prev) {
       if (temp.prev == _type2.default.DOM) {
-        removeAt(elem, record.start + 1);
+        removeAt(elem, record.start);
       } else {
         // 删过text，之后的text自动一并删除
       }

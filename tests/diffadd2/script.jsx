@@ -1,7 +1,7 @@
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
-    this._list = [[1], 0];
+    this._list = [[<span>1</span>], 0];
     this.i = 0;
     this.on(migi.Event.DOM, function() {
       this.record();
@@ -17,58 +17,55 @@ class Component extends migi.Component {
   click() {
     switch(this.i++) {
       case 0:
-        this.list = [[1, <span>2</span>], 0];
+        this.list = [[<span>1</span>, <span>2</span>], 0];
         break;
       case 1:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 2:
-        this.list = [[1, 2], 0];
+        this.list = [[<span>1</span>, 2], 0];
         break;
       case 3:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 4:
-        this.list = [[1, <span>2</span>, 3], 0];
+        this.list = [[<span>1</span>, <span>2</span>, 3], 0];
         break;
       case 5:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 6:
-        this.list = [[1, <span>2</span>, 3, <span>4</span>], 0];
+        this.list = [[<span>1</span>, <span>2</span>, 3, <span>4</span>], 0];
         break;
       case 7:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 8:
-        this.list = [[1, <span>2</span>, 3, <span>4</span>, 5], 0];
+        this.list = [[<span>1</span>, <span>2</span>, 3, <span>4</span>, 5], 0];
         break;
       case 9:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 10:
-        this.list = [[1, 2, <span>3</span>], 0];
+        this.list = [[<span>1</span>, 2, <span>3</span>], 0];
         break;
       case 11:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 12:
-        this.list = [[1, 2, <span>3</span>, <span>4</span>], 0];
+        this.list = [[<span>1</span>, 2, <span>3</span>, <span>4</span>], 0];
         break;
       case 13:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 14:
-        this.list = [[1, 2, <span>3</span>, 4], 0];
+        this.list = [[<span>1</span>, 2, <span>3</span>, 4], 0];
         break;
       case 15:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>], 0];
         break;
       case 16:
-        this.list = [[1, 2, <span>3</span>, 4, <span>5</span>], 0];
-        break;
-      case 17:
-        this.list = [[1], 0];
+        this.list = [[<span>1</span>, 2, <span>3</span>, 4, <span>5</span>], 0];
         break;
     }
     this.record();

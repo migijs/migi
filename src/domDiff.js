@@ -176,7 +176,7 @@ function del(elem, vd, record, temp, last) {
   }
   else if(util.isDom(vd)) {
     if(temp.prev) {
-      removeAt(elem, record.start + 1);
+      removeAt(elem, record.start);
     }
     else {
       switch(record.state) {
@@ -197,7 +197,7 @@ function del(elem, vd, record, temp, last) {
   else {
     if(temp.prev) {
       if(temp.prev == type.DOM) {
-        removeAt(elem, record.start + 1);
+        removeAt(elem, record.start);
       }
       else {
         // 删过text，之后的text自动一并删除

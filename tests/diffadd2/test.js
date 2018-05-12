@@ -110,12 +110,6 @@ module.exports = {
       .click('#test strong')
       .assert.containsText('#test p[ref="1"]', '5')
       .assert.containsText('#test p[ref="2"]', '12<span migi-uid="16">3</span>4<span migi-uid="17">5</span>0')
-  },
-  't2ttdtd_restore': function(browser) {
-    browser
-      .click('#test strong')
-      .assert.containsText('#test p[ref="1"]', '1')
-      .assert.containsText('#test p[ref="2"]', '10')
       .end()
   },
 };
