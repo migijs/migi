@@ -8,15 +8,15 @@ class Model extends Event {
     super();
     this.__uid = 'm' + uid++;
     this.__name = this.constructor.__migiName;
-    this.__ref = []; //以ref为attr的vd快速访问引用
-    this.__bindHash = {}; //缩略语法中是否设置过默认值
-    this.__ob = []; //被array们的__ob__引用
+    this.__ref = []; // 以ref为attr的vd快速访问引用
+    this.__bindHash = {}; // 缩略语法中是否设置过默认值
+    this.__ob = []; // 被array们的__ob__引用
   }
 
   __onData(k) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {
-      //set触发数据变更时，若已DOM则打开开关
+      // set触发数据变更时，若已DOM则打开开关
       if(cp.dom) {
         cp.__canData = true;
       }
@@ -41,7 +41,7 @@ class Model extends Event {
   }
 }
 
-//完全一样的桥接数据流方法，复用
+// 完全一样的桥接数据流方法，复用
 ['__data', '__record', '__unRecord', '__initBind', '__getBind', '__setBind', '__array'].forEach(function(k) {
   Model.prototype[k] = Component.prototype[k];
 });

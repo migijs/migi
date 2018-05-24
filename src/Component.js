@@ -21,15 +21,15 @@ class Component extends Element {
 
     var self = this;
     self.__name = self.constructor.__migiName;
-    self.__virtualDom = null; //根节点vd引用
-    self.__ref = {}; //以ref为attr的vd快速访问引用
-    self.__stop = null; //停止冒泡的fn引用
-    self.__model = null; //数据模型引用
-    self.__allowPropagation = true; //默认是否允许冒泡
-    // self.__canData = false; //防止添加至DOM前触发无谓的数据更新
-    self.__bindHash = {}; //缩略语法中是否设置过默认值
-    self.__ob = []; //被array们的__ob__引用
-    self.__bindProperty = {}; //@property语法，出现在组件属性上时联动父层@bind值更新
+    self.__virtualDom = null; // 根节点vd引用
+    self.__ref = {}; // 以ref为attr的vd快速访问引用
+    self.__stop = null; // 停止冒泡的fn引用
+    self.__model = null; // 数据模型引用
+    self.__allowPropagation = true; // 默认是否允许冒泡
+    // self.__canData = false; // 防止添加至DOM前触发无谓的数据更新
+    self.__bindHash = {}; // 缩略语法中是否设置过默认值
+    self.__ob = []; // 被array们的__ob__引用
+    self.__bindProperty = {}; // @property语法，出现在组件属性上时联动父层@bind值更新
 
     self.__props.forEach(function(item, index) {
       var k = item[0];
@@ -67,12 +67,12 @@ class Component extends Element {
       self.__bindProperty[v.k] = [k, v];
     }
   }
-  //需要被子类覆盖
-  //@abstract
+  // 需要被子类覆盖
+  // @abstract
   render() {
     return new VirtualDom(this.__uid, 'div', this.__props, this.__children);
   }
-  //@override
+  // @override
   toString() {
     this.__virtualDom = this.render();
     if(!this.__virtualDom) {
@@ -84,7 +84,7 @@ class Component extends Element {
     }
     return this.__virtualDom.toString();
   }
-  //@override
+  // @override
   preString() {
     this.toString();
   }
@@ -128,7 +128,7 @@ class Component extends Element {
     return this.__virtualDom ? this.__virtualDom.findAll(selector) : [];
   }
 
-  //@overwrite
+  // @overwrite
   __onDom(fake) {
     super.__onDom();
     var self = this;
@@ -137,19 +137,19 @@ class Component extends Element {
     if(self.name) {
       elem.setAttribute('migi-name', self.name);
     }
-    //无覆盖render时渲染标签的children；有时渲染render的children
-    //标签的children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
+    // 无覆盖render时渲染标签的children；有时渲染render的children
+    // 标签的children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
     if(!fake && self.children != self.virtualDom.children) {
       Component.fakeDom(self.children);
     }
-    //指定不允许冒泡，默认是全部冒泡
+    // 指定不允许冒泡，默认是全部冒泡
     if(self.props.allowPropagation == 'true') {
       return;
     }
     else if(self.props.allowPropagation != 'false' && self.allowPropagation) {
       return;
     }
-    //将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
+    // 将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
       e = e || window.event;
       if(e.target != elem && e.srcElement != elem) {
@@ -158,25 +158,25 @@ class Component extends Element {
       }
     }
     self.__stop = stopPropagation;
-    //仅考虑用户事件，媒体等忽略
+    // 仅考虑用户事件，媒体等忽略
     STOP.forEach(function(name) {
       elem.addEventListener(name, stopPropagation);
     });
-    //FastClick处理移动点击点透
+    // FastClick处理移动点击点透
     FastClick.attach(elem);
   }
   __data(k, opt) {
     var self = this;
-    //set触发数据变更时，若已DOM则打开开关
+    // set触发数据变更时，若已DOM则打开开关
     if(self.dom) {
       self.__canData = true;
     }
     self.__onData(k, opt);
     self.emit(Event.DATA, k);
   }
-  //@overwrite
+  // @overwrite
   __onData(k, opt) {
-    //未DOM或开关时不触发更新
+    // 未DOM或开关时不触发更新
     if(!this.__dom || !this.__canData) {
       return;
     }
@@ -211,7 +211,7 @@ class Component extends Element {
     if(self.model) {
       self.model.__del(self);
     }
-    //侦听array里面的引用需删除
+    // 侦听array里面的引用需删除
     self.__ob.forEach(function(arr) {
       var i = arr.__ob__.indexOf(self);
       if(i > -1) {
@@ -237,7 +237,7 @@ class Component extends Element {
   }
   __array(name, v) {
     var self = this;
-    //检查array类型，替换并侦听array的原型方法
+    // 检查array类型，替换并侦听array的原型方法
     if(Array.isArray(v)) {
       v.__proto__ = array;
       v.__ob__ = v.__ob__ || [];

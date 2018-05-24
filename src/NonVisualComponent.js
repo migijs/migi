@@ -5,14 +5,14 @@ class NonVisualComponent extends Component {
     super(...data);
   }
 
-  //非可视为空
-  //@overwrite
+  // 非可视为空
+  // @overwrite
   toString() {
     return '';
   }
 
-  //没有dom
-  //@overwrite
+  // 没有dom
+  // @overwrite
   __onDom() {
     this.__dom = true;
     Component.fakeDom(this.children);

@@ -913,10 +913,10 @@ var VirtualDom = function (_Element) {
     key: '__checkObj',
     value: function __checkObj(k, child, record, opt) {
       var self = this;
-      //当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
-      //文本节点本身不会增加索引，因为可能有相邻的
+      // 当Component和VirtualDom则start++，且前面是非空文本节点时再++，因为有2个节点
+      // 文本节点本身不会增加索引，因为可能有相邻的
       if (child instanceof _Obj2.default) {
-        //可能Obj的关联是个列表，触发的变量name也是列表
+        // 可能Obj的关联是个列表，触发的变量name也是列表
         var change = false;
         var vk = Array.isArray(k) ? 1 : 0;
         var ok = Array.isArray(child.k) ? 2 : 0;
@@ -956,7 +956,7 @@ var VirtualDom = function (_Element) {
           self.__checkObj(k, child.v, record, opt);
         }
       }
-      //递归通知，增加索引
+      // 递归通知，增加索引
       else if (_util2.default.isDom(child)) {
           if (child instanceof VirtualDom) {
             child.__onData(k, opt);
@@ -974,17 +974,17 @@ var VirtualDom = function (_Element) {
           record.prev = _type2.default.DOM;
         } else if (Array.isArray(child)) {
           if (child.length) {
-            //数组类型记得递归记录history索引，结束后出栈
+            // 数组类型记得递归记录history索引，结束后出栈
             record.index.push(0);
             for (var i = 0, len = child.length; i < len; i++) {
               var item = child[i];
               record.index[record.index.length - 1] = i;
-              //第1个同时作为children的第1个要特殊处理
+              // 第1个同时作为children的第1个要特殊处理
               self.__checkObj(k, item, record, opt);
             }
             record.index.pop();
           }
-          //注意空数组算text类型
+          // 注意空数组算text类型
           else {
               _domDiff2.default.checkText(this.element, child, record);
               if (record.first || record.prev == _type2.default.DOM) {
@@ -1005,9 +1005,9 @@ var VirtualDom = function (_Element) {
           }
       record.first = false;
     }
-    //TODO: 一个神奇的现象，实体字符作为attr在初始化时作为String拼接和在setAttribute中表现不一致
-    //如&nbsp;会成为charCode 160的Non-breaking space，而非32的Normal space
-    //但是setAttribute会保留实体字符形式
+    // TODO: 一个神奇的现象，实体字符作为attr在初始化时作为String拼接和在setAttribute中表现不一致
+    // 如&nbsp;会成为charCode 160的Non-breaking space，而非32的Normal space
+    // 但是setAttribute会保留实体字符形式
 
   }, {
     key: '__updateAttr',
@@ -1017,13 +1017,13 @@ var VirtualDom = function (_Element) {
           v = '';
         }
         this.element.innerHTML = _util2.default.stringify(v);
-        //清空后创建空字符节点
+        // 清空后创建空字符节点
         this.__insertBlank(0);
         return;
       }
       _attr2.default.update(this.name, this.element, k, v, this.__style);
       this.__cache[k] = v;
-      //使用了jaw内联解析css
+      // 使用了jaw内联解析css
       if (this.__style) {
         this.__updateStyle();
       }
@@ -1032,10 +1032,10 @@ var VirtualDom = function (_Element) {
     key: '__match',
     value: function __match(first) {
       this.__inline = this.__cache.style || '';
-      //预处理class和id，class分为数组形式，id判断#开头
+      // 预处理class和id，class分为数组形式，id判断#开头
       this.__initCI();
       var matches = (0, _match2.default)(this.__names, this.__classes, this.__ids, this.__style || { default: {} }, this, first);
-      //本身的inline最高优先级追加到末尾
+      // 本身的inline最高优先级追加到末尾
       return matches + this.__inline;
     }
   }, {
@@ -1049,7 +1049,7 @@ var VirtualDom = function (_Element) {
         this.__classes = [];
         this.__ids = [];
       }
-      //预处理class和id，class分为数组形式，id判断#开头
+      // 预处理class和id，class分为数组形式，id判断#开头
       this.__classes.push(_matchUtil2.default.splitClass(this.__cache['class']));
       this.__ids.push(_matchUtil2.default.preId(this.__cache.id));
     }

@@ -39,7 +39,7 @@ function join(index, children, history) {
       history.end = true;
       break;
     }
-    //array逻辑和Obj里面相同
+    // array逻辑和Obj里面相同
     else if(Array.isArray(child)) {
       res += joinObj(child, history);
       if(history.end) {
@@ -52,7 +52,7 @@ function join(index, children, history) {
   }
   return res;
 }
-//递归找到第一个不是text的为止，将之前的text拼接返回
+// 递归找到第一个不是text的为止，将之前的text拼接返回
 function joinObj(arr, history) {
   var res = '';
   for(var i = 0, len = arr.length; i < len; i++) {
@@ -79,8 +79,8 @@ function update(item, children, elem) {
   var res = join(item.index, children, {});
   var cns = elem.childNodes;
   var textNode = cns[item.start];
-  //神奇的地方，更新的对象是个DOM而不是TEXT，会发生在混杂情况下的t2d变化
-  //如t1{t}t2{t}变为t1{d}t2{d}，t2记录的range的start在3，而其目前是第2个{d}的DOM，插入在t2d逻辑中
+  // 神奇的地方，更新的对象是个DOM而不是TEXT，会发生在混杂情况下的t2d变化
+  // 如t1{t}t2{t}变为t1{d}t2{d}，t2记录的range的start在3，而其目前是第2个{d}的DOM，插入在t2d逻辑中
   if(textNode.nodeType == 1) {
     return;
   }
@@ -92,7 +92,7 @@ function update(item, children, elem) {
 }
 
 function value(item, children) {
-  //从item的index开始往后找，直到不是text为止，拼接所有text进行更新
+  // 从item的index开始往后找，直到不是text为止，拼接所有text进行更新
   return join(item.index, children, {});
 }
 

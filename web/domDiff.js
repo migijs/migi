@@ -239,9 +239,9 @@ function del(elem, vd, record, temp, last) {
             removeAt(elem, record.start);
             break;
         }
-      } else {
-        // 删过text，之后的text自动一并删除
       }
+      // 删过text，之后的text自动一并删除，可以忽略
+      // else {}
     } else {
       switch (record.state) {
         case _type2.default.DOM_TO_TEXT:
@@ -427,17 +427,17 @@ function diffVd(ovd, nvd) {
 
 function diff(parent, elem, ov, nv, record, opt) {
   if (opt) {
-    diffList(parent, elem, ov, nv, record, opt);
+    diffArray(parent, elem, ov, nv, record, opt);
   } else {
     diffChild(parent, elem, ov, nv, record);
   }
 }
 
 function diffChild(parent, elem, ovd, nvd, record) {
-  //新老值是否是数组处理方式不同
+  // 新老值是否是数组处理方式不同
   var oa = Array.isArray(ovd);
   var na = Array.isArray(nvd);
-  //都是数组时，还要检查二者长度
+  // 都是数组时，还要检查二者长度
   if (oa && na) {
     var ol = ovd.length;
     var nl = nvd.length;
@@ -445,7 +445,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
     var ns = nl ? 2 : 0;
     record.index.push(0);
     switch (os | ns) {
-      //都是空数组
+      // 都是空数组
       case 0:
         if (record.state == _type2.default.TEXT_TO_DOM) {
           insertAt(elem, elem.childNodes, record.start++, nvd, true);
@@ -453,7 +453,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
         record.state = _type2.default.TEXT_TO_TEXT;
         record.prev = _type2.default.TEXT;
         break;
-      //有内容的数组变为空数组
+      // 有内容的数组变为空数组
       case 1:
         diffChild(parent, elem, ovd[0], nvd[0], record);
         var temp = {};
@@ -461,7 +461,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
           del(elem, ovd[i], record, temp, i == ol - 1);
         }
         break;
-      //空数组变为有内容
+      // 空数组变为有内容
       case 2:
         diffChild(parent, elem, ovd[0], nvd[0], record);
         var temp = {};
@@ -470,20 +470,20 @@ function diffChild(parent, elem, ovd, nvd, record) {
           add(parent, elem, nvd[i], record, temp, i == nl - 1);
         }
         break;
-      //都有内容
+      // 都有内容
       case 3:
         for (var i = 0, len = Math.min(ol, nl); i < len; i++) {
           record.index[record.index.length - 1] = i;
           diffChild(parent, elem, ovd[i], nvd[i], record);
         }
         var temp = {};
-        //老的多余的删除
+        // 老的多余的删除
         if (i < ol) {
           for (; i < ol; i++) {
             del(elem, ovd[i], record, temp, i == ol - 1);
           }
         }
-        //新的多余的插入
+        // 新的多余的插入
         else if (i < nl) {
             for (; i < nl; i++) {
               record.index[record.index.length - 1] = i;
@@ -494,36 +494,36 @@ function diffChild(parent, elem, ovd, nvd, record) {
     }
     record.index.pop();
   }
-  //老的是数组新的不是
+  // 老的是数组新的不是
   else if (oa) {
-      //将老的第1个和新的相比，注意老的第一个可能还是个数组，递归下去
+      // 将老的第1个和新的相比，注意老的第一个可能还是个数组，递归下去
       diffChild(parent, elem, ovd[0], nvd, record);
-      //移除剩余的老的
+      // 移除剩余的老的
       var temp = {};
       for (var i = 1, len = ovd.length; i < len; i++) {
         del(elem, ovd[i], record, temp, i == len - 1);
       }
     }
-    //新的是数组老的不是
+    // 新的是数组老的不是
     else if (na) {
         record.index.push(0);
-        //将新的第1个和老的相比，注意新的第一个可能还是个数组，递归下去
+        // 将新的第1个和老的相比，注意新的第一个可能还是个数组，递归下去
         diffChild(parent, elem, ovd, nvd[0], record);
         var temp = {};
-        //增加剩余的新的
+        // 增加剩余的新的
         for (var i = 1, len = nvd.length; i < len; i++) {
           record.index[record.index.length - 1] = i;
           add(parent, elem, nvd[i], record, temp, i == len - 1);
         }
         record.index.pop();
       }
-      //都不是数组
+      // 都不是数组
       else {
           var oe = _util2.default.isDom(ovd) ? 1 : 0;
           var ne = _util2.default.isDom(nvd) ? 2 : 0;
           var cns = elem.childNodes;
           switch (oe | ne) {
-            //都是text时，根据上个状态设置range
+            // 都是text时，根据上个状态设置range
             case 0:
               if (record.first) {
                 // 先尝试记录range，连续的text会去重，始终以第一个text为准，后续的防重不会被记录
@@ -557,7 +557,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
               record.state = _type2.default.TEXT_TO_TEXT;
               record.prev = _type2.default.TEXT;
               break;
-            //DOM变TEXT
+            // DOM变TEXT
             case 1:
               ovd.__delRef();
               if (record.first) {
@@ -577,14 +577,14 @@ function diffChild(parent, elem, ovd, nvd, record) {
                     break;
                 }
               }
-              //缓存对象池
+              // 缓存对象池
               _cachePool2.default.add(ovd.__destroy());
               record.state = _type2.default.DOM_TO_TEXT;
               record.prev = _type2.default.TEXT;
               break;
-            //TEXT变DOM
+            // TEXT变DOM
             case 2:
-              //这种情况下相当于add新vd，无parent和style引用
+              // 这种情况下相当于add新vd，无parent和style引用
               nvd.__parent = parent;
               nvd.__top = parent.top;
               nvd.style = parent.style;
@@ -611,7 +611,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
               record.state = _type2.default.TEXT_TO_DOM;
               record.prev = _type2.default.DOM;
               break;
-            //DOM变DOM
+            // DOM变DOM
             case 3:
               switch (record.state) {
                 case _type2.default.DOM_TO_TEXT:
@@ -622,7 +622,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
               var ocp = ovd instanceof _Component2.default ? 1 : 0;
               var ncp = nvd instanceof _Component2.default ? 2 : 0;
               switch (ocp | ncp) {
-                //DOM名没变递归diff，否则重绘
+                // DOM名没变递归diff，否则重绘
                 case 0:
                   ovd.__delRef();
                   if (ovd.__name == nvd.__name) {
@@ -640,11 +640,11 @@ function diffChild(parent, elem, ovd, nvd, record) {
                     nvd.emit(_Event2.default.DOM);
                     _matchHash2.default.del(ovd.__uid);
                     _hash2.default.set(nvd);
-                    //缓存对象池
+                    // 缓存对象池
                     _cachePool2.default.add(ovd.__destroy());
                   }
                   break;
-                //Component和VirtualDom变化则直接重绘
+                // Component和VirtualDom变化则直接重绘
                 default:
                   ovd.__delRef();
                   elem = ovd.element;
@@ -652,7 +652,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
                   elem.parentNode.removeChild(elem);
                   nvd.__parent = parent;
                   nvd.__top = parent.top;
-                  //match中为模拟style的:active伪类注册了window的一些事件，需检查移除
+                  // match中为模拟style的:active伪类注册了window的一些事件，需检查移除
                   if (ocp) {
                     _matchHash2.default.del(ovd.virtualDom.__uid);
                   } else {
@@ -661,7 +661,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
                   nvd.style = parent.style;
                   nvd.emit(_Event2.default.DOM);
                   _hash2.default.set(nvd);
-                  //缓存对象池
+                  // 缓存对象池
                   _cachePool2.default.add(ovd.__destroy());
                   break;
               }
@@ -670,7 +670,7 @@ function diffChild(parent, elem, ovd, nvd, record) {
               record.start++;
               break;
           }
-          //非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
+          // 非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
           if (nvd instanceof migi.NonVisualComponent) {
             nvd.emit(_Event2.default.DOM);
           }
@@ -687,117 +687,98 @@ function checkText(elem, vd, record) {
   }
 }
 
-function diffList(elem, ovd, nvd, ranges, option, history, parent, opt) {
+function diffArray(parent, elem, ovd, nvd, record, opt) {
   var ol = ovd.length;
   var nl = nvd.length;
   var os = ol ? 1 : 0;
   var ns = nl ? 2 : 0;
-  // history.push(0);
-  // if(option.first) {
-  //   range.record(history, option);
-  // }
+  record.index.push(0);
   switch (os | ns) {
-    //都是空数组
+    // 都是空数组
     case 0:
-      option.state = _type2.default.TEXT_TO_TEXT;
-      option.prev = _type2.default.TEXT;
+      if (record.state == _type2.default.TEXT_TO_DOM) {
+        insertAt(elem, elem.childNodes, record.start++, nvd, true);
+      }
+      record.state = _type2.default.TEXT_TO_TEXT;
+      record.prev = _type2.default.TEXT;
       break;
     //有内容的数组变为空数组
     case 1:
-      diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
+      diffChild(parent, elem, ovd[0], nvd[0], record);
       var temp = {};
       for (var i = 1; i < ol; i++) {
-        del(elem, ovd[i], ranges, option, temp, i == ol - 1);
+        del(elem, ovd[i], record, temp, i == ol - 1);
       }
       break;
-    //空数组变为有内容
+    // 空数组变为有内容
     case 2:
-      diffChild(elem, ovd[0], nvd[0], ranges, option, history, parent);
+      diffChild(parent, elem, ovd[0], nvd[0], record);
       var temp = {};
       for (var i = 1; i < nl; i++) {
-        history[history.length - 1] = i;
-        add(elem, nvd[i], ranges, option, history, temp, i == nl - 1, parent);
+        record.index[record.index.length - 1] = i;
+        add(parent, elem, nvd[i], record, temp, i == nl - 1);
       }
       break;
-    //都有内容
+    // 都有内容
     case 3:
       switch (opt.method) {
         case 'push':
-          traversal(elem, ovd, ranges, option, history);
-          add(elem, nvd[nvd.length - 1], ranges, option, history, {}, true, parent);
+          for (var i = 0; i < ol; i++) {
+            scan(elem, nvd[i], record);
+          }
+          add(parent, elem, nvd[ol], record, {}, true);
           break;
         case 'pop':
-          traversal(elem, nvd, ranges, option, history);
-          del(elem, ovd[ovd.length - 1], ranges, option, {}, true);
+          for (var i = 0; i < nl; i++) {
+            scan(elem, nvd[i], record);
+          }
+          del(elem, nvd[nl], record, {}, true);
           break;
         case 'unshift':
-          var args = opt.args[0];
-          var isDom = _util2.default.isDom(args);
-          var first = _util2.default.arrFirst(ovd);
-          var firstDom = _util2.default.isDom(first);
-          // 第一个位置比较简单，直接插入后继续遍历状态即可
-          if (option.first) {
-            if (isDom) {
-              add(elem, args, ranges, option, history, {}, false, parent);
-              option.start++;
-            } else {
-              if (firstDom) {
-                insertAt(elem, elem.childNodes, 0, args, true);
-              } else {
-                addRange(ranges, option);
-              }
-            }
-            traversal(elem, ovd, ranges, option, history);
-          } else {
-            if (isDom) {
-              if (firstDom) {
-                insertAt(elem, elem.childNodes, 0, args, true);
-              }
-              option.start++;
-            } else {
-              if (!firstDom) {
-                checkText(option, elem, nvd, ranges, history);
-              }
-            }
-            delete option.t2d;
-            delete option.d2t;
-          }
+          unshift(parent, elem, ovd, nvd, record, opt);
           break;
         case 'shift':
           break;
       }
       break;
   }
-  option.first = false;
+  record.index.pop();
+  record.first = false;
 }
 
-function traversal(elem, vd, ranges, option, history) {
+function scan(elem, vd, record) {
   if (Array.isArray(vd)) {
-    history.push(0);
-    if (option.first) {
-      // range.record(history, option);
-    }
+    record.index.push(0);
     for (var i = 0, len = vd.length; i < len; i++) {
-      history[history.length - 1] = i;
-      traversal(elem, vd[i], ranges, option, history);
+      record.index[record.index.length - 1] = i;
+      scan(elem, vd[i], record);
     }
-    history.pop();
+    record.index.pop();
   } else {
     if (_util2.default.isDom(vd)) {
-      option.state = _type2.default.DOM_TO_DOM;
-      option.prev = _type2.default.DOM;
-      option.start++;
+      record.state = _type2.default.DOM_TO_DOM;
+      record.prev = _type2.default.DOM;
+      record.start++;
     } else {
-      if (!option.first) {
-        checkText(option, elem, vd, ranges, history);
+      if (record.first) {
+        recordRange(record);
+      } else if (record.prev === _type2.default.DOM) {
+        recordRange(record);
       }
-      // range.record(history, option);
-      option.state = _type2.default.TEXT_TO_TEXT;
-      option.prev = _type2.default.TEXT;
+      record.state = _type2.default.TEXT_TO_TEXT;
+      record.prev = _type2.default.TEXT;
     }
-    option.first = false;
+    record.first = false;
   }
 }
+
+function unshift(parent, elem, ovd, nvd, record, opt) {
+  console.log(ovd.length, nvd.length, opt);
+  var offset = nvd.length - ovd.length;
+  var oFirst = _util2.default.arrFirst(ovd);
+}
+
+function traversalUnshift() {}
 
 exports.default = {
   diff: diff,

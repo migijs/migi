@@ -12,9 +12,9 @@ class Obj {
   setV(v) {
     this.v = util.clone(v);
   }
-  //prop为true时作为prop渲染转义，否则为innerHTML转义
+  // prop为true时作为prop渲染转义，否则为innerHTML转义
   toString(prop) {
-    //array调用join包括转码
+    // array调用join包括转码
     if(Array.isArray(this.v)) {
       return util.joinArray(this.v, prop);
     }

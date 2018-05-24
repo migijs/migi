@@ -36,7 +36,7 @@ function isOrigin(o) {
   return o === void 0 || o === null || util.isBoolean(o) || util.isNumber(o) || util.isString(o);
 }
 function equal(a, b) {
-  //vd常量
+  // vd常量
   if(a instanceof Element || b instanceof Element) {
     return a === b;
   }
