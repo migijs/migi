@@ -170,7 +170,7 @@ var util = {
   linear,
   arrFirst,
   isDom: function(obj) {
-    return obj instanceof Element && !(obj instanceof migi.NonVisualComponent);
+    return obj instanceof Element;
   },
 };
 

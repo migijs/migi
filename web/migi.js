@@ -28,10 +28,6 @@ var _VirtualDom = require('./VirtualDom');
 
 var _VirtualDom2 = _interopRequireDefault(_VirtualDom);
 
-var _NonVisualComponent = require('./NonVisualComponent');
-
-var _NonVisualComponent2 = _interopRequireDefault(_NonVisualComponent);
-
 var _CacheComponent = require('./CacheComponent');
 
 var _CacheComponent2 = _interopRequireDefault(_CacheComponent);
@@ -123,7 +119,6 @@ var migi = {
   eventBus: new _Event2.default(),
   Element: _Element2.default,
   Component: _Component2.default,
-  NonVisualComponent: _NonVisualComponent2.default,
   CacheComponent: _CacheComponent2.default,
   VirtualDom: _VirtualDom2.default,
   Obj: _Obj2.default,

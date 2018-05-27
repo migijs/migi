@@ -4,7 +4,6 @@ import Model from './Model';
 import CacheModel from './CacheModel';
 import Component from './Component';
 import VirtualDom from './VirtualDom';
-import NonVisualComponent from './NonVisualComponent';
 import CacheComponent from './CacheComponent';
 import Obj from './Obj';
 import Cb from './Cb';
@@ -51,7 +50,6 @@ var migi = {
   eventBus: new Event,
   Element,
   Component,
-  NonVisualComponent,
   CacheComponent,
   VirtualDom,
   Obj,

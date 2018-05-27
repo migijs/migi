@@ -800,9 +800,6 @@ var VirtualDom = function (_Element) {
       } else if (item instanceof _Obj2.default) {
         self.__checkBlank(item.v, option);
       } else if (isEmptyText(item)) {
-        if (item instanceof migi.NonVisualComponent) {
-          item.emit(_Event2.default.DOM);
-        }
         // 前方如有兄弟文本节点，无需插入，否则先记录empty，等后面检查是否有非空text出现，再插入空白节点
         if (option.prev == _type2.default.TEXT) {
           return;

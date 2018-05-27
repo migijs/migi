@@ -32,9 +32,6 @@ describe('api', function() {
   it('#Component', function() {
     expect(migi.Component).to.be.a(Function);
   });
-  it('#NonVisualComponent', function() {
-    expect(migi.NonVisualComponent).to.be.a(Function);
-  });
   it('#CacheComponent', function() {
     expect(migi.CacheComponent).to.be.a(Function);
   });

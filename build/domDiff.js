@@ -62,9 +62,6 @@ function replaceWith(elem, cns, index, vd, isText) {
     var s = _util2.default.stringify(vd);
     target = document.createTextNode(s || '');
     elem.replaceChild(target, cns[index]);
-    if (vd instanceof migi.NonVisualComponent) {
-      vd.emit(_Event2.default.DOM);
-    }
   } else {
     target = vd.toString();
     // textNode没有insertAdjacentHTML方法，必须使用replaceChild
@@ -89,9 +86,6 @@ function insertAt(elem, cns, index, vd, isText) {
       elem.appendChild(target);
     } else {
       elem.insertBefore(target, cns[index]);
-    }
-    if (vd instanceof migi.NonVisualComponent) {
-      vd.emit(_Event2.default.DOM);
     }
   } else {
     target = vd.toString();
@@ -669,10 +663,6 @@ function diffChild(parent, elem, ovd, nvd, record) {
               record.prev = _type2.default.DOM;
               record.start++;
               break;
-          }
-          // 非可视组件被当作空字符串处理，连同其他组件，不要忘了DOM事件
-          if (nvd instanceof migi.NonVisualComponent) {
-            nvd.emit(_Event2.default.DOM);
           }
         }
   record.first = false;

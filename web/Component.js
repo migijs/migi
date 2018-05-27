@@ -199,19 +199,15 @@ var Component = function (_Element) {
 
   }, {
     key: '__onDom',
-    value: function __onDom(fake) {
+    value: function __onDom() {
       _get(Component.prototype.__proto__ || Object.getPrototypeOf(Component.prototype), '__onDom', this).call(this);
       var self = this;
-      self.virtualDom.emit(_Event2.default.DOM, fake);
+      self.virtualDom.emit(_Event2.default.DOM);
       var elem = self.element;
       if (self.name) {
         elem.setAttribute('migi-name', self.name);
       }
       // 无覆盖render时渲染标签的children；有时渲染render的children
-      // 标签的children没被添加到DOM上但父级组件DOM已构建完，因此以参数区分触发fake的DOM事件
-      if (!fake && self.children != self.virtualDom.children) {
-        Component.fakeDom(self.children);
-      }
       // 指定不允许冒泡，默认是全部冒泡
       if (self.props.allowPropagation == 'true') {
         return;
@@ -379,19 +375,6 @@ var Component = function (_Element) {
     key: 'ref',
     get: function get() {
       return this.__ref;
-    }
-  }], [{
-    key: 'fakeDom',
-    value: function fakeDom(child) {
-      if (Array.isArray(child)) {
-        child.forEach(function (item) {
-          Component.fakeDom(item);
-        });
-      } else if (child instanceof Component) {
-        child.emit(_Event2.default.DOM, true);
-      } else if (child instanceof _VirtualDom2.default) {
-        child.emit(_Event2.default.DOM, true);
-      }
     }
   }]);
 
