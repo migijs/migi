@@ -128,7 +128,7 @@ exports.default = {
     }
   },
   update: function update(name, element, k, v, jaw) {
-    //特殊对待的prop，用js赋值
+    // 特殊对待的prop，用js赋值
     if (SETS.hasOwnProperty(name)) {
       var o = SETS[name];
       if (o.hasOwnProperty(k)) {
@@ -151,7 +151,7 @@ exports.default = {
         return;
       }
     }
-    //普通的setAttribute
+    // 普通的setAttribute
     switch (k) {
       case 'className':
         k = 'class';
@@ -160,7 +160,7 @@ exports.default = {
         k = 'for';
         break;
     }
-    //jaw导入style时改写migi-前缀
+    // jaw导入style时改写migi-前缀
     if (jaw) {
       switch (k) {
         case 'id':

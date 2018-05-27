@@ -44,7 +44,7 @@ function isOrigin(o) {
   return o === void 0 || o === null || util.isBoolean(o) || util.isNumber(o) || util.isString(o);
 }
 function _equal(a, b) {
-  //vd常量
+  // vd常量
   if (a instanceof _Element2.default || b instanceof _Element2.default) {
     return a === b;
   }

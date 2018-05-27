@@ -693,11 +693,22 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       break;
     // 都有内容
     case 3:
+      var len = opt.args.length;
+      var oFirst = util.arrFirst(ovd);
+      var nFirst = util.arrFirst(nvd);
+      var ot = util.isDom(oFirst) ? 1 : 0;
+      var nt = util.isDom(nFirst) ? 2 : 0;
+      var temp = {};
       switch(opt.method) {
         case 'push':
+          if(nt == 0) {
+            checkText(elem, nFirst, record);
+          }
           for(var i = 0; i < ol; i++) {
+            record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
+          record.index[record.index.length - 1] = i;
           add(parent, elem, nvd[ol], record, {}, true);
           break;
         case 'pop':
@@ -707,9 +718,19 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, nvd[nl], record, {}, true);
           break;
         case 'unshift':
-          unshift(parent, elem, ovd, nvd, record, opt);
+          for(var i = 0; i < len; i++) {
+            unshift(parent, elem, nvd[i], record, temp, i == len - 1, ot | nt);
+          }
+          if(nt == 0) {
+            checkText(elem, nFirst, record);
+          }
+          for(; i < nl; i++) {
+            scan(elem, nvd[i], record);
+          }
           break;
         case 'shift':
+          break;
+        case 'splice':
           break;
       }
       break;
@@ -729,15 +750,15 @@ function scan(elem, vd, record) {
   }
   else {
     if(util.isDom(vd)) {
+      if(record.prev == type.TEXT) {
+        record.start++;
+      }
       record.state = type.DOM_TO_DOM;
       record.prev = type.DOM;
       record.start++;
     }
     else {
-      if(record.first) {
-        recordRange(record);
-      }
-      else if(record.prev === type.DOM) {
+      if(record.first || record.prev == type.DOM) {
         recordRange(record);
       }
       record.state = type.TEXT_TO_TEXT;
@@ -747,13 +768,43 @@ function scan(elem, vd, record) {
   }
 }
 
-function unshift(parent, elem, ovd, nvd, record, opt) {
-  console.log(ovd.length, nvd.length, opt);
-  var offset = nvd.length - ovd.length;
-  var oFirst = util.arrFirst(ovd);
+function unshift(parent, elem, vd, record, temp, last, firstStateCompare) {
+  if(Array.isArray(vd)) {
+    record.index.push(0);
+    // 防止空数组跳过的情况
+    for(var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
+      var item = vd[i];
+      record.index[record.index.length - 1] = i;
+      unshift(parent, elem, item, record, temp, last && i == len - 1, firstStateCompare);
+    }
+    record.index.pop();
+  }
+  // 假如插入时作为首节点存在，需要特殊处理
+  else if(record.first) {
+    switch(firstStateCompare) {
+      // 插入前第一个是dom，插入的第一个是text
+      case 1:
+        insertAt(elem, elem.childNodes, record.start, vd, true);
+      // 插入前第一个是text，插入的第一个也是text
+      case 0:
+        recordRange(record);
+        addRange(record);
+        temp.prev = type.TEXT;
+        break;
+      // 插入前第一个是text，插入的第一个是dom
+      case 2:
+      // 插入前第一个是dom，插入的第一个也是dom
+      case 3:
+        insertAt(elem, elem.childNodes, record.start++, vd);
+        temp.prev = type.DOM;
+        break;
+    }
+  }
+  else {
+    add(parent, elem, vd, record, temp, last);
+  }
+  record.first = false;
 }
-
-function traversalUnshift() {}
 
 export default {
   diff,

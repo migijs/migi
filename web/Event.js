@@ -27,7 +27,7 @@ var Event = function () {
         if (!self.__hash.hasOwnProperty(id)) {
           self.__hash[id] = [];
         }
-        //遍历防止此handle被侦听过了
+        // 遍历防止此handle被侦听过了
         for (var i = 0, item = self.__hash[id], len = item.length; i < len; i++) {
           if (item[i] === handle) {
             return self;
@@ -76,7 +76,7 @@ var Event = function () {
             }
           }
         }
-        //未定义为全部清除
+        // 未定义为全部清除
         else {
             delete self.__hash[id];
           }

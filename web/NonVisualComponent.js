@@ -33,8 +33,8 @@ var NonVisualComponent = function (_Component) {
     return _possibleConstructorReturn(this, (_ref = NonVisualComponent.__proto__ || Object.getPrototypeOf(NonVisualComponent)).call.apply(_ref, [this].concat(data)));
   }
 
-  //非可视为空
-  //@overwrite
+  // 非可视为空
+  // @overwrite
 
 
   _createClass(NonVisualComponent, [{
@@ -43,8 +43,8 @@ var NonVisualComponent = function (_Component) {
       return '';
     }
 
-    //没有dom
-    //@overwrite
+    // 没有dom
+    // @overwrite
 
   }, {
     key: '__onDom',

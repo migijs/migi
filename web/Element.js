@@ -85,7 +85,7 @@ var Element = function (_Event) {
     value: function __reset(uid, name, props, children) {
       this.__uid = uid;
       this.__name = name;
-      //构建工具中都是arr，手写可能出现hash情况
+      // 构建工具中都是arr，手写可能出现hash情况
       if (Array.isArray(props)) {
         this.props = arr2hash(props);
         this.__props = spread(props);
@@ -95,16 +95,16 @@ var Element = function (_Event) {
       }
       this.__children = children;
 
-      this.__element = null; //真实DOM引用
-      this.__parent = null; //父vd或cp引用
-      this.__top = null; //最近父cp引用
-      this.__style = null; //样式中间生成代码
-      this.__dom = false; //是否被添加到真实DOM标识
-      this.__cache = {}; //缓存计算好的props
+      this.__element = null; // 真实DOM引用
+      this.__parent = null; // 父vd或cp引用
+      this.__top = null; // 最近父cp引用
+      this.__style = null; // 样式中间生成代码
+      this.__dom = false; // 是否被添加到真实DOM标识
+      this.__cache = {}; // 缓存计算好的props
 
       this.once(_Event3.default.DOM, this.__onDom);
     }
-    //防止多次插入后重复，清除上次，永远只存在一个实例
+    // 防止多次插入后重复，清除上次，永远只存在一个实例
 
   }, {
     key: 'clean',
@@ -132,7 +132,7 @@ var Element = function (_Event) {
   }, {
     key: '__saveRef',
     value: function __saveRef() {
-      //ref快速引用
+      // ref快速引用
       if (this.props.ref) {
         var top = this.top;
         if (top) {

@@ -106,7 +106,7 @@ function insertAt(elem, cns, index, vd, isText) {
         elem.insertBefore(node.firstChild, cns[index]);
       }
     }
-    //别忘了触发DOM事件
+    // 别忘了触发DOM事件
     vd.emit(_Event2.default.DOM);
   }
 }
@@ -114,7 +114,7 @@ function insertAt(elem, cns, index, vd, isText) {
 function add(parent, elem, vd, record, temp, last) {
   if (Array.isArray(vd)) {
     record.index.push(0);
-    //防止空数组跳过的情况
+    // 防止空数组跳过的情况
     for (var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
       var item = vd[i];
       record.index[record.index.length - 1] = i;
@@ -218,7 +218,7 @@ function del(elem, vd, record, temp, last) {
         break;
     }
     temp.prev = _type2.default.DOM;
-    //缓存对象池
+    // 缓存对象池
     _cachePool2.default.add(vd.__destroy());
   } else {
     if (temp.prev) {
@@ -321,11 +321,11 @@ function addRange(record) {
 }
 
 function diffVd(ovd, nvd) {
-  //相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
+  // 相同引用说明没发生变更，在一些使用常量、变量未变的情况下会如此
   if (ovd == nvd) {
     return;
   }
-  //特殊的uid，以及一些引用赋给新vd
+  // 特殊的uid，以及一些引用赋给新vd
   var elem = ovd.element;
   var props = ['__uid', '__element', '__parent', '__top', '__style', '__dom', '__names'];
   var i = props.length - 1;
@@ -333,18 +333,18 @@ function diffVd(ovd, nvd) {
     var k = props[i];
     nvd[k] = ovd[k];
   }
-  //vd记录更新uid引用
+  // vd记录更新uid引用
   _hash2.default.set(nvd);
-  //记录对比过的prop
+  // 记录对比过的prop
   var temp = {};
   for (i = ovd.__props.length - 1; i >= 0; i--) {
     var item = ovd.__props[i];
     var k = item[0];
     var v = item[1];
-    //只检查普通属性，onXXX事件由__listener中的引用移除
+    // 只检查普通属性，onXXX事件由__listener中的引用移除
     if (k.indexOf('on') != 0 || k == 'on') {
       temp[k] = true;
-      //对比老属性，多余删除，相同无需更新
+      // 对比老属性，多余删除，相同无需更新
       if (nvd.props.hasOwnProperty(k)) {
         var nv = nvd.props[k];
         if (nv !== v) {
@@ -357,9 +357,9 @@ function diffVd(ovd, nvd) {
       }
     }
   }
-  //移除__listener记录的引用
+  // 移除__listener记录的引用
   ovd.__removeListener();
-  //添加新vd的属性
+  // 添加新vd的属性
   var len = nvd.__props.length;
 
   var _loop = function _loop() {
@@ -367,7 +367,7 @@ function diffVd(ovd, nvd) {
     k = item[0];
 
     var v = item[1];
-    //事件和属性区分对待
+    // 事件和属性区分对待
     if (k.indexOf('on') == 0 && k != 'on') {
       name = k.slice(2).toLowerCase();
 
@@ -412,7 +412,7 @@ function diffVd(ovd, nvd) {
   var record = { start: 0, index: [], range: [], first: true };
   diffChild(nvd, elem, ovd.children, nvd.children, record);
   if (record.range.length) {
-    //textarea特殊判断
+    // textarea特殊判断
     if (nvd.__name == 'textarea') {
       nvd.__updateAttr('value', _range2.default.value(record.range[0], nvd.children));
       return;
@@ -421,7 +421,7 @@ function diffVd(ovd, nvd) {
       _range2.default.update(record.range[i], nvd.children, elem);
     }
   }
-  //缓存对象池
+  // 缓存对象池
   _cachePool2.default.add(ovd.__destroy());
 }
 
@@ -702,7 +702,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       record.state = _type2.default.TEXT_TO_TEXT;
       record.prev = _type2.default.TEXT;
       break;
-    //有内容的数组变为空数组
+    // 有内容的数组变为空数组
     case 1:
       diffChild(parent, elem, ovd[0], nvd[0], record);
       var temp = {};
@@ -721,11 +721,22 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       break;
     // 都有内容
     case 3:
+      var len = opt.args.length;
+      var oFirst = _util2.default.arrFirst(ovd);
+      var nFirst = _util2.default.arrFirst(nvd);
+      var ot = _util2.default.isDom(oFirst) ? 1 : 0;
+      var nt = _util2.default.isDom(nFirst) ? 2 : 0;
+      var temp = {};
       switch (opt.method) {
         case 'push':
+          if (nt == 0) {
+            checkText(elem, nFirst, record);
+          }
           for (var i = 0; i < ol; i++) {
+            record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
+          record.index[record.index.length - 1] = i;
           add(parent, elem, nvd[ol], record, {}, true);
           break;
         case 'pop':
@@ -735,9 +746,19 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, nvd[nl], record, {}, true);
           break;
         case 'unshift':
-          unshift(parent, elem, ovd, nvd, record, opt);
+          for (var i = 0; i < len; i++) {
+            unshift(parent, elem, nvd[i], record, temp, i == len - 1, ot | nt);
+          }
+          if (nt == 0) {
+            checkText(elem, nFirst, record);
+          }
+          for (; i < nl; i++) {
+            scan(elem, nvd[i], record);
+          }
           break;
         case 'shift':
+          break;
+        case 'splice':
           break;
       }
       break;
@@ -756,13 +777,14 @@ function scan(elem, vd, record) {
     record.index.pop();
   } else {
     if (_util2.default.isDom(vd)) {
+      if (record.prev == _type2.default.TEXT) {
+        record.start++;
+      }
       record.state = _type2.default.DOM_TO_DOM;
       record.prev = _type2.default.DOM;
       record.start++;
     } else {
-      if (record.first) {
-        recordRange(record);
-      } else if (record.prev === _type2.default.DOM) {
+      if (record.first || record.prev == _type2.default.DOM) {
         recordRange(record);
       }
       record.state = _type2.default.TEXT_TO_TEXT;
@@ -772,13 +794,42 @@ function scan(elem, vd, record) {
   }
 }
 
-function unshift(parent, elem, ovd, nvd, record, opt) {
-  console.log(ovd.length, nvd.length, opt);
-  var offset = nvd.length - ovd.length;
-  var oFirst = _util2.default.arrFirst(ovd);
+function unshift(parent, elem, vd, record, temp, last, firstStateCompare) {
+  if (Array.isArray(vd)) {
+    record.index.push(0);
+    // 防止空数组跳过的情况
+    for (var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
+      var item = vd[i];
+      record.index[record.index.length - 1] = i;
+      unshift(parent, elem, item, record, temp, last && i == len - 1, firstStateCompare);
+    }
+    record.index.pop();
+  }
+  // 假如插入时作为首节点存在，需要特殊处理
+  else if (record.first) {
+      switch (firstStateCompare) {
+        // 插入前第一个是dom，插入的第一个是text
+        case 1:
+          insertAt(elem, elem.childNodes, record.start, vd, true);
+        // 插入前第一个是text，插入的第一个也是text
+        case 0:
+          recordRange(record);
+          addRange(record);
+          temp.prev = _type2.default.TEXT;
+          break;
+        // 插入前第一个是text，插入的第一个是dom
+        case 2:
+        // 插入前第一个是dom，插入的第一个也是dom
+        case 3:
+          insertAt(elem, elem.childNodes, record.start++, vd);
+          temp.prev = _type2.default.DOM;
+          break;
+      }
+    } else {
+      add(parent, elem, vd, record, temp, last);
+    }
+  record.first = false;
 }
-
-function traversalUnshift() {}
 
 exports.default = {
   diff: diff,

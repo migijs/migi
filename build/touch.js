@@ -16,7 +16,7 @@ exports.default = function (vd, name, cb, listener) {
   elem.addEventListener('touchstart', onTouchStart);
 
   function onTouchStart(e) {
-    //有可能组件内父子多个使用了手势，冒泡触发了多个
+    // 有可能组件内父子多个使用了手势，冒泡触发了多个
     if (touch.first) {
       touchList.push({
         vd: vd,

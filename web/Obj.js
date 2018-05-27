@@ -34,12 +34,12 @@ var Obj = function () {
     value: function setV(v) {
       this.v = _util2.default.clone(v);
     }
-    //prop为true时作为prop渲染转义，否则为innerHTML转义
+    // prop为true时作为prop渲染转义，否则为innerHTML转义
 
   }, {
     key: 'toString',
     value: function toString(prop) {
-      //array调用join包括转码
+      // array调用join包括转码
       if (Array.isArray(this.v)) {
         return _util2.default.joinArray(this.v, prop);
       }
