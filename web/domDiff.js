@@ -730,10 +730,14 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           add(parent, elem, nvd[ol], record, {}, true);
           break;
         case 'pop':
+          if (nt == 0) {
+            checkText(elem, nFirst, record);
+          }
           for (var i = 0; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
-          del(elem, nvd[nl], record, {}, true);
+          del(elem, ovd[nl], record, {}, true);
           break;
         case 'unshift':
           for (var i = 0; i < len; i++) {
