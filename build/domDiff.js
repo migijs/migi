@@ -726,8 +726,11 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
             record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
-          record.index[record.index.length - 1] = i;
-          add(parent, elem, nvd[ol], record, {}, true);
+          // 可能push多个参数
+          for (; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
+            add(parent, elem, nvd[i], record, temp, i == nl - 1);
+          }
           break;
         case 'pop':
           if (nt == 0) {
@@ -740,13 +743,15 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, ovd[nl], record, {}, true);
           break;
         case 'unshift':
-          for (var i = 0; i < len; i++) {
-            unshift(parent, elem, nvd[i], record, temp, i == len - 1, ot | nt);
-          }
           if (nt == 0) {
             checkText(elem, nFirst, record);
           }
-          for (; i < nl; i++) {
+          add(parent, elem, nvd[0], record, {});
+          if (ot == 0) {
+            checkText(elem, oFirst, record);
+          }
+          for (var i = 0; i < ol; i++) {
+            record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
           break;
@@ -786,43 +791,6 @@ function scan(elem, vd, record) {
     }
     record.first = false;
   }
-}
-
-function unshift(parent, elem, vd, record, temp, last, firstStateCompare) {
-  if (Array.isArray(vd)) {
-    record.index.push(0);
-    // 防止空数组跳过的情况
-    for (var i = 0, len = Math.max(vd.length, 1); i < len; i++) {
-      var item = vd[i];
-      record.index[record.index.length - 1] = i;
-      unshift(parent, elem, item, record, temp, last && i == len - 1, firstStateCompare);
-    }
-    record.index.pop();
-  }
-  // 假如插入时作为首节点存在，需要特殊处理
-  else if (record.first) {
-      switch (firstStateCompare) {
-        // 插入前第一个是dom，插入的第一个是text
-        case 1:
-          insertAt(elem, elem.childNodes, record.start, vd, true);
-        // 插入前第一个是text，插入的第一个也是text
-        case 0:
-          recordRange(record);
-          addRange(record);
-          temp.prev = _type2.default.TEXT;
-          break;
-        // 插入前第一个是text，插入的第一个是dom
-        case 2:
-        // 插入前第一个是dom，插入的第一个也是dom
-        case 3:
-          insertAt(elem, elem.childNodes, record.start++, vd);
-          temp.prev = _type2.default.DOM;
-          break;
-      }
-    } else {
-      add(parent, elem, vd, record, temp, last);
-    }
-  record.first = false;
 }
 
 exports.default = {
