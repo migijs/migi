@@ -691,7 +691,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       var temp = {};
       switch(opt.method) {
         case 'push':
-          if(nt == 0) {
+          if(!record.first && nt == 0) {
             checkText(elem, nFirst, record);
           }
           for(var i = 0; i < ol; i++) {
@@ -705,7 +705,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           }
           break;
         case 'pop':
-          if(nt == 0) {
+          if(!record.first && nt == 0) {
             checkText(elem, nFirst, record);
           }
           for(var i = 0; i < nl; i++) {
@@ -715,14 +715,20 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, ovd[nl], record, {}, true);
           break;
         case 'unshift':
-          if(nt == 0) {
+          if(!record.first && nt == 0) {
             checkText(elem, nFirst, record);
           }
-          add(parent, elem, nvd[0], record, {});
+          if(record.first) {
+            record.state = type.DOM_TO_DOM;
+          }
+          for(var i = 0; i < nl - ol; i++) {
+            record.index[record.index.length - 1] = i;
+            add(parent, elem, nvd[i], record, temp, i == nl - ol - 1);
+          }
           if(ot == 0) {
             checkText(elem, oFirst, record);
           }
-          for(var i = 0; i < ol; i++) {
+          for(; i < nl; i++) {
             record.index[record.index.length - 1] = i;
             scan(elem, nvd[i], record);
           }
