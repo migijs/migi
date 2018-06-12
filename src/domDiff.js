@@ -764,8 +764,8 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
             diffChild(parent, elem, ovd[i], nvd[i], record);
           }
           if(delLen > addLen) {
-            for(; i < delLen + index; i++) {
-              del(elem, ovd[i], record, temp, i == delLen + index - 1);
+            for(var j = i; j < delLen + index; j++) {
+              del(elem, ovd[j], record, temp, j == delLen + index - 1);
             }
           }
           else if(delLen < addLen) {
