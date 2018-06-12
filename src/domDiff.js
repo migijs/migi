@@ -439,13 +439,13 @@ function diffChild(parent, elem, ovd, nvd, record) {
         var temp = {};
         // 老的多余的删除
         if(i < ol) {
-          for(;i < ol; i++) {
+          for(; i < ol; i++) {
             del(elem, ovd[i], record, temp, i == ol - 1);
           }
         }
         // 新的多余的插入
         else if(i < nl) {
-          for(;i < nl; i++) {
+          for(; i < nl; i++) {
             record.index[record.index.length - 1] = i;
             add(parent, elem, nvd[i], record, temp, i == nl - 1);
           }
@@ -642,6 +642,8 @@ function diffChild(parent, elem, ovd, nvd, record) {
 function checkText(elem, vd, record) {
   if(record.state == type.TEXT_TO_DOM) {
     insertAt(elem, elem.childNodes, record.start, vd, true);
+    recordRange(record);
+    addRange(record);
   }
   else if(record.state == type.DOM_TO_TEXT) {
     addRange(record);
@@ -683,7 +685,6 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       break;
     // 都有内容
     case 3:
-      var len = opt.args.length;
       var oFirst = util.arrFirst(ovd);
       var nFirst = util.arrFirst(nvd);
       var ot = util.isDom(oFirst) ? 1 : 0;
@@ -692,6 +693,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       switch(opt.method) {
         case 'push':
           if(!record.first && nt == 0) {
+            record.index[record.index.length - 1] = 0;
             checkText(elem, nFirst, record);
           }
           for(var i = 0; i < ol; i++) {
@@ -706,6 +708,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           break;
         case 'pop':
           if(!record.first && nt == 0) {
+            record.index[record.index.length - 1] = 0;
             checkText(elem, nFirst, record);
           }
           for(var i = 0; i < nl; i++) {
@@ -715,9 +718,6 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, ovd[nl], record, {}, true);
           break;
         case 'unshift':
-          if(!record.first && nt == 0) {
-            checkText(elem, nFirst, record);
-          }
           if(record.first) {
             record.state = type.DOM_TO_DOM;
           }
@@ -726,6 +726,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
             add(parent, elem, nvd[i], record, temp, i == nl - ol - 1);
           }
           if(ot == 0) {
+            record.index[record.index.length - 1] = i;
             checkText(elem, oFirst, record);
           }
           for(; i < nl; i++) {
@@ -734,8 +735,56 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           }
           break;
         case 'shift':
+          if(record.first) {
+            record.state = type.DOM_TO_DOM;
+          }
+          del(elem, ovd[0], record, {}, true);
+          if(nt == 0) {
+            record.index[record.index.length - 1] = 0;
+            checkText(elem, nFirst, record);
+          }
+          for(var i = 0; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
           break;
         case 'splice':
+          let index = opt.args[0];
+          let delLen = opt.args[1];
+          let addLen = opt.args.length - 2;
+          for(var i = 0; i < index; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
+          if(record.first) {
+            record.state = type.DOM_TO_DOM;
+          }
+          for(; i < Math.min(delLen, addLen) + index; i++) {
+            record.index[record.index.length - 1] = i;
+            diffChild(parent, elem, ovd[i], nvd[i], record);
+          }
+          if(delLen > addLen) {
+            for(; i < delLen + index; i++) {
+              del(elem, ovd[i], record, temp, i == delLen + index - 1);
+            }
+          }
+          else if(delLen < addLen) {
+            for(; i < addLen + index; i++) {
+              record.index[record.index.length - 1] = i;
+              add(parent, elem, nvd[i], record, temp, i == addLen + index - 1);
+            }
+          }
+          if(i < nl) {
+            nFirst = util.arrFirst(nvd[i]);
+            if(!util.isDom(nFirst)) {
+              record.index[record.index.length - 1] = i;
+              checkText(elem, nFirst, record);
+            }
+          }
+          for(; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
           break;
       }
       break;

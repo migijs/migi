@@ -671,6 +671,8 @@ function diffChild(parent, elem, ovd, nvd, record) {
 function checkText(elem, vd, record) {
   if (record.state == _type2.default.TEXT_TO_DOM) {
     insertAt(elem, elem.childNodes, record.start, vd, true);
+    recordRange(record);
+    addRange(record);
   } else if (record.state == _type2.default.DOM_TO_TEXT) {
     addRange(record);
     removeAt(elem, record.start + 1);
@@ -711,7 +713,6 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       break;
     // 都有内容
     case 3:
-      var len = opt.args.length;
       var oFirst = _util2.default.arrFirst(ovd);
       var nFirst = _util2.default.arrFirst(nvd);
       var ot = _util2.default.isDom(oFirst) ? 1 : 0;
@@ -720,6 +721,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
       switch (opt.method) {
         case 'push':
           if (!record.first && nt == 0) {
+            record.index[record.index.length - 1] = 0;
             checkText(elem, nFirst, record);
           }
           for (var i = 0; i < ol; i++) {
@@ -734,6 +736,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           break;
         case 'pop':
           if (!record.first && nt == 0) {
+            record.index[record.index.length - 1] = 0;
             checkText(elem, nFirst, record);
           }
           for (var i = 0; i < nl; i++) {
@@ -743,9 +746,6 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           del(elem, ovd[nl], record, {}, true);
           break;
         case 'unshift':
-          if (!record.first && nt == 0) {
-            checkText(elem, nFirst, record);
-          }
           if (record.first) {
             record.state = _type2.default.DOM_TO_DOM;
           }
@@ -754,6 +754,7 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
             add(parent, elem, nvd[i], record, temp, i == nl - ol - 1);
           }
           if (ot == 0) {
+            record.index[record.index.length - 1] = i;
             checkText(elem, oFirst, record);
           }
           for (; i < nl; i++) {
@@ -762,8 +763,55 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
           }
           break;
         case 'shift':
+          if (record.first) {
+            record.state = _type2.default.DOM_TO_DOM;
+          }
+          del(elem, ovd[0], record, {}, true);
+          if (nt == 0) {
+            record.index[record.index.length - 1] = 0;
+            checkText(elem, nFirst, record);
+          }
+          for (var i = 0; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
           break;
         case 'splice':
+          var index = opt.args[0];
+          var delLen = opt.args[1];
+          var addLen = opt.args.length - 2;
+          for (var i = 0; i < index; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
+          if (record.first) {
+            record.state = _type2.default.DOM_TO_DOM;
+          }
+          for (; i < Math.min(delLen, addLen) + index; i++) {
+            record.index[record.index.length - 1] = i;
+            diffChild(parent, elem, ovd[i], nvd[i], record);
+          }
+          if (delLen > addLen) {
+            for (; i < delLen + index; i++) {
+              del(elem, ovd[i], record, temp, i == delLen + index - 1);
+            }
+          } else if (delLen < addLen) {
+            for (; i < addLen + index; i++) {
+              record.index[record.index.length - 1] = i;
+              add(parent, elem, nvd[i], record, temp, i == addLen + index - 1);
+            }
+          }
+          if (i < nl) {
+            nFirst = _util2.default.arrFirst(nvd[i]);
+            if (!_util2.default.isDom(nFirst)) {
+              record.index[record.index.length - 1] = i;
+              checkText(elem, nFirst, record);
+            }
+          }
+          for (; i < nl; i++) {
+            record.index[record.index.length - 1] = i;
+            scan(elem, nvd[i], record);
+          }
           break;
       }
       break;
