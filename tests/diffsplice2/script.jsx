@@ -1,7 +1,7 @@
 class Component extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.list = [1, 2];
+    this.list = [1, 2, 3];
     this.i = 0;
     this.on(migi.Event.DOM, function() {
       this.record();
@@ -17,55 +17,49 @@ class Component extends migi.Component {
   click() {
     switch(this.i++) {
       case 0:
-        this.list.shift();
+        this.list.splice(0, 1, 4);
         break;
       case 1:
-        this.list.shift();
+        this.list.splice(0, 0, 5);
         break;
       case 2:
-        this.list = [0, 1, 2];
+        this.list.splice(0, 2, 6);
         break;
       case 3:
-        this.list.shift();
+        this.list.splice(0, 1);
         break;
       case 4:
-        this.list.shift();
+        this.list.splice(1, 0, 7);
         break;
       case 5:
-        this.list = [<span>0</span>, 1, 2];
+        this.list.splice(1, 1, 8);
         break;
       case 6:
-        this.list.shift();
+        this.list.splice(2, 1);
         break;
       case 7:
-        this.list.shift();
+        this.list = [1, 2, 3];
         break;
       case 8:
-        this.list = [<span>1</span>, <span>2</span>];
+        this.list.splice(0, 1, <span>4</span>);
         break;
       case 9:
-        this.list.shift();
+        this.list.splice(0, 0, <span>5</span>);
         break;
       case 10:
-        this.list.shift();
+        this.list.splice(0, 2, <span>6</span>);
         break;
       case 11:
-        this.list = [0, <span>1</span>, <span>2</span>];
+        this.list.splice(0, 1);
         break;
       case 12:
-        this.list.shift();
+        this.list.splice(1, 0, <span>7</span>);
         break;
       case 13:
-        this.list.shift();
+        this.list.splice(1, 1, <span>8</span>);
         break;
       case 14:
-        this.list = [<span>0</span>, <span>1</span>, <span>2</span>];
-        break;
-      case 15:
-        this.list.shift();
-        break;
-      case 16:
-        this.list.shift();
+        this.list.splice(2, 1);
         break;
     }
     this.record();
