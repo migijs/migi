@@ -111,10 +111,6 @@
     <span>当出现组件嵌套时，父组件的值和子组件的属性可以绑定联动</span>
   </li>
   <li>
-    <a href="ajax.html" title="ajax">Ajax非可视组件</a>
-    <span>当一个自定义组件无需DOM时，可继承NonVisualComponent，它render()返回空字符串</span>
-  </li>
-  <li>
     <a href="texta.html" title="texta">文字动画</a>
     <span>展示了如何用数据绑定来实现动画的效果</span>
   </li>
@@ -175,16 +171,8 @@
     <span>这是一个模拟下拉菜单的组件，它通过前面的Ajax组件读取一个数据源并进行展示</span>
   </li>
   <li>
-    <a href="bridge.html" title="bridge">数据桥接bridge</a>
-    <span>这是联动下拉菜单的组件，它通过前面的Ajax组件读取一个省市信息展示，使用bridge进行桥接单向数据联动、middleware进行数据处理</span>
-  </li>
-  <li>
     <a href="model.html" title="model">Model数据模型</a>
     <span>可以为组件赋值model属性为一个数据模型对象，这样更有利于专门的数据管理，它也可以通过model标签赋值给组件</span>
-  </li>
-  <li>
-    <a href="modelbridge.html" title="modelbridge">Model桥接</a>
-    <span>Model对象可以和组件对象一样，互相bridge桥接，甚至桥接EventBus</span>
   </li>
   <li>
     <a href="models.html" title="models">共用Model</a>
@@ -195,11 +183,7 @@
     <span>对于Model，@bind简写同样适用</span>
   </li>
   <li>
-    <a href="bridgee.html" title="bridge">数据中转事件总线</a>
-    <span>虽然用find方法可以找到若干个组件进行数据联动，但毕竟不方便。migi.eventBus作为事件总线外，还可以用作数据中转站，同样的bridge接口串联2个组件数据</span>
-  </li>
-  <li>
-    <a href="tap.html" title="bridge">tap事件</a>
+    <a href="tap.html" title="tap">tap事件</a>
     <span>类似zepto的tap事件，实际上是转换成click，对于延迟处理，已内置fastclick库。对于包括document.body在内的每个隔离作用域的组件，都会应用之</span>
   </li>
   <li>
