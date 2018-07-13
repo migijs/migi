@@ -4,12 +4,12 @@ const NUM = 0;
 const STR = 1;
 const BOOL = 2;
 
-const RENDER_EXIST = 1;
-const RENDER_DOM = 2;
+const RENDER_EXIST = 1; // 只有存在时才渲染输出
+const RENDER_DOM = 2; // 需要在domready后设置
 
 const SPECIALS = {
   button: {
-    disabled: RENDER_EXIST
+    disabled: RENDER_EXIST,
   },
   input: {
     autofocus: RENDER_EXIST,
@@ -22,24 +22,24 @@ const SPECIALS = {
     multiple: RENDER_EXIST,
     readOnly: RENDER_EXIST,
     readonly: RENDER_EXIST,
-    required: RENDER_EXIST
+    required: RENDER_EXIST,
   },
   link: {
-    disabled: RENDER_EXIST
+    disabled: RENDER_EXIST,
   },
   option: {
     defaultSelected: RENDER_DOM,
     defaultselected: RENDER_DOM,
     disabled: RENDER_EXIST,
     selected: RENDER_EXIST,
-    text: RENDER_DOM
+    text: RENDER_DOM,
   },
   select: {
     autofocus: RENDER_EXIST,
     disabled: RENDER_EXIST,
     multiple: RENDER_EXIST,
     selectedIndex: RENDER_DOM,
-    selectedindex: RENDER_DOM
+    selectedindex: RENDER_DOM,
   },
   textarea: {
     autofocus: RENDER_EXIST,
@@ -47,13 +47,25 @@ const SPECIALS = {
     defaultvalue: RENDER_DOM,
     disabled: RENDER_EXIST,
     readOnly: RENDER_EXIST,
-    readonly: RENDER_EXIST
-  }
+    readonly: RENDER_EXIST,
+  },
+  audio: {
+    autoplay: RENDER_EXIST,
+    controls: RENDER_EXIST,
+    loop: RENDER_EXIST,
+    muted: RENDER_EXIST,
+  },
+  video: {
+    autoplay: RENDER_EXIST,
+    controls: RENDER_EXIST,
+    loop: RENDER_EXIST,
+    muted: RENDER_EXIST,
+  },
 };
 
 const SETS = {
   button: {
-    disabled: BOOL
+    disabled: BOOL,
   },
   input: {
     autofocus: BOOL,
@@ -66,17 +78,17 @@ const SETS = {
     readOnly: BOOL,
     readonly: BOOL,
     required: BOOL,
-    value: STR
+    value: STR,
   },
   link: {
-    checked: BOOL
+    checked: BOOL,
   },
   option: {
     defaultSelected: BOOL,
     defaultselected: BOOL,
     disabled: BOOL,
     selected: BOOL,
-    text: STR
+    text: STR,
   },
   select: {
     autofocus: BOOL,
@@ -84,7 +96,7 @@ const SETS = {
     required: BOOL,
     selectedIndex: NUM,
     selectedindex: NUM,
-    value: STR
+    value: STR,
   },
   textarea: {
     autofocus: BOOL,
@@ -94,8 +106,20 @@ const SETS = {
     readOnly: BOOL,
     readonly: BOOL,
     required: BOOL,
-    value: STR
-  }
+    value: STR,
+  },
+  audio: {
+    autoplay: BOOL,
+    controls: BOOL,
+    loop: BOOL,
+    muted: BOOL,
+  },
+  video: {
+    autoplay: BOOL,
+    controls: BOOL,
+    loop: BOOL,
+    muted: BOOL,
+  },
 };
 
 const lowerCase = {
@@ -103,7 +127,7 @@ const lowerCase = {
   defaultselected: 'defaultSelected',
   defaultvalue: 'defautlValue',
   readonly: 'readOnly',
-  selectindex: 'selectIndex'
+  selectindex: 'selectIndex',
 };
 
 export default {

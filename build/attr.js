@@ -14,8 +14,8 @@ var NUM = 0;
 var STR = 1;
 var BOOL = 2;
 
-var RENDER_EXIST = 1;
-var RENDER_DOM = 2;
+var RENDER_EXIST = 1; // 只有存在时才渲染输出
+var RENDER_DOM = 2; // 需要在domready后设置
 
 var SPECIALS = {
   button: {
@@ -58,6 +58,18 @@ var SPECIALS = {
     disabled: RENDER_EXIST,
     readOnly: RENDER_EXIST,
     readonly: RENDER_EXIST
+  },
+  audio: {
+    autoplay: RENDER_EXIST,
+    controls: RENDER_EXIST,
+    loop: RENDER_EXIST,
+    muted: RENDER_EXIST
+  },
+  video: {
+    autoplay: RENDER_EXIST,
+    controls: RENDER_EXIST,
+    loop: RENDER_EXIST,
+    muted: RENDER_EXIST
   }
 };
 
@@ -105,6 +117,18 @@ var SETS = {
     readonly: BOOL,
     required: BOOL,
     value: STR
+  },
+  audio: {
+    autoplay: BOOL,
+    controls: BOOL,
+    loop: BOOL,
+    muted: BOOL
+  },
+  video: {
+    autoplay: BOOL,
+    controls: BOOL,
+    loop: BOOL,
+    muted: BOOL
   }
 };
 
