@@ -348,14 +348,8 @@ class VirtualDom extends Element {
     var res = '';
     // onxxx侦听处理
     if(/^on[a-zA-Z]/.test(k)) {
-      self.once(Event.DOM, function(fake) {
-        // 防止fake未真实添加DOM
-        if(fake) {
-          return;
-        }
-        var name = k.slice(2).toLowerCase();
-        self.__addEvt(name, v);
-      });
+      self.__renderPropEventDelay = self.__renderPropEventDelay || [];
+      self.__renderPropEventDelay.push({ k: k.slice(2).toLowerCase(), v });
     }
     // Obj类型绑定处理
     else if(v instanceof Obj) {
@@ -524,6 +518,14 @@ class VirtualDom extends Element {
         }
       }
     }
+    if(self.__renderPropEventDelay) {
+      self.__renderPropEventDelay.forEach(function(item) {
+        self.once(Event.DOM, function() {
+          self.__addEvt(item.k, item.v);
+        });
+      });
+      self.__renderPropEventDelay = null;
+    }
   }
   __addEvt(name, v) {
     var self = this;
@@ -639,14 +641,9 @@ class VirtualDom extends Element {
   }
 
   // @override
-  __onDom(fake) {
+  __onDom() {
     super.__onDom();
     var self = this;
-    // fake无需插入空白节点，直接递归通知
-    if(fake) {
-      Component.fakeDom(self.children);
-      return;
-    }
     // start标明真实DOM索引，因为相邻的文本会合并为一个text节点
     var option = { start: 0, first: true };
     self.__checkBlank(self.children, option);
