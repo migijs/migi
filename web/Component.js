@@ -239,7 +239,7 @@ var Component = function (_Element) {
         self.__canData = true;
       }
       self.__onData(k, opt);
-      self.emit(_Event2.default.DATA, k);
+      self.emit(_Event2.default.DATA, k, self[k]);
     }
     // @overwrite
 

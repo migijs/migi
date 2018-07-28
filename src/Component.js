@@ -168,7 +168,7 @@ class Component extends Element {
       self.__canData = true;
     }
     self.__onData(k, opt);
-    self.emit(Event.DATA, k);
+    self.emit(Event.DATA, k, self[k]);
   }
   // @overwrite
   __onData(k, opt) {

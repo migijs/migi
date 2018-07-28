@@ -540,6 +540,25 @@ describe('Component', function() {
     vd.emit(migi.Event.DOM);
     expect(count).to.eql(1);
   });
+  it('DATA event', function() {
+    class Component extends migi.Component {
+      constructor(...data) {
+        super(...data);
+        this.on(migi.Event.DATA, function(k, v) {
+          res = k + ',' + v;
+        });
+      }
+      @bind a
+      render() {
+        return <div>{ this.a }</div>;
+      }
+    }
+    var res = '';
+    var vd = <Component/>;
+    vd.toString();
+    vd.a = 1;
+    expect(res).to.eql('a,1');
+  });
 });
 
 describe('css', function() {

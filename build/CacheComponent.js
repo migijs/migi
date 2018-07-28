@@ -72,7 +72,9 @@ var CacheComponent = function (_Component) {
           // 可能被清空
           if (keys.length) {
             self.__onData(keys);
-            self.emit(_Event2.default.DATA, keys.length > 1 ? keys : keys[0]);
+            self.emit(_Event2.default.DATA, keys, keys.map(function (key) {
+              return self[key];
+            }));
           }
         }, 0);
       }

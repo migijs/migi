@@ -35,7 +35,9 @@ class CacheComponent extends Component {
         // 可能被清空
         if(keys.length) {
           self.__onData(keys);
-          self.emit(Event.DATA, keys.length > 1 ? keys : keys[0]);
+          self.emit(Event.DATA, keys, keys.map(function(key) {
+            return self[key];
+          }));
         }
       }, 0);
     }
