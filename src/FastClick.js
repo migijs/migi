@@ -786,6 +786,7 @@ FastClick.prototype.destroy = function() {
  */
 FastClick.notNeeded = function(layer) {
   var metaViewport;
+  var iOSVersion;
   var chromeVersion;
   var blackberryVersion;
   var firefoxVersion;
@@ -793,6 +794,19 @@ FastClick.notNeeded = function(layer) {
   // Devices that don't support touch don't need FastClick
   if (typeof window.ontouchstart === 'undefined') {
     return true;
+  }
+
+  // iOS 9.3+ doesn't need FastClick
+  if (deviceIsIOS) {
+    iOSVersion = /OS (\d+)_(\d+)/.exec(userAgent) || [0, 0, 0];
+    var major = +iOSVersion[1];
+    var minor = +iOSVersion[2];
+    if (major > 9 || major === 9 && minor > 2) {
+      metaViewport = document.querySelector('meta[name=viewport]');console.log(metaViewport.content)
+      if (metaViewport && metaViewport.content.indexOf('user-scalable=no') !== -1) {
+        return true;
+      }
+    }
   }
 
   // Chrome version - zero for other browsers
