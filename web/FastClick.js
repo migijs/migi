@@ -322,6 +322,20 @@ FastClick.prototype.focus = function (targetElement) {
   if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time' && targetElement.type !== 'month' && targetElement.type !== 'number' && targetElement.type !== 'email' && targetElement.type !== 'range') {
     length = targetElement.value.length;
     targetElement.setSelectionRange(length, length);
+
+    // Calling focus() here fixes this:
+    // https://github.com/ftlabs/fastclick/issues/548
+    //
+    // No idea why this works, but calling focus() fixes at least this scenario:
+    // - iOS 11.3
+    // - Cordova with UIWebView
+    // - Open page with datetime input and text input
+    // - Tap datetime input, close the popup
+    // - Quickly tap text input
+    // -> Nothing happens (this is fixed by calling focus())
+    // - Tap text input for a longer time
+    // -> Text input is focused
+    targetElement.focus();
   } else {
     targetElement.focus();
   }
