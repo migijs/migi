@@ -97,9 +97,8 @@ class VirtualDom extends Element {
     self.__names = null; // 从Component根节点到自己的tagName列表，以便css计算
     self.__classes = null; // 同上，class列表
     self.__ids = null; // 同上，id列表
-    self.__inline = null; // 昏村本身props的style属性
-    self.__hover = false; // 是否处于鼠标hover状态
-    self.__active = false; // 是否处于鼠标active状态
+    // self.__hover = false; // 是否处于鼠标hover状态
+    // self.__active = false; // 是否处于鼠标active状态
     self.__listener = null; // 添加的event的cb引用，remove时使用
     // self.__init(name, children);
   }
@@ -606,6 +605,7 @@ class VirtualDom extends Element {
         var arr = self.__listener[i];
         elem.removeEventListener(arr[0], arr[1]);
       }
+      self.__listener = null;
     }
   }
 
@@ -897,12 +897,12 @@ class VirtualDom extends Element {
     }
   }
   __match(first) {
-    this.__inline = this.__cache.style || '';
+    var inline = this.__cache.style || '';
     // 预处理class和id，class分为数组形式，id判断#开头
     this.__initCI();
     var matches = match(this.__names, this.__classes, this.__ids, this.__style || { default:{} }, this, first);
     // 本身的inline最高优先级追加到末尾
-    return matches + this.__inline;
+    return matches + inline;
   }
   __initCI() {
     var p = this.parent;
@@ -940,7 +940,7 @@ class VirtualDom extends Element {
     self.__selfClose = selfClose.hasOwnProperty(name);
     childParent(children, self);
   }
-  // @overwrite
+  // @Overwrite
   __reset(uid, name, props = [], children = []) {
     super.__reset(uid, name, props, children);
     this.__init(name, children);
@@ -959,7 +959,6 @@ class VirtualDom extends Element {
     this.__names = null;
     this.__classes = null;
     this.__ids = null;
-    this.__inline = null;
     this.__hover = false;
     this.__active = false;
     this.__listener = null;
@@ -968,7 +967,19 @@ class VirtualDom extends Element {
     this.__dom = false;
     this.__style = null;
     this.__element = null;
+    this.__renderPropEventDelay = null;
     return this;
+  }
+  // @Overwrite
+  clean() {
+    super.clean();
+    this.__renderPropEventDelay = null;
+    this.__removeListener();
+    this.__names = null;
+    this.__classes = null;
+    this.__ids = null;
+    this.__hover = false;
+    this.__active = false;
   }
 
   get names() {

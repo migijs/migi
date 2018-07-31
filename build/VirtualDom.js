@@ -176,9 +176,8 @@ var VirtualDom = function (_Element) {
     self.__names = null; // 从Component根节点到自己的tagName列表，以便css计算
     self.__classes = null; // 同上，class列表
     self.__ids = null; // 同上，id列表
-    self.__inline = null; // 昏村本身props的style属性
-    self.__hover = false; // 是否处于鼠标hover状态
-    self.__active = false; // 是否处于鼠标active状态
+    // self.__hover = false; // 是否处于鼠标hover状态
+    // self.__active = false; // 是否处于鼠标active状态
     self.__listener = null; // 添加的event的cb引用，remove时使用
     // self.__init(name, children);
     return _this;
@@ -719,6 +718,7 @@ var VirtualDom = function (_Element) {
           var arr = self.__listener[i];
           elem.removeEventListener(arr[0], arr[1]);
         }
+        self.__listener = null;
       }
     }
   }, {
@@ -1025,12 +1025,12 @@ var VirtualDom = function (_Element) {
   }, {
     key: '__match',
     value: function __match(first) {
-      this.__inline = this.__cache.style || '';
+      var inline = this.__cache.style || '';
       // 预处理class和id，class分为数组形式，id判断#开头
       this.__initCI();
       var matches = (0, _match2.default)(this.__names, this.__classes, this.__ids, this.__style || { default: {} }, this, first);
       // 本身的inline最高优先级追加到末尾
-      return matches + this.__inline;
+      return matches + inline;
     }
   }, {
     key: '__initCI',
@@ -1072,7 +1072,7 @@ var VirtualDom = function (_Element) {
       self.__selfClose = _selfClose2.default.hasOwnProperty(name);
       childParent(children, self);
     }
-    // @overwrite
+    // @Overwrite
 
   }, {
     key: '__reset',
@@ -1099,7 +1099,6 @@ var VirtualDom = function (_Element) {
       this.__names = null;
       this.__classes = null;
       this.__ids = null;
-      this.__inline = null;
       this.__hover = false;
       this.__active = false;
       this.__listener = null;
@@ -1108,7 +1107,22 @@ var VirtualDom = function (_Element) {
       this.__dom = false;
       this.__style = null;
       this.__element = null;
+      this.__renderPropEventDelay = null;
       return this;
+    }
+    // @Overwrite
+
+  }, {
+    key: 'clean',
+    value: function clean() {
+      _get(VirtualDom.prototype.__proto__ || Object.getPrototypeOf(VirtualDom.prototype), 'clean', this).call(this);
+      this.__renderPropEventDelay = null;
+      this.__removeListener();
+      this.__names = null;
+      this.__classes = null;
+      this.__ids = null;
+      this.__hover = false;
+      this.__active = false;
     }
   }, {
     key: 'names',
