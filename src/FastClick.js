@@ -802,7 +802,7 @@ FastClick.notNeeded = function(layer) {
     var major = +iOSVersion[1];
     var minor = +iOSVersion[2];
     if (major > 9 || major === 9 && minor > 2) {
-      metaViewport = document.querySelector('meta[name=viewport]');console.log(metaViewport.content)
+      metaViewport = document.querySelector('meta[name=viewport]');
       if (metaViewport && metaViewport.content.indexOf('user-scalable=no') !== -1) {
         return true;
       }
