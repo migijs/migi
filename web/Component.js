@@ -36,10 +36,6 @@ var _Model = require('./Model');
 
 var _Model2 = _interopRequireDefault(_Model);
 
-var _FastClick = require('./FastClick');
-
-var _FastClick2 = _interopRequireDefault(_FastClick);
-
 var _array = require('./array');
 
 var _array2 = _interopRequireDefault(_array);
@@ -227,8 +223,6 @@ var Component = function (_Element) {
       STOP.forEach(function (name) {
         elem.addEventListener(name, stopPropagation);
       });
-      // FastClick处理移动点击点透
-      _FastClick2.default.attach(elem);
     }
   }, {
     key: '__data',

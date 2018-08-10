@@ -76,10 +76,6 @@ var _selfClose = require('./selfClose');
 
 var _selfClose2 = _interopRequireDefault(_selfClose);
 
-var _FastClick = require('./FastClick');
-
-var _FastClick2 = _interopRequireDefault(_FastClick);
-
 var _dev = require('./dev');
 
 var _dev2 = _interopRequireDefault(_dev);
@@ -131,7 +127,6 @@ var migi = {
   matchHash: _matchHash2.default,
   attr: _attr2.default,
   selfClose: _selfClose2.default,
-  FastClick: _FastClick2.default,
   name: function name(Class, _name) {
     if (_Component2.default.prototype.isPrototypeOf(Class.prototype)) {
       Class.__migiName = _name;
@@ -150,13 +145,6 @@ var migi = {
 
 if (typeof window != 'undefined') {
   window.migi = migi;
-  if (document.body) {
-    _FastClick2.default.attach(document.body);
-  } else {
-    document.addEventListener('DOMContentLoaded', function () {
-      _FastClick2.default.attach(document.body);
-    });
-  }
 } else if (typeof global != 'undefined') {
   global.migi = migi;
 }
