@@ -93,13 +93,13 @@ class VirtualDom extends Element {
     }
     super(uid, name, props, children);
 
-    var self = this;
-    self.__names = null; // 从Component根节点到自己的tagName列表，以便css计算
-    self.__classes = null; // 同上，class列表
-    self.__ids = null; // 同上，id列表
+    // var self = this;
+    // self.__names = null; // 从Component根节点到自己的tagName列表，以便css计算
+    // self.__classes = null; // 同上，class列表
+    // self.__ids = null; // 同上，id列表
     // self.__hover = false; // 是否处于鼠标hover状态
     // self.__active = false; // 是否处于鼠标active状态
-    self.__listener = null; // 添加的event的cb引用，remove时使用
+    // self.__listener = null; // 添加的event的cb引用，remove时使用
     // self.__init(name, children);
   }
 
