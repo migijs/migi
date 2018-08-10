@@ -6,6 +6,7 @@ import Obj from './Obj';
 import Cb from './Cb';
 import Model from './Model';
 import array from './array';
+import fixEvent from './fixEvent';
 
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
   'mouseup', 'mouseout', 'mousewheel', 'resize', 'scroll', 'select', 'submit', 'DOMActivate', 'DOMFocusIn',
@@ -138,12 +139,19 @@ class Component extends Element {
     }
     // 无覆盖render时渲染标签的children；有时渲染render的children
     // 指定不允许冒泡，默认是全部冒泡
-    if(!self.props.stopPropagation && !self.stopPropagation) {
+    if(self.props.stopPropagation === true || self.props.stopPropagation === 'true') {
+      // stop
+    }
+    else if(self.props.stopPropagation === false || self.props.stopPropagation === 'false') {
+      return;
+    }
+    else if(!self.stopPropagation) {
       return;
     }
     // 将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
     function stopPropagation(e) {
       e = e || window.event;
+      fixEvent(e);
       if(e.target != elem && e.srcElement != elem) {
         e.cancelBubble = true;
         e.stopPropagation && e.stopPropagation();
