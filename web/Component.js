@@ -205,9 +205,7 @@ var Component = function (_Element) {
       }
       // 无覆盖render时渲染标签的children；有时渲染render的children
       // 指定不允许冒泡，默认是全部冒泡
-      if (self.props.allowPropagation == 'true') {
-        return;
-      } else if (self.props.allowPropagation != 'false' && self.allowPropagation) {
+      if (self.props.allowPropagation !== 'false' && self.props.allowPropagation !== false) {
         return;
       }
       // 将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -326,14 +324,6 @@ var Component = function (_Element) {
           });
         }
       }
-    }
-  }, {
-    key: 'allowPropagation',
-    get: function get() {
-      return this.__allowPropagation;
-    },
-    set: function set(v) {
-      this.__allowPropagation = v;
     }
   }, {
     key: 'element',
