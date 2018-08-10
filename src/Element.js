@@ -68,11 +68,11 @@ class Element extends Event {
     }
     this.__children = children;
 
-    // this.__element = null; // 真实DOM引用
-    // this.__parent = null; // 父vd或cp引用
-    // this.__top = null; // 最近父cp引用
-    // this.__style = null; // 样式中间生成代码
-    // this.__dom = false; // 是否被添加到真实DOM标识
+    this.__element = null; // 真实DOM引用
+    this.__parent = null; // 父vd或cp引用
+    this.__top = null; // 最近父cp引用
+    this.__style = null; // 样式中间生成代码
+    this.__dom = false; // 是否被添加到真实DOM标识
     this.__cache = {}; // 缓存计算好的props
 
     this.once(Event.DOM, this.__onDom);
