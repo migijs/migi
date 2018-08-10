@@ -5,7 +5,7 @@ class CacheComponent extends Component {
   constructor(...data) {
     super(...data);
     this.__handler = {}; // 缓存data key的hash
-    this.__ccb = false; // 缓存1ms再数据分发的是否在缓存时间内的状态标识
+    // this.__ccb = false; // 缓存1ms再数据分发的是否在缓存时间内的状态标识
     this.__timeout;
     this.__timecb;
   }
