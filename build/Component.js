@@ -67,7 +67,7 @@ var Component = function (_Element) {
     self.__ref = {}; // 以ref为attr的vd快速访问引用
     self.__stop = null; // 停止冒泡的fn引用
     self.__model = null; // 数据模型引用
-    self.__allowPropagation = true; // 默认是否允许冒泡
+    // self.__stopPropagation = false; // 默认允许冒泡
     // self.__canData = false; // 防止添加至DOM前触发无谓的数据更新
     self.__bindHash = {}; // 缩略语法中是否设置过默认值
     self.__ob = []; // 被array们的__ob__引用
@@ -205,7 +205,7 @@ var Component = function (_Element) {
       }
       // 无覆盖render时渲染标签的children；有时渲染render的children
       // 指定不允许冒泡，默认是全部冒泡
-      if (self.props.allowPropagation !== 'false' && self.props.allowPropagation !== false) {
+      if (!self.props.stopPropagation && !self.stopPropagation) {
         return;
       }
       // 将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
@@ -324,6 +324,14 @@ var Component = function (_Element) {
           });
         }
       }
+    }
+  }, {
+    key: 'stopPropagation',
+    get: function get() {
+      return this.__stopPropagation;
+    },
+    set: function set(v) {
+      this.__stopPropagation = v;
     }
   }, {
     key: 'element',
