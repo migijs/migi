@@ -5,7 +5,6 @@ import util from './util';
 import Obj from './Obj';
 import Cb from './Cb';
 import Model from './Model';
-import FastClick from './FastClick';
 import array from './array';
 
 const STOP = ['click', 'dblclick', 'focus', 'blur', 'change', 'contextmenu', 'mousedown', 'mousemove', 'mouseover',
@@ -158,8 +157,6 @@ class Component extends Element {
     STOP.forEach(function(name) {
       elem.addEventListener(name, stopPropagation);
     });
-    // FastClick处理移动点击点透
-    FastClick.attach(elem);
   }
   __data(k, opt) {
     var self = this;

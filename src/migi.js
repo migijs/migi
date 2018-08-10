@@ -16,7 +16,6 @@ import match from './match';
 import matchHash from './matchHash';
 import attr from './attr';
 import selfClose from './selfClose';
-import FastClick from './FastClick';
 import dev from './dev';
 
 var migi = {
@@ -62,7 +61,6 @@ var migi = {
   matchHash,
   attr,
   selfClose,
-  FastClick,
   name: function(Class, name) {
     if(Component.prototype.isPrototypeOf(Class.prototype)) {
       Class.__migiName = name;
@@ -81,14 +79,6 @@ var migi = {
 
 if(typeof window != 'undefined') {
   window.migi = migi;
-  if(document.body) {
-    FastClick.attach(document.body);
-  }
-  else {
-    document.addEventListener('DOMContentLoaded', function() {
-      FastClick.attach(document.body);
-    });
-  }
 }
 else if(typeof global != 'undefined') {
   global.migi = migi;

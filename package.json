@@ -39,19 +39,19 @@
     "jaw": "~4.0.1"
   },
   "devDependencies": {
-    "babel-core": "~6.26.0",
-    "babel-preset-es2015": "~6.22.0",
-    "blanket": "~1.1.7",
-    "coveralls": "~2.11.2",
-    "expect.js": "~0.3.1",
-    "gulp": "~3.9.0",
-    "gulp-rename": "~1.2.2",
-    "gulp-rimraf": "^0.1.1",
-    "gulp-util": "~3.0.1",
-    "mocha": "~2.2.5",
-    "mocha-lcov-reporter": "~0.0.2",
-    "nightwatch": "~0.9.20",
-    "through2": "~2.0.0"
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "blanket": "^1.2.3",
+    "coveralls": "^3.0.0",
+    "expect.js": "^0.3.1",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-rimraf": "^0.2.2",
+    "gulp-util": "^3.0.1",
+    "mocha": "^4.1.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nightwatch": "^0.9.21",
+    "through2": "^2.0.0"
   },
   "main": "./index",
   "engines": {
