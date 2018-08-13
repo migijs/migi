@@ -35,7 +35,7 @@
   "dependencies": {
     "es5-shim": "*",
     "migi-es6-shim": "*",
-    "lefty": "~5.0.0",
+    "lefty": "~5.0.1",
     "jaw": "~4.0.1"
   },
   "devDependencies": {

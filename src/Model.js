@@ -13,14 +13,14 @@ class Model extends Event {
     this.__ob = []; // 被array们的__ob__引用
   }
 
-  __onData(k) {
+  __onData(k, opt) {
     k = 'model.' + k;
     this.__ref.forEach(function(cp) {
       // set触发数据变更时，若已DOM则打开开关
       if(cp.dom) {
         cp.__canData = true;
       }
-      cp.__onData(k);
+      cp.__onData(k, opt);
     });
   }
 
