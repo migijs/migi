@@ -27,8 +27,8 @@
   class Shadow extends migi.Component {
     constructor(...data) {
       super(...data);
-      // 下面这句可以达到同样的效果，但优先级不如DOM属性
-      // this.allowPropagation = true;
+      // 下面这句可以达到同样的效果，但优先级不如DOM属性，默认就是false
+      // this.stopPropagation = false;
     }
     click() {
       alert('inner');
@@ -42,7 +42,7 @@
   }
 
   migi.render(
-    <Shadow allowPropagation="true"/>,
+    <Shadow stopPropagation="false"/>,
     '#example'
   );
 

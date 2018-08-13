@@ -63,12 +63,12 @@
     <span>如果组件声明了stopPropagation为false（默认值），那么所有事件可以冒泡。注意DOM属性优先级大于js属性优先级</span>
   </li>
   <li>
-    <a href="find.html" title="dom">find</a>
-    <span>find和findAll寻找VirtualDom下的孩子（们），支持当前浏览器的选择器；findChild和findChildren则寻找参数下的孩子（们），只支持name</span>
+    <a href="domready.html" title="domReady">domReady事件</a>
+    <span>组件和vd被migi.render()方法添加到DOM上时，会触发Event.DOM事件</span>
   </li>
   <li>
-    <a href="fake.html" title="dom">DOM事件和fake</a>
-    <span>组件和vd被添加到DOM上时，会触发Event.DOM事件；当没覆写render方法时其子节点会被作为children渲染添加到DOM上，否则并没有，此时也有DOM事件但第一个参数fake为true表明是假的</span>
+    <a href="find.html" title="dom">find</a>
+    <span>find和findAll寻找VirtualDom下的孩子（们），支持当前浏览器的选择器；findChild和findChildren则寻找参数下的孩子（们），只支持name</span>
   </li>
   <li>
     <a href="dom.html" title="dom">侦听操作DOM</a>
@@ -115,6 +115,10 @@
     <span>展示了如何用数据绑定来实现动画的效果</span>
   </li>
   <li>
+    <a href="data.html" title="DATA事件">DATA事件</a>
+    <span>当@bind注解绑定的变量发生改变时，会触发Event.DATA事件，它有2个参数：改变的变量名和变量值</span>
+  </li>
+  <li>
     <a href="cache.html" title="cache">继承缓存组件</a>
     <span>绑定数据频繁操作时会引发大量重绘，此时继承CacheComponent是个很好的选择，它将缓存结果在短时间内只渲染1次</span>
   </li>
@@ -128,7 +132,11 @@
   </li>
   <li>
     <a href="expr.html" title="expr">任意js表达式数据都被侦听</a>
-    <span>jsx中的js表达式包含的绑定变量可能不止1个</span>
+    <span>jsx中的js表达式包含的绑定变量可能不止1个，只要涉及到变更都会侦听更新</span>
+  </li>
+  <li>
+    <a href="arrow.html" title="arrowFunction">智能优化侦听变更</a>
+    <span>当@bind注解绑定的变量发生改变时，对于render()方法中使用当前context引用的侦听变量（this.{@bind})，会智能分析是否使用并发生改变，然后进行diff，无需手动优化，即没有类似shouldComponentUpdate的东西</span>
   </li>
   <li>
     <a href="arr.html" title="arr">侦听数组</a>
@@ -136,11 +144,15 @@
   </li>
   <li>
     <a href="add.html" title="add">添加删除元素</a>
-    <span>演示了各种情况，更新DOM和文本节点。get/set的对象是个引用时需重新自己赋值一下</span>
+    <span>演示了各种情况，更新DOM和文本节点。@bind变量是个数组时，其修改方法（push/pop等）也会侦听</span>
   </li>
   <li>
     <a href="domdiff.html" title="domdiff">DomDiff</a>
     <span>利用虚拟DOM比对来提升性能</span>
+  </li>
+  <li>
+    <a href="range.html" title="range">虚拟range</a>
+    <span>除了虚拟dom，还有虚拟range。它避免了为了domDiff方便，将文本用span或者注释节点包括，无任何添加副作用</span>
   </li>
   <li>
     <a href="switch.html" title="switch">切换按钮</a>

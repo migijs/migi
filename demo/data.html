@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"/>
-  <title>fakeDom</title>
+  <title>DATA事件</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
   <script src="es5-sham.js"></script>
@@ -14,61 +14,24 @@
 <div id="test"></div>
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
-  class NV extends migi.NonVisualComponent {
-    constructor(...data) {
-      super(...data);
-    }
-  }
-  class NV2 extends migi.NonVisualComponent {
-    constructor(...data) {
-      super(...data);
-    }
-  }
-
   class Component extends migi.Component {
     constructor(...data) {
       super(...data);
-      this.on(migi.Event.DOM, function(fake) {
-        var div = document.createElement('div');
-        div.id = 'true';
-        div.innerHTML = fake;
-        document.body.appendChild(div);
+      this.on(migi.Event.DATA, function(k, v) {
+        console.log(k, v); // 输出a和123
       });
-      var nv = this.findChild(NV);
-      nv.on(migi.Event.DOM, function(fake) {
-        var div = document.createElement('div');
-        div.id = 'fake1';
-        div.innerHTML = fake;
-        document.body.appendChild(div);
-      });
-      var nv2 = nv.findChild(NV2);
-      nv2.on(migi.Event.DOM, function(fake) {
-        var div = document.createElement('div');
-        div.id = 'fake2';
-        div.innerHTML = fake;
-        document.body.appendChild(div);
-      });
-      var span = nv2.findChild('span');
-      span.on(migi.Event.DOM, function(fake) {
-        var div = document.createElement('div');
-        div.id = 'fake3';
-        div.innerHTML = fake;
-        document.body.appendChild(div);
+      this.on(migi.Event.DOM, function() {
+        this.a = 123;
       });
     }
+    @bind a
     render() {
-      return <div>1</div>
+      return <div>{ this.a }</div>;
     }
   }
 
   migi.render(
-    <Component>
-      <NV>
-        <NV2>
-          <span></span>
-        </NV2>
-      </NV>
-    </Component>,
+    <Component/>,
     '#test'
   );
 </script>

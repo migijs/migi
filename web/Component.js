@@ -40,6 +40,10 @@ var _array = require('./array');
 
 var _array2 = _interopRequireDefault(_array);
 
+var _fixEvent = require('./fixEvent');
+
+var _fixEvent2 = _interopRequireDefault(_fixEvent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -205,12 +209,17 @@ var Component = function (_Element) {
       }
       // 无覆盖render时渲染标签的children；有时渲染render的children
       // 指定不允许冒泡，默认是全部冒泡
-      if (!self.props.stopPropagation && !self.stopPropagation) {
+      if (self.props.stopPropagation === true || self.props.stopPropagation === 'true') {
+        // stop
+      } else if (self.props.stopPropagation === false || self.props.stopPropagation === 'false') {
+        return;
+      } else if (!self.stopPropagation) {
         return;
       }
       // 将所有组件DOM事件停止冒泡，形成shadow特性，但不能阻止捕获
       function stopPropagation(e) {
         e = e || window.event;
+        (0, _fixEvent2.default)(e);
         if (e.target != elem && e.srcElement != elem) {
           e.cancelBubble = true;
           e.stopPropagation && e.stopPropagation();

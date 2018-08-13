@@ -82,39 +82,15 @@
 <body>
 <div id="example"></div>
 <pre><code class="brush:jsx"></code></pre>
-<script type="text/jsx">
-  class Ajax extends migi.NonVisualComponent {
-    constructor(...data) {
-      super(...data);
-      var self = this;
-      self.request();
-    }
-    request() {
-      var self = this;
-      var url = self.props.url;
-      $.getJSON(url, function(data) {
-        self.emit('success', data);
-      });
-    }
-  }
-</script>
 <script type="text/jsx" jssc="true">
   class Select extends migi.Component {
     constructor(...data) {
       super(...data);
       var self = this;
-      self._list = [];
-      self._value = '';
-      self._show = false;
-      self.allowPropagation = false;
+      self.list = [];
       self.on(migi.Event.DOM, function() {
-        self.findChild('Ajax').on('success', function(data) {
+        $.getJSON('./city.json', function(data) {
           self.list = data;
-        });
-        window.addEventListener('click', function(e) {
-          if(e.target != self.element) {
-            self.show = false;
-          }
         });
       });
     }
@@ -131,49 +107,19 @@
         this.value = '';
       }
     }
-    get show() {
-      return this._show;
-    }
-    @bind
-    set show(v) {
-      this._show = v;
-      if(v) {
-        var cur = this.element.querySelector('.cur');
-        if(cur) {
-          cur.className = '';
-        }
-        cur = this.element.querySelector('li[title="' + this.value + '"]');
-        if(cur) {
-          cur.className = 'cur';
-        }
-      }
-    }
-    @bind
-    set value(v) {
-      this._value = v;
-    }
-    @link(list)
-    get value() {
-      return this._value;
-    }
+    @bind show
+    @bind value
     handleClick(e) {
       this.show = !this.show;
-      if(e.target.tagName == 'LI') {
-        this.find('strong').html = this.value = e.target.innerHTML;
-      }
     }
-    handlerOver(e) {
-      if(e.target.tagName == 'LI' && e.target.className != 'cur') {
-        var cur = this.element.querySelector('.cur');
-        if(cur) {
-          cur.className = '';
-        }
-        e.target.className = 'cur';
-      }
+    handlerClick2(e, vd, tvd) {
+      let title = tvd.props.title;
+      this.value = title;
+      this.show = false;
     }
     render() {
       return (
-        <div class={ this.show ? 'select show' : 'select' } onClick={ this.handleClick }>
+        <div class={ this.show ? 'select show' : 'select' }>
           <input type="hidden" value={ this.value }/>
           <div class="place">
             {
@@ -182,9 +128,10 @@
               })
             }
           </div>
-          <strong>{ this.value || '&nbsp;' }</strong>
+          <strong onClick={ this.handleClick }>{ this.value || '&nbsp;' }</strong>
           <b></b>
-          <ul class={ this.show ? 'c show' : 'c' } onMouseOver={ this.handlerOver }>
+          <ul class={ this.show ? 'c show' : 'c' }
+              onClick={ { li: this.handlerClick2 } }>
           {
             this.list.map(function(item) {
               return <li title={ item.name }>{ item.name }</li>;
@@ -197,13 +144,7 @@
   }
 
   migi.render(
-    <ol>
-      <li>
-        <Select>
-          <Ajax url="./city.json"/>
-        </Select>
-      </li>
-    </ol>,
+    <Select/>,
     '#example'
   );
 </script>

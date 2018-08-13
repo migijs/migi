@@ -20,7 +20,7 @@
   class MyComponent extends migi.Component {
     constructor(...data) {
       super(...data);
-      this._list = [];
+      this.list = [];
     }
     get list() {
       return this._list;
@@ -32,11 +32,9 @@
     add() {
       var num = Math.floor(Math.random() * 10);
       this.list.push(num);
-      this.list = this.list;
     }
     del() {
       this.list.pop();
-      this.list = this.list;
     }
     render() {
       var blank = '';

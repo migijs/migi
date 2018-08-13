@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"/>
-  <title>自定义组件</title>
+  <title>虚拟range</title>
   <link href="style.css" media="all" rel="stylesheet"/>
   <script src="es5-shim.js"></script>
   <script src="es5-sham.js"></script>
@@ -14,18 +14,27 @@
 <div id="example"></div>
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
-  class HelloMessage extends migi.Component {
+  class MyComponent extends migi.Component {
     constructor(...data) {
       super(...data);
+      this.index = 0;
+    }
+    @bind index
+    handleClick() {
+      this.index++;
     }
     render() {
-      // this.props.name来自于attr的传参；this.name则来自于继承的变量，为组件名
-      return <h1 a="1" b="2">Hello {this.props.name}, this is {this.name}</h1>;
+      return (
+        <div>
+          <p onClick={ this.handleClick }>click</p>
+          <p><span>{ this.index }</span>{ this.index } { this.index }<strong>{ this.index }</strong></p>
+        </div>
+      );
     }
   }
 
   migi.render(
-    <HelloMessage name="migi"/>,
+    <MyComponent />,
     '#example'
   );
 </script>
