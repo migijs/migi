@@ -1,7 +1,7 @@
 var expect = require('expect.js');
 
 require('./hack');
-require('migi-es6-shim');
+require('es6-shim');
 
 var migi = require('../');
 

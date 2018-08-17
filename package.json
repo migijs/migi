@@ -34,9 +34,9 @@
   },
   "dependencies": {
     "es5-shim": "*",
-    "migi-es6-shim": "*",
-    "lefty": "~5.0.1",
-    "jaw": "~4.0.1"
+    "es6-shim": "*",
+    "jaw": "~4.0.1",
+    "lefty": "~5.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
