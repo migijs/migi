@@ -181,6 +181,10 @@ function del(elem, vd, record, temp, last) {
     }
     temp.prev = type.DOM;
     // 缓存对象池
+    // 遍历孩子vd回收
+    util.getAllChildrenElement(vd).forEach((item) => {
+      cachePool.add(item.__destroy());
+    });
     cachePool.add(vd.__destroy());
   }
   else {

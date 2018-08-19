@@ -213,6 +213,10 @@ function del(elem, vd, record, temp, last) {
     }
     temp.prev = _type2.default.DOM;
     // 缓存对象池
+    // 遍历孩子vd回收
+    _util2.default.getAllChildrenElement(vd).forEach(function (item) {
+      _cachePool2.default.add(item.__destroy());
+    });
     _cachePool2.default.add(vd.__destroy());
   } else {
     if (temp.prev) {
