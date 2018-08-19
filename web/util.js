@@ -150,6 +150,21 @@ function arrFirst(arr) {
   return arr;
 }
 
+function getAllChildrenElement(vd) {
+  var res = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+  vd.__children.forEach(function (item) {
+    if (item instanceof migi.VirtualDom) {
+      getAllChildrenElement(item, res);
+      res.push(item);
+    } else if (item instanceof migi.Component) {
+      getAllChildrenElement(item.__virtualDom, res);
+      res.push(item.__virtualDom);
+    }
+  });
+  return res;
+}
+
 var util = {
   clone: function clone(obj) {
     return _clone(obj);
@@ -178,7 +193,8 @@ var util = {
   arrFirst: arrFirst,
   isDom: function isDom(obj) {
     return obj instanceof _Element2.default;
-  }
+  },
+  getAllChildrenElement: getAllChildrenElement
 };
 
 exports.default = util;});

@@ -146,6 +146,20 @@ function arrFirst(arr) {
   return arr;
 }
 
+function getAllChildrenElement(vd, res = []) {
+  vd.__children.forEach((item) => {
+    if(item instanceof migi.VirtualDom) {
+      getAllChildrenElement(item, res);
+      res.push(item);
+    }
+    else if(item instanceof migi.Component) {
+      getAllChildrenElement(item.__virtualDom, res);
+      res.push(item.__virtualDom);
+    }
+  });
+  return res;
+}
+
 var util = {
   clone(obj) {
     return clone(obj);
@@ -172,6 +186,7 @@ var util = {
   isDom: function(obj) {
     return obj instanceof Element;
   },
+  getAllChildrenElement,
 };
 
 export default util;

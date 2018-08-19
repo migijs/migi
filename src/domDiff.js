@@ -539,6 +539,10 @@ function diffChild(parent, elem, ovd, nvd, record) {
               break;
           }
         }
+        // 遍历孩子vd回收
+        util.getAllChildrenElement(ovd).forEach((item) => {
+          cachePool.add(item.__destroy());
+        });
         // 缓存对象池
         cachePool.add(ovd.__destroy());
         record.state = type.DOM_TO_TEXT;
@@ -626,6 +630,10 @@ function diffChild(parent, elem, ovd, nvd, record) {
             nvd.style = parent.style;
             nvd.emit(Event.DOM);
             hash.set(nvd);
+            // 遍历孩子vd回收
+            util.getAllChildrenElement(ocp ? ovd.__virtualDom : ovd).forEach((item) => {
+              cachePool.add(item.__destroy());
+            });
             // 缓存对象池
             cachePool.add(ovd.__destroy());
             break;
