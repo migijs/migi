@@ -390,12 +390,6 @@ function diffVd(ovd, nvd) {
 }
 
 function diff(parent, elem, ov, nv, record, opt) {
-  if(ov instanceof Obj) {
-    ov = ov.v;
-  }
-  if(nv instanceof Obj) {
-    nv = nv.v;
-  }
   if(opt) {
     diffArray(parent, elem, ov, nv, record, opt);
   }
@@ -405,6 +399,12 @@ function diff(parent, elem, ov, nv, record, opt) {
 }
 
 function diffChild(parent, elem, ovd, nvd, record) {
+  if(ovd instanceof Obj) {
+    ovd = ovd.v;
+  }
+  if(nvd instanceof Obj) {
+    nvd = nvd.v;
+  }
   // 新老值是否是数组处理方式不同
   var oa = Array.isArray(ovd);
   var na = Array.isArray(nvd);
@@ -671,6 +671,12 @@ function checkText(elem, vd, record) {
 }
 
 function diffArray(parent, elem, ovd, nvd, record, opt) {
+  if(ovd instanceof Obj) {
+    ovd = ovd.v;
+  }
+  if(nvd instanceof Obj) {
+    nvd = nvd.v;
+  }
   var ol = ovd.length;
   var nl = nvd.length;
   var os = ol ? 1 : 0;
