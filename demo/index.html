@@ -139,6 +139,10 @@
     <span>当@bind注解绑定的变量发生改变时，对于render()方法中使用当前context引用的侦听变量（this.{@bind})，会智能分析是否使用并发生改变，然后进行diff，无需手动优化，即没有类似shouldComponentUpdate的东西</span>
   </li>
   <li>
+    <a href="optimize.html" title="optimize">更高级的优化和双向绑定</a>
+    <span>migi配合预编译器lefty在优化上做了更多，只要context保持，在递归的箭头函数或侦听表达式中，亦进行了优化diff和双向绑定</span>
+  </li>
+  <li>
     <a href="arr.html" title="arr">侦听数组</a>
     <span>对于数组的一些常用操作方法，进行了侦听，使得数组更新可以做到</span>
   </li>

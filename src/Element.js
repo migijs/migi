@@ -3,7 +3,11 @@ import util from './util';
 
 function getDom(dom) {
   if(util.isString(dom)) {
-    return document.querySelector(dom);
+    let o = document.querySelector(dom);
+    if(!o) {
+      throw new Error('can not find dom of selector: ' + dom);
+    }
+    return o;
   }
   else if(dom instanceof Element) {
     return dom.element;

@@ -37,7 +37,7 @@
     "es5-shim": "*",
     "es6-shim": "*",
     "jaw": "~5.0.0",
-    "lefty": "~6.0.0-4"
+    "lefty": "~6.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

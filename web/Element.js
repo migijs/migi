@@ -24,7 +24,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function getDom(dom) {
   if (_util2.default.isString(dom)) {
-    return document.querySelector(dom);
+    var o = document.querySelector(dom);
+    if (!o) {
+      throw new Error('can not find dom of selector: ' + dom);
+    }
+    return o;
   } else if (dom instanceof Element) {
     return dom.element;
   }
