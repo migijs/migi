@@ -436,19 +436,12 @@ class VirtualDom extends Element {
     if(self.name == 'input') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        if(item instanceof Obj) {
+        if(item instanceof Obj && item.vBind) {
           self.once(Event.DOM, function() {
             function cb(e) {
               fixEvent(e);
               var v = e.target.value;
-              item.setV(v);
-              var key = item.k;
-              if(key.indexOf('model.') == 0) {
-                item.context.model[key.slice(6)] = v;
-              }
-              else {
-                item.context[key] = v;
-              }
+              item.vBind(v);
             }
             var type = self.__cache.type || '';
             switch(type.toLowerCase()) {
@@ -479,19 +472,12 @@ class VirtualDom extends Element {
     else if(self.name == 'select') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
-        if(item instanceof Obj) {
+        if(item instanceof Obj && item.vBind) {
           self.once(Event.DOM, function() {
             function cb(e) {
               fixEvent(e);
               var v = e.target.value;
-              item.setV(v);
-              var key = item.k;
-              if(key.indexOf('model.') == 0) {
-                item.context.model[key.slice(6)] = v;
-              }
-              else {
-                item.context[key] = v;
-              }
+              item.vBind(v);
             }
             self.__addListener('change', cb);
           });
@@ -503,14 +489,12 @@ class VirtualDom extends Element {
     else if(self.name == 'textarea') {
       if(self.children.length == 1) {
         var child = self.children[0];
-        if(child instanceof Obj) {
+        if(child instanceof Obj && child.vBind) {
           self.once(Event.DOM, function() {
             function cb(e) {
               fixEvent(e);
               var v = e.target.value;
-              child.setV(v);
-              var key = child.k;
-              child.context[key] = v;
+              child.vBind(v);
             }
             self.__addListener(['input', 'paste', 'cut', 'change'], cb);
           });

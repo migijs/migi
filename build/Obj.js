@@ -19,14 +19,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Obj = function () {
-  function Obj(k, context, cb, single) {
+  function Obj(k, cb, single, vBind) {
     _classCallCheck(this, Obj);
 
     this.k = k;
-    this.context = context;
     this.cb = cb;
     this.single = single;
-    this.setV(cb.call(context));
+    this.vBind = vBind;
+    this.setV(cb());
   }
 
   _createClass(Obj, [{
@@ -60,7 +60,7 @@ var Obj = function () {
   }, {
     key: 'update',
     value: function update(ov) {
-      var nv = this.cb.call(this.context);
+      var nv = this.cb();
       if (!_util2.default.equal(ov, nv)) {
         this.setV(nv);
         return true;

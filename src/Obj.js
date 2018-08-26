@@ -2,12 +2,12 @@ import Element from './Element';
 import util from './util';
 
 class Obj {
-  constructor(k, context, cb, single) {
+  constructor(k, cb, single, vBind) {
     this.k = k;
-    this.context = context;
     this.cb = cb;
     this.single = single;
-    this.setV(cb.call(context));
+    this.vBind = vBind;
+    this.setV(cb());
   }
   setV(v) {
     this.v = util.clone(v);
@@ -31,7 +31,7 @@ class Obj {
     return util.stringify(this.v);
   }
   update(ov) {
-    var nv = this.cb.call(this.context);
+    var nv = this.cb();
     if(!util.equal(ov, nv)) {
       this.setV(nv);
       return true;

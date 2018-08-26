@@ -14,6 +14,9 @@ test-firefox:
 test-chrome:
 	@nightwatch --filter test.js --env chrome
 
+test-chrome-mac:
+	@nightwatch --config ./nightwatch_mac.json --filter test.js --env chrome
+
 test-ie:
 	@nightwatch --filter test.js --env ie
 
