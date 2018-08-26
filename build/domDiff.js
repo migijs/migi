@@ -428,10 +428,10 @@ function diffVd(ovd, nvd) {
 }
 
 function diff(parent, elem, ov, nv, record, opt) {
-  if (ovd instanceof _Obj2.default) {
+  if (ov instanceof _Obj2.default) {
     ov = ov.v;
   }
-  if (nvd instanceof _Obj2.default) {
+  if (nv instanceof _Obj2.default) {
     nv = nv.v;
   }
   if (opt) {
