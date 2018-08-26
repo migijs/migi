@@ -60,11 +60,5 @@
   "engines": {
     "node": ">= 6.0"
   },
-  "spm": {
-    "main": "./index.js",
-    "output": [
-      "./index.js"
-    ]
-  },
   "readmeFilename": "README.md"
 }
