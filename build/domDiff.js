@@ -52,6 +52,10 @@ var _delegate = require('./delegate');
 
 var _delegate2 = _interopRequireDefault(_delegate);
 
+var _Obj = require('./Obj');
+
+var _Obj2 = _interopRequireDefault(_Obj);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function replaceWith(elem, cns, index, vd, isText) {
@@ -424,6 +428,12 @@ function diffVd(ovd, nvd) {
 }
 
 function diff(parent, elem, ov, nv, record, opt) {
+  if (ovd instanceof _Obj2.default) {
+    ov = ov.v;
+  }
+  if (nvd instanceof _Obj2.default) {
+    nv = nv.v;
+  }
   if (opt) {
     diffArray(parent, elem, ov, nv, record, opt);
   } else {

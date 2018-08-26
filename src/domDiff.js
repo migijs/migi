@@ -10,6 +10,7 @@ import hash from './hash';
 import matchHash from './matchHash';
 import fixEvent from './fixEvent';
 import delegate from './delegate';
+import Obj from './Obj';
 
 function replaceWith(elem, cns, index, vd, isText) {
   // insertAdjacentHTML在插入text时浏览器行为表现不一致，ff会合并相邻text，chrome则不会
@@ -389,6 +390,12 @@ function diffVd(ovd, nvd) {
 }
 
 function diff(parent, elem, ov, nv, record, opt) {
+  if(ovd instanceof Obj) {
+    ov = ov.v;
+  }
+  if(nvd instanceof Obj) {
+    nv = nv.v;
+  }
   if(opt) {
     diffArray(parent, elem, ov, nv, record, opt);
   }

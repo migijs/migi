@@ -1,7 +1,8 @@
 import Element from './Element';
+import Obj from './Obj';
 
 function clone(obj) {
-  if(obj instanceof Element) {
+  if(obj instanceof Element || obj instanceof Obj) {
     return obj;
   }
   if(isOrigin(obj)) {
@@ -90,6 +91,9 @@ function joinArray(arr, prop) {
     }
     else if(item instanceof Element) {
       res += prop ? encodeHtml(item.toString(), prop) : item.toString();
+    }
+    else if(item instanceof Obj) {
+      res += item.toString(prop);
     }
     else {
       res += encodeHtml(stringify(item), prop);

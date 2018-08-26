@@ -8,10 +8,14 @@ var _Element = require('./Element');
 
 var _Element2 = _interopRequireDefault(_Element);
 
+var _Obj = require('./Obj');
+
+var _Obj2 = _interopRequireDefault(_Obj);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _clone(obj) {
-  if (obj instanceof _Element2.default) {
+  if (obj instanceof _Element2.default || obj instanceof _Obj2.default) {
     return obj;
   }
   if (isOrigin(obj)) {
@@ -97,6 +101,8 @@ function _joinArray(arr, prop) {
       res += _joinArray(item);
     } else if (item instanceof _Element2.default) {
       res += prop ? encodeHtml(item.toString(), prop) : item.toString();
+    } else if (item instanceof _Obj2.default) {
+      res += item.toString(prop);
     } else {
       res += encodeHtml(stringify(item), prop);
     }
