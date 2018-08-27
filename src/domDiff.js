@@ -592,6 +592,9 @@ function diffChild(parent, elem, ovd, nvd, record) {
       // DOM变DOM
       case 3:
         switch(record.state) {
+          // case type.DOM_TO_DOM:
+          // case type.TEXT_TO_DOM:
+          //   break;
           case type.DOM_TO_TEXT:
           case type.TEXT_TO_TEXT:
             record.start++;
@@ -819,6 +822,9 @@ function diffArray(parent, elem, ovd, nvd, record, opt) {
 }
 
 function scan(elem, vd, record) {
+  if(vd instanceof Obj) {
+    vd = vd.v;
+  }
   if(Array.isArray(vd)) {
     record.index.push(0);
     for(var i = 0, len = vd.length; i < len; i++) {
