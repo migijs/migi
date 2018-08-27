@@ -5,8 +5,4 @@ export default {
   DOM_TO_DOM: 4,
   TEXT_TO_DOM: 5,
   TEXT_TO_TEXT: 6,
-  ADD_TEXT: 7,
-  ADD_DOM: 8,
-  DEL_TEXT: 9,
-  DEL_DOM: 10,
 };
