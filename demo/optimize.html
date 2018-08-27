@@ -40,7 +40,11 @@
                   <span>{item}</span>
                   {
                     this.b.map((item2, i) => {
-                      // 这里要实现value双向绑定不能写item2而要写this.b[i]，因为绑定过程是对此进行赋值，原始类型赋值不会影响原有变量
+                      /**
+                       * 这里要实现input的value双向绑定不能写item2而要写this.b[i]，
+                       * 一是绑定过程是对此进行赋值，原始类型赋值不会影响原有变量
+                       * 二是item2整体表达式没有涉及@bind的变量，this.b[i]中有this.b
+                       */
                       return <input value={ this.b[i] }/>;
                     })
                   }
