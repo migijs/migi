@@ -117,7 +117,7 @@ function _joinSourceArray(arr) {
     if (Array.isArray(item)) {
       res += _joinSourceArray(item);
     } else {
-      res += item.toString();
+      res += stringify(item);
     }
   }
   return res;

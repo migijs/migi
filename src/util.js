@@ -110,7 +110,7 @@ function joinSourceArray(arr) {
       res += joinSourceArray(item);
     }
     else {
-      res += item.toString();
+      res += stringify(item);
     }
   }
   return res;
