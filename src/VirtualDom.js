@@ -374,7 +374,7 @@ class VirtualDom extends Element {
           break;
         case attr.RENDER_DOM:
           self.once(Event.DOM, function() {
-            self.__updateAttr(k, v);
+            self.__updateAttr(k, v.v);
           });
           break;
         default:

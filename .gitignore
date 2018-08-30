@@ -218,3 +218,4 @@ tests/*/*-lie.*
 reports/
 tests/test*.js
 dist/migi
+temp.html

@@ -488,7 +488,7 @@ var VirtualDom = function (_Element) {
               break;
             case _attr2.default.RENDER_DOM:
               self.once(_Event2.default.DOM, function () {
-                self.__updateAttr(k, v);
+                self.__updateAttr(k, v.v);
               });
               break;
             default:

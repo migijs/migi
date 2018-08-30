@@ -342,13 +342,19 @@ function diffVd(ovd, nvd) {
   for (i = ovd.__props.length - 1; i >= 0; i--) {
     var item = ovd.__props[i];
     var k = item[0];
-    var v = item[1];
     // 只检查普通属性，onXXX事件由__listener中的引用移除
     if (k.indexOf('on') != 0 || k == 'on') {
       temp[k] = true;
       // 对比老属性，多余删除，相同无需更新
       if (nvd.props.hasOwnProperty(k)) {
+        var v = item[1];
         var nv = nvd.props[k];
+        if (nv instanceof _Obj2.default) {
+          nv = nv.v;
+        }
+        if (v instanceof _Obj2.default) {
+          v = v.v;
+        }
         if (nv !== v) {
           nvd.__updateAttr(k, nv);
         }
@@ -369,6 +375,9 @@ function diffVd(ovd, nvd) {
     k = item[0];
 
     var v = item[1];
+    if (v instanceof _Obj2.default) {
+      v = v.v;
+    }
     // 事件和属性区分对待
     if (k.indexOf('on') == 0 && k != 'on') {
       name = k.slice(2).toLowerCase();
