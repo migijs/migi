@@ -163,7 +163,7 @@ var VirtualDom = function (_Element) {
     _classCallCheck(this, VirtualDom);
 
     // 自闭合标签不能有children
-    if (_selfClose2.default.hasOwnProperty(name) && children.length) {
+    if (_selfClose2.default.hasOwnProperty(name) && children && children.length) {
       throw new Error('self-close tag can not has children: ' + name);
     }
 
