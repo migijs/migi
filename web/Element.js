@@ -90,6 +90,8 @@ var Element = function (_Event) {
       props = _ref[2];
       children = _ref[3];
     }
+    props = props || [];
+    children = children || [];
     _this.__reset(uid, name, props, children);
     return _this;
   }

@@ -159,10 +159,7 @@ function __findEq(name, child, res, first) {
 var VirtualDom = function (_Element) {
   _inherits(VirtualDom, _Element);
 
-  function VirtualDom(uid, name) {
-    var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-    var children = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-
+  function VirtualDom(uid, name, props, children) {
     _classCallCheck(this, VirtualDom);
 
     // 自闭合标签不能有children

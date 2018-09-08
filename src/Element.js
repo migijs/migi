@@ -59,6 +59,8 @@ class Element extends Event {
     if(Array.isArray(uid)) {
       [uid, name, props, children] = [...uid];
     }
+    props = props || [];
+    children = children || [];
     this.__reset(uid, name, props, children);
   }
   __reset(uid, name, props, children) {
