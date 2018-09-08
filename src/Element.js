@@ -56,6 +56,9 @@ function spread(arr) {
 class Element extends Event {
   constructor(uid, name, props, children) {
     super();
+    if(Array.isArray(uid)) {
+      [uid, name, props, children] = [...uid];
+    }
     this.__reset(uid, name, props, children);
   }
   __reset(uid, name, props, children) {

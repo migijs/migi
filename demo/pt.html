@@ -15,8 +15,8 @@
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
   class Component extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this.a = <span>123</span>;
       this.on(migi.Event.DOM, function() {
         console.log(this.a.parent.name, this.a.top.name);

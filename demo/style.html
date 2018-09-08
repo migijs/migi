@@ -50,8 +50,8 @@
   style = style.textContent || style.innerHTML;
 
   class Switch extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this._states = !!this.props.states;
       this.style = jaw.parse(style);
     }

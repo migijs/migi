@@ -113,8 +113,8 @@
   style = jaw.parse(style.textContent || style.innerHTML);
 
   class Page extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this._index = this.props.index;
       this._total = this.props.total;
       this.style = style;

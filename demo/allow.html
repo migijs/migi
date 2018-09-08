@@ -25,8 +25,8 @@
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
   class Shadow extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       // 下面这句可以达到同样的效果，但优先级不如DOM属性，默认就是false
       // this.stopPropagation = false;
     }

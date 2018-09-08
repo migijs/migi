@@ -15,8 +15,8 @@
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx">
   class Out extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this.p = 1;
     }
     @bind p
@@ -31,8 +31,8 @@
     }
   }
   class Inner extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this.q = this.props.q;
     }
     @bind q

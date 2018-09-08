@@ -39,8 +39,8 @@
 <body>
 <script type="text/jsx">
   class Component extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       var self = this;
       self._list = [];
       self.on(migi.Event.DOM, function() {

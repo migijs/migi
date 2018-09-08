@@ -29,8 +29,8 @@
   var style = document.querySelector('style[type="text/jsx"]').textContent;
 
   class Link extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       this.style = jaw.parse(style);
     }
     render() {

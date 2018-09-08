@@ -16,8 +16,8 @@
 <script type="text/jsx">
   class MyComponent extends migi.Component {
     @bind txt = 'like'
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
     }
     handleClick() {
       this.txt = this.txt == 'like' ? 'unlike' : 'like';

@@ -84,8 +84,8 @@
 <pre><code class="brush:jsx"></code></pre>
 <script type="text/jsx" jssc="true">
   class Select extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
       var self = this;
       self.list = [];
       self.on(migi.Event.DOM, function() {

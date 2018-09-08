@@ -37,8 +37,8 @@
 <script type="text/jsx">
   var test = document.querySelector('#test');
   class Component extends migi.Component {
-    constructor(...data) {
-      super(...data);
+    constructor(data) {
+      super(data);
     }
     tap() {
       test.innerHTML += '外层tap ';
