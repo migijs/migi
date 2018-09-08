@@ -100,7 +100,7 @@ var migi = {
     return element.emit(_Event2.default.DOM);
   },
   createCp: function createCp(cp, props, children) {
-    return _hash2.default.set(new cp([this.uid++, props, children]));
+    return _hash2.default.set(new cp([this.uid++, null, props, children]));
   },
   createVd: function createVd(name, props, children) {
     if (name == 'style' || name == 'script') {
