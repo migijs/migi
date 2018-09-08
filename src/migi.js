@@ -35,9 +35,15 @@ var migi = {
     return element.emit(Event.DOM);
   },
   createCp(cp, props, children) {
+    if(Array.isArray(cp)) {
+      [cp, props, children] = [...cp];
+    }
     return hash.set(new cp(this.uid++, props, children));
   },
   createVd(name, props, children) {
+    if(Array.isArray(name)) {
+      [name, props, children] = [...name];
+    }
     if(name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }

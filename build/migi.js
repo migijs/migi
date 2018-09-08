@@ -82,6 +82,8 @@ var _dev2 = _interopRequireDefault(_dev);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var migi = {
   uid: 0,
   render: function render(element, dom) {
@@ -100,9 +102,23 @@ var migi = {
     return element.emit(_Event2.default.DOM);
   },
   createCp: function createCp(cp, props, children) {
+    if (Array.isArray(cp)) {
+      var _ref = [].concat(_toConsumableArray(cp));
+
+      cp = _ref[0];
+      props = _ref[1];
+      children = _ref[2];
+    }
     return _hash2.default.set(new cp(this.uid++, props, children));
   },
   createVd: function createVd(name, props, children) {
+    if (Array.isArray(name)) {
+      var _ref2 = [].concat(_toConsumableArray(name));
+
+      name = _ref2[0];
+      props = _ref2[1];
+      children = _ref2[2];
+    }
     if (name == 'style' || name == 'script') {
       throw new Error('can not create VirtualDom of: ' + name);
     }
