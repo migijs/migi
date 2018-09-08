@@ -583,15 +583,33 @@ var VirtualDom = function (_Element) {
               }
             });
           }
-        }
-      } else if (self.name == 'select') {
-        if (self.props.hasOwnProperty('value')) {
-          var item = self.props.value;
+        } else if (self.props.hasOwnProperty('checked')) {
+          var item = self.props.checked;
           if (item instanceof _Obj2.default && item.vBind) {
             self.once(_Event2.default.DOM, function () {
               function cb(e) {
                 (0, _fixEvent2.default)(e);
-                var v = e.target.value;
+                var v = e.target.checked;
+                item.vBind(v);
+              }
+              var type = self.__cache.type || '';
+              switch (type.toLowerCase()) {
+                case 'checkbox':
+                case 'radio':
+                  self.__addListener('change', cb);
+                  break;
+              }
+            });
+          }
+        }
+      } else if (self.name == 'option') {
+        if (self.props.hasOwnProperty('selected')) {
+          var item = self.props.selected;
+          if (item instanceof _Obj2.default && item.vBind) {
+            self.once(_Event2.default.DOM, function () {
+              function cb(e) {
+                (0, _fixEvent2.default)(e);
+                var v = e.target.selected;
                 item.vBind(v);
               }
               self.__addListener('change', cb);

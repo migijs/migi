@@ -468,15 +468,34 @@ class VirtualDom extends Element {
           });
         }
       }
-    }
-    else if(self.name == 'select') {
-      if(self.props.hasOwnProperty('value')) {
-        var item = self.props.value;
+      else if(self.props.hasOwnProperty('checked')) {
+        var item = self.props.checked;
         if(item instanceof Obj && item.vBind) {
           self.once(Event.DOM, function() {
             function cb(e) {
               fixEvent(e);
-              var v = e.target.value;
+              var v = e.target.checked;
+              item.vBind(v);
+            }
+            var type = self.__cache.type || '';
+            switch(type.toLowerCase()) {
+              case 'checkbox':
+              case 'radio':
+                self.__addListener('change', cb);
+                break;
+            }
+          });
+        }
+      }
+    }
+    else if(self.name == 'option') {
+      if(self.props.hasOwnProperty('selected')) {
+        var item = self.props.selected;
+        if(item instanceof Obj && item.vBind) {
+          self.once(Event.DOM, function() {
+            function cb(e) {
+              fixEvent(e);
+              var v = e.target.selected;
               item.vBind(v);
             }
             self.__addListener('change', cb);
