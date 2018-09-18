@@ -106,7 +106,7 @@ class VirtualDom extends Element {
   // @override
   toString() {
     var self = this;
-    var res = '<' + self.name;
+    var res = '<' + self.__name;
     // 处理属性
     for(var i = 0, len = self.__props.length; i < len; i++) {
       var item = self.__props[i];
@@ -151,7 +151,7 @@ class VirtualDom extends Element {
     else {
       res += self.__renderChildren();
     }
-    res +='</' + self.name + '>';
+    res +='</' + self.__name + '>';
     return res;
   }
   // @override
@@ -365,7 +365,7 @@ class VirtualDom extends Element {
       }
       self.__cache[k] = s;
       // 特殊属性根据类型输出或是在DOM后设置prop
-      var special = attr.special(self.name, k);
+      var special = attr.special(self.__name, k);
       switch(special) {
         case attr.RENDER_EXIST:
           if(v.v) {
@@ -395,7 +395,7 @@ class VirtualDom extends Element {
       }
       self.__cache[k] = s;
       // 特殊属性根据类型输出或是在DOM后设置prop
-      var special = attr.special(self.name, k);
+      var special = attr.special(self.__name, k);
       switch(special) {
         case attr.RENDER_EXIST:
           if(v) {
@@ -433,7 +433,7 @@ class VirtualDom extends Element {
   }
   __checkListener() {
     var self = this;
-    if(self.name == 'input') {
+    if(self.__name == 'input') {
       if(self.props.hasOwnProperty('value')) {
         var item = self.props.value;
         if(item instanceof Obj && item.vBind) {
@@ -488,7 +488,7 @@ class VirtualDom extends Element {
         }
       }
     }
-    else if(self.name == 'option') {
+    else if(self.__name == 'option') {
       if(self.props.hasOwnProperty('selected')) {
         var item = self.props.selected;
         if(item instanceof Obj && item.vBind) {
@@ -505,7 +505,7 @@ class VirtualDom extends Element {
     }
     // textarea的value在标签的childNodes里，这里只处理单一child情况
     // children有多个其中一个是text有歧义，忽视
-    else if(self.name == 'textarea') {
+    else if(self.__name == 'textarea') {
       if(self.children.length == 1) {
         var child = self.children[0];
         if(child instanceof Obj && child.vBind) {
@@ -884,7 +884,7 @@ class VirtualDom extends Element {
   // 但是setAttribute会保留实体字符形式
   __updateAttr(k, v) {
     if(k == 'dangerouslySetInnerHTML') {
-      if(v === null || v === void 0) {
+      if(v === null || v === undefined) {
         v = '';
       }
       this.element.innerHTML = util.stringify(v);
@@ -892,7 +892,7 @@ class VirtualDom extends Element {
       this.__insertBlank(0);
       return;
     }
-    attr.update(this.name, this.element, k, v, this.__style);
+    attr.update(this.__name, this.element, k, v, this.__style);
     this.__cache[k] = v;
     // 使用了jaw内联解析css
     if(this.__style) {
@@ -989,7 +989,7 @@ class VirtualDom extends Element {
     return this.__names || (this.__names = []);
   }
   get element() {
-    return this.__element || (this.__element = document.querySelector(this.name + '[migi-uid="' + this.__uid + '"]'));
+    return this.__element || (this.__element = document.querySelector(this.__name + '[migi-uid="' + this.__uid + '"]'));
   }
   get style() {
     return this.__style;
@@ -1003,7 +1003,7 @@ class VirtualDom extends Element {
     else {
       self.__names = [];
     }
-    self.__names.push(self.name);
+    self.__names.push(self.__name);
     for(var i = 0, len = self.children.length; i < len; i++) {
       childStyle(self.children[i], v);
     }
@@ -1012,7 +1012,7 @@ class VirtualDom extends Element {
 
 // 静态文本节点，包括空、undefined、null、空数组
 function isEmptyText(item) {
-  return item === void 0 || item === null || !item.toString();
+  return item === undefined || item === null || !item.toString();
 }
 function renderChild(child) {
   if(child instanceof Element || child instanceof Obj) {

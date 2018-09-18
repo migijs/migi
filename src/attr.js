@@ -183,7 +183,7 @@ export default {
           break;
       }
     }
-    if(v === null || v === void 0) {
+    if(v === null || v === undefined) {
       element.removeAttribute(k);
     }
     else if(k == 'id') {

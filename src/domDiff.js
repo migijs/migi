@@ -59,7 +59,7 @@ function insertAt(elem, cns, index, vd, isText) {
         cns[index].insertAdjacentHTML('beforebegin', target);
       }
       else {
-        var node = browser.getParent(vd.name);
+        var node = browser.getParent(vd.__name);
         node.innerHTML = target;
         elem.insertBefore(node.firstChild, cns[index]);
       }
@@ -265,10 +265,10 @@ function removeAt(elem, start) {
 }
 
 function equalText(a, b) {
-  if(a === void 0 || a === null) {
+  if(a === undefined || a === null) {
     a = '';
   }
-  if(b === void 0 || b === null) {
+  if(b === undefined || b === null) {
     b = '';
   }
   return a.toString() == b.toString();

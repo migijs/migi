@@ -265,11 +265,6 @@ var Element = function (_Event) {
       return this.__children;
     }
   }, {
-    key: 'name',
-    get: function get() {
-      return this.__name;
-    }
-  }, {
     key: 'dom',
     get: function get() {
       return this.__dom;

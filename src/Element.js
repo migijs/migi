@@ -210,9 +210,6 @@ class Element extends Event {
   get children() {
     return this.__children;
   }
-  get name() {
-    return this.__name;
-  }
   get dom() {
     return this.__dom;
   }

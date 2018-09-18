@@ -45,7 +45,7 @@ function isType(type) {
 }
 
 function isOrigin(o) {
-  return o === void 0 || o === null || util.isBoolean(o) || util.isNumber(o) || util.isString(o);
+  return o === undefined || o === null || util.isBoolean(o) || util.isNumber(o) || util.isString(o);
 }
 function _equal(a, b) {
   // vd常量
@@ -124,7 +124,7 @@ function _joinSourceArray(arr) {
 }
 
 function stringify(s) {
-  if (s === null || s === void 0) {
+  if (s === null || s === undefined) {
     return '';
   }
   return s.toString();

@@ -73,7 +73,9 @@ var Component = function (_Element) {
       }
     });
 
-    self.__name = self.constructor.__migiName;
+    if (self.constructor.__migiName) {
+      self.__name = self.constructor.__migiName;
+    }
     self.__virtualDom = null; // 根节点vd引用
     self.__ref = {}; // 以ref为attr的vd快速访问引用
     // self.__stop = null; // 停止冒泡的fn引用
@@ -169,14 +171,14 @@ var Component = function (_Element) {
         var child = this.children[i];
         if (child instanceof _Element3.default) {
           if (child instanceof Component) {
-            if (child.name == name || _util2.default.isFunction(name) && child instanceof name) {
+            if (child.__name == name || _util2.default.isFunction(name) && child instanceof name) {
               res.push(child);
               if (first) {
                 break;
               }
             }
           } else {
-            if (child.name == name || _util2.default.isFunction(name) && child instanceof name) {
+            if (child.__name == name || _util2.default.isFunction(name) && child instanceof name) {
               res.push(child);
               if (first) {
                 break;
@@ -211,8 +213,8 @@ var Component = function (_Element) {
       var self = this;
       self.virtualDom.emit(_Event2.default.DOM);
       var elem = self.element;
-      if (self.name) {
-        elem.setAttribute('migi-name', self.name);
+      if (self.__name) {
+        elem.setAttribute('migi-name', self.__name);
       }
       // 无覆盖render时渲染标签的children；有时渲染render的children
       // 指定不允许冒泡，默认是全部冒泡

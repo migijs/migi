@@ -192,7 +192,7 @@ exports.default = {
       // [attr=xxx]形式，需比较值
       else {
           var p = virtualDom.__cache[attr[0]];
-          if (p === void 0) {
+          if (p === undefined) {
             isMatch = false;
             break;
           }

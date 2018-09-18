@@ -50,7 +50,7 @@ function delegate(e, json, top) {
 }
 
 function push(vd, names, classes, ids) {
-  names.unshift(vd.name);
+  names.unshift(vd.__name);
   classes.unshift(_matchUtil2.default.splitClass(vd.__cache['class']));
   ids.unshift(_matchUtil2.default.preId(vd.__cache.id));
 }
