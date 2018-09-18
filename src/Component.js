@@ -20,6 +20,15 @@ class Component extends Element {
     super(uid, null, props, children);
 
     var self = this;
+    var proto = Object.getPrototypeOf(self);
+    ['on', 'once', 'emit', 'off', 'clean', 'inTo', 'appendTo', 'prependTo', 'before', 'after', 'replace', 'top',
+      'parent', 'children', 'name', 'dom', 'toString', 'preString', 'findChild', 'findChildren', 'find',
+      'findAll', 'stopPropagation', 'element', 'style', 'model', 'virtualDom', 'ref'].forEach(function(key) {
+      if(proto.hasOwnProperty(key)) {
+        throw new Error(`cannot overwrite method of '${key}'`);
+      }
+    });
+
     self.__name = self.constructor.__migiName;
     self.__virtualDom = null; // 根节点vd引用
     self.__ref = {}; // 以ref为attr的vd快速访问引用

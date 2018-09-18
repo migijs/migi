@@ -1,5 +1,5 @@
 /**
- * Sea.js 3.0.1 | seajs.org/LICENSE.md
+ * Sea.js 3.1.0 | seajs.org/LICENSE.md
  */
 (function(global, undefined) {
 

@@ -25,16 +25,16 @@ class Event {
   }
   once(id, handle) {
     var self = this;
+    function cb(...data) {
+      handle.apply(self, data);
+      self.off(id, cb);
+    }
     if(Array.isArray(id)) {
       for(var i = 0, len = id.length; i < len; i++) {
         self.once(id[i], handle);
       }
     }
     else if(handle) {
-      function cb(...data) {
-        handle.apply(this, data);
-        self.off(id, cb);
-      }
       self.on(id, cb);
     }
     return this;

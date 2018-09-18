@@ -41,21 +41,20 @@ var Event = function () {
     key: 'once',
     value: function once(id, handle) {
       var self = this;
+      function cb() {
+        for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
+          data[_key] = arguments[_key];
+        }
+
+        handle.apply(self, data);
+        self.off(id, cb);
+      }
       if (Array.isArray(id)) {
         for (var i = 0, len = id.length; i < len; i++) {
           self.once(id[i], handle);
         }
       } else if (handle) {
-        var _cb = function _cb() {
-          for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
-            data[_key] = arguments[_key];
-          }
-
-          handle.apply(this, data);
-          self.off(id, _cb);
-        };
-
-        self.on(id, _cb);
+        self.on(id, cb);
       }
       return this;
     }

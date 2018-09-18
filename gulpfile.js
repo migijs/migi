@@ -34,7 +34,7 @@ function cb(file, enc, cb) {
   util.log(path.relative(file.cwd, file.path));
   var content = file.contents.toString('utf-8');
   content = babel.transform(content, {
-    presets: ['es2015']
+    presets: ['es2015'],
   }).code;
   file.contents = new Buffer(content);
   cb(null, file);
