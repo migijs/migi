@@ -35,4 +35,4 @@ let c = migi.render(
   '#test'
 );
 c.d = true;
-document.getElementById('test2').innerHTML = c.ref.a.name + "," + c.ref.b.name + "," + (c.ref.z ? '1' : '2');
+document.getElementById('test2').innerHTML = c.ref.a.__name + "," + c.ref.b.__name + "," + (c.ref.z ? '1' : '2');

@@ -4,7 +4,7 @@ class Component extends migi.Component {
   }
   click(e,vd,tvd,ttvd) {
     e.preventDefault();
-    document.querySelector('#test2').innerHTML = vd.name + tvd.name + ttvd.name;
+    document.querySelector('#test2').innerHTML = vd.__name + tvd.__name + ttvd.__name;
   }
   render() {
     return (

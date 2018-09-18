@@ -12,7 +12,7 @@ class Component extends migi.Component {
   }
   click() {
     this.a = <span>456</span>;
-    this.find('strong').element.innerHTML = this.a.parent.name;
+    this.find('strong').element.innerHTML = this.a.parent.__name;
   }
   render() {
     return (
