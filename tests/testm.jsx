@@ -53,6 +53,24 @@ describe('api', function() {
   it('#hash', function() {
     expect(migi.hash).to.be.a(Object);
   });
+  it('encode', function() {
+    expect(migi.encode).to.be.a(Function);
+  });
+});
+
+describe('encode', function() {
+  it('normal', function() {
+    expect(migi.encode('<div>&1</div>')).to.eql('&lt;div>&amp;1&lt;/div>');
+  });
+  it('8232', function() {
+    expect(migi.encode(String.fromCharCode(8232))).to.eql('&#8232;');
+  });
+  it('null', function() {
+    expect(migi.encode(null)).to.eql('');
+  });
+  it('undefined', function() {
+    expect(migi.encode(undefined)).to.eql('');
+  });
 });
 
 describe('Event', function() {
