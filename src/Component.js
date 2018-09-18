@@ -22,7 +22,7 @@ class Component extends Element {
     var self = this;
     var proto = Object.getPrototypeOf(self);
     ['on', 'once', 'emit', 'off', 'clean', 'inTo', 'appendTo', 'prependTo', 'before', 'after', 'replace', 'top',
-      'parent', 'children', 'name', 'dom', 'toString', 'preString', 'findChild', 'findChildren', 'find',
+      'parent', 'children', 'dom', 'toString', 'preString', 'findChild', 'findChildren', 'find',
       'findAll', 'stopPropagation', 'element', 'style', 'model', 'virtualDom', 'ref'].forEach(function(key) {
       if(proto.hasOwnProperty(key)) {
         throw new Error(`cannot overwrite method of '${key}'`);

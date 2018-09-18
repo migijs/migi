@@ -3,8 +3,8 @@ class Component extends migi.Component {
     super(...data);
   }
   click(e, vd, tvd) {
-    document.querySelector('#test2').innerHTML = vd.name;
-    document.querySelector('#test3').innerHTML = tvd.name;
+    document.querySelector('#test2').innerHTML = vd.__name;
+    document.querySelector('#test3').innerHTML = tvd.__name;
   }
   render() {
     return <p onclick={this.click}>123<span>456</span></p>;
