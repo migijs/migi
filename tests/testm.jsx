@@ -257,13 +257,13 @@ describe('VirtualDom', function() {
   });
   it('name', function() {
     var div = <div>123</div>;
-    expect(div.name).to.eql('div');
+    expect(div.__name).to.eql('div');
   });
   it('selfClose', function() {
     var img = <img src=""/>;
-    expect(img.name).to.eql('img');
+    expect(img.__name).to.eql('img');
     var div = <div/>;
-    expect(div.name).to.eql('div');
+    expect(div.__name).to.eql('div');
   });
   it('toString()', function() {
     var div = <div>123</div>;
@@ -324,7 +324,7 @@ describe('Component', function() {
   });
   it('name', function() {
     var cmpn = new Component();
-    expect(cmpn.name).to.eql('Component');
+    expect(cmpn.__name).to.eql('Component');
   });
   it('toString()', function() {
     var cmpn = new Component();
@@ -335,7 +335,7 @@ describe('Component', function() {
     cmpn.toString();
     expect(cmpn.children.length).to.eql(0);
     expect(cmpn.virtualDom).to.be.a(migi.VirtualDom);
-    expect(cmpn.virtualDom.name).to.eql('div');
+    expect(cmpn.virtualDom.__name).to.eql('div');
     expect(cmpn.virtualDom.children.length).to.eql(1);
   });
   it('children', function() {
@@ -343,7 +343,7 @@ describe('Component', function() {
     cmpn.toString();
     expect(cmpn.children.length).to.eql(1);
     expect(cmpn.children[0]).to.be.a(migi.VirtualDom);
-    expect(cmpn.children[0].name).to.eql('span');
+    expect(cmpn.children[0].__name).to.eql('span');
   });
   it('parent', function() {
     var cmpn = new Component();
