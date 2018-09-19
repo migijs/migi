@@ -92,15 +92,15 @@
   </li>
   <li>
     <a href="unidirectional.html" title="unidirectional">get/set单向数据绑定</a>
-    <span>自定义组件类中声明了get/set方法的变量，同时用@bind注解了set的话，在render()中渲染将产生数据绑定，一旦发生改变，会联动</span>
-  </li>
-  <li>
-    <a href="ad.html" title="ad">@bind注解简写语法</a>
-    <span>特别的，对于@bind注解绑定的变量，可以使用简化语法避免过多的代码，它会生成等效的get/set方法，内部变量名追加双下划线__来保存</span>
+    <span>自定义组件类中声明了get/set方法的变量，同时用@eval注解了set的话，在render()中渲染将产生数据绑定，一旦发生改变，会联动</span>
   </li>
   <li>
     <a href="bidirectional.html" title="bidirectional">get/set双向数据绑定</a>
-    <span>同上，只是view层发生改变时model层同步</span>
+    <span>同上，只是@bind的绑定可以在view层发生改变时同步model层数据</span>
+  </li>
+  <li>
+    <a href="ad.html" title="ad">绑定注解简写语法</a>
+    <span>特别的，对于@eval、@bind注解绑定的变量，可以使用简化语法避免过多的代码，它会生成等效的get/set方法，内部变量名追加双下划线__来保存</span>
   </li>
   <li>
     <a href="explicit.html" title="explicit">显式声明绑定</a>
