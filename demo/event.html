@@ -39,11 +39,10 @@
     }
 
     render() {
-      var self = this;
       return <div onClick={ this.click }>
         {
-          [1,2,3].map(function(item) {
-            return <span onClick={ self.click.bind(self) }>{ item }</span>
+          [1,2,3].map(item => {
+            return <span onClick={ this.click }>{ item }</span>
           })
         }
       </div>;
