@@ -145,7 +145,7 @@ var migi = {
   encode: function encode(s) {
     if (s === null || s === undefined) {
       return '';
-    }console.log(s);
+    }
     return s.replace(/&/g, '&amp;').replace(new RegExp('[<' + String.fromCharCode(8232) + ']', 'g'), function ($0) {
       if ($0 === '<') {
         return '&lt;';
