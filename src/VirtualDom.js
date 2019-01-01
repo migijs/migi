@@ -438,13 +438,16 @@ class VirtualDom extends Element {
         var item = self.props.value;
         if(item instanceof Obj && item.vBind) {
           self.once(Event.DOM, function() {
+            var type = (self.__cache.type || '').toLowerCase();
             function cb(e) {
               fixEvent(e);
               var v = e.target.value;
+              if(type == 'number') {
+                v = parseFloat(v);
+              }
               item.vBind(v);
             }
-            var type = self.__cache.type || '';
-            switch(type.toLowerCase()) {
+            switch(type) {
               // 一些无需联动
               // case 'button':
               // case 'hidden':

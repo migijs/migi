@@ -551,13 +551,16 @@ var VirtualDom = function (_Element) {
           var item = self.props.value;
           if (item instanceof _Obj2.default && item.vBind) {
             self.once(_Event2.default.DOM, function () {
+              var type = (self.__cache.type || '').toLowerCase();
               function cb(e) {
                 (0, _fixEvent2.default)(e);
                 var v = e.target.value;
+                if (type == 'number') {
+                  v = parseFloat(v);
+                }
                 item.vBind(v);
               }
-              var type = self.__cache.type || '';
-              switch (type.toLowerCase()) {
+              switch (type) {
                 // 一些无需联动
                 // case 'button':
                 // case 'hidden':
