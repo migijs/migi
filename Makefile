@@ -31,8 +31,4 @@ coveralls: build-test
 test-cov: build-test
 	@mocha --timeout 5000 tests/testm.js --require blanket -R html-cov > tests/covrage.html
 
-spm:
-	@spm build -c
-	@gulp spm
-
 .PHONY: build
